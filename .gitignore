@@ -1,0 +1,31 @@
+# Ignore virtual environment
+venv/
+
+# Ignore Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Ignore Django migrations
+*/migrations/
+*.sqlite3
+
+# Ignore Docker-related files and folders
+*.log
+*.pid
+*.env
+.env
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/editor files
+.vscode/
+.idea/
+
+# Ignore compiled files
+*.so
+*.pyc
+
+# Ignore database files
+postgres_data/
