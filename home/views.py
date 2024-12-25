@@ -1,7 +1,8 @@
-from django.shortcuts import render
+# home/views.py
 
-# Create your views here.
+from django.http import HttpResponse
+
 
 
 def home(request):
-    return render(request, 'home/home.html')
+    return HttpResponse("Welcome to the Home app! That is index page")
