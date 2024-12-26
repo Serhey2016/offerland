@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adversting</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+</head>
+<body>
+    <!-- Верхній блок -->
+    <header class="header">
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+        </div>
+        <div class="language-selector">
+            <a href="?lang=en">EN</a> | <a href="?lang=ua">UA</a>
+        </div>
+        <div class="profile-menu">
+            <button class="profile-button">☰</button>
+            <div class="dropdown-menu">
+                <a href="{% url 'home:index' %}">Profile</a>
+                <a href="#">Settings</a>
+                <a href="#">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Блок реклами -->
+    <section class="ad-block">
+        <h1>ADVERSTING</h1>
+    </section>
+
+    <!-- Середній блок меню -->
+    <nav class="menu">
+        <ul>
+            <li><a href="#">>365</a></li>
+            <li><a href="#">Project</a></li>
+            <li><a href="#">Фриланс</a></li>
+            <li><a href="#">shadow work</a></li>
+            <li><a href="#">S$U</a></li>
+            <li><a href="#">Aggregator</a></li>
+        </ul>
+    </nav>
+
+    <!-- Блок форми -->
+    <section class="auth-form">
+        <form action="#" method="post">
+            <input type="text" name="login" placeholder="Login">
+            <input type="password" name="password" placeholder="Password">
+            <button type="submit">go in</button>
+        </form>
+        <a href="#">register</a>
+        <a href="#">forgot credentials</a>
+        <div class="icon-auth">
+            <img src="{% static 'images/fingerprint-icon.png' %}" alt="Fingerprint">
+        </div>
+        <a href="#">about</a>
+    </section>
+</body>
+</html>
