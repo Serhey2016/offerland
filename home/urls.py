@@ -1,8 +1,11 @@
 # home/urls.py
 
 from django.urls import path
-from .views import home  # Імпортуємо конкретну функцію представлення
+from .views import index  # Імпортуємо конкретну функцію представлення
+
+app_name = 'home'
+
 
 urlpatterns = [
-    path('', home, name='home'),
+    path('', index, name='index'),
 ]
