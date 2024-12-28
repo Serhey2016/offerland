@@ -79,9 +79,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_db',
-        'USER': 'django',
-        'PASSWORD': 'django123',
+        'NAME': 'offerland_django_db',
+        'USER': 'offerland_user',
+        'PASSWORD': 'offerland_django123',
         'HOST': 'db',
         'PORT': '5432',
     }
