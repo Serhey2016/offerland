@@ -23,5 +23,6 @@ urlpatterns = [
     
     path('', include('home.urls', namespace='home')),
     path('joblist/', include('joblist.urls')),
+    path('blog/', include('blog.urls')),
    
 ]

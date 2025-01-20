@@ -1,0 +1,65 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home:index' %}">
+            {% comment %} <img src="{% static 'images/logo.png' %}" class="img-fluid logo-image"> {% endcomment %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="36.645" height="36.645" viewBox="0 0 36.645 36.645">
+                <path id="direction-svgrepo-com" d="M8.034,27.115l-5.5-5.5a1.832,1.832,0,0,1,0-2.591l5.5-5.5a1.832,1.832,0,1,1,2.591,2.591l-4.2,4.2,4.2,4.2a1.832,1.832,0,1,1-2.591,2.591Zm5.5,5.5,5.5,5.5a1.832,1.832,0,0,0,2.591,0l5.5-5.5a1.832,1.832,0,1,0-2.591-2.591l-4.2,4.2-4.2-4.2a1.832,1.832,0,1,0-2.591,2.591Zm6.792-17.786a5.5,5.5,0,1,0,5.5,5.5A5.5,5.5,0,0,0,20.323,14.826Zm6.792-4.2a1.832,1.832,0,0,0,0-2.591l-5.5-5.5a1.832,1.832,0,0,0-2.591,0l-5.5,5.5a1.832,1.832,0,1,0,2.591,2.591l4.2-4.2,4.2,4.2a1.832,1.832,0,0,0,2.591,0Zm5.5,2.906a1.832,1.832,0,1,0-2.591,2.591l4.2,4.2-4.2,4.2a1.832,1.832,0,1,0,2.591,2.591l5.5-5.5a1.832,1.832,0,0,0,0-2.591Z" transform="translate(-2 -2)" fill="#5d52ba"/>
+              </svg>
+              
+
+            <div class="d-flex flex-column">
+                <strong class="logo-text">Offerland</strong>
+                <small class="logo-slogan">Online Job Portal</small>
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav align-items-center ms-lg-5">
+
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Blog</a>
+
+                    <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                        <li><a class="dropdown-item" href="{% url 'home:about' %}">About us</a></li>
+                        <li><a class="dropdown-item" href="#">Articles</a></li>
+                        <li><a class="dropdown-item" href="#">Cases (Success & Fails)</a></li>
+                        <li><a class="dropdown-item" href="#">Companies</a></li>
+                        <li><a class="dropdown-item" href="#">The intricacies of job search</a></li>
+                        <li><a class="dropdown-item" href="#">The intricacies of interviewing</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tools & services</a>
+
+                    <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Browse jobs</a></li>
+                        <li><a class="dropdown-item" href="#">Companies</a></li>
+                        <li><a class="dropdown-item" href="#">Chrome extentions</a></li>
+                        <li><a class="dropdown-item" href="#">Resume and cover letter tools</a></li>
+                        <li><a class="dropdown-item" href="#">Community</a></li>
+                        <li><a class="dropdown-item" href="#">Job coach mentoring</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:contacts' %}">Contact</a>
+                </li>
+
+                <li class="nav-item ms-lg-auto">
+                    <a class="nav-link" href="#">Register</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link custom-btn btn" href="#">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

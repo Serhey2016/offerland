@@ -720,7 +720,7 @@ nav[aria-label="breadcrumb"] {
 /*---------------------------------------
   ABOUT              
 -----------------------------------------*/
-.about-page .about-section {
+ .about-section {
   padding-top: 100px;
   padding-bottom: 0;
 }
@@ -996,8 +996,8 @@ nav[aria-label="breadcrumb"] {
   transition: all 0.5s ease;
 }
 
-.job-thumb:hover,
-.job-thumb:nth-of-type(even) {
+.job-thumb:hover 
+{
   background: var(--white-color);
   box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
 }
@@ -1424,7 +1424,7 @@ nav[aria-label="breadcrumb"] {
     padding-bottom: 50px;
   }
 
-  .about-page .about-section {
+  .about-section {
     padding-top: 50px;
   }
 

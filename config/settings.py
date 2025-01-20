@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Your custom apps
     'joblist',
     'home',
+    'blog',
 ]
 
 MIDDLEWARE = [

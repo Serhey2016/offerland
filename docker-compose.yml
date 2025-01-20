@@ -5,7 +5,7 @@ services:
     build: .
     container_name: offerland-web
     volumes:
-      - .:/app2
+      - .:/app
     ports:
       - "8000:8000"
     depends_on:
