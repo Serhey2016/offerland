@@ -3,3 +3,4 @@ Django==5.1
 django-environ==0.11.2
 psycopg2-binary==2.9.10
 sqlparse==0.5.3
+Pillow>=8.0.0

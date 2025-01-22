@@ -1,0 +1,43 @@
+.job-thumb-box_article {
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    /* max-width: 400px; */
+    margin-bottom: 48px;
+    padding: 0;
+  }
+
+
+
+  .job-thumb-box_article  {
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    /* max-width: 400px; */
+    margin-bottom: 48px;
+    padding: 0;
+  }
+  
+  .job-thumb-box_article .job-body {
+    padding: 25px;
+  }
+  
+  .job-thumb-box_article .job-body .job-image-wrap {
+    width: 50px;
+    min-width: 50px;
+    height: 50px;
+  }
+  
+  .job-thumb-box_article .job-body .job-image {
+    padding: 10px;
+  }
+  
+  .job-thumb-box_article .job-location, 
+  .job-thumb-box_article .job-date {
+    min-width: inherit;
+  }
+  
+  .job-thumb-box_article .job-date {
+    margin-right: 0;
+  }
+  
