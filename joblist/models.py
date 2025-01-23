@@ -137,7 +137,7 @@ class Vacancies(models.Model):
     contract_type = models.ManyToManyField(ContractType, related_name='vacancies')
     salary_1 = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     salary_2 = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    vacancy_link = models.URLField()
+    vacancy_link = models.URLField(editable=False)
     job_description = models.TextField()
     application_deadline = models.DateField()
     interview_stages = models.ManyToManyField(InterviewStages, related_name='vacancies')
@@ -151,7 +151,14 @@ class Vacancies(models.Model):
 
     def __str__(self):
         return self.job_title
-
+    
+    # def save(self, *args, **kwargs):
+    #     # Генерация ссылки (пример)
+    #     if not self.vacancy_link:
+    #         self.vacancy_link = f"https://example.com/vacancy/{self.id}"
+    #     super().save(*args, **kwargs)
+    
+    
 class UserVacancyRelation(models.Model):
     STATUS_CHOICES = [
         ('delete', 'На удаление'),
