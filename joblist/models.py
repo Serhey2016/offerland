@@ -1,4 +1,6 @@
 from django.db import models
+from django.templatetags.static import static
+
 
 # Create your models here.
 from django.utils import timezone
@@ -100,7 +102,7 @@ class ContractType(models.Model):
 
 class Companies(models.Model):
     id_company = models.AutoField(primary_key=True)
-    comp_logo = models.ImageField(upload_to='company_logos/', null=True, blank=True)
+    comp_logo = models.ImageField(upload_to='static/images/logos/', null=True, blank=True)
     company_name = models.CharField(max_length=150)
     legal_name = models.CharField(max_length=90, unique=True, null=True, blank=True)
     industry = models.ManyToManyField(Industry, related_name='companies')
@@ -126,6 +128,11 @@ class Companies(models.Model):
 
     def __str__(self):
         return self.company_name
+    
+    def get_logo(self):
+        if self.comp_logo:
+            return self.comp_logo.url
+        return static('images/apple.png')
 
 class Vacancies(models.Model):
     job_title = models.CharField(max_length=150)
@@ -145,6 +152,20 @@ class Vacancies(models.Model):
     tags = models.ManyToManyField(AllTags, related_name='vacancies')
     published = models.BooleanField(default=False)
     url_vacancy = models.URLField()
+    country = models.ForeignKey(
+        Country, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='vacancies'
+    )
+    town_city = models.ForeignKey(
+        TownCity,
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='vacancies'
+    )
 
     class Meta:
         verbose_name_plural = "Vacancies"
