@@ -185,7 +185,7 @@
                         <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
                             <div class="mb-3">
                                 <h4 class="job-title mb-lg-0">
-                                    <a href="job-details.html" class="job-title-link"> {{ vacancy.job_title }}</a>
+                                    <a href="{% url 'joblist:jobdetails' vacancy.id %}" class="job-title-link" target="_blank"> {{ vacancy.job_title }}</a>
                                 </h4>
     
                                 <div class="d-flex flex-wrap align-items-center">
@@ -215,7 +215,7 @@
                             </div>
     
                             <div class="job-section-btn-wrap">
-                                <a href="job-details.html" class="custom-btn btn">View</a>
+                                <a href="{% url 'joblist:jobdetails' vacancy.id %}" class="custom-btn btn" target="_blank">View</a>
                             </div>
                         </div>
                     </div>

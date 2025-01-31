@@ -33,55 +33,81 @@
         <div class="row">
 
             <div class="col-lg-8 col-12">
-                <h2 class="job-title mb-0">Technical Lead</h2>
+                <h2 class="job-title mb-0">{{ vacancy.job_title }}</h2>
 
                 <div class="job-thumb job-thumb-detail">
                     <div class="d-flex flex-wrap align-items-center border-bottom pt-lg-3 pt-2 pb-3 mb-4">
                         <p class="job-location mb-0">
                             <i class="custom-icon bi-geo-alt me-1"></i>
-                            Kuala, Malaysia
+                            {{ vacancy.country.countries }}, {{ vacancy.town_city.town_city }}
                         </p>
 
                         <p class="job-date mb-0">
                             <i class="custom-icon bi-clock me-1"></i>
-                            10 hours ago
+                            {{ vacancy.posting_date }}  
                         </p>
 
                         <p class="job-price mb-0">
                             <i class="custom-icon bi-cash me-1"></i>
-                            $20k
+                            £{{ vacancy.salary_1|floatformat:2 }}
                         </p>
 
                         <div class="d-flex">
+                            {% for tag in vacancy.tags.all|slice:":2" %}
                             <p class="mb-0">
-                                <a href="job-listings.html" class="badge badge-level">Internship</a>
+                                <a href="#" class="badge badge-level">{{ tag.tag }}</a>
                             </p>
-
-                            <p class="mb-0">
-                                <a href="job-listings.html" class="badge">Freelance</a>
-                            </p>
+                             {% endfor %}
                         </div>
                     </div>
 
-                    <h4 class="mt-4 mb-2">Job Description</h4>
+                    <h5 class="mt-4 ">Visa Sponsorship & Work Authorization</h5>
 
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p><strong>Visa Type:</strong> {{vacancy.visa_name }} </p>
+                    <p><strong>Dependent Visa Costs:</strong> {{ vacancy.dependent_visa_costs }} </p>
 
-                    <h5 class="mt-4 mb-3">The Role</h5>
+                    <h5 class="mt-4 mb-3">Position Overview</h5>
 
-                    <p class="mb-1"><strong>Benefits:</strong> Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito adipcingi elit</p>
+                    <p class="mb-1"><strong>Job Title:</strong> {{vacancy.job_title}}  </p>
 
-                    <p><strong>Good salary:</strong> Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito</p>
-
-                    <h5 class="mt-4 mb-3">Requirements</h5>
-
-                    <ul>
-                        <li>Strong knowledge in computing skill</li>
-
-                        <li>Minimum 5 years of working experiences consectetur omeg</li>
-
-                        <li>Excellent interpersonal skills</li>
-                    </ul>
+                    <p><strong>Work Model:</strong> 
+                        {% for model in vacancy.work_model.all %}
+                            {{ model.name }} <br>
+                            {% if not forloop.last %}, 
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                    <p><strong>Employment Type:</strong> 
+                    {% for model in vacancy.employment_type.all %}
+                        {{ model.name }} <br>
+                        {% if not forloop.last %}, 
+                        {% endif %}
+                    {% endfor %}
+                    
+                    </p>
+                    <p><strong>Contract Type:</strong>  
+                        {% for model in vacancy.contract_type.all %}  
+                            {{ model.contract_type }}{% if not forloop.last %}, {% endif %}  
+                        {% endfor %}  
+                    </p>
+                    
+                    </p>
+                    <p><strong>Salary Range:</strong> £{{ vacancy.salary_1|floatformat:2 }} -  £{{ vacancy.salary_2|floatformat:2 }}  </p>
+                     {% if vacancy.url_vacancy %}
+                            <p><strong>Vacancy Link:</strong> <a href="{{ vacancy.url_vacancy }}" target="_blank">Job link</a></p>
+                        {% else %}
+                            <p><strong>Vacancy Link:</strong> Not provided</p>
+                    {% endif %}
+                    <h5 class="mt-4 mb-3">Job Description:</h5>
+                    <div> {{ vacancy.job_description|safe }}</div>
+                   
+                    <h5 class="mt-4 mb-3">Hiring Timeline & Interview Process</h5>
+                    <p><strong>Application Deadline:</strong> {{ vacancy.application_deadline }} </p>
+                    <p><strong>Interview Stages:</strong>  
+                        {% for model in vacancy.interview_stages.all %}  
+                            {{ model.stage }}{% if not forloop.last %}, {% endif %}  
+                        {% endfor %}  
+                    </p>
 
                     <div class="d-flex justify-content-center flex-wrap mt-5 border-top pt-4">
                         <a href="#" class="custom-btn btn mt-2">Apply now</a>
@@ -90,12 +116,17 @@
 
                         <div class="job-detail-share d-flex align-items-center">
                             <p class="mb-0 me-lg-4 me-3">Share:</p>
-
-                            <a href="#" class="bi-facebook"></a>
-
-                            <a href="#" class="bi-twitter mx-3"></a>
-
-                            <a href="#" class="bi-share"></a>
+                            <a href="#" class="bi-share" id="share-btn"></a>
+                        </div>
+                        
+                        <!-- Всплывающее окно -->
+                        <div id="share-modal" class="modal-overlay">
+                            <div class="modal-content">
+                                <span class="close-btn" id="close-modal">&times;</span>
+                                <input type="text" id="share-link" value="http://www.vacancy.co" readonly>
+                                <button id="copy-btn" >copy</button>
+                                <p id="copy-message" class="copy-message">Copied to clipboard!</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -105,9 +136,9 @@
                 <div class="job-thumb job-thumb-detail-box bg-white shadow-lg">
                     <div class="d-flex align-items-center">
                         <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mb-3">
-                            <img src="{% static "images/logos/google.png" %}" class="job-image me-3 img-fluid" alt="">
+                            <img src="{{ vacancy.id_company.get_logo }}" class="job-image me-3 img-fluid" alt="Logo">
 
-                            <p class="mb-0">Google</p>
+                            <p class="mb-0">{{vacancy.id_company.company_name}}</p>
                         </div>
 
                         <a href="#" class="bi-bookmark ms-auto me-2"></a>
@@ -115,33 +146,31 @@
                         <a href="#" class="bi-heart"></a>
                     </div>
 
-                    <h6 class="mt-3 mb-2">About the Company</h6>
-
-                    <p>Lorem ipsum dolor sit amet, consectetur elit sed do eiusmod tempor incididunt labore.</p>
-
+                    <h6 class="mt-3 mb-2">Company Overview</h6>
+                    <p><strong>Industry:</strong> Banking and Financial Services</p>
+                    <p><strong>Business Area:</strong> Investment Banking, Global Financing, and Credit Trading (GFCT)</p>                  
                     <h6 class="mt-4 mb-3">Contact Information</h6>
-
                     <p class="mb-2">
                         <i class="custom-icon bi-globe me-1"></i>
 
                         <a href="#" class="site-footer-link">
-                            www.jobbportal.com
+                            {{vacancy.id_company.website}}
                         </a>
                     </p>
 
                     <p class="mb-2">
                         <i class="custom-icon bi-telephone me-1"></i>
 
-                        <a href="tel: 305-240-9671" class="site-footer-link">
-                            305-240-9671
+                        <a href="tel: vacancy.id_company.contact_number" class="site-footer-link">
+                            {{vacancy.id_company.contact_number}}  
                         </a>
                     </p>
 
                     <p>
                         <i class="custom-icon bi-envelope me-1"></i>
 
-                        <a href="mailto:info@yourgmail.com" class="site-footer-link">
-                            info@jobportal.co
+                        <a href="mailto:{{vacancy.id_company.contact_number}}" class="site-footer-link">
+                            {{vacancy.id_company.contact_email}} 
                         </a>
                     </p>
                 </div>

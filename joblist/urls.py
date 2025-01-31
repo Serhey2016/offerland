@@ -8,7 +8,7 @@ app_name = 'joblist'
 # http://localhost:8000/joblist/joblisting/
 urlpatterns = [
 
-    path('jobdetails/', jobdetails, name='jobdetails'),
+    path('jobdetails/<int:vacancy_id>/', jobdetails, name='jobdetails'),
     path('joblisting/', joblisting, name='joblisting'),
 
 ]
