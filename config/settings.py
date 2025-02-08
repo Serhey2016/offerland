@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'joblist',
     'home',
     'blog',
+    'adminpanel_userside',
+    
 ]
 
 MIDDLEWARE = [
