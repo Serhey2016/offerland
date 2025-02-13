@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="{% static 'adminpanel_userside/images/apple-touch-icon.png' %}">
   <link rel="shortcut icon" href="{% static 'adminpanel_userside/images/favicon.ico' %}"> 
   <!-- Stylesheets -->
+ 
   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/bootstrap.min.css' %}"> {% comment %} Основной стиль страницы base {% endcomment %}
   <link rel="stylesheet" href="{% static '/adminpanel_userside/css/bootstrap-extend.min.css' %}"> {% comment %} Основной стиль страницы base {% endcomment %}
   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/site.min.css' %}">   {% comment %} Основной стиль страницы base {% endcomment %}
@@ -25,14 +26,17 @@
   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/chartist-js/chartist.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/jvectormap/jquery-jvectormap.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
-  <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/waves/css/dashboard/v1.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
+
   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/jsgrid/jsgrid.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/bootstrap-datepicker/bootstrap-datepicker.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
-  <link rel="stylesheet" href="{% static 'adminpanel_userside/css/tables/jsgrid.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
-  <!-- Fonts -->
-  <link rel="stylesheet" href="{% static 'adminpanel_userside/fonts/material-design/material-design.min.css' %}"> {% comment %} Иконки для base html - material design. {% endcomment %}
-  <link rel="stylesheet" href="{% static 'adminpanel_userside/fonts/brand-icons/brand-icons.min.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
-  <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic&subset=latin,cyrillic'> 
+ {% comment %}   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/tables/jsgrid.css' %}"> Нет изменений. Иследовать {% endcomment %}
+
+  <!-- Fonts -->  
+   <link rel="stylesheet" href="{% static 'adminpanel_userside/fonts/material-design/material-design.min.css' %}"> {% comment %} Иконки для base html - material design. {% endcomment %}
+   <link rel="stylesheet" href="{% static 'adminpanel_userside/fonts/brand-icons/brand-icons.min.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
+   <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic&subset=latin,cyrillic'> 
+   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/dashboard/v1.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
+   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/footable/footable.min.css' %}">
   <!--[if lt IE 9]>
     <script src="{% static 'adminpanel_userside/vendor/html5shiv/html5shiv.min.js' %}"></script>
     <![endif]-->
@@ -49,581 +53,13 @@
 </head>
 <body class="site-navbar-small dashboard layout-boxed">
   <!--[if lt IE 8]>
-        <p class="browserupgrade">Вы используюте <strong>устаревший</strong> браузер. Обновите <a href="http://browsehappy.com/">Ваш браузер</a> для лучшей работы сайта.</p>
+        <p class="browserupgrade">Вы You are using <strong>outdated</strong> браузер. Renew your browser.</p>
     <![endif]-->
-  <nav class="site-navbar navbar navbar-inverse navbar-fixed-top navbar-mega navbar-inverse"
-  role="navigation">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle hamburger hamburger-close navbar-toggle-left hided"
-      data-toggle="menubar">
-        <span class="sr-only">Переключить Навигацию</span>
-        <span class="hamburger-bar"></span>
-      </button>
-      <button type="button" class="navbar-toggle collapsed" data-target="#site-navbar-collapse"
-      data-toggle="collapse">
-        <i class="icon md-more" aria-hidden="true"></i>
-      </button>
-      <a class="navbar-brand navbar-brand-center" href="index.html">
-        <img class="navbar-brand-logo navbar-brand-logo-normal" src="{% static 'adminpanel_userside/images/logo.png' %}"
-        title="Material">
-        <img class="navbar-brand-logo navbar-brand-logo-special" src="{% static 'adminpanel_userside/images/logo-blue.png' %}"
-        title="Material">
-        <span class="navbar-brand-text hidden-xs"> Material</span>
-      </a>
-      <button type="button" class="navbar-toggle collapsed" data-target="#site-navbar-search"
-      data-toggle="collapse">
-        <span class="sr-only">Переключить Поиск</span>
-        <i class="icon md-search" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="navbar-container container-fluid">
-      <!-- Navbar Collapse -->
-      <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
-        <!-- Navbar Toolbar -->
-        <ul class="nav navbar-toolbar">
-          <li class="hidden-float" id="toggleMenubar">
-            <a data-toggle="menubar" href="#" role="button">
-              <i class="icon hamburger hamburger-arrow-left">
-                  <span class="sr-only">Переключить Менюбар</span>
-                  <span class="hamburger-bar"></span>
-                </i>
-            </a>
-          </li>
-          <li class="hidden-xs" id="toggleFullscreen">
-            <a class="icon icon-fullscreen" data-toggle="fullscreen" href="#" role="button">
-              <span class="sr-only">Переключить Полный экран</span>
-            </a>
-          </li>
-          <li class="hidden-float">
-            <a class="icon md-search" data-toggle="collapse" href="#" data-target="#site-navbar-search"
-            role="button">
-              <span class="sr-only">Переключить Поиск</span>
-            </a>
-          </li>
-          <li class="dropdown dropdown-fw dropdown-mega">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"
-            data-animation="fade" role="button">Offerland<i class="icon md-chevron-down" aria-hidden="true"></i></a>
-            <ul class="dropdown-menu" role="menu">
-              <li role="presentation">
-                <div class="mega-content">
-                  <div class="row">
-                    <div class="col-sm-6">
-                      <h5>Offerland</h5>
-                      <ul class="blocks-2">
-                        <li class="mega-menu margin-0">
-                          <ul class="list-icons">
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="animation.html">About us</a>
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="buttons.html">Articles</a>
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="colors.html">Cases(Success and fails)</a>
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="dropdowns.html">Companies</a>
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="icons.html">The intricacies of job search</a>
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="lightbox.html">The intricacies of interviewing</a>
-                            </li>
-                          </ul>
-                        </li>
-                        <li class="mega-menu margin-0">
-                          <ul class="list-icons">
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="modals.html">Browse Jobs</a><a href="#"> <i class="md-bookmark" aria-hidden="true"></i> </a>  
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="panel-structure.html">Companies</a> <a href="#"> <i class="md-bookmark" aria-hidden="true"></i> </a> <a href="#"> <i class="md-favorite" aria-hidden="true"></i> </a>
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="overlay.html">Chrome extentions</a>
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="tooltip-popover.html ">Resume and cover letter tools</a>
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="scrollable.html">Community</a>
-                            </li>
-                            <li><i class="md-chevron-right" aria-hidden="true"></i>
-                              <a href="typography.html">Job coach mentoring</a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                    {% comment %} <div class="col-sm-4">
-                      <h5>Медиа
-                        <span class="badge badge-success">4</span>
-                      </h5>
-                      <ul class="blocks-3">
-                        <li>
-                          <a class="thumbnail margin-0" href="javascript:void(0)">
-                            <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
-                            />
-                          </a>
-                        </li>
-                        <li>
-                          <a class="thumbnail margin-0" href="javascript:void(0)">
-                            <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
-                            />
-                          </a>
-                        </li>
-                        <li>
-                          <a class="thumbnail margin-0" href="javascript:void(0)">
-                            <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
-                            />
-                          </a>
-                        </li>
-                        <li>
-                          <a class="thumbnail margin-0" href="javascript:void(0)">
-                            <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
-                            />
-                          </a>
-                        </li>
-                        <li>
-                          <a class="thumbnail margin-0" href="javascript:void(0)">
-                            <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
-                            />
-                          </a>
-                        </li>
-                        <li>
-                          <a class="thumbnail margin-0" href="javascript:void(0)">
-                            <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
-                            />
-                          </a>
-                        </li>
-                      </ul>
-                    </div> {% endcomment %}
-
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
-        <!-- End Navbar Toolbar -->
-        <!-- Navbar Toolbar Right -->
-        <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
-          <li class="dropdown">
-            <a data-toggle="dropdown" href="javascript:void(0)" title="Notifications" aria-expanded="false"
-            data-animation="scale-up" role="button">
-              <i class="icon md-notifications" aria-hidden="true"></i>
-              <span class="badge badge-danger up">5</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-menu-media" role="menu">
-              <li class="dropdown-menu-header" role="presentation">
-                <h5>Notifications</h5>
-                <span class="label label-round label-danger">New 5</span>
-              </li>
-              <li class="list-group" role="presentation">
-                <div data-role="container">
-                  <div data-role="content">
-                    <a class="list-group-item" href="#" target="_blank" role="menuitem">
-                      <div class="media">
-                        <div class="media-left padding-right-10">
-                          <i class="icon md-receipt bg-red-600 white icon-circle" aria-hidden="true"></i>
-                        </div>
-                        <div class="media-body">
-                          <h6 class="media-heading">update released</h6>
-                          <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">5 hours ago</time>
-                        </div>
-                      </div>
-                    </a>
-                    <a class="list-group-item" href="#" target="_blank" role="menuitem">
-                      <div class="media">
-                        <div class="media-left padding-right-10">
-                          <i class="icon md-account bg-green-600 white icon-circle" aria-hidden="true"></i>
-                        </div>
-                        <div class="media-body">
-                          <h6 class="media-heading">Completed the task</h6>
-                          <time class="media-meta" datetime="2015-06-11T18:29:20+08:00">2 days ago</time>
-                        </div>
-                      </div>
-                    </a>
-                    <a class="list-group-item" href="#" target="_blank" role="menuitem">
-                      <div class="media">
-                        <div class="media-left padding-right-10">
-                          <i class="icon md-settings bg-red-600 white icon-circle" aria-hidden="true"></i>
-                        </div>
-                        <div class="media-body">
-                          <h6 class="media-heading">Settings updated</h6>
-                          <time class="media-meta" datetime="2015-06-11T14:05:00+08:00">2 days ago</time>
-                        </div>
-                      </div>
-                    </a>
-                    <a class="list-group-item" href="#" target="_blank" role="menuitem">
-                      <div class="media">
-                        <div class="media-left padding-right-10">
-                          <i class="icon md-calendar bg-blue-600 white icon-circle" aria-hidden="true"></i>
-                        </div>
-                        <div class="media-body">
-                          <h6 class="media-heading">Event started</h6>
-                          <time class="media-meta" datetime="2015-06-10T13:50:18+08:00">3 days ago</time>
-                        </div>
-                      </div>
-                    </a>
-                    <a class="list-group-item" href="#" target="_blank" role="menuitem">
-                      <div class="media">
-                        <div class="media-left padding-right-10">
-                          <i class="icon md-comment bg-orange-600 white icon-circle" aria-hidden="true"></i>
-                        </div>
-                        <div class="media-body">
-                          <h6 class="media-heading">Message received</h6>
-                          <time class="media-meta" datetime="2015-06-10T12:34:48+08:00">3 days ago</time>
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </li>
-              <li class="dropdown-menu-footer" role="presentation">
-                <a class="dropdown-menu-footer-btn" href="javascript:void(0)" role="button">
-                  <i class="icon md-settings" aria-hidden="true"></i>
-                </a>
-                <a href="javascript:void(0)" role="menuitem">
-                    All Notifications
-                  </a>
-              </li>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a class="navbar-avatar dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"
-            data-animation="scale-up" role="button">
-              <span class="avatar avatar-online">
-                <img src="{% static 'adminpanel_userside/images/5.jpg' %}" alt="...">
-                <i></i>
-              </span>
-            </a>
-            <ul class="dropdown-menu" role="menu">
-              <li role="presentation">
-                <a href="javascript:void(0)" role="menuitem"><i class="icon md-account" aria-hidden="true"></i> Profile</a>
-              </li>
-              <li role="presentation">
-                <a href="javascript:void(0)" role="menuitem"><i class="icon md-card" aria-hidden="true"></i> Billing</a>
-              </li>
-              <li role="presentation">
-                <a href="javascript:void(0)" role="menuitem"><i class="icon md-settings" aria-hidden="true"></i> Settings</a>
-              </li>
-              <li class="divider" role="presentation"></li>
-              <li role="presentation">
-                <a href="javascript:void(0)" role="menuitem"><i class="icon md-power" aria-hidden="true"></i> Exit</a>
-              </li>
-            </ul>
-          </li>
-
-        </ul>
-        <!-- End Navbar Toolbar Right -->
-      </div>
-      <!-- End Navbar Collapse -->
-      <!-- Site Navbar Seach -->
-      <div class="collapse navbar-search-overlap" id="site-navbar-search">
-        <form role="search">
-          <div class="form-group">
-            <div class="input-search">
-              <i class="input-search-icon md-search" aria-hidden="true"></i>
-              <input type="text" class="form-control" name="site-search" placeholder="...">
-              <button type="button" class="input-search-close icon md-close" data-target="#site-navbar-search"
-              data-toggle="collapse" aria-label="Закрыть"></button>
-            </div>
-          </div>
-        </form>
-      </div>
-      <!-- End Site Navbar Seach -->
-    </div>
-  </nav>
-  <div class="site-menubar">
-    <div class="site-menubar-body">
-      <div>
-        <div>
-          <ul class="site-menu">
-            <li class="site-menu-category"></li>
-            <li class="dropdown site-menu-item has-sub">
-              <a class="dropdown-toggle" href="javascript:void(0)" data-dropdown-toggle="false">
-                <i class="site-menu-icon md-case-check" aria-hidden="true"></i>
-                <span class="site-menu-title">Job seeking</span>
-                <span class="site-menu-arrow"></span>
-              </a>
-              <div class="dropdown-menu">
-                <div class="site-menu-scroll-wrap is-list">
-                  <div>
-                    <div>
-                      <ul class="site-menu-sub site-menu-normal-list">
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="grids.html">
-                            <span class="site-menu-title">Vacancies from boards</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="layout-grid.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Vacancies From agencies</span>
-                            
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="headers.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Job boards</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="panel-transition.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Companies boards</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="wide.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>People</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="two-columns.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Communities</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="bordered-header.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Events</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="bordered-header.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Mail incomes</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li class="dropdown site-menu-item has-sub">
-              <a class="dropdown-toggle" href="javascript:void(0)" data-dropdown-toggle="false">
-                <i class="site-menu-icon md-case-download" aria-hidden="true"></i>
-                <span class="site-menu-title">Training</span>
-                <span class="site-menu-arrow"></span>
-              </a>
-              <div class="dropdown-menu">
-                <div class="site-menu-scroll-wrap is-list">
-                  <div>
-                    <div>
-                      <ul class="site-menu-sub site-menu-normal-list">
-
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="faq.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>AI live interview practice</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="gallery.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Video library</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="gallery-grid.html">
-                            <span class="site-menu-title">
-                              Companies 
-                            </span>
-                            
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="search-result.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Have a speed run</span>
-                          </a>
-                        </li>
-
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="maintenance.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Relocation tool</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="forgot-password.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>AI Coach tool</span>
-                          </a>
-                        </li>
-
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li class="dropdown site-menu-item has-sub">
-              <a class="dropdown-toggle" href="javascript:void(0)" data-dropdown-toggle="false">
-                <i class="site-menu-icon md-code-setting" aria-hidden="true"></i>
-                <span class="site-menu-title">Education</span>
-                <span class="site-menu-arrow"></span>
-              </a>
-              <div class="dropdown-menu">
-                <div class="site-menu-scroll-wrap is-list">
-                  <div>
-                    <div>
-                      <ul class="site-menu-sub site-menu-normal-list">
-
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="faq.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Education control</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="gallery.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Fast education</span>
-                          </a>
-                        </li>
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="gallery-grid.html">
-                            <span class="site-menu-title">
-                              <i class="site-menu-icon md-minus-circle" ></i>Fast practice
-                            </span>
-                          </a>
-                        </li>
-                     
-                        <li class="site-menu-item">
-                          <a class="animsition-link" href="forgot-password.html">
-                            <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>AI education tool</span>
-                          </a>
-                        </li>
-
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
-
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+    {% include "adminpanel_userside/navigation.html" %}
   <!-- Page -->
   <div class="page animsition">
     <div class="page-content container-fluid">
-      <div class="row" data-plugin="matchHeight" data-by-row="true">
-        <div class="col-lg-3 col-sm-6">
-          <!-- Widget Linearea One-->
-          <div class="widget widget-shadow" id="widgetLineareaOne">
-            <div class="widget-content">
-              <div class="padding-20 padding-top-10">
-                <div class="clearfix">
-                  <div class="grey-800 pull-left padding-vertical-10">
-                    <i class="icon md-account grey-600 font-size-24 vertical-align-bottom margin-right-5"></i>                    User
-                  </div>
-                  <span class="pull-right grey-700 font-size-30">1,253</span>
-                </div>
-                <div class="margin-bottom-20 grey-500">
-                  <i class="icon md-long-arrow-up green-500 font-size-16"></i>                  15% From this yesterday
-                </div>
-                <div class="ct-chart height-50"></div>
-              </div>
-            </div>
-          </div>
-          <!-- End Widget Linearea One -->
-        </div>
-        <div class="col-lg-3 col-sm-6">
-          <!-- Widget Linearea Two -->
-          <div class="widget widget-shadow" id="widgetLineareaTwo">
-            <div class="widget-content">
-              <div class="padding-20 padding-top-10">
-                <div class="clearfix">
-                  <div class="grey-800 pull-left padding-vertical-10">
-                    <i class="icon md-flash grey-600 font-size-24 vertical-align-bottom margin-right-5"></i>                    VISITS
-                  </div>
-                  <span class="pull-right grey-700 font-size-30">2,425</span>
-                </div>
-                <div class="margin-bottom-20 grey-500">
-                  <i class="icon md-long-arrow-up green-500 font-size-16"></i>                  34.2% From this week
-                </div>
-                <div class="ct-chart height-50"></div>
-              </div>
-            </div>
-          </div>
-          <!-- End Widget Linearea Two -->
-        </div>
-        <div class="col-lg-3 col-sm-6">
-          <!-- Widget Linearea Three -->
-          <div class="widget widget-shadow" id="widgetLineareaThree">
-            <div class="widget-content">
-              <div class="padding-20 padding-top-10">
-                <div class="clearfix">
-                  <div class="grey-800 pull-left padding-vertical-10">
-                    <i class="icon md-chart grey-600 font-size-24 vertical-align-bottom margin-right-5"></i>                    Total Clicks
-                  </div>
-                  <span class="pull-right grey-700 font-size-30">1,864</span>
-                </div>
-                <div class="margin-bottom-20 grey-500">
-                  <i class="icon md-long-arrow-down red-500 font-size-16"></i>                  15% From this yesterday
-                </div>
-                <div class="ct-chart height-50"></div>
-              </div>
-            </div>
-          </div>
-          <!-- End Widget Linearea Three -->
-        </div>
-        <div class="col-lg-3 col-sm-6">
-          <!-- Widget Linearea Four -->
-          <div class="widget widget-shadow" id="widgetLineareaFour">
-            <div class="widget-content">
-              <div class="padding-20 padding-top-10">
-                <div class="clearfix">
-                  <div class="grey-800 pull-left padding-vertical-10">
-                    <i class="icon md-view-list grey-600 font-size-24 vertical-align-bottom margin-right-5"></i>                    Items
-                  </div>
-                  <span class="pull-right grey-700 font-size-30">845</span>
-                </div>
-                <div class="margin-bottom-20 grey-500">
-                  <i class="icon md-long-arrow-up green-500 font-size-16"></i>                  18.4% From this yesterday
-                </div>
-                <div class="ct-chart height-50"></div>
-              </div>
-            </div>
-          </div>
-          <!-- End Widget Linearea Four -->
-        </div>
-        <div class="clearfix"></div>
-        <div class="col-xlg-7 col-md-7">
-          <!-- Widget Jvmap -->
-          <div class="widget widget-shadow">
-            <div class="widget-content">
-              <div id="widgetJvmap" class="height-450"></div>
-            </div>
-          </div>
-          <!-- End Widget Jvmap -->
-        </div>
-        <div class="col-xlg-5 col-md-5">
-          <!-- Widget Current Chart -->
-          <div class="widget widget-shadow" id="widgetCurrentChart">
-            <div class="padding-30 white bg-green-500">
-              <div class="font-size-20 margin-bottom-20">The current chart</div>
-              <div class="ct-chart height-200">
-              </div>
-            </div>
-            <div class="bg-white padding-30 font-size-14">
-              <div class="counter counter-lg text-left">
-                <div class="counter-label margin-bottom-5">Approve rate are above average</div>
-                <div class="counter-number-group">
-                  <span class="counter-number">12,673</span>
-                  <span class="counter-number-related text-uppercase font-size-14">pcs</span>
-                </div>
-              </div>
-              <button type="button" class="btn-raised btn btn-info btn-floating">
-                <i class="icon md-plus" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-          <!-- End Widget Current Chart -->
-        </div>
-
-
-
-
-
-      </div>
+            {% block content %} {% endblock %}
     </div>
   </div>
   <!-- End Page -->
@@ -643,6 +79,7 @@
   <script src="{% static 'adminpanel_userside/vendor/asscrollable/jquery.asScrollable.all.js' %}"></script>
   <script src="{% static 'adminpanel_userside/vendor/ashoverscroll/jquery-asHoverScroll.js' %}"></script>
   <script src="{% static 'adminpanel_userside/vendor/waves/waves.js' %}"></script>
+
   <!-- Plugins -->
   <script src="{% static 'adminpanel_userside/vendor/switchery/switchery.min.js' %}"></script>
   <script src="{% static 'adminpanel_userside/vendor/intro-js/intro.js' %}"></script>
@@ -657,7 +94,20 @@
   <script src="{% static 'adminpanel_userside/vendor/jvectormap/maps/jquery-jvectormap-world-mill-en.js' %}"></script>
   <script src="{% static 'adminpanel_userside/vendor/matchheight/jquery.matchHeight-min.js' %}"></script>
   <script src="{% static 'adminpanel_userside/vendor/peity/jquery.peity.min.js' %}"></script>
+  <script src="{% static 'adminpanel_userside/vendor/footable/footable.all.min.js' %}"></script>
+
   <!-- Scripts -->
+
+
+
+  {% comment %} <script src="{% static 'adminpanel_userside/js/tables/jsgrid-db.js' %}"></script>  для создания таблицы {% endcomment %}
+  {% comment %} <script src="{% static 'adminpanel_userside/js/tables/jsgrid.js' %}"></script>  для создания таблицы {% endcomment %}
+
+  <script src="{% static 'adminpanel_userside/js/components/matchheight.js' %}"></script> {% comment %}  для выравнивания высоты блоков {% endcomment %}
+  <script src="{% static 'adminpanel_userside/js/components/jvectormap.js' %}"></script> {% comment %}  для создания интерактивных векторных карт.{% endcomment %}
+  <script src="{% static 'adminpanel_userside/js/components/peity.js' %}"></script>   {% comment %} для создания простых и легких графиков {% endcomment %}
+  <script src="{% static 'adminpanel_userside/js/dashboard/v1.js' %}"></script>
+
   <script src="{% static 'adminpanel_userside/js/core.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/site.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/sections/menu.js' %}"></script>
@@ -670,12 +120,9 @@
   <script src="{% static 'adminpanel_userside/js/components/slidepanel.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/components/switchery.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/components/tabs.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/tables/jsgrid-db.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/tables/jsgrid.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/appwork.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/components/matchheight.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/components/jvectormap.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/components/peity.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/dashboard/v1.js' %}"></script>
+  <script src="{% static 'adminpanel_userside/js/tables/footable.js' %}"></script>
+
+  {% comment %} <script src="{% static 'adminpanel_userside/js/tables/appwork_jsgrid.js' %}"></script>
+  <script src="{% static 'adminpanel_userside/js/tables/newfield_job_title_jsgrid.js' %}"></script> {% endcomment %}
 </body>
 </html>

@@ -9,3 +9,10 @@ def control_panel_main_f(request):
         'content': 'Admin Panel'
     }
     return render(request, 'adminpanel_userside/control_panel_main.html', context)
+
+def vacancies_from_boards(request):
+    context = {
+        'title': 'vacancies_from_boards',
+        'content': 'Admin Panel'
+    }
+    return render(request, 'adminpanel_userside/vfromjboard.html', context)

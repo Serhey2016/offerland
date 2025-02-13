@@ -1,0 +1,452 @@
+{% load static %}
+
+<nav class="site-navbar navbar navbar-inverse navbar-fixed-top navbar-mega navbar-inverse"
+role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle hamburger hamburger-close navbar-toggle-left hided"
+    data-toggle="menubar">
+      <span class="sr-only">Переключить Навигацию</span>
+      <span class="hamburger-bar"></span>
+    </button>
+    <button type="button" class="navbar-toggle collapsed" data-target="#site-navbar-collapse"
+    data-toggle="collapse">
+      <i class="icon md-more" aria-hidden="true"></i>
+    </button>
+    <a class="navbar-brand navbar-brand-center" href="{% url 'adminpanel_userside:control_panel_main_f' %}">
+      <img class="navbar-brand-logo navbar-brand-logo-normal" src="{% static 'adminpanel_userside/images/logo.png' %}"
+      title="Material">
+      <img class="navbar-brand-logo navbar-brand-logo-special" src="{% static 'adminpanel_userside/images/logo-blue.png' %}"
+      title="Material">
+      <span class="navbar-brand-text hidden-xs"> Material</span>
+    </a>
+    <button type="button" class="navbar-toggle collapsed" data-target="#site-navbar-search"
+    data-toggle="collapse">
+      <span class="sr-only">Переключить Поиск</span>
+      <i class="icon md-search" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="navbar-container container-fluid">
+    <!-- Navbar Collapse -->
+    <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
+      <!-- Navbar Toolbar -->
+      <ul class="nav navbar-toolbar">
+        <li class="hidden-float" id="toggleMenubar">
+          <a data-toggle="menubar" href="#" role="button">
+            <i class="icon hamburger hamburger-arrow-left">
+                <span class="sr-only">Переключить Менюбар</span>
+                <span class="hamburger-bar"></span>
+              </i>
+          </a>
+        </li>
+        <li class="hidden-xs" id="toggleFullscreen">
+          <a class="icon icon-fullscreen" data-toggle="fullscreen" href="#" role="button">
+            <span class="sr-only">Переключить Полный экран</span>
+          </a>
+        </li>
+        <li class="hidden-float">
+          <a class="icon md-search" data-toggle="collapse" href="#" data-target="#site-navbar-search"
+          role="button">
+            <span class="sr-only">Переключить Поиск</span>
+          </a>
+        </li>
+        <li class="dropdown dropdown-fw dropdown-mega">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"
+          data-animation="fade" role="button">Offerland<i class="icon md-chevron-down" aria-hidden="true"></i></a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="presentation">
+              <div class="mega-content">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <h5>Offerland</h5>
+                    <ul class="blocks-2">
+                      <li class="mega-menu margin-0">
+                        <ul class="list-icons">
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="animation.html">About us</a>
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="buttons.html">Articles</a>
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="colors.html">Cases(Success and fails)</a>
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="dropdowns.html">Companies</a>
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="icons.html">The intricacies of job search</a>
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="lightbox.html">The intricacies of interviewing</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="mega-menu margin-0">
+                        <ul class="list-icons">
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="modals.html">Browse Jobs</a><a href="#"> <i class="md-bookmark" aria-hidden="true"></i> </a>  
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="panel-structure.html">Companies</a> <a href="#"> <i class="md-bookmark" aria-hidden="true"></i> </a> <a href="#"> <i class="md-favorite" aria-hidden="true"></i> </a>
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="overlay.html">Chrome extentions</a>
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="tooltip-popover.html ">Resume and cover letter tools</a>
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="scrollable.html">Community</a>
+                          </li>
+                          <li><i class="md-chevron-right" aria-hidden="true"></i>
+                            <a href="typography.html">Job coach mentoring</a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                  {% comment %} <div class="col-sm-4">
+                    <h5>Медиа
+                      <span class="badge badge-success">4</span>
+                    </h5>
+                    <ul class="blocks-3">
+                      <li>
+                        <a class="thumbnail margin-0" href="javascript:void(0)">
+                          <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
+                          />
+                        </a>
+                      </li>
+                      <li>
+                        <a class="thumbnail margin-0" href="javascript:void(0)">
+                          <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
+                          />
+                        </a>
+                      </li>
+                      <li>
+                        <a class="thumbnail margin-0" href="javascript:void(0)">
+                          <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
+                          />
+                        </a>
+                      </li>
+                      <li>
+                        <a class="thumbnail margin-0" href="javascript:void(0)">
+                          <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
+                          />
+                        </a>
+                      </li>
+                      <li>
+                        <a class="thumbnail margin-0" href="javascript:void(0)">
+                          <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
+                          />
+                        </a>
+                      </li>
+                      <li>
+                        <a class="thumbnail margin-0" href="javascript:void(0)">
+                          <img class="width-full" src="{% static 'adminpanel_userside/images/placeholder.png' %}" alt="..."
+                          />
+                        </a>
+                      </li>
+                    </ul>
+                  </div> {% endcomment %}
+
+                </div>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <!-- End Navbar Toolbar -->
+      <!-- Navbar Toolbar Right -->
+      <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
+        <li class="dropdown">
+          <a data-toggle="dropdown" href="javascript:void(0)" title="Notifications" aria-expanded="false"
+          data-animation="scale-up" role="button">
+            <i class="icon md-notifications" aria-hidden="true"></i>
+            <span class="badge badge-danger up">5</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-right dropdown-menu-media" role="menu">
+            <li class="dropdown-menu-header" role="presentation">
+              <h5>Notifications</h5>
+              <span class="label label-round label-danger">New 5</span>
+            </li>
+            <li class="list-group" role="presentation">
+              <div data-role="container">
+                <div data-role="content">
+                  <a class="list-group-item" href="#" target="_blank" role="menuitem">
+                    <div class="media">
+                      <div class="media-left padding-right-10">
+                        <i class="icon md-receipt bg-red-600 white icon-circle" aria-hidden="true"></i>
+                      </div>
+                      <div class="media-body">
+                        <h6 class="media-heading">update released</h6>
+                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">5 hours ago</time>
+                      </div>
+                    </div>
+                  </a>
+                  <a class="list-group-item" href="#" target="_blank" role="menuitem">
+                    <div class="media">
+                      <div class="media-left padding-right-10">
+                        <i class="icon md-account bg-green-600 white icon-circle" aria-hidden="true"></i>
+                      </div>
+                      <div class="media-body">
+                        <h6 class="media-heading">Completed the task</h6>
+                        <time class="media-meta" datetime="2015-06-11T18:29:20+08:00">2 days ago</time>
+                      </div>
+                    </div>
+                  </a>
+                  <a class="list-group-item" href="#" target="_blank" role="menuitem">
+                    <div class="media">
+                      <div class="media-left padding-right-10">
+                        <i class="icon md-settings bg-red-600 white icon-circle" aria-hidden="true"></i>
+                      </div>
+                      <div class="media-body">
+                        <h6 class="media-heading">Settings updated</h6>
+                        <time class="media-meta" datetime="2015-06-11T14:05:00+08:00">2 days ago</time>
+                      </div>
+                    </div>
+                  </a>
+                  <a class="list-group-item" href="#" target="_blank" role="menuitem">
+                    <div class="media">
+                      <div class="media-left padding-right-10">
+                        <i class="icon md-calendar bg-blue-600 white icon-circle" aria-hidden="true"></i>
+                      </div>
+                      <div class="media-body">
+                        <h6 class="media-heading">Event started</h6>
+                        <time class="media-meta" datetime="2015-06-10T13:50:18+08:00">3 days ago</time>
+                      </div>
+                    </div>
+                  </a>
+                  <a class="list-group-item" href="#" target="_blank" role="menuitem">
+                    <div class="media">
+                      <div class="media-left padding-right-10">
+                        <i class="icon md-comment bg-orange-600 white icon-circle" aria-hidden="true"></i>
+                      </div>
+                      <div class="media-body">
+                        <h6 class="media-heading">Message received</h6>
+                        <time class="media-meta" datetime="2015-06-10T12:34:48+08:00">3 days ago</time>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li class="dropdown-menu-footer" role="presentation">
+              <a class="dropdown-menu-footer-btn" href="javascript:void(0)" role="button">
+                <i class="icon md-settings" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0)" role="menuitem">
+                  All Notifications
+                </a>
+            </li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a class="navbar-avatar dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"
+          data-animation="scale-up" role="button">
+            <span class="avatar avatar-online">
+              <img src="{% static 'adminpanel_userside/images/5.jpg' %}" alt="...">
+              <i></i>
+            </span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="presentation">
+              <a href="javascript:void(0)" role="menuitem"><i class="icon md-account" aria-hidden="true"></i> Profile</a>
+            </li>
+            <li role="presentation">
+              <a href="javascript:void(0)" role="menuitem"><i class="icon md-card" aria-hidden="true"></i> Billing</a>
+            </li>
+            <li role="presentation">
+              <a href="javascript:void(0)" role="menuitem"><i class="icon md-settings" aria-hidden="true"></i> Settings</a>
+            </li>
+            <li class="divider" role="presentation"></li>
+            <li role="presentation">
+              <a href="javascript:void(0)" role="menuitem"><i class="icon md-power" aria-hidden="true"></i> Exit</a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+      <!-- End Navbar Toolbar Right -->
+    </div>
+    <!-- End Navbar Collapse -->
+    <!-- Site Navbar Seach -->
+    <div class="collapse navbar-search-overlap" id="site-navbar-search">
+      <form role="search">
+        <div class="form-group">
+          <div class="input-search">
+            <i class="input-search-icon md-search" aria-hidden="true"></i>
+            <input type="text" class="form-control" name="site-search" placeholder="...">
+            <button type="button" class="input-search-close icon md-close" data-target="#site-navbar-search"
+            data-toggle="collapse" aria-label="Закрыть"></button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- End Site Navbar Seach -->
+  </div>
+</nav>
+<div class="site-menubar">
+  <div class="site-menubar-body">
+    <div>
+      <div>
+        <ul class="site-menu">
+          <li class="site-menu-category"></li>
+          <li class="dropdown site-menu-item has-sub">
+            <a class="dropdown-toggle" href="javascript:void(0)" data-dropdown-toggle="false">
+              <i class="site-menu-icon md-case-check" aria-hidden="true"></i>
+              <span class="site-menu-title">Job seeking</span>
+              <span class="site-menu-arrow"></span>
+            </a>
+            <div class="dropdown-menu">
+              <div class="site-menu-scroll-wrap is-list">
+                <div>
+                  <div>
+                    <ul class="site-menu-sub site-menu-normal-list">
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="{% url 'adminpanel_userside:vacancies_from_boards' %}">
+                          <span class="site-menu-title">Vacancies from boards</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Vacancies From agencies</span>
+                          
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Job boards</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Companies boards</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>People</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Communities</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Events</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Mail incomes</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="dropdown site-menu-item has-sub">
+            <a class="dropdown-toggle" href="javascript:void(0)" data-dropdown-toggle="false">
+              <i class="site-menu-icon md-case-download" aria-hidden="true"></i>
+              <span class="site-menu-title">Training</span>
+              <span class="site-menu-arrow"></span>
+            </a>
+            <div class="dropdown-menu">
+              <div class="site-menu-scroll-wrap is-list">
+                <div>
+                  <div>
+                    <ul class="site-menu-sub site-menu-normal-list">
+
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>AI live interview practice</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Video library</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title">
+                            Companies 
+                          </span>
+                          
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Have a speed run</span>
+                        </a>
+                      </li>
+
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Relocation tool</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>AI Coach tool</span>
+                        </a>
+                      </li>
+
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="dropdown site-menu-item has-sub">
+            <a class="dropdown-toggle" href="javascript:void(0)" data-dropdown-toggle="false">
+              <i class="site-menu-icon md-code-setting" aria-hidden="true"></i>
+              <span class="site-menu-title">Education</span>
+              <span class="site-menu-arrow"></span>
+            </a>
+            <div class="dropdown-menu">
+              <div class="site-menu-scroll-wrap is-list">
+                <div>
+                  <div>
+                    <ul class="site-menu-sub site-menu-normal-list">
+
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Education control</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>Fast education</span>
+                        </a>
+                      </li>
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title">
+                            <i class="site-menu-icon md-minus-circle" ></i>Fast practice
+                          </span>
+                        </a>
+                      </li>
+                   
+                      <li class="site-menu-item">
+                        <a class="animsition-link" href="#">
+                          <span class="site-menu-title"><i class="site-menu-icon md-minus-circle" ></i>AI education tool</span>
+                        </a>
+                      </li>
+
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

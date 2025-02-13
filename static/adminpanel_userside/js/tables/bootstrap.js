@@ -1,3 +1,6 @@
+// предназначен для настройки и инициализации таблиц 
+// с использованием библиотеки Bootstrap Table . 
+
 function cellStyle(value, row, index) {
   var classes = ['active', 'success', 'info', 'warning', 'danger'];
 
@@ -20,6 +23,7 @@ function rowStyle(row, index) {
   return {};
 }
 
+// Функция для сортировки значений (например, оценок).
 function scoreSorter(a, b) {
   if (a > b) return 1;
   if (a < b) return -1;

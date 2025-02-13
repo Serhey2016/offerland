@@ -117,3 +117,7 @@
   })();
 
 })(document, window, jQuery);
+
+
+
+console.log('JavaScript footable js загружен!');

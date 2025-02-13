@@ -1,4 +1,12 @@
+
+
+
 $(function () {
+    
+    
+    
+    
+    
     let maxNumber = 0; // Хранение текущего максимального номера
 
     $("#jsGrid").jsGrid({
@@ -21,6 +29,8 @@ $(function () {
             insertItem: function (item) {
                 maxNumber++; // Увеличиваем номер
                 item.Number = maxNumber; // Присваиваем следующий номер
+                // Обратите внимание, что для столбца "JobTitle" теперь ожидается объект вида:
+                // { LinkText: "Текст ссылки", LinkUrl: "https://адрес-ссылки" }
                 return item;
             },
             updateItem: function (item) {
@@ -50,9 +60,10 @@ $(function () {
                 width: 100
             },
             {
+                // Здесь используем наше кастомное поле
                 name: "JobTitle",
                 title: "Job Title",
-                type: "text",
+                type: "linkField", // наш новый тип поля
                 width: 150
             },
             {
@@ -108,14 +119,4 @@ $(function () {
             }
         ]
     });
-});
-
-
-$(function () {
-    $("#jsGrid").jsGrid({
-        // ваша конфигурация jsGrid
-    });
-
-    // Удаляем строку с "Not found", если она существует
-    $(".jsgrid-nodata-row").remove();
 });
