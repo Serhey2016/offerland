@@ -20,15 +20,12 @@
 
 
 </div> {% endcomment %}
-
 <div class="col-lg-12">
-  <!-- Panel Pagination -->
   <div class="panel">
     <header class="panel-heading">
       <h3 class="panel-title">Vacancies from boards</h3>
     </header>
     <div class="panel-body">
-
       <table class="table toggle-arrow-tiny" id="examplePagination" data-page-size="25">
         <thead>
           <tr>
@@ -36,34 +33,58 @@
             <th data-toggle="true">Job title</th>
             <th data-toggle="true">Company</th>
             <th data-toggle="true">Status</th>
-            <th data-toggle="true">interview</th>
+            <th data-toggle="true">Interview</th>
             <th data-toggle="true">Date</th>
-            <th ><i class="icon md-plus" style="font-size: 20px;"></i></th>
             <th data-hide="all">Dijital docs</th>
-            
             <th data-hide="all">Description</th>
-            <th data-hide="all">Status</th>
+            <th data-hide="all">Notes</th>
+            <th><i class="icon md-plus" style="font-size: 20px;"></i></th>
           </tr>
         </thead>
         <tbody>
+          {% for vacancy in vacancies %}
           <tr>
-            <td>1</td>
-            
-            <td><a href="https://www.reed.co.uk/jobs/junior-technical-support/54434157?source=signedinhome.recommendedjobs" target="_blank">lead java engeneer</a></td>
-            <td><a href="https://en.wikipedia.org/wiki/Apple_Inc." target="_blank">Apple</a></td>
-            <td>saved</td>
+            <td>{{ forloop.counter }}</td>
             <td>
-              <span class="label label-table label-success">screening</span>
+              {% if vacancy.job_title_link %}
+                <a href="{{ vacancy.job_title_link }}" target="_blank">{{ vacancy.job_title }}</a> <a href="#">
+                  <i class="icon md-edit toggle-icon" 
+                      style="font-size: 15px; cursor: pointer;" 
+                      data-toggle-icons
+                      data-id="{{ vacancy.id }}"
+                      data-job-title="{{ vacancy.job_title }}"
+                      data-job-title-link="{{ vacancy.job_title_link }}">
+                  </i>
+                </a> 
+              {% else %}
+                {{ vacancy.job_title }} <a href="#"><i class="icon md-edit toggle-icon" style="font-size: 15px;" data-toggle-icons></i></a> 
+              {% endif %}
             </td>
-            <td>2.11.2025</td>
+            <td>{{ vacancy.company }} <a href="#"><i class="icon md-edit toggle-icon" style="font-size: 15px;" data-toggle-icons></i></a> </td> 
+            <td>{{ vacancy.status }} <a href="#"><i class="icon md-edit toggle-icon" style="font-size: 15px;" data-toggle-icons></i></a> </td>
             <td>
-           
-              <i class="icon md-edit" style="font-size: 20px;"></i>
-              <i class="icon md-delete" style="font-size: 20px;"></i></td>
-            <td>email, CV, Cover letter</td>
-            <td><a href="#"> look description </a></td>
+              {% for stage in vacancy.interview.all %}
+                <span class="label label-table label-success">{{ stage }}</span> <br>
+              {% endfor %} <a href="#"><i class="icon md-edit toggle-icon" style="font-size: 15px;" data-toggle-icons></i></a> 
+            </td>
+            <td>{{ vacancy.date }} <a href="#"><i class="icon md-edit toggle-icon" style="font-size: 15px;" data-toggle-icons></i></a> </td>
+            <td>
+              <a href="#" class="editable-popup" data-title="Email" data-content="{{ vacancy.email|default:'No data' }}">Email</a>, 
+              <a href="#" class="editable-popup" data-title="CV" data-content="{{ vacancy.cv_text|default:'No data' }}">CV</a>, 
+              <a href="#" class="editable-popup" data-title="Cover Letter" data-content="{{ vacancy.cover_letter|default:'No data' }}">Cover Letter</a>
+            </td>
+            <td>
+              <a href="#" class="editable-popup" data-title="Description" data-content="{{ vacancy.vacancy_description|default:'No data' }}">Look Description</a>
+            </td>
+            <td>
+              <a href="#" class="editable-popup" data-title="Notes" data-content="{{ vacancy.notes|default:'No data' }}">Look Notes</a>
+            </td>
+            <td>
+              <i id="toggleEditIcons" class="icon md-edit" style="font-size: 20px; cursor: pointer;"></i></i> &nbsp;
+              <i class="icon md-delete" style="font-size: 20px;"></i>
+            </td>
           </tr>
-
+          {% endfor %}
         </tbody>
         <tfoot>
           <tr>
@@ -75,9 +96,31 @@
           </tr>
         </tfoot>
       </table>
+                  <div id="editPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
+                    <h4>Edit Job Title</h4>
+                    <form id="editForm">
+                      <input type="hidden" id="editId" name="id">
+                      <div>
+                        <label for="editJobTitle">Job Title:</label>
+                        <input type="text" id="editJobTitle" name="job_title" required>
+                      </div>
+                      <div>
+                        <label for="editJobTitleLink">Job Title Link:</label>
+                        <input type="url" id="editJobTitleLink" name="job_title_link">
+                      </div>
+                      <button type="submit">Save</button>
+                      <button type="button" id="closePopup">Cancel</button>
+                    </form>
+                  </div>
+                  <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;">
+                  </div>
     </div>
   </div>
-  <!-- End Panel Pagination -->
 </div>
 
+
+
+
+
 {% endblock %}
+

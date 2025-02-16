@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
   <meta name="description" content="bootstrap admin template">
   <meta name="author" content="">
-  <title>{{ title }}</title>
+  <title>{% block title %}{% endblock %}</title>
   <link rel="apple-touch-icon" href="{% static 'adminpanel_userside/images/apple-touch-icon.png' %}">
   <link rel="shortcut icon" href="{% static 'adminpanel_userside/images/favicon.ico' %}"> 
   <!-- Stylesheets -->
@@ -39,6 +39,9 @@
    <link rel="stylesheet" href="{% static 'adminpanel_userside/css/dashboard/v1.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
    <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/footable/footable.min.css' %}">
    <link rel="stylesheet" href="{% static 'adminpanel_userside/css/site.css' %}">   {% comment %} Основной стиль страницы base {% endcomment %}
+   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/login.css' %}">
+   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/pages/login-v3.css' %}">
+   
   <!--[if lt IE 9]>
     <script src="{% static 'adminpanel_userside/vendor/html5shiv/html5shiv.min.js' %}"></script>
     <![endif]-->
@@ -53,25 +56,16 @@
   Breakpoints();
   </script>
 </head>
-<body class="site-navbar-small dashboard layout-boxed">
+<body class="page-login-v3 layout-full">
   <!--[if lt IE 8]>
-        <p class="browserupgrade">Вы You are using <strong>outdated</strong> браузер. Renew your browser.</p>
+        <p class="browserupgrade">Вы используюте <strong>устаревший</strong> браузер. Обновите <a href="http://browsehappy.com/">Ваш браузер</a> для лучшей работы сайта.</p>
     <![endif]-->
-    {% include "adminpanel_userside/navigation.html" %}
   <!-- Page -->
-  <div class="page animsition">
-    <div class="page-content container-fluid">
-            {% block content %} {% endblock %}
-    </div>
-  </div>
-  <!-- End Page -->
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="site-footer-legal">© 2025 <a href="#" target="_blank">Offerland_</a></div>
-    <div class="site-footer-right">
-      All best <i class="red-600 icon md-favorite"></i> 
-    </div>
-  </footer>
+  
+  {% block content %} {% endblock %}
+
+
+
   <!-- Core  -->
   <script src="{% static 'adminpanel_userside/vendor/jquery/jquery.js' %}"></script>
   <script src="{% static 'adminpanel_userside/vendor/bootstrap/bootstrap.js' %}"></script>
@@ -99,10 +93,20 @@
   <script src="{% static 'adminpanel_userside/vendor/footable/footable.all.min.js' %}"></script>
 
   <!-- Scripts -->
+
+
+
+  {% comment %} <script src="{% static 'adminpanel_userside/js/tables/jsgrid-db.js' %}"></script>  для создания таблицы {% endcomment %}
+  {% comment %} <script src="{% static 'adminpanel_userside/js/tables/jsgrid.js' %}"></script>  для создания таблицы {% endcomment %}
+
   <script src="{% static 'adminpanel_userside/js/components/matchheight.js' %}"></script> {% comment %}  для выравнивания высоты блоков {% endcomment %}
   <script src="{% static 'adminpanel_userside/js/components/jvectormap.js' %}"></script> {% comment %}  для создания интерактивных векторных карт.{% endcomment %}
   <script src="{% static 'adminpanel_userside/js/components/peity.js' %}"></script>   {% comment %} для создания простых и легких графиков {% endcomment %}
+  <script src="{% static 'adminpanel_userside/js/components/jquery-placeholder.js' %}"></script>
+  <script src="{% static 'adminpanel_userside/js/components/material.js' %}"></script>
+  
   <script src="{% static 'adminpanel_userside/js/dashboard/v1.js' %}"></script>
+
   <script src="{% static 'adminpanel_userside/js/core.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/site.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/sections/menu.js' %}"></script>
@@ -115,10 +119,20 @@
   <script src="{% static 'adminpanel_userside/js/components/slidepanel.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/components/switchery.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/components/tabs.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/tables/footable.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/bootstrap-editable.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/editablescript.js' %}"></script>
-  <script src="{% static 'adminpanel_userside/js/app.js' %}"></script>
 
+
+ 
+  <script src="{% static 'adminpanel_userside/vendor/jquery-placeholder/jquery.placeholder.js' %}"></script>
+
+
+  <script>
+  (function(document, window, $) {
+    'use strict';
+    var Site = window.Site;
+    $(document).ready(function() {
+      Site.run();
+    });
+  })(document, window, jQuery);
+  </script>
 </body>
 </html>
