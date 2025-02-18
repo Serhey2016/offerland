@@ -5,11 +5,12 @@ from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from .models import VacanciesFromBoards
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
-def toastr(request):
-    return render(request, 'adminpanel_userside/toastr.html')
 
 
+@login_required(login_url='adminpanel_userside:login')
 def control_panel_main_f(request):
     return render(request, 'adminpanel_userside/control_panel_main.html')
 
@@ -39,17 +40,57 @@ def update_vacancy(request):
             return JsonResponse({'success': False, 'error': 'Vacancy not found'})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
+# def login_view(request):
+#     if request.method == 'POST':
+#         email = request.POST.get('username')  # Поле из формы называется 'username', но содержит email
+#         password = request.POST.get('password')
+#         user = authenticate(request, email=email, password=password)  # Используем email
+#         if user is not None and user.is_active:
+#             login(request, user)
+#             return redirect('adminpanel_userside:control_panel_main_f')
+#         else:
+#             messages.error(request, 'Invalid email or password.')
+#     return render(request, 'adminpanel_userside/login_form.html')
+
+
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        email = request.POST.get('username')  # Поле из формы называется 'username', но содержит email
         password = request.POST.get('password')
-
-        # Проверка аутентификации пользователя
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)  # Авторизация пользователя
-            return redirect('adminpanel_userside:control_panel_main_f')  # Перенаправление на главную страницу
+        user = authenticate(request, email=email, password=password)  # Используем email
+        if user is not None and user.is_active:
+            login(request, user)
+            return redirect('adminpanel_userside:control_panel_main_f')
         else:
-            messages.error(request, 'Invalid username or password.')  # Сообщение об ошибке
-
+            messages.error(request, 'Invalid email or password.')
+    
+    # Отладка: проверка наличия сообщений
+   
     return render(request, 'adminpanel_userside/login_form.html')
+
+
+def register(request):
+    if request.method == 'POST':
+        username   = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name  = request.POST.get('last_name')
+        email      = request.POST.get('email')
+        password   = request.POST.get('password')
+        password_check = request.POST.get('PasswordCheck')
+
+        if password != password_check:
+            messages.error(request, "Пароли не совпадают.")
+        else:
+            User = get_user_model()
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Пользователь с таким username уже существует.")
+            elif User.objects.filter(email=email).exists():
+                messages.error(request, "Пользователь с таким email уже существует.")
+            else:
+                user = User.objects.create_user(username=username, email=email, password=password)
+                user.first_name = first_name
+                user.last_name = last_name
+                user.save()
+                messages.success(request, "Регистрация прошла успешно. Теперь вы можете авторизоваться.")
+                return redirect('adminpanel_userside:login')
+    return render(request, 'adminpanel_userside/register.html')

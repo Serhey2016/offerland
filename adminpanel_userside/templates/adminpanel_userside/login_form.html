@@ -4,11 +4,16 @@
 {% block title %}Login{% endblock %}
 
 {% block extra_styles %}
-    
+<link rel="stylesheet" href="{% static 'adminpanel_userside/css/pages/login-v3.css' %}">
 {% endblock %}
 
 {% block content %}
-
+<body class="page-login-v3 layout-full">
+  <!--[if lt IE 8]>
+        <p class="browserupgrade">Вы используюте <strong>устаревший</strong> браузер. Обновите <a href="http://browsehappy.com/">Ваш браузер</a> для лучшей работы сайта.</p>
+    <![endif]-->
+  <!-- Page -->
+{% comment %} adminpanel_userside/templates/adminpanel_userside/login_form.html {% endcomment %}
     <div class="page animsition vertical-align text-center" data-animsition-in="fade-in"
     data-animsition-out="fade-out">>
       <div class="page-content vertical-align-middle">
@@ -37,6 +42,15 @@
               </div>
               <button type="submit" class="btn btn-primary btn-block btn-lg margin-top-40">Sign in</button>
             </form>
+            {% if messages %}
+            <div class="messages">
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
             <div class="social">
               <a class="btn btn-icon btn-round social-twitter" href="javascript:void(0)">
                 <i class="icon bd-apple" aria-hidden="true"></i>
@@ -48,7 +62,7 @@
                 <i class="icon bd-google-plus" aria-hidden="true"></i>
               </a>
             </div>
-            <p class="login_no_account">Still no account? Please go to <a href="register-v3.html">Sign up</a></p>
+            <p class="login_no_account">Still no account? Please go to <a href="{% url 'adminpanel_userside:register' %}">Sign up</a></p>
           </div>
         </div>
 

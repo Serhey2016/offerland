@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/jsgrid/jsgrid.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/bootstrap-datepicker/bootstrap-datepicker.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/bootstrap-editable.css' %}"> 
- {% comment %}   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/tables/jsgrid.css' %}"> Нет изменений. Иследовать {% endcomment %}
+ 
 
   <!-- Fonts -->  
    <link rel="stylesheet" href="{% static 'adminpanel_userside/fonts/material-design/material-design.min.css' %}"> {% comment %} Иконки для base html - material design. {% endcomment %}
@@ -40,8 +40,8 @@
    <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/footable/footable.min.css' %}">
    <link rel="stylesheet" href="{% static 'adminpanel_userside/css/site.css' %}">   {% comment %} Основной стиль страницы base {% endcomment %}
    <link rel="stylesheet" href="{% static 'adminpanel_userside/css/login.css' %}">
-   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/pages/login-v3.css' %}">
    
+   {% block extra_styles %} {% endblock %}
   <!--[if lt IE 9]>
     <script src="{% static 'adminpanel_userside/vendor/html5shiv/html5shiv.min.js' %}"></script>
     <![endif]-->
@@ -56,11 +56,7 @@
   Breakpoints();
   </script>
 </head>
-<body class="page-login-v3 layout-full">
-  <!--[if lt IE 8]>
-        <p class="browserupgrade">Вы используюте <strong>устаревший</strong> браузер. Обновите <a href="http://browsehappy.com/">Ваш браузер</a> для лучшей работы сайта.</p>
-    <![endif]-->
-  <!-- Page -->
+
   
   {% block content %} {% endblock %}
 
@@ -120,7 +116,9 @@
   <script src="{% static 'adminpanel_userside/js/components/switchery.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/components/tabs.js' %}"></script>
 
-
+  {% block extra_jsstyles %}
+  
+  {% endblock %}
  
   <script src="{% static 'adminpanel_userside/vendor/jquery-placeholder/jquery.placeholder.js' %}"></script>
 
