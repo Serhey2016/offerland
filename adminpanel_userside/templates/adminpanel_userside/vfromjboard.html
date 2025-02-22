@@ -5,21 +5,7 @@
 {% comment %} http://localhost:8000/adminpanel_userside/vacancies_from_boards {% endcomment %}
 
 {% block content %}
-{% comment %} <div class="row">
 
-
-
-  <div class="clearfix"></div>
-
-  <div class="col-xlg-6">
-    <div id="jsGrid"></div>
-    <script src="{% static 'adminpanel_userside/js/app.js' %}"></script>
-  </div>
-  <div class="clearfix"></div>
-
-
-
-</div> {% endcomment %}
 <div class="col-lg-12">
   <div class="panel">
     <header class="panel-heading">
@@ -49,19 +35,41 @@
               {% if vacancy.job_title_link %}
                 <a href="{{ vacancy.job_title_link }}" target="_blank">{{ vacancy.job_title }}</a> <a href="#">
                   <i class="icon md-edit toggle-icon" 
+                  style="font-size: 15px; cursor: pointer;" 
+                  data-toggle-icons
+                  data-field="job_title"
+                  data-id="{{ vacancy.id }}"
+                  data-job-title="{{ vacancy.job_title }}"
+                  data-job-title-link="{{ vacancy.job_title_link }}">
+               </i>
+                </a> 
+              {% else %}
+                {{ vacancy.job_title }} 
+                  <a href="#">
+                    <i class="icon md-edit toggle-icon" 
                       style="font-size: 15px; cursor: pointer;" 
                       data-toggle-icons
+                      data-field="job_title"
                       data-id="{{ vacancy.id }}"
                       data-job-title="{{ vacancy.job_title }}"
                       data-job-title-link="{{ vacancy.job_title_link }}">
-                  </i>
-                </a> 
-              {% else %}
-                {{ vacancy.job_title }} <a href="#"><i class="icon md-edit toggle-icon" style="font-size: 15px;" data-toggle-icons></i></a> 
+                    </i>
+                  </a> 
               {% endif %}
             </td>
             <td>{{ vacancy.company }} <a href="#"><i class="icon md-edit toggle-icon" style="font-size: 15px;" data-toggle-icons></i></a> </td> 
-            <td>{{ vacancy.status }} <a href="#"><i class="icon md-edit toggle-icon" style="font-size: 15px;" data-toggle-icons></i></a> </td>
+            <td>{{ vacancy.status }} 
+              <a href="#">
+                <i class="icon md-edit toggle-icon" 
+                  style="font-size: 15px; cursor: pointer;" 
+                  data-toggle-icons
+                  data-field="status"
+                  data-id="{{ vacancy.id }}"
+                  data-status-id="{{ vacancy.status.id }}">
+               </i>
+              </a> 
+            
+            </td>
             <td>
               {% for stage in vacancy.interview.all %}
                 <span class="label label-table label-success">{{ stage }}</span> <br>
@@ -96,10 +104,12 @@
           </tr>
         </tfoot>
       </table>
-                  <div id="editPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
+                 {% comment %} popup для редактирования job_title {% endcomment %}
+                 <div id="editPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
                     <h4>Edit Job Title</h4>
                     <form id="editForm">
                       <input type="hidden" id="editId" name="id">
+                      <input type="hidden" name="field" value="job_title">
                       <div>
                         <label for="editJobTitle">Job Title:</label>
                         <input type="text" id="editJobTitle" name="job_title" required>
@@ -114,12 +124,59 @@
                   </div>
                   <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;">
                   </div>
+
+                  <div id="editPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
+                    <h4>Edit Vacancy</h4>
+                    <form id="editForm">
+                      <input type="hidden" id="editId" name="id">
+                      <div>
+                        <label for="editJobTitle">Job Title:</label>
+                        <input type="text" id="editJobTitle" name="job_title" required>
+                      </div>
+                      <div>
+                        <label for="editJobTitleLink">Job Title Link:</label>
+                        <input type="url" id="editJobTitleLink" name="job_title_link">
+                      </div>
+                      <!-- Новый блок для редактирования статуса -->
+                      <div>
+                        <label for="editStatus">Status:</label>
+                        <select id="editStatus" name="status">
+                           {% for status in statuses %}
+                             <option value="{{ status.id }}">{{ status.name }}</option>
+                           {% endfor %}
+                        </select>
+                      </div>
+                      <button type="submit">Save</button>
+                      <button type="button" id="closePopup">Cancel</button>
+                    </form>
+                  </div>
+                  
+                  {% comment %} Форма для редактирования статуса {% endcomment %}
+                  <div id="editStatusPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
+                    <h4>Edit Status</h4>
+                    <form id="editStatusForm">
+                      <input type="hidden" id="editStatusId" name="id">
+                      <input type="hidden" name="field" value="status">
+                      <div>
+                        <label for="editStatusSelect">Status:</label>
+                        <select id="editStatusSelect" name="status">
+                          {% for status in statuses %}
+                            <option value="{{ status.id }}">{{ status.name }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <button type="submit">Save</button>
+                      <button type="button" id="closeStatusPopup">Cancel</button>
+                    </form>
+                  </div>
     </div>
   </div>
 </div>
 
 
-
+<script>
+  const updateVacancyUrl = "{{ update_vacancy_url }}";
+</script>
 
 
 {% endblock %}

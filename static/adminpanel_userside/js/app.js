@@ -1,120 +1,5 @@
-(function(document, window, $) {
-  'use strict';
 
-  window.App = Site.extend({
-    handleSlidePanel: function() {
-      if (typeof $.slidePanel === 'undefined') return;
-
-      var defaults = $.components.getDefaults("slidePanel");
-      var options = $.extend({}, defaults, {
-        template: function(options) {
-          return '<div class="' + options.classes.base + ' ' + options.classes.base + '-' + options.direction + '">' +
-            '<div class="' + options.classes.base + '-scrollable"><div>' +
-            '<div class="' + options.classes.content + '"></div>' +
-            '</div></div>' +
-            '<div class="' + options.classes.base + '-handler"></div>' +
-            '</div>';
-        },
-        afterLoad: function() {
-          this.$panel.find('.' + this.options.classes.base + '-scrollable').asScrollable({
-            namespace: 'scrollable',
-            contentSelector: '>',
-            containerSelector: '>'
-          });
-        }
-      });
-
-      $(document).on('click', '[data-toggle=slidePanel]', function(e) {
-        $.slidePanel.show({
-          url: $(this).data('url'),
-          settings: {
-            cache: false
-          }
-        }, options);
-
-        e.stopPropagation();
-      });
-    },
-    handleMultiSelect: function() {
-      var $all = $('.select-all');
-
-      $(document).on('change', '.multi-select', function(e, isSelectAll) {
-        if (isSelectAll) return;
-
-        var $select = $('.multi-select'),
-          total = $select.length,
-          checked = $select.find('input:checked').length;
-        if (total === checked) {
-          $all.find('input').prop('checked', true);
-        } else {
-          $all.find('input').prop('checked', false);
-        }
-      });
-
-      $all.on('change', function() {
-        var checked = $(this).find('input').prop('checked');
-
-        $('.multi-select input').each(function() {
-          $(this).prop('checked', checked).trigger('change', [true]);
-        });
-
-      });
-    },
-
-    handleListActions: function() {
-      $(document).on('click', '[data-toggle="list-editable"]', function() {
-        var $btn = $(this),
-          $list = $btn.parents('.list-group-item'),
-          $content = $list.find('.list-content'),
-          $editable = $list.find('.list-editable');
-
-        $content.hide();
-        $editable.show();
-        $editable.find('input:first-child').focus().select();
-      });
-
-      $(document).on('keydown', '.list-editable [data-bind]', function(event) {
-        var keycode = (event.keyCode ? event.keyCode : event.which);
-
-        if (keycode == 13 || keycode == 27) {
-          var $input = $(this),
-            bind = $input.data('bind'),
-            $list = $input.parents('.list-group-item'),
-            $content = $list.find('.list-content'),
-            $editable = $list.find('.list-editable'),
-            $update = bind ? $list.find(bind) : $list.find('.list-text');
-
-          if (keycode == 13) {
-            $update.html($input.val());
-          } else {
-            $input.val($update.text());
-          }
-
-          $content.show();
-          $editable.hide();
-        }
-      });
-
-      $(document).on('click', '[data-toggle="list-editable-close"]', function() {
-        var $btn = $(this),
-          $list = $btn.parents('.list-group-item'),
-          $content = $list.find('.list-content'),
-          $editable = $list.find('.list-editable');
-
-        $content.show();
-        $editable.hide();
-      });
-    },
-
-    run: function(next) {
-      this.handleSlidePanel();
-      this.handleListActions();
-      next();
-    }
-  });
-})(document, window, jQuery);
-
-
+// Скрипт видимости иконок редактирования
 document.addEventListener('DOMContentLoaded', function () {
   const toggleButton = document.getElementById('toggleEditIcons');
   const editIcons = document.querySelectorAll('[data-toggle-icons]');
@@ -129,57 +14,174 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// Скрипт для отображения, редактирования полей в таблице
+// Скрипт для отображения, редактирования полей в таблице . Иконка карандаша
+
+// document.addEventListener('DOMContentLoaded', function () {
+//   const editIcons = document.querySelectorAll('[data-toggle-icons]');
+//   const popup = document.getElementById('editPopup');
+//   const overlay = document.getElementById('overlay');
+//   const closePopupButton = document.getElementById('closePopup');
+//   const editForm = document.getElementById('editForm');
+
+//   // Открытие popup
+//   editIcons.forEach(icon => {
+//     icon.addEventListener('click', function () {
+//       const id = this.dataset.id;
+//       const jobTitle = this.dataset.jobTitle;
+//       const jobTitleLink = this.dataset.jobTitleLink;
+
+//       document.getElementById('editId').value = id;
+//       document.getElementById('editJobTitle').value = jobTitle;
+//       document.getElementById('editJobTitleLink').value = jobTitleLink;
+
+//       popup.style.display = 'block';
+//       overlay.style.display = 'block';
+//     });
+//   });
+
+//   // Закрытие popup
+//   closePopupButton.addEventListener('click', function () {
+//     popup.style.display = 'none';
+//     overlay.style.display = 'none';
+//   });
+
+//   // Отправка данных через AJAX
+//   editForm.addEventListener('submit', function (e) {
+//     e.preventDefault();
+
+//     const formData = new FormData(this);
+
+//     fetch(updateVacancyUrl, {
+//       method: 'POST',
+//       body: formData,
+//       headers: {
+//         'X-CSRFToken': getCookie('csrftoken')
+//       }
+//     })
+//       .then(response => response.json())
+//       .then(data => {
+//         if (data.success) {
+//           alert('Vacancy updated successfully!');
+//           location.reload(); // Обновление страницы после успешного сохранения
+//         } else {
+//           alert('Error updating vacancy.');
+//         }
+//       })
+//       .catch(error => console.error('Error:', error));
+//   });
+
+//   // Функция для получения CSRF-токена
+//   function getCookie(name) {
+//     let cookieValue = null;
+//     if (document.cookie && document.cookie !== '') {
+//       const cookies = document.cookie.split(';');
+//       for (let i = 0; i < cookies.length; i++) {
+//         const cookie = cookies[i].trim();
+//         if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//           break;
+//         }
+//       }
+//     }
+//     return cookieValue;
+//   }
+// });
 
 document.addEventListener('DOMContentLoaded', function () {
   const editIcons = document.querySelectorAll('[data-toggle-icons]');
-  const popup = document.getElementById('editPopup');
+  const jobTitlePopup = document.getElementById('editPopup');
+  const statusPopup = document.getElementById('editStatusPopup');
   const overlay = document.getElementById('overlay');
-  const closePopupButton = document.getElementById('closePopup');
-  const editForm = document.getElementById('editForm');
+  const closeJobTitlePopupButton = document.getElementById('closePopup');
+  const closeStatusPopupButton = document.getElementById('closeStatusPopup');
+  const editJobTitleForm = document.getElementById('editForm');
+  const editStatusForm = document.getElementById('editStatusForm');
 
   // Открытие popup
   editIcons.forEach(icon => {
     icon.addEventListener('click', function () {
-      const id = this.dataset.id;
-      const jobTitle = this.dataset.jobTitle;
-      const jobTitleLink = this.dataset.jobTitleLink;
+      const field = this.dataset.field;
+      const id = this.dataset.id || ''; // Убедимся, что id не undefined
 
-      document.getElementById('editId').value = id;
-      document.getElementById('editJobTitle').value = jobTitle;
-      document.getElementById('editJobTitleLink').value = jobTitleLink;
+      if (field === 'job_title') {
+        const jobTitle = this.dataset.jobTitle || ''; // Значение по умолчанию, если undefined
+        const jobTitleLink = this.dataset.jobTitleLink || ''; // Значение по умолчанию
 
-      popup.style.display = 'block';
-      overlay.style.display = 'block';
+        document.getElementById('editId').value = id;
+        document.getElementById('editJobTitle').value = jobTitle;
+        document.getElementById('editJobTitleLink').value = jobTitleLink;
+
+        jobTitlePopup.style.display = 'block';
+        overlay.style.display = 'block';
+      } else if (field === 'status') {
+        const statusId = this.dataset.statusId || '1'; // Значение по умолчанию, если undefined
+
+        document.getElementById('editStatusId').value = id;
+        document.getElementById('editStatusSelect').value = statusId;
+
+        statusPopup.style.display = 'block';
+        overlay.style.display = 'block';
+      }
     });
   });
 
-  // Закрытие popup
-  closePopupButton.addEventListener('click', function () {
-    popup.style.display = 'none';
+  // Закрытие popup для job title
+  closeJobTitlePopupButton.addEventListener('click', function () {
+    jobTitlePopup.style.display = 'none';
     overlay.style.display = 'none';
   });
 
-  // Отправка данных через AJAX
-  editForm.addEventListener('submit', function (e) {
+  // Закрытие popup для status
+  closeStatusPopupButton.addEventListener('click', function () {
+    statusPopup.style.display = 'none';
+    overlay.style.display = 'none';
+  });
+
+  // Отправка данных через AJAX для job title
+  editJobTitleForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
     const formData = new FormData(this);
 
-    fetch('/update-vacancy/', {
+    fetch(updateVacancyUrl, {
       method: 'POST',
       body: formData,
       headers: {
-        'X-CSRFToken': getCookie('csrftoken') // Получение CSRF-токена
+        'X-CSRFToken': getCookie('csrftoken')
       }
     })
       .then(response => response.json())
       .then(data => {
         if (data.success) {
           alert('Vacancy updated successfully!');
-          location.reload(); // Обновление страницы после успешного сохранения
+          location.reload();
         } else {
-          alert('Error updating vacancy.');
+          alert('Error updating vacancy: ' + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  });
+
+  // Отправка данных через AJAX для status
+  editStatusForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch(updateVacancyUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken')
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Status updated successfully!');
+          location.reload();
+        } else {
+          alert('Error updating status: ' + (data.error || 'Unknown error'));
         }
       })
       .catch(error => console.error('Error:', error));
