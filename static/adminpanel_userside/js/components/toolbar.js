@@ -1,3 +1,7 @@
+
+
+
+
 $.components.register("toolbar", {
   mode: "init",
   init: function(context) {
@@ -19,3 +23,4 @@ $.components.register("toolbar", {
     });
   }
 });
+

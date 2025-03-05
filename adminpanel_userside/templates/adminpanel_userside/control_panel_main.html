@@ -2,6 +2,14 @@
 {% load static %}
 
 {% comment %} http://localhost:8000/adminpanel_userside/# {% endcomment %}
+{% block extra_styles %}
+
+<link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/webui-popover/webui-popover.css' %}"> 
+<link rel="stylesheet" href="{% static 'adminpanel_userside/css/uikit/tooltip-popover.css' %}"> 
+<link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/toolbar/toolbar.css' %}">   
+
+{% endblock %}
+
 
 {% block content %}
 
@@ -126,15 +134,35 @@
 
 
 
-  </div>
+
+    <div class="popover_button" style="position: fixed; bottom: 40px; right: 30px; z-index: 9999;">
+      <div class="toolbar-icons hidden" id="set-03-options">
+      <a href="{% url 'adminpanel_userside:articles_page' %}">
+          <i class="icon md-assignment" aria-hidden="true"></i>
+      </a>
+        <a href="javascript:void(0)"><i class="icon md-assignment-account" aria-hidden="true"></i></a>
+      </div>
+      <button class="btn btn-warning btn-icon btn-round" data-plugin="toolbar" data-toolbar="#set-03-options"
+        data-toolbar-style="warning" data-toolbar-position="left" type="button">
+        <i class="icon md-plus-circle" aria-hidden="true"></i>
+      </button>
+    </div>
 
 
 
 
 
 
+{% endblock %}
 
 
+
+{% block extrajs_styles %}
+
+<script src="{% static 'adminpanel_userside/js/components/toolbar_open.js' %}"></script>
+<script src="{% static 'adminpanel_userside/vendor/toolbar/jquery.toolbar.js' %}"></script>
+
+<script src="{% static 'adminpanel_userside/js/components/toolbar.js' %}"></script>
 
 
 {% endblock %}

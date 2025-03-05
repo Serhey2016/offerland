@@ -92,3 +92,6 @@ def register(request):
                 messages.success(request, "Регистрация прошла успешно. Теперь вы можете авторизоваться.")
                 return redirect('adminpanel_userside:login')
     return render(request, 'adminpanel_userside/register.html')
+
+def articles_page(request):
+    return render(request, 'adminpanel_userside/articlespage.html')

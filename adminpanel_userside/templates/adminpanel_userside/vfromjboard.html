@@ -161,7 +161,7 @@
                         <label for="editStatusSelect">Status:</label>
                         <select id="editStatusSelect" name="status">
                           {% for status in statuses %}
-                            <option value="{{ status.id }}">{{ status.name }}</option>
+                            <option value="{{ status.id }}">{{ status.status_name }} </option>
                           {% endfor %}
                         </select>
                       </div>
@@ -170,13 +170,18 @@
                     </form>
                   </div>
     </div>
+
   </div>
+
+
+
 </div>
 
 
 <script>
   const updateVacancyUrl = "{{ update_vacancy_url }}";
 </script>
+
 
 
 {% endblock %}

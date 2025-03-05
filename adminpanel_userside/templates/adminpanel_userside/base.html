@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/jsgrid/jsgrid.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
   <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/bootstrap-datepicker/bootstrap-datepicker.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/bootstrap-editable.css' %}"> 
- {% comment %}   <link rel="stylesheet" href="{% static 'adminpanel_userside/css/tables/jsgrid.css' %}"> Нет изменений. Иследовать {% endcomment %}
+
 
   <!-- Fonts -->  
    <link rel="stylesheet" href="{% static 'adminpanel_userside/fonts/material-design/material-design.min.css' %}"> {% comment %} Иконки для base html - material design. {% endcomment %}
@@ -39,6 +39,7 @@
    <link rel="stylesheet" href="{% static 'adminpanel_userside/css/dashboard/v1.css' %}"> {% comment %} Нет изменений. Иследовать {% endcomment %}
    <link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/footable/footable.min.css' %}">
    <link rel="stylesheet" href="{% static 'adminpanel_userside/css/site.css' %}">   {% comment %} Основной стиль страницы base {% endcomment %}
+   {% block extra_styles %}{% endblock %}
   <!--[if lt IE 9]>
     <script src="{% static 'adminpanel_userside/vendor/html5shiv/html5shiv.min.js' %}"></script>
     <![endif]-->
@@ -47,6 +48,7 @@
     <script src="{% static 'adminpanel_userside/vendor/respond/respond.min.js' %}"></script> {% comment %} Нет изменений. Иследовать {% endcomment %}
     <![endif]-->
   <!-- Scripts -->
+
   <script src="{% static 'adminpanel_userside/vendor/modernizr/modernizr.js' %}"></script> {% comment %} Нет изменений. Иследовать {% endcomment %}
   <script src="{% static 'adminpanel_userside/vendor/breakpoints/breakpoints.js' %}"></script> {% comment %} Нет изменений. Иследовать {% endcomment %}
   <script>
@@ -118,6 +120,7 @@
   <script src="{% static 'adminpanel_userside/js/tables/footable.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/bootstrap-editable.js' %}"></script>
   <script src="{% static 'adminpanel_userside/js/app.js' %}"></script>
+  {% block extrajs_styles %} {% endblock %}
+ 
 
-</body>
 </html>
