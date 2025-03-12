@@ -1,3 +1,5 @@
+#config/settings.py
+
 import os
 from pathlib import Path
 import environ
@@ -40,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Your custom apps pip install django-import-export
     'import_export',
-    
+    'ckeditor',
+    'ckeditor_uploader',
     # Your custom apps
     'joblist',
     'home',
@@ -150,3 +153,9 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
 ]
+
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

@@ -1,6 +1,9 @@
+#adminpanel_userside/models.py
+
 from django.db import models
 from django.conf import settings
 from joblist.models import Companies, InterviewStages
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 class WorklistStatuses(models.Model):
@@ -118,3 +121,6 @@ class VacanciesFromBoards(models.Model):
 
     def __str__(self):
         return self.job_title if self.job_title else f"Vacancy {self.id}"
+    
+    
+    
