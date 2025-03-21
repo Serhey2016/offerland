@@ -42,14 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Your custom apps pip install django-import-export
     'import_export',
-    'ckeditor',
-    'ckeditor_uploader',
     # Your custom apps
     'joblist',
     'home',
     'blog',
     'adminpanel_userside',
-    
+    'django_ckeditor_5',
 ]
 
 MIDDLEWARE = [
@@ -155,7 +153,13 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-CKEDITOR_UPLOAD_PATH = "uploads/"
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'],
+    },
+}

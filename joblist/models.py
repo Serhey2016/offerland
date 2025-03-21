@@ -1,3 +1,4 @@
+# joblist/models.py
 from django.db import models
 from django.templatetags.static import static
 

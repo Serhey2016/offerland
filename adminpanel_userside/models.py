@@ -3,7 +3,7 @@
 from django.db import models
 from django.conf import settings
 from joblist.models import Companies, InterviewStages
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field  # Для CKEditor 5
 
 # Create your models here.
 class WorklistStatuses(models.Model):

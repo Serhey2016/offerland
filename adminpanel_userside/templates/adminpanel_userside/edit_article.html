@@ -1,0 +1,94 @@
+{% extends "adminpanel_userside/base.html" %}
+{% load static %}
+
+{% block extra_styles %}
+
+<link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/bootstrap-select/bootstrap-select.css' %}">
+<link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/select2/select2.css' %}">
+<link rel="stylesheet" href="{% static 'adminpanel_userside/vendor/webui-popover/webui-popover.css' %}"> 
+<link rel="stylesheet" href="{% static 'adminpanel_userside/css/uikit/tooltip-popover.css' %}"> 
+<link rel="stylesheet" href="{% static 'adminpanel_userside/layouts/panel-transition.css' %}">  
+<link rel="stylesheet" href="{% static 'adminpanel_userside/css/advanced/masonry.css' %}"> 
+
+
+{% endblock %}
+
+
+{% block content %}
+
+{{ form.media }}
+<form method="POST" enctype="multipart/form-data" action="{% url 'adminpanel_userside:edit_article' article.id %}">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label for="id_theme">Topic of the article</label>
+        {{ form.theme }}
+    </div>
+    
+    <div class="form-group">
+        <label for="id_title_image">Title Image</label>
+        {{ form.title_image }}
+    </div>
+    
+    <div class="form-group">
+        <label for="id_article_text">Article Text</label>
+        {{ form.article_text }}
+    </div>
+    
+    <div class="form-group">
+        <label for="id_tags">Tags</label>
+        {{ form.tags }}
+    </div>
+    
+    <div class="form-group">
+        <label for="id_category">Category</label>
+        {{ form.category }}
+    </div>
+    
+    <div class="form-group">
+        <label for="id_is_published">Published</label>
+        {{ form.is_published }}
+    </div>
+    
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'adminpanel_userside:articles_page' %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+
+
+{% endblock %}
+
+{% block extrajs_styles %}
+
+
+{% comment %} Plugins {% endcomment %}
+<script src="{% static 'adminpanel_userside/vendor/select2/select2.min.js' %}"></script>
+<script src="{% static 'adminpanel_userside/vendor/bootstrap-datepicker/bootstrap-datepicker.js' %}"></script>
+<script src="{% static 'adminpanel_userside/vendor/masonry/masonry.pkgd.min.js' %}"></script>
+
+
+{% comment %} scripts{% endcomment %}
+<script src="{% static 'adminpanel_userside/js/components/select2.js' %}"></script>
+<script src="{% static 'adminpanel_userside/vendor/bootstrap-select/bootstrap-select.js' %}"></script>
+<script src="{% static 'adminpanel_userside/js/components/bootstrap-select.js' %}"></script>
+
+<script src="{% static 'adminpanel_userside/js/components/bootstrap-datepicker.js' %}"></script>
+
+
+<script>
+    (function(document, window, $) {
+      'use strict';
+      var Site = window.Site;
+      $(document).ready(function() {
+        Site.run();
+      });
+    })(document, window, jQuery);
+</script>
+
+
+
+
+{% endblock %}
+

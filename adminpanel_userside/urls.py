@@ -1,7 +1,12 @@
-#adminpanel_userside/urls.py
+# adminpanel_userside/urls.py
 
-from django.urls import path, include
-from .views import control_panel_main_f, vacancies_from_boards, update_vacancy, login_view, register, articles_page
+from django.urls import path
+from .views import (
+    control_panel_main_f, vacancies_from_boards, update_vacancy,
+    login_view, register, articles_page, edit_article, create_article
+)
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'adminpanel_userside'
 
@@ -12,4 +17,10 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('register/', register, name='register'),
     path('articles/', articles_page, name='articles_page'),
+    # Изменяем URL для редактирования: добавляем параметр article_id
+    path('edit_article/<int:article_id>/', edit_article, name='edit_article'),
+    path('create_article/', create_article, name='create_article'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
