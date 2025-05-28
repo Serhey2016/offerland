@@ -66,8 +66,7 @@ class AllArticles(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Переопределяем метод save для автоматического изменения размера изображения,
-        если оно не соответствует 634x423 px.
+ 
         """
         # Сохраняем объект, чтобы self.title_image.path был доступен.
         super().save(*args, **kwargs)
