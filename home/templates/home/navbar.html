@@ -14,40 +14,42 @@
             </div>
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
+    
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav align-items-center ms-lg-5">
 
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Blog</a>
-
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">News</a>
                     <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                        <li><a class="dropdown-item" href="/blog/about/">About us</a></li>
-                        <li><a class="dropdown-item" href="#">Articles</a></li>
+                        <li><a class="dropdown-item" href="/blog/about/">Events</a></li>
+                        <li><a class="dropdown-item" href="#">The Black-list</a></li>
                         <li><a class="dropdown-item" href="#">Community feed</a></li>
+                        <li><a class="dropdown-item" href="{% url 'home:contacts' %}">About us</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tools & services</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services & Projects</a>
 
                     <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                        <li><a class="dropdown-item" href="/joblist/joblisting/">Browse jobs</a></li>
-
-                        <li><a class="dropdown-item" href="#">Our projects</a></li>
-                     
+                        <li><a class="dropdown-item" href="/joblist/joblisting/">Personal support</a></li>
+                        <li><a class="dropdown-item" href="#">Business support</a></li>
+                        <li><a class="dropdown-item" href="/joblist/joblisting/">Task tracker </a></li>  
+                        <li><a class="dropdown-item" href="#">Training & Education</a></li>
                         
-                        <li><a class="dropdown-item" href="#">Job coach mentoring</a></li>
-             </ul>
+                    </ul>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home:contacts' %}">Contact</a>
+                    <a class="nav-link" href="/joblist/joblisting/">Job board</a>
                 </li>
+       
+
+
 
                 <li class="nav-item ms-lg-auto">
                     <a class="nav-link" href="#">Register</a>

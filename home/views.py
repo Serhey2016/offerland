@@ -24,3 +24,6 @@ def contacts(request):
         'content': 'Our contacts'
     }
     return render(request, 'home/contacts.html', context)
+
+def testpage(request):
+    return render(request, 'home/testpage.html', {'title': 'Test Page'})
