@@ -12,8 +12,9 @@ https://www.tooplate.com/view/2134-gotto-job
 :root {
   --white-color:                  #ffffff;
   --primary-color:                #333a49;
+  --section_text_color:           #282d3b;
   --secondary-color:              #e19b04;
-  --section-bg-color:             #f0f8ff;
+  --section-bg-color:             #282d3b;
   --custom-btn-bg-color:          #f65129;
   --social-icon-link-bg-color:    #7f73eb;
   --dark-color:                   #000000;
@@ -723,9 +724,9 @@ nav[aria-label="breadcrumb"] {
 
 .badge {
   background: var(--section-bg-color);
-  border: 1px solid var(--white-color);
+  border: 3px solid var(--white-color);
   border-radius: var(--border-radius-medium);
-  color: var(--primary-color);
+  color: var(--white-color);
   font-weight: var(--font-weight-normal);
   line-height: normal;
   margin-right: 5px;
@@ -744,7 +745,111 @@ nav[aria-label="breadcrumb"] {
   color: var(--white-color);
 }
 
+/*---------------------------------------
+  HERO 2              
+-----------------------------------------*/
+.section-overlay2 {
+  background: rgba(0, 0, 0, 0.85);
+  background: var(--custom-btn-bg-color);
+  opacity: 0.7;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
 
+.section-overlay2 + .container {
+  position: relative;
+}
+
+.hero-section .section-overlay2 {
+  background: var(--primary-color);
+}
+
+.b2b_b2c-section2 .section-overlay2 {
+  background: white;
+}
+
+.b2b_b2c-section2 {
+  background-image: url('/static/images/111f0-8bd4-5e7b0aa7e0b1.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top;
+  position: relative;
+  padding-top: 90px;
+  padding-bottom: 50px;
+}
+
+
+
+.hero-title.text-right {
+  text-align: right;
+}
+
+.b2b_b2c-section2 .custom-border-btn {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.b2b_b2c-section2 .custom-border-btn:hover {
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+
+
+.b2b_b2c-section2 .badge2 {
+  background: transparent;
+  color: var(--section_text_color);
+}
+
+.b2b_b2c-section2 .badge2:hover {
+  background: var(--section_text_color);
+  color: var(--white-color);
+}
+
+.badge2 {
+  background: var(--section_text_color);
+  border: 3px solid var(--section_text_color);
+  border-radius: var(--border-radius-medium);
+  color: var(--section_text_color);
+  font-weight: var(--font-weight-normal);
+  line-height: normal;
+  margin-right: 5px;
+  margin-left: 5px;
+  padding: 8px 12px;
+  padding-bottom: 6px;
+}
+
+
+
+.badge2:hover {
+  background: var(--custom-btn-bg-color);
+  color: var(--section_text_color);
+}
+
+
+  b2b_b2c-section2 {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+
+
+.hero-section3 {
+  background-image: url('/static/images/1337-bb5a7f66-3d3eda4eee46d9e7.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top;
+  position: relative;
+  padding-top: 90px;
+  padding-bottom: 50px;
+}
+
+.hero-section3 .section-overlay {
+  background: var(--section_text_color);
+}
 /*---------------------------------------
   ABOUT              
 -----------------------------------------*/
@@ -1484,6 +1589,9 @@ nav[aria-label="breadcrumb"] {
   .custom-text-block {
     padding: 50px 30px;
   }
+
+
+
 
   .hero-section {
     padding-top: 100px;

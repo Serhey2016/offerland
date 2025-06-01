@@ -34,13 +34,12 @@
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services & Projects</a>
-
                     <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                        <li><a class="dropdown-item" href="/joblist/joblisting/">Personal support</a></li>
-                        <li><a class="dropdown-item" href="#">Business support</a></li>
-                        <li><a class="dropdown-item" href="/joblist/joblisting/">Task tracker </a></li>  
-                        <li><a class="dropdown-item" href="#">Training & Education</a></li>
-                        
+                        <li><a class="dropdown-item" href="{% url 'home:services_and_projects' %}">Services & Projects</a></li>
+                        <li><a class="dropdown-item" href="{% url 'home:personal_support' %}">Personal support</a></li>
+                        <li><a class="dropdown-item" href="{% url 'home:business_support' %}">Business support</a></li>
+                        <li><a class="dropdown-item" href="{% url 'home:task_tracker' %}">Task tracker</a></li>  
+                        <li><a class="dropdown-item" href="{% url 'home:training_and_education' %}">Training & Education</a></li>
                     </ul>
                 </li>
 

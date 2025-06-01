@@ -27,3 +27,18 @@ def contacts(request):
 
 def testpage(request):
     return render(request, 'home/testpage.html', {'title': 'Test Page'})
+
+def personal_support(request):
+    return render(request, 'home/personal_support.html')
+
+def services_and_projects(request):
+    return render(request, 'home/services_and_projects.html')
+
+def business_support(request):
+    return render(request, 'home/Business_support.html')
+
+def task_tracker(request):
+    return render(request, 'home/task_tracker.html')
+
+def training_and_education(request):
+    return render(request, 'home/training_and_education.html')

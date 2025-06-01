@@ -11,13 +11,13 @@
         <div class="row">
 
             <div class="col-lg-12 col-12 text-center">
-                <h1 class="text-white">Job Listings</h1>
+                <h1 class="text-white">Business support</h1>
 
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb justify-content-center">
                         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
 
-                        <li class="breadcrumb-item active" aria-current="page">Job listings</li>
+                        <li class="breadcrumb-item active" aria-current="page">Personal support</li>
                     </ol>
                 </nav>
             </div>
@@ -143,4 +143,10 @@
 
 
 
+{% endblock %}
+
+{% block navbar_services_projects_link %}
+<a class="nav-link dropdown-toggle" href="{% url 'home:business_support' %}" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Services & Projects
+</a>
 {% endblock %}

@@ -26,8 +26,8 @@
                 <p class="mb-2">
                     <i class="custom-icon bi-telephone me-1"></i>
 
-                    <a href="tel: 305-240-9671" class="site-footer-link">
-                        305-240-9671
+                    <a href="tel: 7424242712" class="site-footer-link">
+                        7-42-42-42-712 
                     </a>
                 </p>
 
@@ -42,33 +42,37 @@
             </div>
 
             <div class="col-lg-2 col-md-3 col-6 ms-lg-auto">
-                <h6 class="site-footer-title">Company</h6>
+                <h6 class="site-footer-title">News</h6>
 
                 <ul class="footer-menu">
-                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">About</a></li>
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Events</a></li>
 
-                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Blog</a></li>
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">The black-list</a></li>
 
-                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Jobs</a></li>
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Community feed</a></li>
 
-                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Contact</a></li>
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">About us</a></li>
                 </ul>
             </div>
 
             <div class="col-lg-2 col-md-3 col-6">
-                <h6 class="site-footer-title">Resources</h6>
+                <h6 class="site-footer-title">Services & Projects</h6>
 
                 <ul class="footer-menu">
-                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Guide</a></li>
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Personal support</a></li>
 
-                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">How it works</a></li>
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Business support</a></li>
 
-                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Salary Tool</a></li>
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Task tracker</a></li>
+
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Training & education</a></li>
+                    <li class="footer-menu-item"><a href="{% url 'home:services_and_projects' %}" class="footer-menu-link">Services & Projects</a></li>
                 </ul>
             </div>
 
             <div class="col-lg-4 col-md-8 col-12 mt-3 mt-lg-0">
-                <h6 class="site-footer-title">Newsletter</h6>
+                {% comment %}  
+                    <h6 class="site-footer-title">Newsletter</h6>
 
                 <form class="custom-form newsletter-form" action="#" method="post" role="form">
                     <h6 class="site-footer-title">Get notified jobs news</h6>
@@ -83,6 +87,8 @@
                         </button>
                     </div>
                 </form>
+                {% endcomment %}
+                
             </div>
 
         </div>
@@ -104,7 +110,7 @@
 
                 <div class="col-lg-5 col-12 mt-2 mt-lg-0">
                     <ul class="social-icon">
-                        <li class="social-icon-item">
+                        <!-- <li class="social-icon-item">
                             <a href="#" class="social-icon-link bi-twitter"></a>
                         </li>
 
@@ -118,17 +124,15 @@
 
                         <li class="social-icon-item">
                             <a href="#" class="social-icon-link bi-instagram"></a>
-                        </li>
+                        </li> -->
 
                         <li class="social-icon-item">
-                            <a href="#" class="social-icon-link bi-youtube"></a>
+                            <a href="https://www.youtube.com/@OfferlandOfficial" class="social-icon-link bi-youtube"></a>
                         </li>
                     </ul>
                 </div>
 
-                <div class="col-lg-3 col-12 mt-2 d-flex align-items-center mt-lg-0">
-                    <p>Design: <a class="sponsored-link" rel="sponsored" href="https://www.tooplate.com" target="_blank">Tooplate</a></p>
-                </div>
+
 
                 <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
 
