@@ -27,6 +27,7 @@
         <link href="{% static 'css/tooplate-gotto-job.css' %}" rel="stylesheet">
         <link href="{% static 'css/style.css' %}" rel="stylesheet">
         
+        {% block extra_head %}{% endblock %}
     </head>
     
     <body id="top">
@@ -51,6 +52,6 @@
         <script src="{% static 'js/counter.js' %}"></script>
         <script src="{% static 'js/custom.js' %}"></script>
         <script src="{% static 'js/popup.js' %}"></script>
-
+        {% block extra_js %}{% endblock %}
     </body>
 </html>
