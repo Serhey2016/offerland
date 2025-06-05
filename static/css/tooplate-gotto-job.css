@@ -332,6 +332,20 @@ nav[aria-label="breadcrumb"] {
   height: 100%;
 }
 
+.custom-text-blocks {
+  background: var(--primary-color);
+  padding: 80px 60px;
+  height: 100%;
+  border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+}
+
+.custom-text-blocks2 {
+  background: var(--primary-color);
+  padding: 80px 60px;
+  height: 100%;
+  border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+}
+
 .counter-thumb {
   margin: 20px;
   margin-bottom: 0;
@@ -646,7 +660,7 @@ nav[aria-label="breadcrumb"] {
   SITE HEADER              
 -----------------------------------------*/
 .site-header {
-  background-image: url('/static/images/site-header/close-up-young-business-team-working.jpg');
+  background-image: url('/static/images/site-header/close-up-young-business-team-working.webp');
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: cover;
@@ -664,7 +678,7 @@ nav[aria-label="breadcrumb"] {
   HERO              
 -----------------------------------------*/
 .hero-section {
-  background-image: url('/static/images/close-up-young-business-team-working.jpg');
+  background-image: url('/static/images/close-up-young-business-team-working.webp');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top;
@@ -772,8 +786,17 @@ nav[aria-label="breadcrumb"] {
   background: white;
 }
 
+
+.hero-section3 .section-overlay3 {
+  background: var(--primary-color);
+}
+
+.b2b_b2c-section2 .section-overlay3 {
+  background: white;
+}
+
 .b2b_b2c-section2 {
-  background-image: url('/static/images/111f0-8bd4-5e7b0aa7e0b1.png');
+  background-image: url('/static/images/111f0-8bd4-5e7b0aa7e0b1.webp');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top;
@@ -838,7 +861,7 @@ nav[aria-label="breadcrumb"] {
 
 
 .hero-section3 {
-  background-image: url('/static/images/1337-bb5a7f66-3d3eda4eee46d9e7.png');
+  background-image: url('/static/images/1337-bb5a7f66-3d3eda4eee46d9e7.webp');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top;
@@ -1318,7 +1341,7 @@ nav[aria-label="breadcrumb"] {
   CTA               
 -----------------------------------------*/
 .cta-section {
-  background-image: url('/static/images/millennial-group-young-businesspeople.jpg');
+  background-image: url('/static/images/millennial-group-young-businesspeople.webp');
   background-repeat: no-repeat;
   background-position: top;
   background-size: cover;
