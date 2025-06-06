@@ -3,133 +3,47 @@
 
 {% comment %} http://localhost:8000/blog/about/ {% endcomment %}
 
+
 {% block content %}
-<header class="site-header">
-    <div class="section-overlay"></div>
-
-    <div class="container">
-        <div class="row">
-
-            <div class="col-lg-12 col-12 text-center">
-                <h1 class="text-white">training_and_education</h1>
-
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-
-                        <li class="breadcrumb-item active" aria-current="page">Personal support</li>
-                    </ol>
-                </nav>
-            </div>
-
-        </div>
-    </div>
-</header>
-
-
-
-
 <section class="job-section section-padding">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-9 col-md-12 col-12">
-                <div class="col-lg-12 col-md-12 col-12">
-                    <div class="job-thumb-box_article job-thumb-box_article">
-                        <div class="job-image-box-wrap">
 
+            <!-- First screen -->
+            <div class="splash">
+                <div class="centered-unit">
+                    <div class="container">
+                        <!-- Main header -->
+                        <h1>We do our best to launch soon!</h1>
+                        <!-- Sub header -->
+                        <p class="lead">Dealing with some really complicated stuff here.</p>
 
-                            <div class="job-image-box-wrap-info d-flex align-items-center">
-                                <p class="mb-0">
-                                    <a href="job-listings.html" class="badge badge-level">Internship</a>
-                                </p>
-
-                                <p class="mb-0">
-                                    <a href="job-listings.html" class="badge">Freelance</a>
-                                </p>
+                        <!-- Countdown -->
+                        <div class="countdown circled large">
+                            <!-- Days -->
+                            <div class="time days">
+                                <div class="value">00</div>
+                                <div class="unit">Days</div>
+                            </div>
+                            <!-- Hours -->
+                            <div class="time hours">
+                                <div class="value">00</div>
+                                <div class="unit">Hours</div>
+                            </div>
+                            <!-- Minutes -->
+                            <div class="time minutes">
+                                <div class="value">00</div>
+                                <div class="unit">Minutes</div>
+                            </div>
+                            <!-- Seconds -->
+                            <div class="time seconds">
+                                <div class="value">00</div>
+                                <div class="unit">Seconds</div>
                             </div>
                         </div>
-
-                        <div class="job-body">
-                            <h4 class="job-title">
-                                <a href="job-details.html" class="job-title-link">Technical Lead Latin professor at
-                                    Hampden-Sydney College.</a>
-
-                                <a href="#" class="bi-bookmark ms-auto me-2">
-                                </a>
-
-                                <a href="#" class="bi-heart">
-                                </a>
-                            </h4>
-
-
-
-                            <div class="d-flex align-items-center">
-                                <strong class="col-lg-12">Today at 18:00</strong>
-
-                            </div>
-
-                            <div class="d-flex align-items-center">
-
-                                <p class="job-location col-lg-12">
-                                    Latin professor at Hampden-Sydney
-                                </p>
-                            </div>
-
-                            <div class="d-flex align-items-right border-top pt-3">
-                                <a href="#" class="custom-link smoothscroll">Read more...</a>
-                            </div>
-                        </div>
+                        <!-- Countdown end -->
                     </div>
                 </div>
-                <div class="col-lg-12 col-md-12 col-12">
-                    <div class="job-thumb-box_article job-thumb-box_article">
-                        <div class="job-image-box-wrap">
-
-
-                            <div class="job-image-box-wrap-info d-flex align-items-center">
-                                <p class="mb-0">
-                                    <a href="job-listings.html" class="badge badge-level">Internship</a>
-                                </p>
-
-                                <p class="mb-0">
-                                    <a href="job-listings.html" class="badge">Freelance</a>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="job-body">
-                            <h4 class="job-title">
-                                <a href="job-details.html" class="job-title-link">Technical Lead Latin professor at
-                                    Hampden-Sydney College.</a>
-
-                                <a href="#" class="bi-bookmark ms-auto me-2">
-                                </a>
-
-                                <a href="#" class="bi-heart">
-                                </a>
-                            </h4>
-
-
-
-                            <div class="d-flex align-items-center">
-                                <strong class="col-lg-12">Today at 18:00</strong>
-
-                            </div>
-
-                            <div class="d-flex align-items-center">
-
-                                <p class="job-location col-lg-12">
-                                    Latin professor at Hampden-Sydney
-                                </p>
-                            </div>
-
-                            <div class="d-flex align-items-right border-top pt-3">
-                                <a href="#" class="custom-link smoothscroll">Read more...</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
 
@@ -137,16 +51,80 @@
         </div>
     </div>
 </section>
+{% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'comming_soon/js/jquery.js' %}"></script>
+<script src="{% static 'comming_soon/js/countdown.js' %}"></script>
+<script src="{% static 'comming_soon/js/bezierCanvas.js' %}"></script>
+<script src="{% static 'comming_soon/js/notifyMe.js' %}"></script>
+<script src="{% static 'comming_soon/js/modernizr.js' %}"></script>
+<script type="text/javascript">
+$().ready(function(){
 
+    // Функция для анимации смены значений
+    function animateValue(element, newValue) {
+        const $el = $(element);
+        const oldValue = $el.text();
+        if (oldValue === newValue) return;
+        
+        $el.attr('data-value', oldValue);
+        $el.addClass('animated');
+        
+        setTimeout(() => {
+            $el.text(newValue);
+            $el.removeClass('animated');
+        }, 400);
+    }
 
+    // Модифицируем countdownTimer
+    $(".countdown").countdownTimer({
+        endTime: new Date("April 21, 2026 11:13:00 UTC+0200"),
+        onTick: function(timeLeft) {
+            Object.entries(timeLeft).forEach(([unit, value]) => {
+                const valueEl = $(`.time.${unit} .value`);
+                animateValue(valueEl[0], value.toString().padStart(2, '0'));
+            });
+        }
+    });
+    
+    
+    // Activate notifyMe plugin on a '#notifyMe' element	
+    $("#notifyMe").notifyMe();
+    
+        
+    // Activate bezierCanvas plugin on a #bg-canvas element
+    $("#bg-canvas").bezierCanvas({
+        maxStyles: 3,
+        maxLines: 80,
+        strokeWidth: 0.5,
+        lineSpacing: 0.07,
+        spacingVariation: 0.07,
+        colorBase: {r: 100,g: 120,b: 200},
+        colorVariation: {r: 50, g: 50, b: 50},
+        moveCenterX: 0,
+        moveCenterY: 0,
+        delayVariation: 4,
+        globalAlpha: 0.4,
+        globalSpeed:200,
+    });
+    
+    // Add handler on 'Scroll down to learn more' link
+    $().ready(function(){
+        $(".overlap .more").click(function(e){
+            e.preventDefault();
+            $("body,html").animate({scrollTop: $(window).height()});
+        });
+    });		
 
-
-
+    
+});
+</script>
 {% endblock %}
 
 {% block navbar_services_projects_link %}
-<a class="nav-link dropdown-toggle" href="{% url 'home:training_and_education' %}" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+<a class="nav-link dropdown-toggle" href="{% url 'home:business_support' %}" id="navbarLightDropdownMenuLink"
+    role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Services & Projects
 </a>
 {% endblock %}

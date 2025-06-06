@@ -11,38 +11,10 @@
 {% comment %} http://localhost:8000/blog/about/ {% endcomment %}
 
 {% block content %}
-<header class="site-header">
-    <div class="section-overlay"></div>
-
-    <div class="container">
-        <div class="row">
-
-            <div class="col-lg-12 col-12 text-center">
-                <h1 class="text-white">task-tracker</h1>
-
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-
-                        <li class="breadcrumb-item active" aria-current="page">Personal support</li>
-                    </ol>
-                </nav>
-            </div>
-
-        </div>
-    </div>
-</header>
-
-
-
-
 <section class="job-section section-padding">
     <div class="container">
         <div class="row align-items-center">
 
-            <div class="bg-img"
-                style="width: 100%; height: 100%; position: fixed; background: url(images/hongkong-bg.jpg) no-repeat center center; background-size: cover; ">
-            </div>
             <!-- First screen -->
             <div class="splash">
                 <div class="centered-unit">
@@ -85,8 +57,6 @@
         </div>
     </div>
 </section>
-
-
 {% endblock %}
 
 {% block extra_js %}
@@ -94,14 +64,34 @@
 <script src="{% static 'comming_soon/js/countdown.js' %}"></script>
 <script src="{% static 'comming_soon/js/bezierCanvas.js' %}"></script>
 <script src="{% static 'comming_soon/js/notifyMe.js' %}"></script>
-
+<script src="{% static 'comming_soon/js/modernizr.js' %}"></script>
 <script type="text/javascript">
 $().ready(function(){
 
-    // Activate countdownTimer plugin on a '.countdown' element
+    // Функция для анимации смены значений
+    function animateValue(element, newValue) {
+        const $el = $(element);
+        const oldValue = $el.text();
+        if (oldValue === newValue) return;
+        
+        $el.attr('data-value', oldValue);
+        $el.addClass('animated');
+        
+        setTimeout(() => {
+            $el.text(newValue);
+            $el.removeClass('animated');
+        }, 400);
+    }
+
+    // Модифицируем countdownTimer
     $(".countdown").countdownTimer({
-        // Set the end date for the countdown
-        endTime: new Date("April 21, 2026 11:13:00 UTC+0200")
+        endTime: new Date("April 21, 2026 11:13:00 UTC+0200"),
+        onTick: function(timeLeft) {
+            Object.entries(timeLeft).forEach(([unit, value]) => {
+                const valueEl = $(`.time.${unit} .value`);
+                animateValue(valueEl[0], value.toString().padStart(2, '0'));
+            });
+        }
     });
     
     

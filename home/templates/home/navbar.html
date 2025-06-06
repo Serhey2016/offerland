@@ -33,9 +33,8 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="{% url 'home:services_and_projects' %}" id="navbarLightDropdownMenuLink" role="button"  aria-expanded="false">Services & Projects</a>
-                    <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                      
+                    <a class="nav-link dropdown-toggle" href="{% url 'home:services_and_projects' %}" id="servicesDropdown">Services & Projects</a>
+                    <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" href="{% url 'home:personal_support' %}">Personal support</a></li>
                         <li><a class="dropdown-item" href="{% url 'home:business_support' %}">Business support</a></li>
                         <li><a class="dropdown-item" href="{% url 'home:task_tracker' %}">Task tracker</a></li>  
@@ -61,3 +60,53 @@
         </div>
     </div>
 </nav>
+
+<!-- Добавьте этот скрипт перед закрывающим тегом </body> -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function handleDropdowns() {
+        const dropdowns = document.querySelectorAll('.dropdown-toggle');
+        const isMobile = window.innerWidth < 992;
+        let lastTap = 0;
+
+        dropdowns.forEach(dropdown => {
+            // Очищаем старые обработчики
+            const newDropdown = dropdown.cloneNode(true);
+            dropdown.parentNode.replaceChild(newDropdown, dropdown);
+            
+            if (isMobile) {
+                newDropdown.setAttribute('data-bs-toggle', 'dropdown');
+                
+                // Обработчик для мобильных
+                newDropdown.addEventListener('click', function(e) {
+                    const currentTime = new Date().getTime();
+                    const tapLength = currentTime - lastTap;
+                    const href = this.getAttribute('href');
+                    
+                    if (tapLength < 500 && tapLength > 0) {
+                        // Двойное нажатие - переходим по ссылке
+                        if (href) {
+                            window.location.href = href;
+                        }
+                    } else {
+                        // Одиночное нажатие - открываем/закрываем меню
+                        e.preventDefault();
+                    }
+                    lastTap = currentTime;
+                });
+            } else {
+                // Для десктопа оставляем простой переход по клику
+                newDropdown.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href) {
+                        window.location.href = href;
+                    }
+                });
+            }
+        });
+    }
+
+    handleDropdowns();
+    window.addEventListener('resize', handleDropdowns);
+});
+</script>

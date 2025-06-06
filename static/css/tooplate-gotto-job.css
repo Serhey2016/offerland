@@ -1830,3 +1830,156 @@ nav[aria-label="breadcrumb"] {
   text-align: right;
 }
 
+
+/* 
+Таймер обратного отсчета */
+
+
+.lead {
+    font-size: 25px;
+    margin: 0;
+    color: #76808f
+}
+
+
+
+/* body {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', 'Helvetia Neue', sans-serif;
+    font-weight: 100;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #fff;
+    background-color: #191e23;
+    min-width: 320px
+} */
+
+#bg-canvas {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    position: fixed;
+    z-index: 1
+}
+
+.splash {
+    width: 100%;
+    min-width: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    position: static;
+    z-index: auto;
+    height: auto;
+    padding: 40px 0;
+}
+
+.splash .centered-unit {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    margin: 0 auto;
+    padding: 40px 20px 0 20px;
+    border-radius: var(--border-radius-medium);
+    background: rgba(255,255,255,0.03);
+   
+}
+
+.splash h1 {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--dark-color);
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+.splash .lead {
+    font-size: 1.25rem;
+    color: #76808f;
+    margin-bottom: 30px;
+}
+
+.countdown {
+    margin: 60px auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.countdown .time {
+    aspect-ratio: 1;
+    width: 130px;
+    height: 130px;
+    background: rgba(40, 45, 59, 0.95);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.countdown .time:hover {
+    transform: translateY(-5px);
+}
+
+.countdown .time .value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    font-family: 'Roboto Mono', monospace;
+    margin-bottom: 5px;
+    position: relative;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.countdown .time .unit {
+    font-size: 0.875rem;
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+    .countdown {
+        gap: 1rem;
+    }
+    
+    .countdown .time {
+        width: 80px;
+        height: 80px;
+    }
+
+    .countdown .time .value {
+        font-size: 2rem;
+    }
+
+    .countdown .time .unit {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+}
+
+/* Анимация для цифр */
+.countdown .time .value.animated {
+    animation: pulse 0.4s ease-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1.1); opacity: 0.5; }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ...existing code... */
