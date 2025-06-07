@@ -10415,3 +10415,13 @@ h4.example-title {
 }
 
 
+.btn-primary {
+  color: #fff;
+    background-color: #282D3B;
+    border-color: #282D3B;
+}
+
+.btn-primary.focus, .btn-primary:focus, .btn-primary:hover {
+    background-color:#55575E;
+    border-color:#55575E;
+}

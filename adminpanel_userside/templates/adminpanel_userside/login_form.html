@@ -20,8 +20,7 @@
         <div class="panel">
           <div class="panel-body">
             <div class="brand">
-              <img class="brand-img" src="{% static 'adminpanel_userside/images/logo-blue.png' %}" alt="...">
-              <h2 class="brand-text font-size-18">Material</h2>
+
             </div>
             <form method="post" action="{% url 'adminpanel_userside:login' %}" autocomplete="off">
               {% csrf_token %}

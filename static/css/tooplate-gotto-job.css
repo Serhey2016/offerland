@@ -474,8 +474,8 @@ nav[aria-label="breadcrumb"] {
 -----------------------------------------*/
 .navbar {
   background: var(--white-color);
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .navbar-brand {
@@ -489,19 +489,7 @@ nav[aria-label="breadcrumb"] {
   margin-right: 15px;
 }
 
-.logo-text {
-  color: var(--primary-color);
-  font-size: var(--h4-font-size);
-  display: block;
-  line-height: normal;
-}
 
-.logo-slogan {
-  color: var(--custom-btn-bg-color);
-  font-size: 12px;
-  font-weight: var(--font-weight-bold);
-  text-transform: uppercase;
-}
 
 .navbar-brand,
 .navbar-brand:hover {
@@ -1612,7 +1600,7 @@ nav[aria-label="breadcrumb"] {
   }
 
   .navbar-collapse {
-    padding-bottom: 20px;
+    padding-bottom: 10px;
   }
 
   .navbar-expand-lg .navbar-nav .nav-link {
