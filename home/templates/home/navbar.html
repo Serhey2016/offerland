@@ -4,109 +4,147 @@
         <a class="navbar-brand d-flex align-items-center" href="{% url 'home:index' %}">
             {% comment %} <img src="{% static 'images/logo.png' %}" class="img-fluid logo-image"> {% endcomment %}
             <svg xmlns="http://www.w3.org/2000/svg" width="36.645" height="36.645" viewBox="0 0 36.645 36.645">
-                <path id="direction-svgrepo-com" d="M8.034,27.115l-5.5-5.5a1.832,1.832,0,0,1,0-2.591l5.5-5.5a1.832,1.832,0,1,1,2.591,2.591l-4.2,4.2,4.2,4.2a1.832,1.832,0,1,1-2.591,2.591Zm5.5,5.5,5.5,5.5a1.832,1.832,0,0,0,2.591,0l5.5-5.5a1.832,1.832,0,1,0-2.591-2.591l-4.2,4.2-4.2-4.2a1.832,1.832,0,1,0-2.591,2.591Zm6.792-17.786a5.5,5.5,0,1,0,5.5,5.5A5.5,5.5,0,0,0,20.323,14.826Zm6.792-4.2a1.832,1.832,0,0,0,0-2.591l-5.5-5.5a1.832,1.832,0,0,0-2.591,0l-5.5,5.5a1.832,1.832,0,1,0,2.591,2.591l4.2-4.2,4.2,4.2a1.832,1.832,0,0,0,2.591,0Zm5.5,2.906a1.832,1.832,0,1,0-2.591,2.591l4.2,4.2-4.2,4.2a1.832,1.832,0,1,0,2.591,2.591l5.5-5.5a1.832,1.832,0,0,0,0-2.591Z" transform="translate(-2 -2)" fill="#282D3B"/>
-              </svg>
-              
+                <path id="direction-svgrepo-com"
+                    d="M8.034,27.115l-5.5-5.5a1.832,1.832,0,0,1,0-2.591l5.5-5.5a1.832,1.832,0,1,1,2.591,2.591l-4.2,4.2,4.2,4.2a1.832,1.832,0,1,1-2.591,2.591Zm5.5,5.5,5.5,5.5a1.832,1.832,0,0,0,2.591,0l5.5-5.5a1.832,1.832,0,1,0-2.591-2.591l-4.2,4.2-4.2-4.2a1.832,1.832,0,1,0-2.591,2.591Zm6.792-17.786a5.5,5.5,0,1,0,5.5,5.5A5.5,5.5,0,0,0,20.323,14.826Zm6.792-4.2a1.832,1.832,0,0,0,0-2.591l-5.5-5.5a1.832,1.832,0,0,0-2.591,0l-5.5,5.5a1.832,1.832,0,1,0,2.591,2.591l4.2-4.2,4.2,4.2a1.832,1.832,0,0,0,2.591,0Zm5.5,2.906a1.832,1.832,0,1,0-2.591,2.591l4.2,4.2-4.2,4.2a1.832,1.832,0,1,0,2.591,2.591l5.5-5.5a1.832,1.832,0,0,0,0-2.591Z"
+                    transform="translate(-2 -2)" fill="#282D3B" />
+            </svg>
 
             <div class="d-flex flex-column">
-                {% comment %} <strong class="logo-text">Offerland</strong>
-                <small class="logo-slogan">Personal growth club</small> {% endcomment %}
+                {% comment %}
+                <strong class="logo-text">Offerland</strong>
+                <small class="logo-slogan">Personal growth club</small>
+                {% endcomment %}
             </div>
         </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-    
+
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav align-items-center ms-lg-5">
+            <div class="navbar-content d-flex justify-content-between w-100">
+                <!-- Текстовые ссылки -->
+                <ul class="navbar-nav text-links">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">News</a>
+                        <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                            <li><a class="dropdown-item" href="/blog/about/">Events</a></li>
+                            <li><a class="dropdown-item" href="#">The Black-list</a></li>
+                            <li><a class="dropdown-item" href="#">Community
+                                    feed</a></li>
+                            <li><a class="dropdown-item" href="{% url 'home:contacts' %}">About
+                                    us</a></li>
+                        </ul>
+                    </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home:services_and_projects' %}"
+                            id="">Services & Projects</a>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">News</a>
-                    <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                        <li><a class="dropdown-item" href="/blog/about/">Events</a></li>
-                        <li><a class="dropdown-item" href="#">The Black-list</a></li>
-                        <li><a class="dropdown-item" href="#">Community feed</a></li>
-                        <li><a class="dropdown-item" href="{% url 'home:contacts' %}">About us</a></li>
-                    </ul>
-                </li>
+                    </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="{% url 'home:services_and_projects' %}" id="servicesDropdown">Services & Projects</a>
-                    <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="servicesDropdown">
-                        <li><a class="dropdown-item" href="{% url 'home:personal_support' %}">Personal support</a></li>
-                        <li><a class="dropdown-item" href="{% url 'home:business_support' %}">Business support</a></li>
-                        <li><a class="dropdown-item" href="{% url 'home:task_tracker' %}">Task tracker</a></li>  
-                        <li><a class="dropdown-item" href="{% url 'home:training_and_education' %}">Training & Education</a></li>
-                    </ul>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/joblist/joblisting/">Job
+                            board</a>
+                    </li>
+                </ul>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/joblist/joblisting/">Job board</a>
-                </li>
-       
+                <!-- Иконки -->
+                <ul class="navbar-nav icon-links">
+                    <li class="nav-item ms-lg-auto">
+                        <a class="nav-link" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                viewBox="0 0 50.989 50.989">
+                                <path id="group_work_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                                    d="M95.3-844.308a4.91,4.91,0,0,0,3.6-1.5,4.91,4.91,0,0,0,1.5-3.6,4.91,4.91,0,0,0-1.5-3.6,4.91,4.91,0,0,0-3.6-1.5,4.91,4.91,0,0,0-3.6,1.5,4.91,4.91,0,0,0-1.5,3.6,4.91,4.91,0,0,0,1.5,3.6A4.91,4.91,0,0,0,95.3-844.308Zm20.4,0a4.91,4.91,0,0,0,3.6-1.5,4.91,4.91,0,0,0,1.5-3.6,4.91,4.91,0,0,0-1.5-3.6,4.91,4.91,0,0,0-3.6-1.5,4.91,4.91,0,0,0-3.6,1.5,4.91,4.91,0,0,0-1.5,3.6,4.91,4.91,0,0,0,1.5,3.6A4.91,4.91,0,0,0,115.692-844.308Zm-10.2-15.3a4.91,4.91,0,0,0,3.6-1.5,4.91,4.91,0,0,0,1.5-3.6,4.91,4.91,0,0,0-1.5-3.6,4.91,4.91,0,0,0-3.6-1.5,4.91,4.91,0,0,0-3.6,1.5,4.91,4.91,0,0,0-1.5,3.6,4.91,4.91,0,0,0,1.5,3.6A4.91,4.91,0,0,0,105.494-859.6Zm0,30.593a24.826,24.826,0,0,1-9.943-2.008,25.746,25.746,0,0,1-8.094-5.449,25.746,25.746,0,0,1-5.449-8.094A24.826,24.826,0,0,1,80-854.506a24.825,24.825,0,0,1,2.008-9.943,25.745,25.745,0,0,1,5.449-8.094,25.746,25.746,0,0,1,8.094-5.449A24.827,24.827,0,0,1,105.494-880a24.827,24.827,0,0,1,9.943,2.008,25.745,25.745,0,0,1,8.094,5.449,25.745,25.745,0,0,1,5.449,8.094,24.825,24.825,0,0,1,2.008,9.943,24.826,24.826,0,0,1-2.008,9.943,25.746,25.746,0,0,1-5.449,8.094,25.745,25.745,0,0,1-8.094,5.449A24.826,24.826,0,0,1,105.494-829.011Zm0-5.1a19.684,19.684,0,0,0,14.468-5.927,19.684,19.684,0,0,0,5.927-14.468,19.684,19.684,0,0,0-5.927-14.468,19.684,19.684,0,0,0-14.468-5.927,19.684,19.684,0,0,0-14.468,5.927A19.684,19.684,0,0,0,85.1-854.506a19.684,19.684,0,0,0,5.927,14.468A19.684,19.684,0,0,0,105.494-834.11ZM105.494-854.506Z"
+                                    transform="translate(-80 880)" fill="#282d3b" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-auto">
+                        <a class="nav-link" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="29" viewBox="0 0 51.105 48.548">
+                                <path id="business_center_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                                    d="M85.111-831.452a4.921,4.921,0,0,1-3.609-1.5,4.921,4.921,0,0,1-1.5-3.609v-28.107a4.92,4.92,0,0,1,1.5-3.609,4.921,4.921,0,0,1,3.609-1.5H95.331v-5.11a4.922,4.922,0,0,1,1.5-3.609,4.922,4.922,0,0,1,3.609-1.5h10.221a4.922,4.922,0,0,1,3.609,1.5,4.922,4.922,0,0,1,1.5,3.609v5.11h10.221a4.921,4.921,0,0,1,3.609,1.5,4.92,4.92,0,0,1,1.5,3.609v28.107a4.921,4.921,0,0,1-1.5,3.609,4.921,4.921,0,0,1-3.609,1.5Zm15.331-38.328h10.221v-5.11H100.442Zm25.552,23H113.218v5.11H97.887v-5.11H85.111v10.221h40.884Zm-23,0h5.111v-5.11H103Zm-17.887-5.11H97.887V-857h15.331v5.11h12.776v-12.776H85.111ZM105.552-849.338Z"
+                                    transform="translate(-80 880)" fill="#282D3B" />
+                            </svg>
 
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-auto">
+                        <a class="nav-link" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25.900" height="32.375"
+                                viewBox="0 0 43.166 53.958">
+                                <path id="notifications_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                                    d="M160-834.136v-5.4h5.4v-18.885a15.8,15.8,0,0,1,3.372-9.948,15.561,15.561,0,0,1,8.768-5.7v-1.888a3.9,3.9,0,0,1,1.18-2.867,3.9,3.9,0,0,1,2.867-1.18,3.9,3.9,0,0,1,2.866,1.18,3.9,3.9,0,0,1,1.18,2.867v1.888a15.561,15.561,0,0,1,8.768,5.7,15.8,15.8,0,0,1,3.372,9.948v18.885h5.4v5.4ZM181.583-854.37Zm0,28.328a5.2,5.2,0,0,1-3.811-1.585,5.2,5.2,0,0,1-1.585-3.811h10.792a5.2,5.2,0,0,1-1.585,3.811A5.2,5.2,0,0,1,181.583-826.042Zm-10.792-13.489h21.583v-18.885a10.391,10.391,0,0,0-3.17-7.622,10.392,10.392,0,0,0-7.621-3.17,10.392,10.392,0,0,0-7.622,3.17,10.391,10.391,0,0,0-3.17,7.622Z"
+                                    transform="translate(-160 880)" fill="#282d3b" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-btn btn" href="{% url 'adminpanel_userside:login' %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 61.064 61.064">
+                                <path id="account_circle_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                                    d="M91.755-833.9a31.859,31.859,0,0,1,8.7-4.694,29.732,29.732,0,0,1,10.076-1.717,29.732,29.732,0,0,1,10.076,1.717,31.859,31.859,0,0,1,8.7,4.694,23.6,23.6,0,0,0,4.16-7.1,23.931,23.931,0,0,0,1.488-8.473,23.546,23.546,0,0,0-7.137-17.289,23.546,23.546,0,0,0-17.289-7.137,23.546,23.546,0,0,0-17.289,7.137,23.546,23.546,0,0,0-7.137,17.289A23.931,23.931,0,0,0,87.595-841,23.6,23.6,0,0,0,91.755-833.9Zm18.777-12.518a10.324,10.324,0,0,1-7.595-3.091,10.324,10.324,0,0,1-3.091-7.595,10.325,10.325,0,0,1,3.091-7.595,10.324,10.324,0,0,1,7.595-3.091,10.324,10.324,0,0,1,7.595,3.091,10.325,10.325,0,0,1,3.091,7.595,10.324,10.324,0,0,1-3.091,7.595A10.324,10.324,0,0,1,110.532-846.415Zm0,27.479a29.731,29.731,0,0,1-11.907-2.4,30.834,30.834,0,0,1-9.694-6.526A30.833,30.833,0,0,1,82.4-837.56,29.73,29.73,0,0,1,80-849.468a29.731,29.731,0,0,1,2.4-11.907,30.832,30.832,0,0,1,6.526-9.694,30.834,30.834,0,0,1,9.694-6.526,29.731,29.731,0,0,1,11.907-2.4,29.731,29.731,0,0,1,11.908,2.4,30.834,30.834,0,0,1,9.694,6.526,30.832,30.832,0,0,1,6.526,9.694,29.73,29.73,0,0,1,2.4,11.907,29.73,29.73,0,0,1-2.4,11.908,30.833,30.833,0,0,1-6.526,9.694,30.834,30.834,0,0,1-9.694,6.526A29.731,29.731,0,0,1,110.532-818.936Zm0-6.106a24.222,24.222,0,0,0,7.633-1.183,22.991,22.991,0,0,0,6.564-3.4,22.989,22.989,0,0,0-6.564-3.4,24.22,24.22,0,0,0-7.633-1.183,24.22,24.22,0,0,0-7.633,1.183,22.99,22.99,0,0,0-6.564,3.4,22.991,22.991,0,0,0,6.564,3.4A24.222,24.222,0,0,0,110.532-825.042Zm0-27.479a4.448,4.448,0,0,0,3.282-1.3,4.448,4.448,0,0,0,1.3-3.282,4.448,4.448,0,0,0-1.3-3.282,4.449,4.449,0,0,0-3.282-1.3,4.449,4.449,0,0,0-3.282,1.3,4.448,4.448,0,0,0-1.3,3.282,4.448,4.448,0,0,0,1.3,3.282A4.448,4.448,0,0,0,110.532-852.521ZM110.532-857.1ZM110.532-829.622Z"
+                                    transform="translate(-80 880)" fill="#282d3b" />
+                            </svg>
 
-
-                <li class="nav-item ms-lg-auto">
-                    <a class="nav-link" href="#">Register</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link custom-btn btn" href="{% url 'adminpanel_userside:login' %}">Login</a>
-                </li>
-            </ul>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </nav>
 
 <!-- Добавьте этот скрипт перед закрывающим тегом </body> -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    function handleDropdowns() {
-        const dropdowns = document.querySelectorAll('.dropdown-toggle');
-        const isMobile = window.innerWidth < 992;
-        let lastTap = 0;
+    document.addEventListener('DOMContentLoaded', function () {
+        function handleDropdowns() {
+            const dropdowns = document.querySelectorAll('.dropdown-toggle');
+            const isMobile = window.innerWidth < 992;
+            let lastTap = 0;
 
-        dropdowns.forEach(dropdown => {
-            // Очищаем старые обработчики
-            const newDropdown = dropdown.cloneNode(true);
-            dropdown.parentNode.replaceChild(newDropdown, dropdown);
-            
-            if (isMobile) {
-                newDropdown.setAttribute('data-bs-toggle', 'dropdown');
-                
-                // Обработчик для мобильных
-                newDropdown.addEventListener('click', function(e) {
-                    const currentTime = new Date().getTime();
-                    const tapLength = currentTime - lastTap;
-                    const href = this.getAttribute('href');
-                    
-                    if (tapLength < 500 && tapLength > 0) {
-                        // Двойное нажатие - переходим по ссылке
+            dropdowns.forEach(dropdown => {
+                // Очищаем старые обработчики
+                const newDropdown = dropdown.cloneNode(true);
+                dropdown.parentNode.replaceChild(newDropdown, dropdown);
+
+                if (isMobile) {
+                    newDropdown.setAttribute('data-bs-toggle', 'dropdown');
+
+                    // Обработчик для мобильных
+                    newDropdown.addEventListener('click', function (e) {
+                        const currentTime = new Date().getTime();
+                        const tapLength = currentTime - lastTap;
+                        const href = this.getAttribute('href');
+
+                        if (tapLength < 500 && tapLength > 0) {
+                            // Двойное нажатие - переходим по ссылке
+                            if (href) {
+                                window.location.href = href;
+                            }
+                        } else {
+                            // Одиночное нажатие - открываем/закрываем меню
+                            e.preventDefault();
+                        }
+                        lastTap = currentTime;
+                    });
+                } else {
+                    // Для десктопа оставляем простой переход по клику
+                    newDropdown.addEventListener('click', function (e) {
+                        const href = this.getAttribute('href');
                         if (href) {
                             window.location.href = href;
                         }
-                    } else {
-                        // Одиночное нажатие - открываем/закрываем меню
-                        e.preventDefault();
-                    }
-                    lastTap = currentTime;
-                });
-            } else {
-                // Для десктопа оставляем простой переход по клику
-                newDropdown.addEventListener('click', function(e) {
-                    const href = this.getAttribute('href');
-                    if (href) {
-                        window.location.href = href;
-                    }
-                });
-            }
-        });
-    }
+                    });
+                }
+            });
+        }
 
-    handleDropdowns();
-    window.addEventListener('resize', handleDropdowns);
-});
+        handleDropdowns();
+        window.addEventListener('resize', handleDropdowns);
+    });
 </script>
