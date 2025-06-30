@@ -173,3 +173,5 @@ CKEDITOR_5_CONFIGS = {
 SITE_ID = 1
 
 
+LOGIN_URL = '/adminpanel_userside/login/'
+LOGIN_REDIRECT_URL = '/'
