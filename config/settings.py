@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.apple',
     'allauth.socialaccount.providers.linkedin_oauth2',
+    'services_and_projects',
 ]
 
 MIDDLEWARE = [

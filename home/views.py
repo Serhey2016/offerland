@@ -25,8 +25,6 @@ def contacts(request):
     }
     return render(request, 'home/contacts.html', context)
 
-def testpage(request):
-    return render(request, 'home/testpage.html', {'title': 'Test Page'})
 
 def personal_support(request):
     return render(request, 'home/personal_support.html')
@@ -40,5 +38,5 @@ def business_support(request):
 def task_tracker(request):
     return render(request, 'home/task_tracker.html')
 
-def training_and_education(request):
-    return render(request, 'home/training_and_education.html')
+def contdowntimer(request):
+    return render(request, 'home/contdowntimer.html')
