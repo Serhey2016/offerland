@@ -168,88 +168,88 @@
                    
                 </div>
 
-             <div class="col-lg-12 col-12">
-                    {% if no_results %}
-                          <div class="alert alert-warning text-center" role="alert">
-                                  No results found for your search criteria.
-                          </div>
-                     {% else %}
+                <div class="col-lg-12 col-12">
+                        {% if no_results %}
+                            <div class="alert alert-warning text-center" role="alert">
+                                    No results found for your search criteria.
+                            </div>
+                        {% else %}
+                        
                     
-                 
-                    {% for vacancy in page_obj.object_list %}                      
-                    <div class="job-thumb d-flex">
-                        <div class="job-image-wrap bg-white shadow-lg">
-                                    <img src="{{ vacancy.id_company.get_logo }}" class="job-image img-fluid" alt="Logo">
-                        </div>
-    
-                        <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                            <div class="mb-3">
-                                <h4 class="job-title mb-lg-0">
-                                    <a href="{% url 'joblist:jobdetails' vacancy.id %}" class="job-title-link" target="_blank"> {{ vacancy.job_title }}</a>
-                                </h4>
-    
-                                <div class="d-flex flex-wrap align-items-center">
-                                    <p class="job-location mb-0">
-                                        <i class="custom-icon bi-geo-alt me-1"></i>
-                                        {{ vacancy.country.countries }}, {{ vacancy.town_city.town_city }}
-                                    </p>
-    
-                                    <p class="job-date mb-0">
-                                        <i class="custom-icon bi-clock me-1"></i>
-                                        {{ vacancy.posting_date }} 
-                                    </p>
-    
-                                    <p class="job-price mb-0">
-                                        <i class="custom-icon bi-cash me-1"></i>
-                                        £{{ vacancy.salary_1|floatformat:2 }}
-                                    </p>
-    
-                                    <div class="d-flex">
-                                        {% for tag in vacancy.tags.all|slice:":2" %}
-                                        <p class="mb-0">
-                                            <a href="#" class="badge badge-level">{{ tag.tag }}</a>
+                        {% for vacancy in page_obj.object_list %}                      
+                        <div class="job-thumb d-flex">
+                            <div class="job-image-wrap bg-white shadow-lg">
+                                        <img src="{{ vacancy.id_company.get_logo }}" class="job-image img-fluid" alt="Logo">
+                            </div>
+        
+                            <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
+                                <div class="mb-3">
+                                    <h4 class="job-title mb-lg-0">
+                                        <a href="{% url 'joblist:jobdetails' vacancy.id %}" class="job-title-link" target="_blank"> {{ vacancy.job_title }}</a>
+                                    </h4>
+        
+                                    <div class="d-flex flex-wrap align-items-center">
+                                        <p class="job-location mb-0">
+                                            <i class="custom-icon bi-geo-alt me-1"></i>
+                                            {{ vacancy.country.countries }}, {{ vacancy.town_city.town_city }}
                                         </p>
-                                         {% endfor %}
+        
+                                        <p class="job-date mb-0">
+                                            <i class="custom-icon bi-clock me-1"></i>
+                                            {{ vacancy.posting_date }} 
+                                        </p>
+        
+                                        <p class="job-price mb-0">
+                                            <i class="custom-icon bi-cash me-1"></i>
+                                            £{{ vacancy.salary_1|floatformat:2 }}
+                                        </p>
+        
+                                        <div class="d-flex">
+                                            {% for tag in vacancy.tags.all|slice:":2" %}
+                                            <p class="mb-0">
+                                                <a href="#" class="badge badge-level">{{ tag.tag }}</a>
+                                            </p>
+                                            {% endfor %}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-    
-                            <div class="job-section-btn-wrap">
-                                <a href="{% url 'joblist:jobdetails' vacancy.id %}" class="custom-btn btn" target="_blank">View</a>
+        
+                                <div class="job-section-btn-wrap">
+                                    <a href="{% url 'joblist:jobdetails' vacancy.id %}" class="custom-btn btn" target="_blank">View</a>
+                                </div>
                             </div>
                         </div>
+                
+                        {% endfor %}
+                            <nav>
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% for num in page_obj.paginator.page_range %}
+                                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endfor %}
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
                     </div>
-             
-                    {% endfor %}
-                        <nav>
-                            <ul class="pagination">
-                                {% if page_obj.has_previous %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                {% for num in page_obj.paginator.page_range %}
-                                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                    </li>
-                                {% endfor %}
-                                {% if page_obj.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
-                    {% endif %}
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
 <section class="cta-section">
