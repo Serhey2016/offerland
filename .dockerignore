@@ -5,3 +5,5 @@ __pycache__/
 .env
 .git
 .venv
+user_data/services_photos/
+media/

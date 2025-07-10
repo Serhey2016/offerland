@@ -1,4 +1,4 @@
-from django.db import migrations, models
+from django.db import models
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from joblist.models import AllTags
@@ -13,8 +13,8 @@ class TypeOfTask(models.Model):
         return self.type_of_task_name
 
     class Meta:
-        verbose_name = "Тип задачи"
-        verbose_name_plural = "Типы задач"
+        verbose_name = "Type of task"
+        verbose_name_plural = "Type of tasks"
 
 
 def create_initial_data(apps, schema_editor):
@@ -26,28 +26,6 @@ def create_initial_data(apps, schema_editor):
         TypeOfTask.objects.get_or_create(id=idx, defaults={'type_of_task_name': name})
 
 
-def create_initial_type_of_tasks(apps, schema_editor):
-    TypeOfTask = apps.get_model('services_and_projects', 'TypeOfTask')
-    data_list = [
-        "My list (task)",
-        "Tender",
-        "Project",
-        "Adversting",
-        "time slot",
-    ]
-    for name in data_list:
-        TypeOfTask.objects.get_or_create(type_of_task_name=name)
-
-
-class Migration(migrations.Migration):
-    dependencies = [
-        ('your_app', 'previous_migration'),  # замени на последнюю миграцию своего приложения
-    ]
-
-    operations = [
-        migrations.RunPython(create_initial_data),
-        migrations.RunPython(create_initial_type_of_tasks),
-    ]
 
 
 class Comment(models.Model):
@@ -60,11 +38,11 @@ class Comment(models.Model):
     )
     content = models.CharField(
         max_length=300,
-        verbose_name="Содержание комментария"
+        verbose_name="Context"
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name="Дата создания"
+        verbose_name="Created_date"
     )
     parent = models.ForeignKey(
         'self',
@@ -72,15 +50,15 @@ class Comment(models.Model):
         null=True,
         blank=True,
         related_name='replies',
-        verbose_name="Родительский комментарий"
+        verbose_name="Parent"
     )
 
     def __str__(self):
-        return f"Комментарий от {self.author} — {self.content[:30]}..."
+        return f"Comment from {self.author} — {self.content[:30]}..."
 
     class Meta:
-        verbose_name = "Комментарий"
-        verbose_name_plural = "Комментарии"
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
         ordering = ['-created_at']
 
 
@@ -92,22 +70,8 @@ class TaskStatus(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "Статус задачи"
-        verbose_name_plural = "Статусы задач"
-
-
-def create_initial_statuses(apps, schema_editor):
-    TaskStatus = apps.get_model('your_app', 'TaskStatus')
-    statuses = [
-        "Saved (inbox)",
-        "In progress (Next)",
-        "Projects",
-        "Delegated (Waiting)",
-        "Someday/Maybe",
-        "Completed"
-    ]
-    for status in statuses:
-        TaskStatus.objects.get_or_create(name=status)
+        verbose_name = "Task Status"
+        verbose_name_plural = "Task Statuses"
 
 
 class ServicesCategory(models.Model):
@@ -118,23 +82,18 @@ class ServicesCategory(models.Model):
         return self.category_name
 
     class Meta:
-        verbose_name = "Категория сервиса"
-        verbose_name_plural = "Категории сервисов"
-
-
-
+        verbose_name = "Services Category"
+        verbose_name_plural = "Services Categories"
 
 
 class PhotoRelations(models.Model):
     id = models.AutoField(primary_key=True)
-    photo_location = models.CharField(max_length=555)
-    task = models.ForeignKey('Task', on_delete=models.CASCADE, blank=True, null=True)
-    advertising = models.ForeignKey('Advertising', on_delete=models.CASCADE, blank=True, null=True)
+    photo = models.ImageField(upload_to='user_data/services_photos/', null=True, blank=True)  # разрешаем null и blank
 
     class Meta:
         db_table = 'photo_relations'
-        verbose_name = "Фото"
-        verbose_name_plural = "Фотографии"
+        verbose_name = "Photo Relation"
+        verbose_name_plural = "Photos"
 
 
 class Services(models.Model):
@@ -148,8 +107,8 @@ class Services(models.Model):
 
     class Meta:
         db_table = 'services'
-        verbose_name = "Сервис"
-        verbose_name_plural = "Сервисы"
+        verbose_name = "Service"
+        verbose_name_plural = "Services"
 
 
 class Finance(models.Model):
@@ -161,8 +120,8 @@ class Finance(models.Model):
         return f"{self.amount} {self.currency}"
 
     class Meta:
-        verbose_name = "Финансы"
-        verbose_name_plural = "Финансы"
+        verbose_name = "Finance"
+        verbose_name_plural = "Finances"
 
 
 class Task(models.Model):
@@ -199,8 +158,8 @@ class Task(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = "Задача"
-        verbose_name_plural = "Задачи"
+        verbose_name = "Task"
+        verbose_name_plural = "Tasks"
 
 
 class HashtagRelations(models.Model):
@@ -211,8 +170,8 @@ class HashtagRelations(models.Model):
     class Meta:
         db_table = 'hashtag_relations'
         unique_together = ('task', 'hashtag')
-        verbose_name = "Связь задачи с тегом"
-        verbose_name_plural = "Связи задач с тегами"
+        verbose_name = "Linking a task to a tag"
+        verbose_name_plural = "Linking a task to a tags"
 
 
 class PerformersRelations(models.Model):
@@ -224,8 +183,8 @@ class PerformersRelations(models.Model):
     class Meta:
         db_table = 'performers_relations'
         unique_together = ('user', 'task')
-        verbose_name = "Исполнитель задачи"
-        verbose_name_plural = "Исполнители задач"
+        verbose_name = "Task Performer relation"
+        verbose_name_plural = "Task Performer relations"
 
 
 class CommentTaskRelations(models.Model):
@@ -236,8 +195,8 @@ class CommentTaskRelations(models.Model):
     class Meta:
         db_table = 'comment_task_relations'
         unique_together = ('comment', 'task')
-        verbose_name = "Комментарий к задаче"
-        verbose_name_plural = "Комментарии к задачам"
+        verbose_name = "Comment to the task"
+        verbose_name_plural = "Comment tasks relations"
 
 
 class ServicesRelations(models.Model):
@@ -248,8 +207,8 @@ class ServicesRelations(models.Model):
     class Meta:
         db_table = 'services_relations'
         unique_together = ('service', 'task')
-        verbose_name = "Сервис задачи"
-        verbose_name_plural = "Сервисы задач"
+        verbose_name = "Services relation"
+        verbose_name_plural = "Services relations"
 
 
 class TaskOwnerRelations(models.Model):
@@ -260,8 +219,8 @@ class TaskOwnerRelations(models.Model):
     class Meta:
         db_table = 'task_owner_relations'
         unique_together = ('task', 'user')
-        verbose_name = "Владелец задачи"
-        verbose_name_plural = "Владельцы задач"
+        verbose_name = "Task owner relation"
+        verbose_name_plural = "Task owner relations"
 
 
 class TimeSlot(models.Model):
@@ -283,8 +242,8 @@ class TimeSlot(models.Model):
 
     class Meta:
         db_table = 'time_slots'
-        verbose_name = "Временной слот"
-        verbose_name_plural = "Временные слоты"
+        verbose_name = "time slot"
+        verbose_name_plural = "time slots"
 
 
 class Advertising(models.Model):
@@ -301,8 +260,8 @@ class Advertising(models.Model):
 
     class Meta:
         db_table = 'advertising'
-        verbose_name = "Реклама"
-        verbose_name_plural = "Рекламы"
+        verbose_name = "Advertising feed"
+        verbose_name_plural = "Advertising feeds"
 
 
 class TaskClientRelations(models.Model):
@@ -313,19 +272,7 @@ class TaskClientRelations(models.Model):
     class Meta:
         db_table = 'task_client_relations'
         unique_together = ('task', 'client')
-        verbose_name = "Клиент задачи"
-        verbose_name_plural = "Клиенты задач"
+        verbose_name = "Task Client relation"
+        verbose_name_plural = "Task Client relations"
 
 
-def create_initial_task_statuses(apps, schema_editor):
-    TaskStatus = apps.get_model('services_and_projects', 'TaskStatus')
-    statuses = [
-        "Saved (inbox)",
-        "In progress (Next)",
-        "Projects",
-        "Delegated (Waiting)",
-        "Someday/Maybe",
-        "Completed"
-    ]
-    for status in statuses:
-        TaskStatus.objects.get_or_create(name=status)
