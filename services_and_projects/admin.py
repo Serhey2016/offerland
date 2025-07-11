@@ -1,12 +1,21 @@
 from django.contrib import admin
 from .models import (
     TypeOfTask, Comment, TaskStatus, ServicesCategory, PhotoRelations, Services, Finance, Task,
-    HashtagRelations, PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
+    TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations, 
+    PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
     TimeSlot, Advertising, TaskClientRelations
 )
 
-class HashtagRelationsInline(admin.TabularInline):
-    model = HashtagRelations
+class TaskHashtagRelationsInline(admin.TabularInline):
+    model = TaskHashtagRelations
+    extra = 1
+
+class AdvertisingHashtagRelationsInline(admin.TabularInline):
+    model = AdvertisingHashtagRelations
+    extra = 1
+
+class TimeSlotHashtagRelationsInline(admin.TabularInline):
+    model = TimeSlotHashtagRelations
     extra = 1
 
 class PerformersRelationsInline(admin.TabularInline):
@@ -18,7 +27,13 @@ class ServicesRelationsInline(admin.TabularInline):
     extra = 1
 
 class TaskAdmin(admin.ModelAdmin):
-    inlines = [HashtagRelationsInline, PerformersRelationsInline, ServicesRelationsInline]
+    inlines = [TaskHashtagRelationsInline, PerformersRelationsInline, ServicesRelationsInline]
+
+class AdvertisingAdmin(admin.ModelAdmin):
+    inlines = [AdvertisingHashtagRelationsInline]
+
+class TimeSlotAdmin(admin.ModelAdmin):
+    inlines = [TimeSlotHashtagRelationsInline]
 
 admin.site.register(TypeOfTask)
 admin.site.register(Comment)
@@ -28,11 +43,13 @@ admin.site.register(PhotoRelations)
 admin.site.register(Services)
 admin.site.register(Finance)
 admin.site.register(Task, TaskAdmin)
-admin.site.register(HashtagRelations)
+admin.site.register(TaskHashtagRelations)
+admin.site.register(AdvertisingHashtagRelations)
+admin.site.register(TimeSlotHashtagRelations)
 admin.site.register(PerformersRelations)
 admin.site.register(CommentTaskRelations)
 admin.site.register(ServicesRelations)
 admin.site.register(TaskOwnerRelations)
-admin.site.register(TimeSlot)
-admin.site.register(Advertising)
+admin.site.register(TimeSlot, TimeSlotAdmin)
+admin.site.register(Advertising, AdvertisingAdmin)
 admin.site.register(TaskClientRelations)

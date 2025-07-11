@@ -17,15 +17,6 @@ class TypeOfTask(models.Model):
         verbose_name_plural = "Type of tasks"
 
 
-def create_initial_data(apps, schema_editor):
-    TypeOfTask = apps.get_model('your_app', 'TypeOfTask')
-    data_list = [
-        "My list", "Tender", "Project", "Advertising", "Time Slot", "Job search"
-    ]
-    for idx, name in enumerate(data_list, start=1):
-        TypeOfTask.objects.get_or_create(id=idx, defaults={'type_of_task_name': name})
-
-
 
 
 class Comment(models.Model):
@@ -64,7 +55,7 @@ class Comment(models.Model):
 
 class TaskStatus(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=18, unique=True)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
@@ -76,7 +67,7 @@ class TaskStatus(models.Model):
 
 class ServicesCategory(models.Model):
     id = models.AutoField(primary_key=True)
-    category_name = models.CharField(max_length=25, unique=True)
+    category_name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.category_name
@@ -148,7 +139,7 @@ class Task(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subtasks')
     
     # Связи многие ко многим через промежуточные таблицы
-    hashtags = models.ManyToManyField('joblist.AllTags', through='HashtagRelations', blank=True)
+    hashtags = models.ManyToManyField('joblist.AllTags', through='TaskHashtagRelations', blank=True)
     performers = models.ManyToManyField(User, through='PerformersRelations', blank=True)
     comments = models.ManyToManyField('Comment', through='CommentTaskRelations', blank=True)
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='tasks')
@@ -162,16 +153,40 @@ class Task(models.Model):
         verbose_name_plural = "Tasks"
 
 
-class HashtagRelations(models.Model):
+class TaskHashtagRelations(models.Model):
     id = models.AutoField(primary_key=True)
     task = models.ForeignKey('Task', on_delete=models.CASCADE)
     hashtag = models.ForeignKey('joblist.AllTags', on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'hashtag_relations'
+        db_table = 'task_hashtag_relations'
         unique_together = ('task', 'hashtag')
-        verbose_name = "Linking a task to a tag"
-        verbose_name_plural = "Linking a task to a tags"
+        verbose_name = "Task hashtag relation"
+        verbose_name_plural = "Task hashtag relations"
+
+
+class AdvertisingHashtagRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    advertising = models.ForeignKey('Advertising', on_delete=models.CASCADE)
+    hashtag = models.ForeignKey('joblist.AllTags', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'advertising_hashtag_relations'
+        unique_together = ('advertising', 'hashtag')
+        verbose_name = "Advertising hashtag relation"
+        verbose_name_plural = "Advertising hashtag relations"
+
+
+class TimeSlotHashtagRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    time_slot = models.ForeignKey('TimeSlot', on_delete=models.CASCADE)
+    hashtag = models.ForeignKey('joblist.AllTags', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'timeslot_hashtag_relations'
+        unique_together = ('time_slot', 'hashtag')
+        verbose_name = "TimeSlot hashtag relation"
+        verbose_name_plural = "TimeSlot hashtag relations"
 
 
 class PerformersRelations(models.Model):
@@ -229,7 +244,7 @@ class TimeSlot(models.Model):
     date_end = models.DateField()
     time_start = models.TimeField()
     time_end = models.TimeField()
-    hashtags = models.ManyToManyField('joblist.AllTags', blank=True)
+    hashtags = models.ManyToManyField('joblist.AllTags', through='TimeSlotHashtagRelations', blank=True)
     reserved_time_on_road = models.IntegerField()  # В минутах
     start_location = models.CharField(max_length=100)  # Почтовый индекс
     cost_of_1_hour_of_work = models.DecimalField(max_digits=10, decimal_places=2)  # В центах
@@ -250,7 +265,7 @@ class Advertising(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000)
-    hashtags = models.ManyToManyField('joblist.AllTags', blank=True)
+    hashtags = models.ManyToManyField('joblist.AllTags', through='AdvertisingHashtagRelations', blank=True)
     services = models.ForeignKey('Services', on_delete=models.CASCADE)
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)  # Добавлена связь с TypeOfTask
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='advertisings')

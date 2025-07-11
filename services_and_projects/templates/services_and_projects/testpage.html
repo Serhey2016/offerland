@@ -2,829 +2,627 @@
 {% load static %}
 
 {% comment %}http://localhost:8000/blog/about/{% endcomment %}
- {% block extra_head %}
-        <link href="{% static 'css/servoces_and_projects.css' %}" rel="stylesheet">
-        <link href="{% static 'css/serv_and_proj_empty_form.css' %}" rel="stylesheet">
-        <link href="{% static 'css/chat_styles.css' %}" rel="stylesheet">
-        
+{% block extra_head %}
+<link href="{% static 'css/servoces_and_projects.css' %}" rel="stylesheet">
+<link href="{% static 'css/serv_and_proj_empty_form.css' %}" rel="stylesheet">
+<link href="{% static 'css/chat_styles.css' %}" rel="stylesheet">
+
 {% endblock %}
 
 
 {% block content %}
-  <section class="">
+<section class="">
     <div class="container">
-      <div class="filter_search_container">
-        <div class="filter_search_container_content_left_side">
-          <button class="filter_button">
-            <svg id="Group_4032" data-name="Group 4032" xmlns="http://www.w3.org/2000/svg" width="66.148" height="52.918" viewBox="0 0 66.148 52.918">
-              <path id="Path_5232" data-name="Path 5232" d="M45,11H2v6.615H45Z" transform="translate(-2 12.152)" fill="#fff" />
-              <path id="Path_5233" data-name="Path 5233" d="M52,6H9v6.615H52Z" transform="translate(14.152 0.615)" fill="#fff" />
-              <path id="Path_5234" data-name="Path 5234" d="M52,16H9v6.615H52Z" transform="translate(14.152 23.689)" fill="#fff" />
-              <path id="Path_5235" data-name="Path 5235" d="M15.23,23.844h6.615V4H15.23v6.615H2V17.23H15.23Z" transform="translate(-2 -4)" fill="#fff" />
-              <path id="Path_5236" data-name="Path 5236" d="M15.23,20.615H2V27.23H15.23v6.615h6.615V14H15.23Z" transform="translate(-2 19.074)" fill="#fff" />
-              <path id="Path_5237" data-name="Path 5237" d="M22.615,9H16V28.844h6.615V22.23h13.23V15.615H22.615Z" transform="translate(30.304 7.537)" fill="#fff" />
+        <div class="filter_search_container">
+            <div class="filter_search_container_content_left_side">
+                <button class="filter_button">
+                    <svg id="Group_4032" data-name="Group 4032" xmlns="http://www.w3.org/2000/svg" width="66.148"
+                        height="52.918" viewBox="0 0 66.148 52.918">
+                        <path id="Path_5232" data-name="Path 5232" d="M45,11H2v6.615H45Z"
+                            transform="translate(-2 12.152)" fill="#fff" />
+                        <path id="Path_5233" data-name="Path 5233" d="M52,6H9v6.615H52Z"
+                            transform="translate(14.152 0.615)" fill="#fff" />
+                        <path id="Path_5234" data-name="Path 5234" d="M52,16H9v6.615H52Z"
+                            transform="translate(14.152 23.689)" fill="#fff" />
+                        <path id="Path_5235" data-name="Path 5235" d="M15.23,23.844h6.615V4H15.23v6.615H2V17.23H15.23Z"
+                            transform="translate(-2 -4)" fill="#fff" />
+                        <path id="Path_5236" data-name="Path 5236" d="M15.23,20.615H2V27.23H15.23v6.615h6.615V14H15.23Z"
+                            transform="translate(-2 19.074)" fill="#fff" />
+                        <path id="Path_5237" data-name="Path 5237"
+                            d="M22.615,9H16V28.844h6.615V22.23h13.23V15.615H22.615Z" transform="translate(30.304 7.537)"
+                            fill="#fff" />
+                    </svg>
+                </button>
+
+                <form class="search_form">
+                    <input type="text" class="search_input" placeholder="Search..." />
+                    <button type="submit" class="search_button">
+                        <svg class="search_form_search_button" width="20" height="20" viewBox="0 0 20 20">
+                            <path
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            <div class="filter_search_container_content_right_side">
+                <div class="Amount_counted">
+                    <div class="Amount_counted_main_icon">£</div>
+                    <div class="Amount_counted_text_digits">
+                        <span class="Amount_counted_amount">Earned</span>
+                        <span class="Amount_counted_value">800000</span>
+                    </div>
+                </div>
+
+                <div class="contracts_counted">
+                    <div class="contracts_counted_main_icon">
+                        <svg id="service-contract" xmlns="http://www.w3.org/2000/svg" width="34.802" height="39.586"
+                            viewBox="0 0 34.802 39.586">
+                            <path id="Path_5230" data-name="Path 5230"
+                                d="M47.752,23.046l-7.519-7.519a.731.731,0,0,0-.57-.228.779.779,0,0,0-.8.8v6.038a2.285,2.285,0,0,0,2.278,2.278h6.038a.779.779,0,0,0,.8-.8A.731.731,0,0,0,47.752,23.046Zm.228,5.924a1.143,1.143,0,0,0-1.139-1.139H38.866a3.428,3.428,0,0,1-3.418-3.418V16.439A1.143,1.143,0,0,0,34.309,15.3H22.918A3.428,3.428,0,0,0,19.5,18.718v27.34a3.428,3.428,0,0,0,3.418,3.418H34.48c.911,0,1.139-.627,1.082-1.595a11.655,11.655,0,0,1,2.449-8.43c2.848-3.3,7.519-3.531,8.2-3.531s1.823-.057,1.766-1.025S47.979,28.97,47.979,28.97ZM23.487,22.477l2.791-.4c.057,0,.171-.057.171-.114L27.7,19.4a.267.267,0,0,1,.456,0l1.253,2.563c.057.057.114.114.171.114l2.791.4c.171.057.285.285.114.4l-2.051,1.994c-.057.057-.057.114-.057.228l.456,2.791a.223.223,0,0,1-.342.228l-2.506-1.31a.173.173,0,0,0-.228,0l-2.506,1.31a.223.223,0,0,1-.342-.228l.456-2.791a.342.342,0,0,0-.057-.228l-2.051-1.994C23.2,22.762,23.316,22.534,23.487,22.477ZM33.74,41.5A1.143,1.143,0,0,1,32.6,42.64H25.2A1.143,1.143,0,0,1,24.057,41.5V40.362A1.143,1.143,0,0,1,25.2,39.223h7.4a1.143,1.143,0,0,1,1.139,1.139Zm6.265-6.835a1.143,1.143,0,0,1-1.139,1.139H25.2a1.143,1.143,0,0,1-1.139-1.139V33.527A1.143,1.143,0,0,1,25.2,32.388h13.67a1.143,1.143,0,0,1,1.139,1.139Z"
+                                transform="translate(-19.5 -15.3)" fill="#282d3b" />
+                            <path id="Path_5231" data-name="Path 5231"
+                                d="M60.145,56.2a8.145,8.145,0,1,0,8.145,8.145A8.143,8.143,0,0,0,60.145,56.2Zm1.424,8.886a2.86,2.86,0,0,1-.684-.114l-3.133,3.076a.9.9,0,0,1-.684.285.83.83,0,0,1-.684-.285,1.039,1.039,0,0,1,0-1.367l3.133-3.133a2.048,2.048,0,0,1-.114-.627,2.536,2.536,0,0,1,2.449-2.734,2.859,2.859,0,0,1,.684.114c.114,0,.114.114.057.228l-1.367,1.424a.214.214,0,0,0,0,.342l.968.968a.275.275,0,0,0,.4,0L63.961,61.9c.057-.057.228-.057.228.057a2.859,2.859,0,0,1,.114.684A2.536,2.536,0,0,1,61.569,65.086Z"
+                                transform="translate(-33.488 -32.904)" fill="#282d3b" />
+                        </svg>
+                    </div>
+                    <div class="contracts_counted_text_digits">
+                        <span class="contracts_counted_amount">Finished</span>
+                        <span class="contracts_counted_value">23</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="">
+    <div class="container">
+        there no any services or projects yet
+
+
+
+    </div>
+    <div class="container">
+        there no any services or projects yet
+
+
+
+    </div>
+    <div class="container">
+        there no any services or projects yet
+
+
+
+    </div>
+    <div class="container">
+        there no any services or projects yet
+
+
+
+    </div>
+    <div class="container">
+        there no any services or projects yet
+
+
+
+    </div>
+</section>
+
+
+
+{% comment %} Форма создания задач {% endcomment %}
+<div class="modal-overlay" style="display: none;">
+    <div class="modal-form">
+        <button class="close-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
             </svg>
-          </button>
+        </button>
 
-          <form class="search_form">
-            <input type="text" class="search_input" placeholder="Search..." />
-            <button type="submit" class="search_button">
-              <svg class="search_form_search_button" width="20" height="20" viewBox="0 0 20 20">
-                <path d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
-              </svg>
-            </button>
-          </form>
-        </div>
-        <div class="filter_search_container_content_right_side">
-          <div class="Amount_counted">
-            <div class="Amount_counted_main_icon">£</div>
-            <div class="Amount_counted_text_digits">
-              <span class="Amount_counted_amount">Earned</span>
-              <span class="Amount_counted_value">800000</span>
+        <form class="project-form" method="post" enctype="multipart/form-data" action="{% url 'services_and_projects:submit_form' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="publish-in">Will published in</label>
+                <select id="publish-in" name="type_of_task" required>
+                    <option value="">-- Select type --</option>
+                    {% for t in types %}
+                    <option value="{{ t.id }}">{{ t.type_of_task_name }}</option>
+                    {% endfor %}
+                </select>
             </div>
-          </div>
 
-          <div class="contracts_counted">
-            <div class="contracts_counted_main_icon">
-              <svg id="service-contract" xmlns="http://www.w3.org/2000/svg" width="34.802" height="39.586" viewBox="0 0 34.802 39.586">
-                <path id="Path_5230" data-name="Path 5230" d="M47.752,23.046l-7.519-7.519a.731.731,0,0,0-.57-.228.779.779,0,0,0-.8.8v6.038a2.285,2.285,0,0,0,2.278,2.278h6.038a.779.779,0,0,0,.8-.8A.731.731,0,0,0,47.752,23.046Zm.228,5.924a1.143,1.143,0,0,0-1.139-1.139H38.866a3.428,3.428,0,0,1-3.418-3.418V16.439A1.143,1.143,0,0,0,34.309,15.3H22.918A3.428,3.428,0,0,0,19.5,18.718v27.34a3.428,3.428,0,0,0,3.418,3.418H34.48c.911,0,1.139-.627,1.082-1.595a11.655,11.655,0,0,1,2.449-8.43c2.848-3.3,7.519-3.531,8.2-3.531s1.823-.057,1.766-1.025S47.979,28.97,47.979,28.97ZM23.487,22.477l2.791-.4c.057,0,.171-.057.171-.114L27.7,19.4a.267.267,0,0,1,.456,0l1.253,2.563c.057.057.114.114.171.114l2.791.4c.171.057.285.285.114.4l-2.051,1.994c-.057.057-.057.114-.057.228l.456,2.791a.223.223,0,0,1-.342.228l-2.506-1.31a.173.173,0,0,0-.228,0l-2.506,1.31a.223.223,0,0,1-.342-.228l.456-2.791a.342.342,0,0,0-.057-.228l-2.051-1.994C23.2,22.762,23.316,22.534,23.487,22.477ZM33.74,41.5A1.143,1.143,0,0,1,32.6,42.64H25.2A1.143,1.143,0,0,1,24.057,41.5V40.362A1.143,1.143,0,0,1,25.2,39.223h7.4a1.143,1.143,0,0,1,1.139,1.139Zm6.265-6.835a1.143,1.143,0,0,1-1.139,1.139H25.2a1.143,1.143,0,0,1-1.139-1.139V33.527A1.143,1.143,0,0,1,25.2,32.388h13.67a1.143,1.143,0,0,1,1.139,1.139Z" transform="translate(-19.5 -15.3)" fill="#282d3b" />
-                <path id="Path_5231" data-name="Path 5231" d="M60.145,56.2a8.145,8.145,0,1,0,8.145,8.145A8.143,8.143,0,0,0,60.145,56.2Zm1.424,8.886a2.86,2.86,0,0,1-.684-.114l-3.133,3.076a.9.9,0,0,1-.684.285.83.83,0,0,1-.684-.285,1.039,1.039,0,0,1,0-1.367l3.133-3.133a2.048,2.048,0,0,1-.114-.627,2.536,2.536,0,0,1,2.449-2.734,2.859,2.859,0,0,1,.684.114c.114,0,.114.114.057.228l-1.367,1.424a.214.214,0,0,0,0,.342l.968.968a.275.275,0,0,0,.4,0L63.961,61.9c.057-.057.228-.057.228.057a2.859,2.859,0,0,1,.114.684A2.536,2.536,0,0,1,61.569,65.086Z" transform="translate(-33.488 -32.904)" fill="#282d3b" />
-              </svg>
+            <!-- Time slot group (hidden by default) -->
+            <div id="time-slot-group" class="time_slot_group">
+                <div class=" time-slot-group-title">Time - slot:</div>
+                <div class="time-slot-group-inputs">
+                    <div class="date_time_slot">
+                        <div class="date-slot-group-inputs">Date</div>
+                        <input type="date" id="date1" name="date1" class="date-time-slot-input" style="margin-bottom:6px;">
+                        <input type="date" id="date2" name="date2" class="date-time-slot-input2">
+                    </div>
+                    <div class="time_time_slot">
+                        <div class="time-slot-group_time">Time</div>
+                        <input type="time" id="time1" name="time1" class="time-time-slot-input">
+                        <input type="time" id="time2" name="time2" class="time-time-slot-input2">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ts-hashtags">Hashtags:</label>
+                    <input type="text" id="ts-hashtags" name="ts-hashtags" placeholder="Enter tags separated by comma">
+                </div>
+
+                <div class="form-group">
+                    <label for="reserved-time">Reserved time on road:</label>
+                    <input type="text" id="reserved-time" name="reserved_time" placeholder="e.g. 30 min">
+                </div>
+                <div class="form-group">
+                    <label for="start-location">Start location:</label>
+                    <input type="text" id="start-location" name="start_location" placeholder="Enter start location">
+                </div>
+                <div class="form-group">
+                    <label for="cost-hour">Cost of one hour of work in £:</label>
+                    <input type="number" id="cost-hour" name="cost_hour" placeholder="e.g. 100">
+                </div>
+                <div class="form-group">
+                    <label for="min-slot">Minimum slot (hours) :</label>
+                    <input type="number" id="min-slot" name="min_slot" placeholder="e.g. 1 hour">
+                </div>
+                <div class="form-group">
+                    <label for="ts-services">Services:</label>
+                    <input type="text" id="ts-services" name="ts-services" placeholder="Describe services">
+                </div>
             </div>
-            <div class="contracts_counted_text_digits">
-              <span class="contracts_counted_amount">Finished</span>
-              <span class="contracts_counted_value">23</span>
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required>
             </div>
-          </div>
-        </div>
-      </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="photos">Photos</label>
+                <input type="text" id="photos-link" name="photos-link" placeholder="link to google drive" style="margin-bottom:12px;">
+                <div style="text-align:center;font-weight:600;color:#282d3b;margin-bottom:8px;">or</div>
+                <div class="file-upload-area" id="photos-upload">
+                    <input type="file" id="photos" name="photos" multiple accept="image/*">
+                    <div class="drop-zone">
+                        <p>Drop files here or click to upload</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="">-- Select category --</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="service">Service</label>
+                <select id="service" name="service" required>
+                    <option value="">-- Select service --</option>
+                    {% for serv in services %}
+                    <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="hashtags-input">Hashtags:</label>
+                <div id="hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
+                    <input type="text" id="hashtags-input" placeholder="Start typing tag..." autocomplete="off" style="border: none; outline: none; flex: 1; min-width: 120px; background: transparent;">
+                </div>
+                <div id="hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+            </div>
+            <input type="hidden" name="hashtags" id="hashtags-hidden">
+
+            <div id="form-extend-toggle" class="form-extend-toggle" style="display:none;">
+                <button type="button" class="extend-btn">
+                    <span class="extend-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="36.130" height="27.194" viewBox="0 0 45.162 33.992">
+                            <defs>
+                                <filter id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24" x="0" y="0"
+                                    width="45.162" height="33.992" filterUnits="userSpaceOnUse">
+                                    <feOffset dy="3" input="SourceAlpha" />
+                                    <feGaussianBlur stdDeviation="3" result="blur" />
+                                    <feFlood flood-opacity="0.161" />
+                                    <feComposite operator="in" in2="blur" />
+                                    <feComposite in="SourceGraphic" />
+                                </filter>
+                                <filter id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-2" x="0" y="0"
+                                    width="45.162" height="33.992" filterUnits="userSpaceOnUse">
+                                    <feOffset dy="3" input="SourceAlpha" />
+                                    <feGaussianBlur stdDeviation="3" result="blur-2" />
+                                    <feFlood flood-opacity="0.161" result="color" />
+                                    <feComposite operator="out" in="SourceGraphic" in2="blur-2" />
+                                    <feComposite operator="in" in="color" />
+                                    <feComposite operator="in" in2="SourceGraphic" />
+                                </filter>
+                            </defs>
+                            <g data-type="innerShadowGroup">
+                                <g transform="matrix(1, 0, 0, 1, 0, 0)"
+                                    filter="url(#arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24)">
+                                    <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-3"
+                                        data-name="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
+                                        d="M13.581,27.162,0,13.581,13.581,0l2.411,2.411L4.821,13.581l11.17,11.17Z"
+                                        transform="translate(36.16 6) rotate(90)" />
+                                </g>
+                                <g transform="matrix(1, 0, 0, 1, 0, 0)"
+                                    filter="url(#arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-2)">
+                                    <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-4"
+                                        data-name="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
+                                        d="M13.581,27.162,0,13.581,13.581,0l2.411,2.411L4.821,13.581l11.17,11.17Z"
+                                        transform="translate(36.16 6) rotate(90)" fill="#fff" />
+                                </g>
+                            </g>
+                        </svg>
+                    </span>
+                    <span>Extend</span>
+                </button>
+            </div>
+
+            <div id="form-extended-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="client">Client</label>
+                    <input type="text" id="client" name="client">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="date-start">Date and time start</label>
+                        <input type="date" id="date-start" name="date_start">
+                        <input type="time" id="time-start" name="time_start" style="margin-top:6px;">
+                    </div>
+                    <div class="form-group half">
+                        <label for="date-end">Date and time end</label>
+                        <input type="date" id="date-end" name="date_end">
+                        <input type="time" id="time-end" name="time_end" style="margin-top:6px;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="documents">Documents</label>
+                    <input type="url" id="documents" name="documents" placeholder="Enter document link">
+                </div>
+
+                <div class="form-group">
+                    <label for="performers">Performer(s)</label>
+                    <div class="performers-input-group">
+                        <input type="text" id="performers" name="performers" placeholder="Add performer" autocomplete="off">
+                        <div class="performers-dropdown" id="performers-dropdown">
+                            <div class="dropdown-item need-performer">Need a performer</div>
+                        </div>
+                    </div>
+                    <div class="performers-list"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Add status</label>
+                    <select id="status" name="status">
+                        <option value="">-- Select status --</option>
+                        {% for status in statuses %}
+                            <option value="{{ status.id }}">{{ status.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-included">Project (task) included</label>
+                    <select id="project-included" name="project-included">
+                        <option value="">Empty</option>
+                    </select>
+                </div>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="private" name="private">
+                    <label for="private">Make private</label>
+                </div>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="disclose-name-1" name="disclose_name_1">
+                    <label for="disclose-name-1">Disclose your name (company) when publishing</label>
+                </div>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="disclose-name-2" name="disclose_name_2">
+                    <label for="disclose-name-2">Hidden (visible just for you)</label>
+                </div>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="disclose-name" name="disclose_name">
+                    <label for="disclose-name">offline</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="post-code">Post code</label>
+                    <input type="text" id="post-code" name="post_code" placeholder="post-code">
+                </div>
+
+                <div class="form-group">
+                    <label for="street_details">Street details</label>
+                    <input type="text" id="street_details" name="street_details" placeholder="Street details">
+                </div>
+
+                <div class="form-group">
+                    <label for="comment">Comment</label>
+                    <textarea id="comment" name="comment" rows="4"></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Publish £ 35</button>
+                <button type="button" class="btn btn-secondary">Save</button>
+            </div>
+        </form>
     </div>
-  </section>
+</div>
 
-  <section class="">
-    <div class="container">
-      there no any services or projects yet
-      
-        
-
-    </div>
-    <div class="container">
-      there no any services or projects yet
-      
-        
-
-    </div>
-    <div class="container">
-      there no any services or projects yet
-      
-        
-
-    </div>
-    <div class="container">
-      there no any services or projects yet
-      
-        
-
-    </div>
-    <div class="container">
-      there no any services or projects yet
-      
-        
-
-    </div>
-  </section>
-
-
-
-  {% comment %} Форма создания задач {% endcomment %}
-  <div class="modal-overlay" style="display: none;">
-      <div class="modal-form">
-          <button class="close-btn">
-              <svg width="24" height="24" viewBox="0 0 24 24">
-                  <path
-                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-              </svg>
-          </button>
-
-          <form class="project-form">
-              <div class="form-group">
-                  <label for="publish-in">Will published in</label>
-                  <select id="publish-in" required>
-                      <option value="my">My list (Task)</option>
-                      <option value="tender">Tender</option>
-                      <option value="project">Project</option>
-                      <option value="advertising">Advertising</option>
-                      <option value="orders">Time slot</option>
-                  </select>
-              </div>
-
-              <!-- Time slot group (hidden by default) -->
-              <div id="time-slot-group" class="time_slot_group">
-                      <div class=" time-slot-group-title">Time - slot:</div>
-              <div class="time-slot-group-inputs">
-                  <div class="date_time_slot">
-                      <div class="date-slot-group-inputs">Date</div>
-                      <input type="date" id="date1" class="date-time-slot-input" margin-bottom:6px;">
-                      <input type="date" id="date2" class="date-time-slot-input2">
-                  </div>
-                  <div class="time_time_slot">
-                      <div class="time-slot-group_time">Time</div>
-                      <input type="time" id="time1" class="time-time-slot-input">
-                      <input type="time" id="time2" class="time-time-slot-input2">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label for="ts-hashtags">Hashtags:</label>
-                  <input type="text" id="ts-hashtags" placeholder="Enter tags separated by comma">
-              </div>
-
-              <div class="form-group">
-                  <label for="reserved-time">Reserved time on road:</label>
-                  <input type="text" id="reserved-time" placeholder="e.g. 30 min">
-              </div>
-              <div class="form-group">
-                  <label for="start-location">Start location:</label>
-                  <input type="text" id="start-location" placeholder="Enter start location">
-              </div>
-              <div class="form-group">
-                  <label for="cost-hour">Cost of one hour of work in £:</label>
-                  <input type="number" id="cost-hour" placeholder="e.g. 100">
-              </div>
-              <div class="form-group">
-                  <label for="min-slot">Minimum slot (hours) :</label>
-                  <input type="number" id="min-slot" placeholder="e.g. 1 hour">
-              </div>
-              <div class="form-group">
-                  <label for="ts-services">Services:</label>
-                  <input type="text" id="ts-services" placeholder="Describe services">
-              </div>
-      </div>
-
-      <div class="form-group">
-          <label for="title">Title</label>
-          <input type="text" id="title" required>
-      </div>
-
-      <div class="form-group">
-          <label for="description">Description</label>
-          <textarea id="description" rows="4" required></textarea>
-      </div>
-
-      <div class="form-group">
-          <label for="photos">Photos</label>
-          <input type="text" id="photos-link" placeholder="link to google drive" style="margin-bottom:12px;">
-          <div style="text-align:center;font-weight:600;color:#282d3b;margin-bottom:8px;">or</div>
-          <div class="file-upload-area" id="photos-upload">
-              <input type="file" id="photos" multiple accept="image/*">
-              <div class="drop-zone">
-                  <p>Drop files here or click to upload</p>
-              </div>
-          </div>
-      </div>
-
-      <div class="form-group">
-          <label for="services">Services</label>
-          <input type="text" id="services" placeholder="services">
-      </div>
-
-      <div class="form-group">
-          <label for="hashtags">Hashtags</label>
-          <input type="text" id="hashtags" placeholder="Enter tags separated by comma">
-      </div>
-
-      <div id="form-extend-toggle" class="form-extend-toggle" style="display:none;">
-          <button type="button" class="extend-btn">
-              <span class="extend-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36.130"
-                      height="27.194" viewBox="0 0 45.162 33.992">
-                      <defs>
-                          <filter id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24" x="0" y="0"
-                              width="45.162" height="33.992" filterUnits="userSpaceOnUse">
-                              <feOffset dy="3" input="SourceAlpha" />
-                              <feGaussianBlur stdDeviation="3" result="blur" />
-                              <feFlood flood-opacity="0.161" />
-                              <feComposite operator="in" in2="blur" />
-                              <feComposite in="SourceGraphic" />
-                          </filter>
-                          <filter id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-2" x="0" y="0"
-                              width="45.162" height="33.992" filterUnits="userSpaceOnUse">
-                              <feOffset dy="3" input="SourceAlpha" />
-                              <feGaussianBlur stdDeviation="3" result="blur-2" />
-                              <feFlood flood-opacity="0.161" result="color" />
-                              <feComposite operator="out" in="SourceGraphic" in2="blur-2" />
-                              <feComposite operator="in" in="color" />
-                              <feComposite operator="in" in2="SourceGraphic" />
-                          </filter>
-                      </defs>
-                      <g data-type="innerShadowGroup">
-                          <g transform="matrix(1, 0, 0, 1, 0, 0)"
-                              filter="url(#arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24)">
-                              <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-3"
-                                  data-name="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                                  d="M13.581,27.162,0,13.581,13.581,0l2.411,2.411L4.821,13.581l11.17,11.17Z"
-                                  transform="translate(36.16 6) rotate(90)" />
-                          </g>
-                          <g transform="matrix(1, 0, 0, 1, 0, 0)"
-                              filter="url(#arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-2)">
-                              <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-4"
-                                  data-name="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                                  d="M13.581,27.162,0,13.581,13.581,0l2.411,2.411L4.821,13.581l11.17,11.17Z"
-                                  transform="translate(36.16 6) rotate(90)" fill="#fff" />
-                          </g>
-                      </g>
-                  </svg>
-              </span>
-              <span>Extend</span>
-          </button>
-      </div>
-
-      <div id="form-extended-fields" style="display:none;">
-          <div class="form-group">
-              <label for="client">Client</label>
-              <input type="text" id="client">
-          </div>
-
-          <div class="form-row">
-              <div class="form-group half">
-                  <label for="date-start">Date and time start</label>
-                  <input type="date" id="date-start">
-                  <input type="time" id="time-start" style="margin-top:6px;">
-              </div>
-              <div class="form-group half">
-                  <label for="date-end">Date and time end</label>
-                  <input type="date" id="date-end">
-                  <input type="time" id="time-end" style="margin-top:6px;">
-              </div>
-          </div>
-
-          <div class="form-group">
-              <label for="documents">Documents</label>
-              <input type="url" id="documents" placeholder="Enter document link">
-          </div>
-
-          <div class="form-group">
-              <label for="performers">Performer(s)</label>
-              <div class="performers-input-group">
-                  <input type="text" id="performers" placeholder="Add performer" autocomplete="off">
-                  <div class="performers-dropdown" id="performers-dropdown">
-                      <div class="dropdown-item need-performer">Need a performer</div>
-                  </div>
-              </div>
-              <div class="performers-list"></div>
-          </div>
-
-          <div class="form-group">
-              <label for="status">Add status</label>
-              <select id="status">
-                  <option value="in-progress">In progress</option>
-                  <option value="done">Done</option>
-              </select>
-          </div>
-
-          <div class="form-group">
-              <label for="project-included">Project (task) included</label>
-              <select id="project-included">
-                  <option value="">Empty</option>
-              </select>
-          </div>
-
-          <div class="form-group checkbox">
-              <input type="checkbox" id="private">
-              <label for="private">Make private</label>
-          </div>
-
-          <div class="form-group checkbox">
-              <input type="checkbox" id="disclose-name-1">
-              <label for="disclose-name-1">Disclose your name (company) when publishing</label>
-          </div>
-
-          <div class="form-group checkbox">
-              <input type="checkbox" id="disclose-name-2">
-              <label for="disclose-name-2">Hidden (visible just for you)</label>
-          </div>
-
-          <div class="form-group checkbox">
-              <input type="checkbox" id="disclose-name">
-              <label for="disclose-name">offline</label>
-          </div>
-
-          <div class="form-group">
-              <label for="post-code">Post code</label>
-              <input type="text" id="post-code" placeholder="post-code">
-          </div>
-
-          <div class="form-group">
-              <label for="street_details">Street details</label>
-              <input type="text" id="street_details" placeholder="Street details">
-          </div>
-
-          <div class="form-group">
-              <label for="comment">Comment</label>
-              <textarea id="comment" rows="4"></textarea>
-          </div>
-      </div>
-
-      <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Publish £ 35</button>
-          <button type="button" class="btn btn-secondary">Save</button>
-      </div>
-      </form>
-  </div>
-  </div>
 
 
 
 
 
 {% comment %} Bottom menus {% endcomment %}
-      <div class="fixed_circle_menu">
-        <button class="fixed_circle main">
-            <svg xmlns="http://www.w3.org/2000/svg" width="60.531" height="60.531" viewBox="0 0 60.531 60.531">
-                <path id="open_in_new_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                    d="M126.726-779.469a6.477,6.477,0,0,1-4.75-1.976,6.476,6.476,0,0,1-1.976-4.75v-47.08a6.476,6.476,0,0,1,1.976-4.75,6.477,6.477,0,0,1,4.75-1.976h23.54v6.726h-23.54v47.08h47.08v-23.54h6.726v23.54a6.476,6.476,0,0,1-1.976,4.75,6.476,6.476,0,0,1-4.75,1.976Zm15.805-17.823L137.823-802,169.1-833.274H156.991V-840h23.54v23.54h-6.726v-12.106Z"
-                    transform="translate(-120 840)" fill="#333a49" />
-            </svg>
+<div class="fixed_circle_menu">
+    <button class="fixed_circle main">
+        <svg xmlns="http://www.w3.org/2000/svg" width="60.531" height="60.531" viewBox="0 0 60.531 60.531">
+            <path id="open_in_new_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                d="M126.726-779.469a6.477,6.477,0,0,1-4.75-1.976,6.476,6.476,0,0,1-1.976-4.75v-47.08a6.476,6.476,0,0,1,1.976-4.75,6.477,6.477,0,0,1,4.75-1.976h23.54v6.726h-23.54v47.08h47.08v-23.54h6.726v23.54a6.476,6.476,0,0,1-1.976,4.75,6.476,6.476,0,0,1-4.75,1.976Zm15.805-17.823L137.823-802,169.1-833.274H156.991V-840h23.54v23.54h-6.726v-12.106Z"
+                transform="translate(-120 840)" fill="#333a49" />
+        </svg>
 
-        </button>
-        <button class="fixed_circle sub sub1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="65.49" height="62.215" viewBox="0 0 65.49 62.215">
-                <path id="star_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                    d="M102.43-831.456l10.315-6.222,10.315,6.3-2.7-11.788,9.087-7.859-11.952-1.064-4.748-11.133L108-852.167,96.045-851.1l9.087,7.941Zm-9.905,13.671,5.321-23L80-856.26l23.576-2.047L112.745-880l9.169,21.694,23.576,2.047-17.846,15.472,5.321,23-20.22-12.2ZM112.745-846.436Z"
-                    transform="translate(-80 880)" fill="#333a49" />
-            </svg>
+    </button>
+    <button class="fixed_circle sub sub1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="65.49" height="62.215" viewBox="0 0 65.49 62.215">
+            <path id="star_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                d="M102.43-831.456l10.315-6.222,10.315,6.3-2.7-11.788,9.087-7.859-11.952-1.064-4.748-11.133L108-852.167,96.045-851.1l9.087,7.941Zm-9.905,13.671,5.321-23L80-856.26l23.576-2.047L112.745-880l9.169,21.694,23.576,2.047-17.846,15.472,5.321,23-20.22-12.2ZM112.745-846.436Z"
+                transform="translate(-80 880)" fill="#333a49" />
+        </svg>
 
-        </button>
-        <button class="fixed_circle sub sub2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="31.732" height="31.732" viewBox="0 0 31.732 31.732">
-                <path id="add_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                    d="M213.6-741.867H200V-746.4h13.6V-760h4.533v13.6h13.6v4.533h-13.6v13.6H213.6Z"
-                    transform="translate(-200 760)" fill="#333a49" />
-            </svg>
+    </button>
+    <button class="fixed_circle sub sub2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="31.732" height="31.732" viewBox="0 0 31.732 31.732">
+            <path id="add_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                d="M213.6-741.867H200V-746.4h13.6V-760h4.533v13.6h13.6v4.533h-13.6v13.6H213.6Z"
+                transform="translate(-200 760)" fill="#333a49" />
+        </svg>
 
-        </button>
-        <button class="fixed_circle sub sub3">
-            <svg width="20.4" height="20.4" viewBox="0 0 24 24" fill="none">
-                <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z"
-                    fill="#282D3B" />
-            </svg>
-        </button>
+    </button>
+    <button class="fixed_circle sub sub3">
+        <svg width="20.4" height="20.4" viewBox="0 0 24 24" fill="none">
+            <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="#282D3B" />
+        </svg>
+    </button>
 
-    </div>
-    <div class="nav_menu">
-        <button class="nav-arrow nav-arrow-left">
-            <svg xmlns="http://www.w3.org/2000/svg" width="21.82" height="37.062" viewBox="0 0 21.82 37.062">
-                <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                    d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                    transform="translate(0 880)" fill="#333a49" />
-            </svg>
+</div>
+<div class="nav_menu">
+    <button class="nav-arrow nav-arrow-left">
+        <svg xmlns="http://www.w3.org/2000/svg" width="21.82" height="37.062" viewBox="0 0 21.82 37.062">
+            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
+                transform="translate(0 880)" fill="#333a49" />
+        </svg>
 
-        </button>
-        <button class="nav-arrow nav-arrow-right">
-            <svg class="" xmlns="http://www.w3.org/2000/svg" width="21.82" height="37.062" viewBox="0 0 21.82 37.062">
-                <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                    d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                    transform="translate(21.82 -842.938) rotate(180)" fill="#333a49" />
-            </svg>
+    </button>
+    <button class="nav-arrow nav-arrow-right">
+        <svg class="" xmlns="http://www.w3.org/2000/svg" width="21.82" height="37.062" viewBox="0 0 21.82 37.062">
+            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
+                transform="translate(21.82 -842.938) rotate(180)" fill="#333a49" />
+        </svg>
 
-        </button>
-        <button class="nav-arrow nav-arrow-up">
-            <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
-                <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                    d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                    transform="translate(-842.938) rotate(90)" fill="#333a49" />
-            </svg>
+    </button>
+    <button class="nav-arrow nav-arrow-up">
+        <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
+            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
+                transform="translate(-842.938) rotate(90)" fill="#333a49" />
+        </svg>
 
-        </button>
-        <button class="nav-arrow nav-arrow-down">
-            <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
-                <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                    d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                    transform="translate(880 21.82) rotate(-90)" fill="#333a49" />
-            </svg>
+    </button>
+    <button class="nav-arrow nav-arrow-down">
+        <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
+            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
+                transform="translate(880 21.82) rotate(-90)" fill="#333a49" />
+        </svg>
 
-        </button>
+    </button>
 
-        <div class="nav_menu_content">
+    <div class="nav_menu_content">
 
-            <div class="nav_menu_sub_category_name">
-                <div class="nav_menu_sub_category_name_1">All</div>
-                <div class="nav_menu_category_name">Business Support</div>
-            </div>
-            <div class="nav_menu_sub_category_name_2">
-                <div class="active"></div>
-                <div></div>
-                <div></div>
-                <div></div>
-
-            </div>
-            <div class="nav_menu_cat_change">
-                <div class="active"></div>
-
-                <div></div>
-                <div></div>
-            </div>
-
+        <div class="nav_menu_sub_category_name">
+            <div class="nav_menu_sub_category_name_1">All</div>
+            <div class="nav_menu_category_name">Business Support</div>
+        </div>
+        <div class="nav_menu_sub_category_name_2">
+            <div class="active"></div>
+            <div></div>
+            <div></div>
+            <div></div>
 
         </div>
+        <div class="nav_menu_cat_change">
+            <div class="active"></div>
+
+            <div></div>
+            <div></div>
+        </div>
+
+
     </div>
+</div>
 {% comment %} Чат {% endcomment %}
-    <div class="modal-overlay" style="display: none;">
-        <div class="modal-form">
-            <button class="close-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                    <path
-                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                </svg>
-            </button>
 
-            <form class="project-form">
-                <div class="form-group">
-                    <label for="publish-in">Will published in</label>
-                    <select id="publish-in" required>
-                        <option value="my">My list (Task)</option>
-                        <option value="tender">Tender</option>
-                        <option value="project">Project</option>
-                        <option value="advertising">Advertising</option>
-                        <option value="orders">Time slot</option>
-                    </select>
-                </div>
-                <!-- Time slot group (hidden by default) -->
-                <div id="time-slot-group" class="time_slot_group">
-                        <div class=" time-slot-group-title">Time - slot:</div>
-                        <div class="time-slot-group-inputs">
-                            <div class="date_time_slot">
-                                <div class="date-slot-group-inputs">Date</div>
-                                <input type="date" id="date1" class="date-time-slot-input" margin-bottom:6px;">
-                                <input type="date" id="date2" class="date-time-slot-input2">
-                            </div>
-                            <div class="time_time_slot">
-                                <div class="time-slot-group_time">Time</div>
-                                <input type="time" id="time1" class="time-time-slot-input">
-                                <input type="time" id="time2" class="time-time-slot-input2">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="ts-hashtags">Hashtags:</label>
-                            <input type="text" id="ts-hashtags" placeholder="Enter tags separated by comma">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reserved-time">Reserved time on road:</label>
-                            <input type="text" id="reserved-time" placeholder="e.g. 30 min">
-                        </div>
-                        <div class="form-group">
-                            <label for="start-location">Start location:</label>
-                            <input type="text" id="start-location" placeholder="Enter start location">
-                        </div>
-                        <div class="form-group">
-                            <label for="cost-hour">Cost of one hour of work in £:</label>
-                            <input type="number" id="cost-hour" placeholder="e.g. 100">
-                        </div>
-                        <div class="form-group">
-                            <label for="min-slot">Minimum slot (hours) :</label>
-                            <input type="number" id="min-slot" placeholder="e.g. 1 hour">
-                        </div>
-                        <div class="form-group">
-                            <label for="ts-services">Services:</label>
-                            <input type="text" id="ts-services" placeholder="Describe services">
-                        </div>
-                </div>
-            
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" id="title" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" rows="4" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="photos">Photos</label>
-                    <input type="text" id="photos-link" placeholder="link to google drive" style="margin-bottom:12px;">
-                    <div style="text-align:center;font-weight:600;color:#282d3b;margin-bottom:8px;">or</div>
-                    <div class="file-upload-area" id="photos-upload">
-                        <input type="file" id="photos" multiple accept="image/*">
-                        <div class="drop-zone">
-                            <p>Drop files here or click to upload</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="services">Services</label>
-                    <input type="text" id="services" placeholder="services">
-                </div>
-
-                <div class="form-group">
-                    <label for="hashtags">Hashtags</label>
-                    <input type="text" id="hashtags" placeholder="Enter tags separated by comma">
-                </div>
-
-                <div id="form-extend-toggle" class="form-extend-toggle" style="display:none;">
-                    <button type="button" class="extend-btn">
-                        <span class="extend-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36.130"
-                                height="27.194" viewBox="0 0 45.162 33.992">
-                                <defs>
-                                    <filter id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24" x="0" y="0"
-                                        width="45.162" height="33.992" filterUnits="userSpaceOnUse">
-                                        <feOffset dy="3" input="SourceAlpha" />
-                                        <feGaussianBlur stdDeviation="3" result="blur" />
-                                        <feFlood flood-opacity="0.161" />
-                                        <feComposite operator="in" in2="blur" />
-                                        <feComposite in="SourceGraphic" />
-                                    </filter>
-                                    <filter id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-2" x="0" y="0"
-                                        width="45.162" height="33.992" filterUnits="userSpaceOnUse">
-                                        <feOffset dy="3" input="SourceAlpha" />
-                                        <feGaussianBlur stdDeviation="3" result="blur-2" />
-                                        <feFlood flood-opacity="0.161" result="color" />
-                                        <feComposite operator="out" in="SourceGraphic" in2="blur-2" />
-                                        <feComposite operator="in" in="color" />
-                                        <feComposite operator="in" in2="SourceGraphic" />
-                                    </filter>
-                                </defs>
-                                <g data-type="innerShadowGroup">
-                                    <g transform="matrix(1, 0, 0, 1, 0, 0)"
-                                        filter="url(#arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24)">
-                                        <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-3"
-                                            data-name="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                                            d="M13.581,27.162,0,13.581,13.581,0l2.411,2.411L4.821,13.581l11.17,11.17Z"
-                                            transform="translate(36.16 6) rotate(90)" />
-                                    </g>
-                                    <g transform="matrix(1, 0, 0, 1, 0, 0)"
-                                        filter="url(#arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-2)">
-                                        <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-4"
-                                            data-name="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                                            d="M13.581,27.162,0,13.581,13.581,0l2.411,2.411L4.821,13.581l11.17,11.17Z"
-                                            transform="translate(36.16 6) rotate(90)" fill="#fff" />
-                                    </g>
-                                </g>
-                            </svg>
-                        </span>
-                        <span>Extend</span>
-                    </button>
-                </div>
-
-                <div id="form-extended-fields" style="display:none;">
-                    <div class="form-group">
-                        <label for="client">Client</label>
-                        <input type="text" id="client">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group half">
-                            <label for="date-start">Date and time start</label>
-                            <input type="date" id="date-start">
-                            <input type="time" id="time-start" style="margin-top:6px;">
-                        </div>
-                        <div class="form-group half">
-                            <label for="date-end">Date and time end</label>
-                            <input type="date" id="date-end">
-                            <input type="time" id="time-end" style="margin-top:6px;">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="documents">Documents</label>
-                        <input type="url" id="documents" placeholder="Enter document link">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="performers">Performer(s)</label>
-                        <div class="performers-input-group">
-                            <input type="text" id="performers" placeholder="Add performer" autocomplete="off">
-                            <div class="performers-dropdown" id="performers-dropdown">
-                                <div class="dropdown-item need-performer">Need a performer</div>
-                            </div>
-                        </div>
-                        <div class="performers-list"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="status">Add status</label>
-                        <select id="status">
-                            <option value="in-progress">In progress</option>
-                            <option value="done">Done</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="project-included">Project (task) included</label>
-                        <select id="project-included">
-                            <option value="">Empty</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group checkbox">
-                        <input type="checkbox" id="private">
-                        <label for="private">Make private</label>
-                    </div>
-
-                    <div class="form-group checkbox">
-                        <input type="checkbox" id="disclose-name-1">
-                        <label for="disclose-name-1">Disclose your name (company) when publishing</label>
-                    </div>
-
-                    <div class="form-group checkbox">
-                        <input type="checkbox" id="disclose-name-2">
-                        <label for="disclose-name-2">Hidden (visible just for you)</label>
-                    </div>
-
-                    <div class="form-group checkbox">
-                        <input type="checkbox" id="disclose-name">
-                        <label for="disclose-name">offline</label>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="post-code">Post code</label>
-                        <input type="text" id="post-code" placeholder="post-code">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="street_details">Street details</label>
-                        <input type="text" id="street_details" placeholder="Street details">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="comment">Comment</label>
-                        <textarea id="comment" rows="4"></textarea>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Publish £ 35</button>
-                    <button type="button" class="btn btn-secondary">Save</button>
-                </div>
-            </form>
+<div class="chat_messages_container">
+    <div class="cmc_search_container">
+        <div class="cmc_search_text">Find person</div>
+        <input class="cmc_search_input" type="text">
+    </div>
+    <div class="cmc_contacts_container">
+        <div class="cmc_contacts_text">Chats</div>
+        <div class="cmc_contact">
+            <a href="#">
+                <div class="cmc_circule_photo"></div>
+                <span class="cmc_user_name">Mark Nelson</span>
+                <span class="cmc_last_date">6/22/2025</span>
+                <div class="cmc_send_message_button"></div>
+            </a>
+        </div>
+        <div class="cmc_contact">
+            <a href="#">
+                <div class="cmc_circule_photo"></div>
+                <span class="cmc_user_name">Mark Nelson</span>
+                <span class="cmc_last_date">6/22/2025</span>
+                <div class="cmc_send_message_button"></div>
+            </a>
+        </div>
+        <div class="cmc_contact">
+            <a href="#">
+                <div class="cmc_circule_photo"></div>
+                <span class="cmc_user_name">Mark Nelson</span>
+                <span class="cmc_last_date">6/22/2025</span>
+                <div class="cmc_send_message_button"></div>
+            </a>
+        </div>
+        <div class="cmc_contact">
+            <a href="#">
+                <div class="cmc_circule_photo"></div>
+                <span class="cmc_user_name">Mark Nelson</span>
+                <span class="cmc_last_date">6/22/2025</span>
+                <div class="cmc_send_message_button"></div>
+            </a>
+        </div>
+        <div class="cmc_contact">
+            <a href="#">
+                <div class="cmc_circule_photo"></div>
+                <span class="cmc_user_name">Mark Nelson</span>
+                <span class="cmc_last_date">6/22/2025</span>
+                <div class="cmc_send_message_button"></div>
+            </a>
+        </div>
+        <div class="cmc_contact">
+            <a href="#">
+                <div class="cmc_circule_photo"></div>
+                <span class="cmc_user_name">Mark Nelson</span>
+                <span class="cmc_last_date">6/22/2025</span>
+                <div class="cmc_send_message_button"></div>
+            </a>
+        </div>
+        <div class="cmc_contact">
+            <a href="#">
+                <div class="cmc_circule_photo"></div>
+                <span class="cmc_user_name">Mark Nelson</span>
+                <span class="cmc_last_date">6/22/2025</span>
+                <div class="cmc_send_message_button"></div>
+            </a>
+        </div>
+        <div class="cmc_contact">
+            <a href="#">
+                <div class="cmc_circule_photo"></div>
+                <span class="cmc_user_name">Mark Nelson</span>
+                <span class="cmc_last_date">6/22/2025</span>
+                <div class="cmc_send_message_button"></div>
+            </a>
         </div>
     </div>
 
-    <div class="chat_messages_container">
-        <div class="cmc_search_container">
-            <div class="cmc_search_text">Find person</div>
-            <input class="cmc_search_input" type="text">
-        </div>
-        <div class="cmc_contacts_container">
-            <div class="cmc_contacts_text">Chats</div>
-            <div class="cmc_contact">
-                <a href="#">
-                    <div class="cmc_circule_photo"></div>
-                    <span class="cmc_user_name">Mark Nelson</span>
-                    <span class="cmc_last_date">6/22/2025</span>
-                    <div class="cmc_send_message_button"></div>
-                </a>
+</div>
+
+
+<!-- Оверлей для popup -->
+<div class="overlay_cmc_messages" id="cmcMessagesOverlay" style="display:none;">
+    <div class="cmc_messages_container">
+        <button class="cmc_messages_left_top_button_back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            </svg>
+        </button>
+        <button class="cmc_messages_container_close_btn">×</button>
+        <div class="cmc_messages_area">
+            <div class="cmc_message_communication_container">
+                <div class="cmc_message_text">Hello, how are you?</div>
+                <span class="cmc_message_date">6/22/2025 10:00</span>
             </div>
-            <div class="cmc_contact">
-                <a href="#">
-                    <div class="cmc_circule_photo"></div>
-                    <span class="cmc_user_name">Mark Nelson</span>
-                    <span class="cmc_last_date">6/22/2025</span>
-                    <div class="cmc_send_message_button"></div>
-                </a>
+            <div class="cmc_message cmc_message_sent">
+                <div class="cmc_message_text">I am fine, thank you!</div>
+                <span class="cmc_message_date">6/22/2025 10:01</span>
             </div>
-            <div class="cmc_contact">
-                <a href="#">
-                    <div class="cmc_circule_photo"></div>
-                    <span class="cmc_user_name">Mark Nelson</span>
-                    <span class="cmc_last_date">6/22/2025</span>
-                    <div class="cmc_send_message_button"></div>
-                </a>
+            <div class="cmc_message_communication_container">
+                <div class="cmc_message_text">Hello, how are you?</div>
+                <span class="cmc_message_date">6/22/2025 10:00</span>
             </div>
-            <div class="cmc_contact">
-                <a href="#">
-                    <div class="cmc_circule_photo"></div>
-                    <span class="cmc_user_name">Mark Nelson</span>
-                    <span class="cmc_last_date">6/22/2025</span>
-                    <div class="cmc_send_message_button"></div>
-                </a>
+            <div class="cmc_message cmc_message_sent">
+                <div class="cmc_message_text">I am fine, thank you!</div>
+                <span class="cmc_message_date">6/22/2025 10:01</span>
             </div>
-            <div class="cmc_contact">
-                <a href="#">
-                    <div class="cmc_circule_photo"></div>
-                    <span class="cmc_user_name">Mark Nelson</span>
-                    <span class="cmc_last_date">6/22/2025</span>
-                    <div class="cmc_send_message_button"></div>
-                </a>
+            <div class="cmc_message_communication_container">
+                <div class="cmc_message_text">Hello, how are you?</div>
+                <span class="cmc_message_date">6/22/2025 10:00</span>
             </div>
-            <div class="cmc_contact">
-                <a href="#">
-                    <div class="cmc_circule_photo"></div>
-                    <span class="cmc_user_name">Mark Nelson</span>
-                    <span class="cmc_last_date">6/22/2025</span>
-                    <div class="cmc_send_message_button"></div>
-                </a>
+            <div class="cmc_message cmc_message_sent">
+                <div class="cmc_message_text">I am fine, thank you!</div>
+                <span class="cmc_message_date">6/22/2025 10:01</span>
             </div>
-            <div class="cmc_contact">
-                <a href="#">
-                    <div class="cmc_circule_photo"></div>
-                    <span class="cmc_user_name">Mark Nelson</span>
-                    <span class="cmc_last_date">6/22/2025</span>
-                    <div class="cmc_send_message_button"></div>
-                </a>
+            <div class="cmc_message_communication_container">
+                <div class="cmc_message_text">Hello, how are you?</div>
+                <span class="cmc_message_date">6/22/2025 10:00</span>
             </div>
-            <div class="cmc_contact">
-                <a href="#">
-                    <div class="cmc_circule_photo"></div>
-                    <span class="cmc_user_name">Mark Nelson</span>
-                    <span class="cmc_last_date">6/22/2025</span>
-                    <div class="cmc_send_message_button"></div>
-                </a>
+            <div class="cmc_message cmc_message_sent">
+                <div class="cmc_message_text">I am fine, thank you!</div>
+                <span class="cmc_message_date">6/22/2025 10:01</span>
+            </div>
+            <div class="cmc_message_communication_container">
+                <div class="cmc_message_text">Hello, how are you?</div>
+                <span class="cmc_message_date">6/22/2025 10:00</span>
+            </div>
+            <div class="cmc_message cmc_message_sent">
+                <div class="cmc_message_text">I am fine, thank you!</div>
+                <span class="cmc_message_date">6/22/2025 10:01</span>
+            </div>
+            <div class="cmc_message_communication_container">
+                <div class="cmc_message_text">Hello, how are you?</div>
+                <span class="cmc_message_date">6/22/2025 10:00</span>
+            </div>
+            <div class="cmc_message cmc_message_sent">
+                <div class="cmc_message_text">I am fine, thank you!</div>
+                <span class="cmc_message_date">6/22/2025 10:01</span>
+            </div>
+            <div class="cmc_message_communication_container">
+                <div class="cmc_message_text">Hello, how are you?</div>
+                <span class="cmc_message_date">6/22/2025 10:00</span>
+            </div>
+            <div class="cmc_message cmc_message_sent">
+                <div class="cmc_message_text">I am fine, thank you!</div>
+                <span class="cmc_message_date">6/22/2025 10:01</span>
             </div>
         </div>
-
-    </div>
-
-
-    <!-- Оверлей для popup -->
-    <div class="overlay_cmc_messages" id="cmcMessagesOverlay" style="display:none;">
-        <div class="cmc_messages_container">
-            <button class="cmc_messages_left_top_button_back">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-                </svg>
-            </button>
-            <button class="cmc_messages_container_close_btn">×</button>
-            <div class="cmc_messages_area">
-                <div class="cmc_message_communication_container">
-                    <div class="cmc_message_text">Hello, how are you?</div>
-                    <span class="cmc_message_date">6/22/2025 10:00</span>
-                </div>
-                <div class="cmc_message cmc_message_sent">
-                    <div class="cmc_message_text">I am fine, thank you!</div>
-                    <span class="cmc_message_date">6/22/2025 10:01</span>
-                </div>
-                <div class="cmc_message_communication_container">
-                    <div class="cmc_message_text">Hello, how are you?</div>
-                    <span class="cmc_message_date">6/22/2025 10:00</span>
-                </div>
-                <div class="cmc_message cmc_message_sent">
-                    <div class="cmc_message_text">I am fine, thank you!</div>
-                    <span class="cmc_message_date">6/22/2025 10:01</span>
-                </div>
-                <div class="cmc_message_communication_container">
-                    <div class="cmc_message_text">Hello, how are you?</div>
-                    <span class="cmc_message_date">6/22/2025 10:00</span>
-                </div>
-                <div class="cmc_message cmc_message_sent">
-                    <div class="cmc_message_text">I am fine, thank you!</div>
-                    <span class="cmc_message_date">6/22/2025 10:01</span>
-                </div>
-                <div class="cmc_message_communication_container">
-                    <div class="cmc_message_text">Hello, how are you?</div>
-                    <span class="cmc_message_date">6/22/2025 10:00</span>
-                </div>
-                <div class="cmc_message cmc_message_sent">
-                    <div class="cmc_message_text">I am fine, thank you!</div>
-                    <span class="cmc_message_date">6/22/2025 10:01</span>
-                </div>
-                <div class="cmc_message_communication_container">
-                    <div class="cmc_message_text">Hello, how are you?</div>
-                    <span class="cmc_message_date">6/22/2025 10:00</span>
-                </div>
-                <div class="cmc_message cmc_message_sent">
-                    <div class="cmc_message_text">I am fine, thank you!</div>
-                    <span class="cmc_message_date">6/22/2025 10:01</span>
-                </div>
-                <div class="cmc_message_communication_container">
-                    <div class="cmc_message_text">Hello, how are you?</div>
-                    <span class="cmc_message_date">6/22/2025 10:00</span>
-                </div>
-                <div class="cmc_message cmc_message_sent">
-                    <div class="cmc_message_text">I am fine, thank you!</div>
-                    <span class="cmc_message_date">6/22/2025 10:01</span>
-                </div>
-                <div class="cmc_message_communication_container">
-                    <div class="cmc_message_text">Hello, how are you?</div>
-                    <span class="cmc_message_date">6/22/2025 10:00</span>
-                </div>
-                <div class="cmc_message cmc_message_sent">
-                    <div class="cmc_message_text">I am fine, thank you!</div>
-                    <span class="cmc_message_date">6/22/2025 10:01</span>
-                </div>
-            </div>
-            <div class="cmc_message_bottom_container">
-                <textarea name="cmc_message_for_send" id=""></textarea>
-                <button class="cmc_message_send_button"></button>
-                <button class="add_file"></button>
-            </div>
+        <div class="cmc_message_bottom_container">
+            <textarea name="cmc_message_for_send" id=""></textarea>
+            <button class="cmc_message_send_button"></button>
+            <button class="add_file"></button>
         </div>
     </div>
+</div>
 
 {% endblock %}
 
 
+{% block extra_js %}
+
+<script src="{% static 'js/fixed_circule_menu.js' %}"></script>
+<script src="{% static 'js/nav_menu_bottom_right.js' %}"></script>
+<script src="{% static 'js/empty_form.js' %}"></script>
+<script src="{% static 'js/chat_styles.js' %}"></script>
+<script src="{% static 'js/form_filtation.js' %}"></script>
 
 
-
-
-
- {% block extra_js %}
- <script src="{% static 'js/fixed_circule_menu.js' %}"></script>
- <script src="{% static 'js/nav_menu_bottom_right.js' %}"></script>
- <script src="{% static 'js/empty_form.js' %}"></script>
- <script src="{% static 'js/chat_styles.js' %}"></script>
-
- {% endblock %}
+{% endblock %}
