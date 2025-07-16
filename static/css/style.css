@@ -64,14 +64,26 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.close-btn {
-    position: absolute;
-    top: -20px;
-    right: -25px;
+.modal_close_btn {
+  position: absolute;
+    top: 12px;
+    right: 16px;
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    color: #282d3b;
+    font-size: 24px;
     cursor: pointer;
-    font-size: 40px;
-    font-weight: bold;
+    z-index: 2200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    transition: opacity 0.2s;
 }
+
+
 
 #copy-btn {
   border: 2px solid transparent;

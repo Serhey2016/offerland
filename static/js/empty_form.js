@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // === ЭЛЕМЕНТЫ DOM ===
     const elements = {
         // Модальное окно
-        closeBtn: document.querySelector('.close-btn'),
+        closeBtn: document.querySelector('.modal_close_btn'),
         modalOverlay: document.querySelector('.modal-overlay'),
         openBtn: document.querySelector('.fixed_circle.sub.sub2'),
         

@@ -57,6 +57,32 @@
 - `initCategoryServiceFiltering()` - инициализация фильтрации
 - `window.initCategoryServiceSelects()` - глобальная функция для инициализации
 
+## Структура статических файлов
+
+Все статические файлы JavaScript и CSS должны храниться только в следующих директориях проекта:
+
+- `static/js/` — все пользовательские и сторонние JS-файлы
+- `static/css/` — все пользовательские и сторонние CSS-файлы
+
+**Важно:** Наличие файлов JS или CSS в других директориях (например, `services_and_projects/static/js/` или `app/static/js/`) считается ошибкой структуры и должно быть устранено. Все такие файлы должны быть перемещены в соответствующие папки внутри `static/`.
+
+**Пример правильной структуры:**
+
+```
+project_root/
+├── static/
+│   ├── js/
+│   │   ├── empty_form.js
+│   │   ├── form_filtation.js
+│   │   └── ...
+│   └── css/
+│       ├── main.css
+│       └── ...
+└── ...
+```
+
+---
+
 ## Логика работы
 
 ### 1. Определение типа формы
@@ -140,7 +166,7 @@ else:
 - `reserved_time_on_road`, `start_location`
 - `cost_of_1_hour_of_work`, `minimum_time_slot`
 - `type_of_task`, `services`
-- `hashtags` (через поле `ts-hashtags`)
+- `hashtags` (через поле `ts-hashtags` - вводится вручную, разделяется запятыми)
 
 ## Особенности
 
@@ -204,4 +230,101 @@ console.log('initCategoryServiceFiltering called');
 - Подробные ошибки логируются в консоль
 
 ### Тестирование
-Используйте `test_form_system.py` для проверки доступности данных и логики форм. 
+Используйте `test_form_system.py` для проверки доступности данных и логики форм.
+
+## Исправленные ошибки
+
+### Ошибка "Field 'id' expected a number but got '3,5,1'"
+**Проблема:** Хэштеги передавались как строка с ID, разделенными запятыми, но Django ожидал отдельные поля для ManyToMany.
+
+**Решение:** 
+- Для Task и Advertising: изменен код для парсинга строки с ID хэштегов
+- Для TimeSlot: изменен код для поиска хэштегов по названию (создание новых при необходимости)
+
+**Код исправления:**
+```python
+# Вместо request.POST.getlist('hashtags')
+hashtags_data = request.POST.get('hashtags')
+if hashtags_data:
+    hashtag_ids = [id.strip() for id in hashtags_data.split(',') if id.strip()]
+    for tag_id in hashtag_ids:
+        tag_obj = AllTags.objects.get(id=tag_id)
+        # Создание связи...
+```
+
+### Удаление неиспользуемого поля ts-services
+**Проблема:** Поле `ts-services` в форме TimeSlot не использовалось в коде.
+
+**Решение:** Удалено из кода, так как в модели TimeSlot уже есть поле `services` как ForeignKey. 
+
+## Связь с пользователем (owner relations) и сохранение через AJAX
+
+### Архитектура owner relations
+- Для Task: используется промежуточная таблица `TaskOwnerRelations` (task, user)
+- Для Advertising: используется промежуточная таблица `AdvertisingOwnerRelations` (advertising, user)
+- Для TimeSlot: используется промежуточная таблица `TimeSlotOwnerRelations` (time_slot, user)
+
+### Логика сохранения
+- После создания основной сущности (Task, Advertising, TimeSlot) на сервере, если пользователь авторизован (`request.user.is_authenticated`), создаётся запись в соответствующей owner relations таблице, связывающая объект с пользователем.
+- Это реализовано в функциях `create_task`, `create_advertising`, `create_time_slot` в `services_and_projects/forms.py`:
+
+```python
+if request.user.is_authenticated:
+    TaskOwnerRelations.objects.get_or_create(task=task, user=request.user)
+# Аналогично для Advertising и TimeSlot
+```
+
+### AJAX и фронтенд
+- Форма отправляется через AJAX (см. `handleFormSubmission` в `static/js/empty_form.js`).
+- Все данные (включая performers, hashtags, comments, photos, services) отправляются одной формой.
+- Сервер обрабатывает данные, создаёт основную сущность, связанные объекты и owner relation.
+- Пользователь, создавший Task, Advertising или TimeSlot, автоматически становится владельцем через owner relations.
+
+### Проверка
+- Если пользователь авторизован и отправляет форму через AJAX, то Task, Advertising, TimeSlot будут связаны с ним через owner relations.
+- Все связи (hashtags, performers и т.д.) сохраняются через промежуточные таблицы.
+
+--- 
+
+## Каскадное удаление фотографий
+
+### Поведение
+
+При удалении Task, Advertising или TimeSlot теперь автоматически удаляются все связанные с ними фотографии (PhotoRelations), если они были прикреплены к этим объектам. Это реализовано через переопределение метода `delete()` в соответствующих моделях.
+
+- Для каждой Task, Advertising и TimeSlot фотографии уникальны и не используются перекрёстно между объектами.
+- При удалении Task, Advertising или TimeSlot связанные фотографии удаляются из базы данных и файловой системы.
+
+### Техническая реализация
+
+В файле `services_and_projects/models.py` для моделей Task, Advertising и TimeSlot реализовано:
+
+```python
+class Task(models.Model):
+    # ...
+    def delete(self, *args, **kwargs):
+        related_photos = list(self.photos.all())
+        super().delete(*args, **kwargs)
+        for photo in related_photos:
+            photo.delete()
+
+class Advertising(models.Model):
+    # ...
+    def delete(self, *args, **kwargs):
+        related_photos = list(self.photos.all())
+        super().delete(*args, **kwargs)
+        for photo in related_photos:
+            photo.delete()
+
+class TimeSlot(models.Model):
+    # ...
+    def delete(self, *args, **kwargs):
+        related_photos = list(self.photos.all())
+        super().delete(*args, **kwargs)
+        for photo in related_photos:
+            photo.delete()
+```
+
+**Важно:**
+- Это поведение безопасно, если фотографии действительно уникальны для каждого объекта.
+- Если потребуется изменить логику (например, если фото будут использоваться в нескольких объектах), потребуется дополнительная проверка связей перед удалением. 

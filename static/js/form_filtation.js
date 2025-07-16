@@ -28,18 +28,9 @@ function initCategoryServiceFiltering() {
     // Делаем бэкап всех опций (включая дефолтную)
     serviceOptionsBackup = Array.from(serviceSelect.options);
 
-    // При загрузке или открытии формы — фильтруем по выбранной или первой категории
+    // Не меняем выбранную категорию, если она пустая (оставляем -- Select category --)
     let initialCat = categorySelect.value;
-    if (!initialCat) {
-        const firstOption = Array.from(categorySelect.options).find(opt => opt.value);
-        if (firstOption) initialCat = firstOption.value;
-    }
-    if (initialCat) {
-        categorySelect.value = initialCat;
-        filterServicesByCategory(initialCat);
-    } else {
-        filterServicesByCategory('');
-    }
+    filterServicesByCategory(initialCat); // если пусто — фильтруем по пустому
 
     categorySelect.onchange = function() {
         filterServicesByCategory(this.value);

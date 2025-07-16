@@ -13,26 +13,23 @@
 }
 
 .modal-form {
-    background: white;
+    background: #FBD551;
     padding: 30px;
-    border-radius: 15px;
+    border-radius: 15px 0px 0px 15px;
     width: 90%;
     max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid #282D3B;
 }
 
-.close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
+.form-group.checkbox label {
+    padding-top: 10px;
 }
+
+
 
 .close-btn svg {
     fill: #282D3B;
@@ -53,7 +50,7 @@
 
 label {
     display: block;
-    margin-bottom: 8px;
+  
     color: #282D3B;
     font-weight: 500;
 }

@@ -3,7 +3,13 @@ from .models import Task, TypeOfTask, TaskStatus, Finance, ServicesCategory, Ser
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from joblist.models import AllTags
-from .models import TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations
+from .models import (
+    TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations,
+    PerformersRelations, CommentTaskRelations, ServicesRelations,
+    TimeSlotPerformersRelations, CommentTimeSlotRelations,
+    AdvertisingPerformersRelations, CommentAdvertisingRelations,
+    PhotoRelations, Comment
+)
 from decimal import Decimal
 import json
 
@@ -35,7 +41,7 @@ def create_task(request):
             category_id = none_if_empty(request.POST.get('category'))
             service_id = none_if_empty(request.POST.get('service'))
 
-            # Создаём Task
+            # ЭТАП 1: Создаём основную запись Task
             task = Task.objects.create(
                 type_of_task_id=type_of_task_id,
                 title=title,
@@ -57,35 +63,65 @@ def create_task(request):
                 parent_id=parent_id
             )
 
-            # ManyToMany: hashtags, performers, services
-            hashtags = request.POST.getlist('hashtags')
-            if hashtags:
-                for tag_id in hashtags:
+            # ЭТАП 2: Добавляем связанные данные через промежуточные таблицы
+
+            # Хэштеги
+            hashtags_data = request.POST.get('hashtags')
+            if hashtags_data:
+                # Парсим строку с ID, разделенными запятыми
+                hashtag_ids = [id.strip() for id in hashtags_data.split(',') if id.strip()]
+                for tag_id in hashtag_ids:
                     try:
                         tag_obj = AllTags.objects.get(id=tag_id)
                         TaskHashtagRelations.objects.get_or_create(task=task, hashtag=tag_obj)
                     except AllTags.DoesNotExist:
                         pass
 
-            # Связь с сервисом через ServicesRelations
+            # Сервисы
             if service_id:
                 try:
                     service = Services.objects.get(id=service_id)
-                    ServicesRelations.objects.create(task=task, service=service)
+                    ServicesRelations.objects.get_or_create(task=task, service=service)
                 except Services.DoesNotExist:
                     pass
 
-            # Обработка исполнителей
+            # Исполнители
             performers_data = request.POST.get('performers')
             if performers_data:
                 try:
                     performers = json.loads(performers_data)
                     for performer_name in performers:
-                        # Здесь можно создать пользователя или связать с существующим
-                        # Пока просто логируем
-                        print(f"Performer: {performer_name}")
+                        # Создаем или находим пользователя
+                        user, created = User.objects.get_or_create(
+                            username=performer_name,
+                            defaults={'email': f'{performer_name}@example.com'}
+                        )
+                        PerformersRelations.objects.get_or_create(task=task, user=user)
                 except json.JSONDecodeError:
                     pass
+
+            # Комментарии
+            comment_text = request.POST.get('comment')
+            if comment_text:
+                # Получаем текущего пользователя (заглушка)
+                current_user = User.objects.first()  # В реальном приложении используйте request.user
+                comment = Comment.objects.create(
+                    author=current_user,
+                    content=comment_text
+                )
+                CommentTaskRelations.objects.create(task=task, comment=comment)
+
+            # Фотографии (если загружены файлы)
+            photos = request.FILES.getlist('photos')
+            if photos:
+                for photo_file in photos:
+                    photo_relation = PhotoRelations.objects.create(photo=photo_file)
+                    task.photos.add(photo_relation)
+
+            # Добавляем owner relation
+            if request.user.is_authenticated:
+                from .models import TaskOwnerRelations
+                TaskOwnerRelations.objects.get_or_create(task=task, user=request.user)
 
             return JsonResponse({'success': True, 'type': 'task', 'id': task.id})
         except Exception as e:
@@ -105,7 +141,7 @@ def create_advertising(request):
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
             service_id = none_if_empty(request.POST.get('service'))
 
-            # Создаём Advertising
+            # ЭТАП 1: Создаём основную запись Advertising
             advertising = Advertising.objects.create(
                 title=title,
                 description=description,
@@ -113,15 +149,55 @@ def create_advertising(request):
                 services_id=service_id
             )
 
-            # Добавляем хэштеги
-            hashtags = request.POST.getlist('hashtags')
-            if hashtags:
-                for tag_id in hashtags:
+            # ЭТАП 2: Добавляем связанные данные
+
+            # Хэштеги
+            hashtags_data = request.POST.get('hashtags')
+            if hashtags_data:
+                # Парсим строку с ID, разделенными запятыми
+                hashtag_ids = [id.strip() for id in hashtags_data.split(',') if id.strip()]
+                for tag_id in hashtag_ids:
                     try:
                         tag_obj = AllTags.objects.get(id=tag_id)
                         AdvertisingHashtagRelations.objects.get_or_create(advertising=advertising, hashtag=tag_obj)
                     except AllTags.DoesNotExist:
                         pass
+
+            # Исполнители
+            performers_data = request.POST.get('performers')
+            if performers_data:
+                try:
+                    performers = json.loads(performers_data)
+                    for performer_name in performers:
+                        user, created = User.objects.get_or_create(
+                            username=performer_name,
+                            defaults={'email': f'{performer_name}@example.com'}
+                        )
+                        AdvertisingPerformersRelations.objects.get_or_create(advertising=advertising, user=user)
+                except json.JSONDecodeError:
+                    pass
+
+            # Комментарии
+            comment_text = request.POST.get('comment')
+            if comment_text:
+                current_user = User.objects.first()
+                comment = Comment.objects.create(
+                    author=current_user,
+                    content=comment_text
+                )
+                CommentAdvertisingRelations.objects.create(advertising=advertising, comment=comment)
+
+            # Фотографии
+            photos = request.FILES.getlist('photos')
+            if photos:
+                for photo_file in photos:
+                    photo_relation = PhotoRelations.objects.create(photo=photo_file)
+                    advertising.photos.add(photo_relation)
+
+            # Добавляем owner relation
+            if request.user.is_authenticated:
+                from .models import AdvertisingOwnerRelations
+                AdvertisingOwnerRelations.objects.get_or_create(advertising=advertising, user=request.user)
 
             return JsonResponse({'success': True, 'type': 'advertising', 'id': advertising.id})
         except Exception as e:
@@ -143,7 +219,6 @@ def create_time_slot(request):
             start_location = none_if_empty(request.POST.get('start_location'))
             cost_hour = none_if_empty(request.POST.get('cost_hour'))
             min_slot = none_if_empty(request.POST.get('min_slot'))
-            ts_services = none_if_empty(request.POST.get('ts-services'))
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
             service_id = none_if_empty(request.POST.get('service'))
 
@@ -155,7 +230,7 @@ def create_time_slot(request):
                 except (ValueError, TypeError):
                     cost_in_cents = Decimal('0')
 
-            # Создаём TimeSlot
+            # ЭТАП 1: Создаём основную запись TimeSlot
             time_slot = TimeSlot.objects.create(
                 date_start=date_start,
                 date_end=date_end,
@@ -169,15 +244,56 @@ def create_time_slot(request):
                 services_id=service_id
             )
 
-            # Добавляем хэштеги
-            hashtags = request.POST.getlist('ts-hashtags')
-            if hashtags:
-                for tag_id in hashtags:
+            # ЭТАП 2: Добавляем связанные данные
+
+            # Хэштеги
+            hashtags_data = request.POST.get('ts-hashtags')
+            if hashtags_data:
+                # Парсим строку с названиями хэштегов, разделенными запятыми
+                hashtag_names = [name.strip() for name in hashtags_data.split(',') if name.strip()]
+                for tag_name in hashtag_names:
                     try:
-                        tag_obj = AllTags.objects.get(id=tag_id)
+                        # Ищем хэштег по названию или создаем новый
+                        tag_obj, created = AllTags.objects.get_or_create(tag=tag_name)
                         TimeSlotHashtagRelations.objects.get_or_create(time_slot=time_slot, hashtag=tag_obj)
-                    except AllTags.DoesNotExist:
+                    except Exception:
                         pass
+
+            # Исполнители
+            performers_data = request.POST.get('performers')
+            if performers_data:
+                try:
+                    performers = json.loads(performers_data)
+                    for performer_name in performers:
+                        user, created = User.objects.get_or_create(
+                            username=performer_name,
+                            defaults={'email': f'{performer_name}@example.com'}
+                        )
+                        TimeSlotPerformersRelations.objects.get_or_create(time_slot=time_slot, user=user)
+                except json.JSONDecodeError:
+                    pass
+
+            # Комментарии
+            comment_text = request.POST.get('comment')
+            if comment_text:
+                current_user = User.objects.first()
+                comment = Comment.objects.create(
+                    author=current_user,
+                    content=comment_text
+                )
+                CommentTimeSlotRelations.objects.create(time_slot=time_slot, comment=comment)
+
+            # Фотографии
+            photos = request.FILES.getlist('photos')
+            if photos:
+                for photo_file in photos:
+                    photo_relation = PhotoRelations.objects.create(photo=photo_file)
+                    time_slot.photos.add(photo_relation)
+
+            # Добавляем owner relation
+            if request.user.is_authenticated:
+                from .models import TimeSlotOwnerRelations
+                TimeSlotOwnerRelations.objects.get_or_create(time_slot=time_slot, user=request.user)
 
             return JsonResponse({'success': True, 'type': 'time_slot', 'id': time_slot.id})
         except Exception as e:

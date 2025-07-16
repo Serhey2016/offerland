@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from joblist.models import AllTags
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 User = get_user_model()
 
@@ -55,7 +57,7 @@ class Comment(models.Model):
 
 class TaskStatus(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=32, unique=True)
 
     def __str__(self):
         return self.name
@@ -151,6 +153,12 @@ class Task(models.Model):
     class Meta:
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
+
+    def delete(self, *args, **kwargs):
+        related_photos = list(self.photos.all())
+        super().delete(*args, **kwargs)
+        for photo in related_photos:
+            photo.delete()
 
 
 class TaskHashtagRelations(models.Model):
@@ -251,14 +259,25 @@ class TimeSlot(models.Model):
     minimum_time_slot = models.CharField(max_length=50)  # Изменено на CharField
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)  # Добавлена связь с TypeOfTask
     services = models.ForeignKey('Services', on_delete=models.CASCADE)
+    
+    # Добавляем связи многие ко многим через промежуточные таблицы
+    performers = models.ManyToManyField(User, through='TimeSlotPerformersRelations', blank=True)
+    comments = models.ManyToManyField('Comment', through='CommentTimeSlotRelations', blank=True)
+    photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='time_slots')
 
     def __str__(self):
-        return f"Слот {self.date_start} - {self.date_end}"
+        return f"TimeSlot {self.date_start} - {self.date_end}"
 
     class Meta:
         db_table = 'time_slots'
         verbose_name = "time slot"
         verbose_name_plural = "time slots"
+
+    def delete(self, *args, **kwargs):
+        related_photos = list(self.photos.all())
+        super().delete(*args, **kwargs)
+        for photo in related_photos:
+            photo.delete()
 
 
 class Advertising(models.Model):
@@ -269,6 +288,10 @@ class Advertising(models.Model):
     services = models.ForeignKey('Services', on_delete=models.CASCADE)
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)  # Добавлена связь с TypeOfTask
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='advertisings')
+    
+    # Добавляем связи многие ко многим через промежуточные таблицы
+    performers = models.ManyToManyField(User, through='AdvertisingPerformersRelations', blank=True)
+    comments = models.ManyToManyField('Comment', through='CommentAdvertisingRelations', blank=True)
 
     def __str__(self):
         return self.title
@@ -277,6 +300,87 @@ class Advertising(models.Model):
         db_table = 'advertising'
         verbose_name = "Advertising feed"
         verbose_name_plural = "Advertising feeds"
+
+    def delete(self, *args, **kwargs):
+        related_photos = list(self.photos.all())
+        super().delete(*args, **kwargs)
+        for photo in related_photos:
+            photo.delete()
+
+
+# Промежуточные таблицы для TimeSlot
+class TimeSlotPerformersRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    time_slot = models.ForeignKey('TimeSlot', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'timeslot_performers_relations'
+        unique_together = ('time_slot', 'user')
+        verbose_name = "TimeSlot performer relation"
+        verbose_name_plural = "TimeSlot performer relations"
+
+
+class CommentTimeSlotRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    comment = models.ForeignKey('Comment', on_delete=models.CASCADE)
+    time_slot = models.ForeignKey('TimeSlot', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'comment_timeslot_relations'
+        unique_together = ('comment', 'time_slot')
+        verbose_name = "Comment to the time slot"
+        verbose_name_plural = "Comment time slot relations"
+
+
+# Промежуточные таблицы для Advertising
+class AdvertisingPerformersRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    advertising = models.ForeignKey('Advertising', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'advertising_performers_relations'
+        unique_together = ('advertising', 'user')
+        verbose_name = "Advertising performer relation"
+        verbose_name_plural = "Advertising performer relations"
+
+
+class CommentAdvertisingRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    comment = models.ForeignKey('Comment', on_delete=models.CASCADE)
+    advertising = models.ForeignKey('Advertising', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'comment_advertising_relations'
+        unique_together = ('comment', 'advertising')
+        verbose_name = "Comment to the advertising"
+        verbose_name_plural = "Comment advertising relations"
+
+
+class AdvertisingOwnerRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    advertising = models.ForeignKey('Advertising', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'advertising_owner_relations'
+        unique_together = ('advertising', 'user')
+        verbose_name = "Advertising owner relation"
+        verbose_name_plural = "Advertising owner relations"
+
+class TimeSlotOwnerRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    time_slot = models.ForeignKey('TimeSlot', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'timeslot_owner_relations'
+        unique_together = ('time_slot', 'user')
+        verbose_name = "TimeSlot owner relation"
+        verbose_name_plural = "TimeSlot owner relations"
 
 
 class TaskClientRelations(models.Model):
@@ -289,5 +393,11 @@ class TaskClientRelations(models.Model):
         unique_together = ('task', 'client')
         verbose_name = "Task Client relation"
         verbose_name_plural = "Task Client relations"
+
+
+@receiver(post_delete, sender=PhotoRelations)
+def delete_photo_file(sender, instance, **kwargs):
+    if instance.photo:
+        instance.photo.delete(save=False)
 
 
