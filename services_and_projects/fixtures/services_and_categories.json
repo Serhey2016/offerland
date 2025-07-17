@@ -1,0 +1,361 @@
+[
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 1,
+  "fields": {
+    "category_name": "Maintenance and Facilities Management"
+  }
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 2,
+  "fields": {
+    "category_name": "Legal and Compliance Services"
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 1,
+  "fields": {
+    "category_name": 1,
+    "service_name": "Handyman services",
+    "hashtags": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ]
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 2,
+  "fields": {
+    "category_name": 1,
+    "service_name": "installation and maintenance",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 3,
+  "fields": {
+    "category_name": 1,
+    "service_name": "Equipment maintenance and repair",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 4,
+  "fields": {
+    "category_name": 1,
+    "service_name": "Other",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 5,
+  "fields": {
+    "category_name": 2,
+    "service_name": "Contract drafting and review",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 6,
+  "fields": {
+    "category_name": 2,
+    "service_name": "Litigation support",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 7,
+  "fields": {
+    "category_name": 2,
+    "service_name": "Compliance auditing",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 8,
+  "fields": {
+    "category_name": 2,
+    "service_name": "Intellectual property services",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 9,
+  "fields": {
+    "category_name": 2,
+    "service_name": "Employment law consultation",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 10,
+  "fields": {
+    "category_name": 2,
+    "service_name": "Tax advisory",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 11,
+  "fields": {
+    "category_name": 2,
+    "service_name": "Corporate law",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 12,
+  "fields": {
+    "category_name": 2,
+    "service_name": "Other",
+    "hashtags": []
+  }
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 3,
+  "fields": {"category_name": "Consulting and Advisory"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 4,
+  "fields": {"category_name": "Training and Development"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 5,
+  "fields": {"category_name": "Marketing and Advertising"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 6,
+  "fields": {"category_name": "Financial Services"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 7,
+  "fields": {"category_name": "Business Process Outsourcing (BPO)"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 8,
+  "fields": {"category_name": "Manufacturing and Production"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 9,
+  "fields": {"category_name": "HR Services"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 10,
+  "fields": {"category_name": "Real Estate and Property Management"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 11,
+  "fields": {"category_name": "Event Management"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 12,
+  "fields": {"category_name": "Design and Creative Services"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 13,
+  "fields": {"category_name": "Security Services"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 14,
+  "fields": {"category_name": "Logistics and Transportation"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 15,
+  "fields": {"category_name": "Medical Services"}
+},
+{
+  "model": "services_and_projects.servicescategory",
+  "pk": 16,
+  "fields": {"category_name": "IT Services"}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 13,
+  "fields": {"category_name": 3, "service_name": "Management", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 14,
+  "fields": {"category_name": 3, "service_name": "Strategic", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 15,
+  "fields": {"category_name": 3, "service_name": "Financial", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 16,
+  "fields": {"category_name": 3, "service_name": "HR", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 17,
+  "fields": {"category_name": 3, "service_name": "IT", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 18,
+  "fields": {"category_name": 3, "service_name": "Marketing", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 19,
+  "fields": {"category_name": 3, "service_name": "Operational", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 20,
+  "fields": {"category_name": 3, "service_name": "Supply chain", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 21,
+  "fields": {"category_name": 3, "service_name": "Risk management", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 22,
+  "fields": {"category_name": 3, "service_name": "Business development", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 23,
+  "fields": {"category_name": 3, "service_name": "Other", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 24,
+  "fields": {"category_name": 4, "service_name": "Employee training programs", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 25,
+  "fields": {"category_name": 4, "service_name": "Leadership development", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 26,
+  "fields": {"category_name": 4, "service_name": "Skills training (technical and soft skills)", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 27,
+  "fields": {"category_name": 4, "service_name": "Compliance training", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 28,
+  "fields": {"category_name": 4, "service_name": "Onboarding programs", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 29,
+  "fields": {"category_name": 4, "service_name": "Coaching", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 30,
+  "fields": {"category_name": 4, "service_name": "Team-building workshops", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 31,
+  "fields": {"category_name": 4, "service_name": "Career development", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 32,
+  "fields": {"category_name": 4, "service_name": "Technical training", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 33,
+  "fields": {"category_name": 5, "service_name": "Digital marketing", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 34,
+  "fields": {"category_name": 5, "service_name": "Social media marketing", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 35,
+  "fields": {"category_name": 5, "service_name": "Content marketing", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 36,
+  "fields": {"category_name": 5, "service_name": "SEO services", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 37,
+  "fields": {"category_name": 5, "service_name": "Pay-per-click (PPC) advertising", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 38,
+  "fields": {"category_name": 5, "service_name": "Email marketing", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 39,
+  "fields": {"category_name": 5, "service_name": "Branding", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 40,
+  "fields": {"category_name": 5, "service_name": "Market research", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 41,
+  "fields": {"category_name": 5, "service_name": "Public relations", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 42,
+  "fields": {"category_name": 5, "service_name": "Event marketing", "hashtags": []}
+},
+{
+  "model": "services_and_projects.services",
+  "pk": 43,
+  "fields": {"category_name": 5, "service_name": "Other", "hashtags": []}
+}
+]
