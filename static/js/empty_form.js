@@ -51,9 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         performersList: document.querySelector('.performers-list'),
         performersDropdown: document.getElementById('performers-dropdown'),
         
-        // Клиент
-        clientInput: document.getElementById('client'),
-        
         // Offline поля
         offlineCheckbox: findOfflineCheckbox(),
         postCodeGroup: document.getElementById('post-code')?.parentNode,
@@ -69,8 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         performerTags: [],
         extendedVisible: false,
         spinnerTimeouts: {
-            performer: null,
-            client: null
+            performer: null
         }
     };
 
@@ -489,12 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initSpinners() {
 
         
-        // Спиннер для поля клиента
-        if (elements.clientInput) {
-            elements.clientInput.addEventListener('input', () => {
-                handleSpinnerTimeout('client', elements.clientInput);
-            });
-        }
+        // Спиннер для поля клиента - удалено
     }
 
     // === УПРАВЛЕНИЕ ПОЛЯМИ ФОРМЫ ===
@@ -567,6 +558,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'my':
                 handleMyListFields();
                 break;
+            case 'project':
+                handleProjectFields();
+                break;
             case 'orders':
                 handleOrdersFields();
                 break;
@@ -598,7 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showField('hashtags');
         
         // Скрываем остальные
-        hideFields(['client', 'documents', 'performers', 'status', 'project-included']);
+        hideFields(['documents', 'performers', 'status', 'project-included']);
         hideCheckboxes();
         hideField('comment');
         hideDateFields();
@@ -624,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (photoElements.upload) photoElements.upload.style.display = 'none';
         
         // Показываем нужные поля
-        showFields(['hashtags', 'client', 'documents', 'performers', 'status', 'project-included']);
+        showFields(['hashtags', 'documents', 'performers', 'status', 'project-included']);
         showCheckboxes();
         hideField('comment');
         hideDateFields();
@@ -653,7 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Показываем все основные поля
         showAllFormGroups();
-        showFields(['hashtags', 'client', 'documents', 'performers', 'status', 'project-included']);
+        showFields(['hashtags', 'documents', 'performers', 'status', 'project-included']);
         showCheckboxes();
         showField('comment');
         showDateFields();
@@ -686,6 +680,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.extendToggle) elements.extendToggle.style.display = 'none';
         state.extendedVisible = false;
         
+        showField('form-actions');
+    }
+
+    /**
+     * Настройка полей для проекта
+     */
+    function handleProjectFields() {
+        const photoElements = getPhotoElements();
+        if (elements.extendedFields) elements.extendedFields.style.display = '';
+        if (elements.extendToggle) elements.extendToggle.style.display = 'none';
+        state.extendedVisible = true;
+
+        // Показываем только загрузку файлов
+        if (photoElements.link) photoElements.link.style.display = 'none';
+        if (photoElements.orText) photoElements.orText.style.display = 'none';
+        if (photoElements.upload) photoElements.upload.style.display = '';
+
+        showFields(['hashtags', 'documents', 'performers', 'status', 'project-included']);
+        showCheckboxes();
+        hideField('comment');
+        hideDateFields();
         showField('form-actions');
     }
 

@@ -272,10 +272,7 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="client">Client</label>
-                    <input type="text" id="client" name="client">
-                </div>
+
                 <div class="form-group">
                     <label for="performers">Performer(s)</label>
                     <div class="performers-input-group">
@@ -320,6 +317,9 @@
                     <label for="project-included">Project (task) included</label>
                     <select id="project-included" name="project-included">
                         <option value="">Empty</option>
+                        {% for task in tasks %}
+                        <option value="{{ task.id }}">{{ task.title }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -334,8 +334,8 @@
                 </div>
 
                 <div class="form-group checkbox">
-                    <input type="checkbox" id="disclose-name-2" name="disclose_name_2">
-                    <label for="disclose-name-2">Hidden (visible just for you)</label>
+                    <input type="checkbox" id="hidden" name="hidden">
+                    <label for="hidden">Hidden (visible just for you)</label>
                 </div>
 
                 <div class="form-group checkbox">
@@ -353,10 +353,7 @@
                     <input type="text" id="street_details" name="street_details" placeholder="Street details">
                 </div>
 
-                <div class="form-group">
-                    <label for="comment">Comment</label>
-                    <textarea id="comment" name="comment" rows="4"></textarea>
-                </div>
+                
             </div>
 
             <div class="form-actions">

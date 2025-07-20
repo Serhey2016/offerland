@@ -31,9 +31,8 @@ def create_task(request):
             documents = none_if_empty(request.POST.get('documents'))
             status_id = none_if_empty(request.POST.get('status'))
             is_private = bool(request.POST.get('private'))
-            hide_project = bool(request.POST.get('hide_project'))
             disclose_name = bool(request.POST.get('disclose_name'))
-            hidden_task = bool(request.POST.get('hidden_task'))
+            hidden = bool(request.POST.get('hidden'))
             is_published = False  # или по логике вашей кнопки
             note = none_if_empty(request.POST.get('note') or request.POST.get('comment'))
             finance_id = none_if_empty(request.POST.get('finance'))
@@ -54,9 +53,8 @@ def create_task(request):
                 documents=documents,
                 status_id=status_id,
                 is_private=is_private,
-                hide_project=hide_project,
                 disclose_name=disclose_name,
-                hidden_task=hidden_task,
+                hidden=hidden,
                 is_published=is_published,
                 note=note,
                 finance_id=finance_id,
