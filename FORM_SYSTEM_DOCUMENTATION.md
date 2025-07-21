@@ -191,6 +191,27 @@ else:
 - CSRF защита
 - Обработка ошибок с пользовательскими сообщениями
 
+## Валидация обязательных полей
+
+### Обязательные поля для разных типов публикаций
+
+- **Task (My list, Tender, Project):**
+  - Обязательные: `Title`, `Description`, `Category`
+  - Необязательные: `Service`, `Photos`, `Hashtags`, и др.
+- **Advertising:**
+  - Обязательные: `Title`, `Description`
+  - Необязательные: `Service`, `Photos`, `Hashtags`, и др.
+- **TimeSlot:**
+  - Обязательные: `Date start`, `Date end`, `Time start`, `Time end`
+  - Необязательные: `Service`, `Photos`, `Hashtags`, и др.
+
+> **Service (услуга) не является обязательным полем ни для одного типа формы.**
+
+Если не заполнены обязательные поля, сервер возвращает информативное сообщение на английском, например:
+- `Please fill in all required fields: Title, Description, and Category.`
+- `Please fill in all required fields: Title and Description.`
+- `Please fill in all required fields: Date start, Date end, Time start, and Time end.`
+
 ## Использование
 
 ### Для разработчиков
@@ -329,6 +350,61 @@ class TimeSlot(models.Model):
 - Это поведение безопасно, если фотографии действительно уникальны для каждого объекта.
 - Если потребуется изменить логику (например, если фото будут использоваться в нескольких объектах), потребуется дополнительная проверка связей перед удалением. 
 
-## Зависимости
+## Кастомизация уведомлений через SweetAlert2
 
-- `django-localflavor` — набор локализованных форм-полей и валидаторов для различных стран (например, номера телефонов, почтовые индексы и т.д.). Установить через `pip install django-localflavor` и добавить в `requirements.txt`. 
+### Где находится логика уведомлений
+
+Весь JavaScript-код, связанный с отображением уведомлений о результате отправки форм (успех/ошибка) через SweetAlert2, вынесен в отдельный файл:
+
+- `static/js/sweetalert2_modif.js`
+
+### Сценарий работы
+
+- При нажатии на кнопку "Save" в форме (например, с классом `.project-form`) данные отправляются через AJAX (fetch).
+- После получения ответа от сервера popup (модальное окно) закрывается.
+- В зависимости от результата отображается уведомление через SweetAlert2:
+    - Если успешно: появляется окно с иконкой успеха и сообщением "Данные успешно сохранены".
+    - Если ошибка: появляется окно с иконкой ошибки и текстом ошибки.
+
+### Пример кода (см. файл)
+
+```js
+// static/js/sweetalert2_modif.js
+saveBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    // ...
+    fetch(form.action, { ... })
+        .then(response => response.json())
+        .then(data => {
+            if (modalOverlay) modalOverlay.style.display = 'none';
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Сохранено!',
+                    text: 'Данные успешно сохранены.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка!',
+                    text: data.error || 'Не удалось сохранить данные.'
+                });
+            }
+        })
+        .catch(error => {
+            if (modalOverlay) modalOverlay.style.display = 'none';
+            Swal.fire({
+                icon: 'error',
+                title: 'Ошибка!',
+                text: 'Произошла ошибка при отправке формы.'
+            });
+        });
+});
+```
+
+### Особенности
+- Вся логика уведомлений централизована в одном файле для удобства поддержки.
+- Для изменения поведения уведомлений (например, текста, иконок, тайминга) редактируйте только `static/js/sweetalert2_modif.js`.
+- Для корректной работы SweetAlert2 должны быть подключены файлы `sweetalert2.all.min.js` и `sweetalert2.min.css` в шаблоне. 

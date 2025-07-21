@@ -40,6 +40,18 @@ def create_task(request):
             category_id = none_if_empty(request.POST.get('category'))
             service_id = none_if_empty(request.POST.get('service'))
 
+            # Валидация обязательных полей (service_id и category_id не обязательны)
+            missing_fields = []
+            if not title:
+                missing_fields.append('Title')
+            if not description:
+                missing_fields.append('Description')
+            if missing_fields:
+                return JsonResponse({
+                    'success': False,
+                    'error': f"Please fill in the following required field(s): {', '.join(missing_fields)}."
+                }, status=400)
+
             # ЭТАП 1: Создаём основную запись Task
             task = Task.objects.create(
                 type_of_task_id=type_of_task_id,
@@ -139,6 +151,18 @@ def create_advertising(request):
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
             service_id = none_if_empty(request.POST.get('service'))
 
+            # Валидация обязательных полей (service_id не обязателен)
+            missing_fields = []
+            if not title:
+                missing_fields.append('Title')
+            if not description:
+                missing_fields.append('Description')
+            if missing_fields:
+                return JsonResponse({
+                    'success': False,
+                    'error': f"Please fill in the following required field(s): {', '.join(missing_fields)}."
+                }, status=400)
+
             # ЭТАП 1: Создаём основную запись Advertising
             advertising = Advertising.objects.create(
                 title=title,
@@ -219,6 +243,22 @@ def create_time_slot(request):
             min_slot = none_if_empty(request.POST.get('min_slot'))
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
             service_id = none_if_empty(request.POST.get('service'))
+
+            # Валидация обязательных полей (service_id не обязателен)
+            missing_fields = []
+            if not date_start:
+                missing_fields.append('Date start')
+            if not date_end:
+                missing_fields.append('Date end')
+            if not time_start:
+                missing_fields.append('Time start')
+            if not time_end:
+                missing_fields.append('Time end')
+            if missing_fields:
+                return JsonResponse({
+                    'success': False,
+                    'error': f"Please fill in the following required field(s): {', '.join(missing_fields)}."
+                }, status=400)
 
             # Преобразуем cost_hour в центы (умножаем на 100)
             cost_in_cents = None
