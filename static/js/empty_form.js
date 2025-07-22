@@ -10,10 +10,162 @@ document.addEventListener('DOMContentLoaded', () => {
         '1': 'my',
         '2': 'tender',
         '3': 'project',
-        '4': 'advertising',
+        '4': 'Advertising',
         '5': 'orders',
         '6': 'test_type', // если потребуется
     };
+
+    // === КОНСТАНТЫ ДЛЯ ID ПОЛЕЙ ===
+    const FIELD_IDS = {
+        formGroupCategory: 'form-group-category',
+        formGroupService: 'form-group-service',
+        formGroupTitle: 'form-group-title',
+        formGroupDescription: 'form-group-description',
+        formGroupPhotosLinkOr: 'form-group-photos-link_or',
+        formGroupPhotosLinkDropFile: 'form-group-photos-link_drop_file',
+        photosLink: 'photos-link',
+        formGroupHashtagsInput: 'form-group-hashtags-input',
+        hashtagsHidden: 'hashtags-hidden',
+        formGroupDocuments: 'form-group-documents',
+        formGroupPerformers: 'form-group-performers',
+        formGroupDateTime: 'form-group-date-time',
+        formGroupDiscloseName1: 'form-group-disclose-name-1',
+        formGroupHidden: 'form-group-hidden',
+        formGroupPostCode: 'form-group-post-code',
+        formGroupDiscloseName: 'form-group-disclose-name',
+        formGroupStreetDetails: 'form-group-street_details',
+    };
+
+    // === КОНФИГ ДЛЯ РАЗНЫХ ТИПОВ ПУБЛИКАЦИЙ ===
+    const FORM_CONFIG = {
+        advertising: {
+            show: [
+                FIELD_IDS.formGroupCategory,
+                FIELD_IDS.formGroupService,
+                FIELD_IDS.formGroupTitle,
+                FIELD_IDS.formGroupDescription,
+                FIELD_IDS.formGroupPhotosLinkDropFile,
+                FIELD_IDS.photosLink,
+                FIELD_IDS.formGroupHashtagsInput,
+                FIELD_IDS.formGroupDocuments,
+                FIELD_IDS.formGroupPerformers,
+                FIELD_IDS.formGroupDateTime,
+                FIELD_IDS.formGroupDiscloseName1,
+                FIELD_IDS.formGroupHidden,
+                FIELD_IDS.formGroupPostCode,
+                FIELD_IDS.formGroupDiscloseName,
+                FIELD_IDS.formGroupStreetDetails,
+            ],
+            hide: [
+                FIELD_IDS.hashtagsHidden,
+                FIELD_IDS.photosLink,
+                FIELD_IDS.formGroupPhotosLinkOr,
+            ],
+            hideCheckboxes: false,
+            hideDateFields: false,
+            showExtended: false,
+            showExtendToggle: false,
+        },
+        tender: {
+            show: [
+                FIELD_IDS.formGroupCategory,
+                FIELD_IDS.formGroupService,
+                FIELD_IDS.formGroupHashtagsInput,
+                FIELD_IDS.formGroupDocuments,
+                FIELD_IDS.formGroupPerformers,
+                FIELD_IDS.status,
+                FIELD_IDS.projectIncluded,
+                FIELD_IDS.formActions,
+            ],
+            hide: [
+                FIELD_IDS.comment,
+                FIELD_IDS.timeSlotGroup,
+                FIELD_IDS.extendedFields,
+                FIELD_IDS.formGroupPhotosLinkOr,
+                FIELD_IDS.formGroupPhotosLinkDropFile,
+            ],
+            hideCheckboxes: false,
+            hideDateFields: true,
+            showExtended: true,
+            showExtendToggle: false,
+        },
+        my: {
+            show: Object.values(FIELD_IDS),
+            hide: [],
+            hideCheckboxes: false,
+            hideDateFields: false,
+            showExtended: false,
+            showExtendToggle: true,
+        },
+        project: {
+            show: [FIELD_IDS.formGroupCategory, FIELD_IDS.formGroupService, FIELD_IDS.formGroupHashtagsInput, FIELD_IDS.formGroupDocuments, FIELD_IDS.formGroupPerformers, FIELD_IDS.status, FIELD_IDS.projectIncluded, FIELD_IDS.formActions],
+            hide: [FIELD_IDS.comment, FIELD_IDS.timeSlotGroup, FIELD_IDS.extendedFields],
+            hideCheckboxes: false,
+            hideDateFields: true,
+            showExtended: true,
+            showExtendToggle: false,
+        },
+        orders: {
+            show: [FIELD_IDS.timeSlotGroup, FIELD_IDS.formActions],
+            hide: Object.values(FIELD_IDS).filter(id => id !== FIELD_IDS.timeSlotGroup && id !== FIELD_IDS.formActions),
+            hideCheckboxes: true,
+            hideDateFields: true,
+            showExtended: false,
+            showExtendToggle: false,
+        },
+        default: {
+            show: Object.values(FIELD_IDS),
+            hide: [],
+            hideCheckboxes: false,
+            hideDateFields: false,
+            showExtended: false,
+            showExtendToggle: false,
+        }
+    };
+
+    // === УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ДЛЯ ВИДИМОСТИ ===
+    function setFieldsVisibility(fieldIds, visible) {
+        fieldIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = visible ? '' : 'none';
+        });
+    }
+    function hideAllCheckboxes() {
+        document.querySelectorAll('.form-group.checkbox').forEach(group => {
+            group.style.display = 'none';
+        });
+    }
+    function showAllCheckboxes() {
+        document.querySelectorAll('.form-group.checkbox').forEach(group => {
+            group.style.display = '';
+        });
+    }
+    function hideDateFields() {
+        const dateStart = document.getElementById('date-start');
+        if (dateStart) {
+            const formRow = dateStart.parentNode?.parentNode;
+            if (formRow) formRow.style.display = 'none';
+        }
+    }
+    function showDateFields() {
+        const dateStart = document.getElementById('date-start');
+        const dateEnd = document.getElementById('date-end');
+        if (dateStart && dateEnd) {
+            const formRow = dateStart.parentNode?.parentNode;
+            if (formRow) formRow.style.display = '';
+        }
+    }
+
+    // === УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК ДЛЯ ТИПОВ ===
+    function handleTypeFields(type) {
+        const config = FORM_CONFIG[type] || FORM_CONFIG.default;
+        setFieldsVisibility(config.show, true);
+        setFieldsVisibility(config.hide, false);
+        if (config.hideCheckboxes) hideAllCheckboxes(); else showAllCheckboxes();
+        if (config.hideDateFields) hideDateFields(); else showDateFields();
+        if (elements.extendedFields) elements.extendedFields.style.display = config.showExtended ? '' : 'none';
+        if (elements.extendToggle) elements.extendToggle.style.display = config.showExtendToggle ? 'flex' : 'none';
+    }
 
     // === УТИЛИТЫ ===
     
@@ -322,6 +474,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof window.initCategoryServiceSelects === 'function') {
                     window.initCategoryServiceSelects();
                 }
+                // Явно обновляем видимость полей
+                if (typeof updateFieldsVisibility === 'function') {
+                    console.log('Calling updateFieldsVisibility after modal open');
+                    updateFieldsVisibility();
+                }
             });
         } else {
             console.log('Open button or modal overlay not found');
@@ -535,188 +692,12 @@ document.addEventListener('DOMContentLoaded', () => {
    
     }
 
-    /**
-     * Обновляет видимость полей в зависимости от типа публикации
-     */
+    // === МОДИФИЦИРУЕМ updateFieldsVisibility ===
     function updateFieldsVisibility() {
         if (!elements.publishIn) return;
-        
-        // Получаем строковый тип публикации по value
-        const publishType = TYPE_MAP[elements.publishIn.value] || elements.publishIn.value;
-
-        
-        // Сбрасываем состояние расширенных полей
-        state.extendedVisible = false;
-        
-        switch (publishType) {
-            case 'advertising':
-                handleAdvertisingFields();
-                break;
-            case 'tender':
-                handleTenderFields();
-                break;
-            case 'my':
-                handleMyListFields();
-                break;
-            case 'project':
-                handleProjectFields();
-                break;
-            case 'orders':
-                handleOrdersFields();
-                break;
-            default:
-                handleDefaultFields();
-        }
-        
-        // Обновляем offline поля
+        const publishType = TYPE_MAP[elements.publishIn.value]?.toLowerCase() || elements.publishIn.value?.toLowerCase();
+        handleTypeFields(publishType);
         updateOfflineFields();
-    }
-
-    /**
-     * Настройка полей для рекламы
-     */
-    function handleAdvertisingFields() {
-
-        const photoElements = getPhotoElements();
-        
-        // Скрываем расширенные поля и кнопку
-        if (elements.extendedFields) elements.extendedFields.style.display = 'none';
-        if (elements.extendToggle) elements.extendToggle.style.display = 'none';
-        
-        // Настройка фото: только загрузка
-        if (photoElements.link) photoElements.link.style.display = 'none';
-        if (photoElements.orText) photoElements.orText.style.display = 'none';
-        if (photoElements.upload) photoElements.upload.style.display = '';
-        
-        // Показываем только нужные поля
-        showField('hashtags');
-        
-        // Скрываем остальные
-        hideFields(['documents', 'performers', 'status', 'project-included']);
-        hideCheckboxes();
-        hideField('comment');
-        hideDateFields();
-        
-        showField('form-actions');
-    }
-
-    /**
-     * Настройка полей для тендера
-     */
-    function handleTenderFields() {
-   
-        const photoElements = getPhotoElements();
-        
-        // Показываем расширенные поля, скрываем кнопку
-        if (elements.extendedFields) elements.extendedFields.style.display = '';
-        if (elements.extendToggle) elements.extendToggle.style.display = 'none';
-        state.extendedVisible = true;
-        
-        // Настройка фото: только ссылка
-        if (photoElements.link) photoElements.link.style.display = '';
-        if (photoElements.orText) photoElements.orText.style.display = 'none';
-        if (photoElements.upload) photoElements.upload.style.display = 'none';
-        
-        // Показываем нужные поля
-        showFields(['hashtags', 'documents', 'performers', 'status', 'project-included']);
-        showCheckboxes();
-        hideField('comment');
-        hideDateFields();
-        showField('form-actions');
-    }
-
-    /**
-     * Настройка полей для "Мой список"
-     */
-    function handleMyListFields() {
-
-        const photoElements = getPhotoElements();
-        
-        // Скрываем расширенные поля и показываем кнопку
-        if (elements.extendedFields) elements.extendedFields.style.display = 'none';
-        if (elements.extendToggle) {
-            elements.extendToggle.style.display = 'flex';
-            elements.extendToggle.classList.remove('extended');
-        }
-        state.extendedVisible = false;
-        
-        // Показываем все элементы фото
-        if (photoElements.link) photoElements.link.style.display = '';
-        if (photoElements.orText) photoElements.orText.style.display = '';
-        if (photoElements.upload) photoElements.upload.style.display = '';
-        
-        // Показываем все основные поля
-        showAllFormGroups();
-        showFields(['hashtags', 'documents', 'performers', 'status', 'project-included']);
-        showCheckboxes();
-        showField('comment');
-        showDateFields();
-        showField('form-actions');
-    }
-
-    /**
-     * Настройка полей для заказов (time slot)
-     */
-    function handleOrdersFields() {
-
-        
-        // Показываем только time-slot-group
-        if (elements.timeSlotGroup) {
-            elements.timeSlotGroup.style.display = '';
-        }
-        
-        // Скрываем все form-group, кроме Will published in
-        document.querySelectorAll('.form-group').forEach(group => {
-            if (group !== elements.publishIn?.parentNode && 
-                !elements.timeSlotGroup?.contains(group)) {
-                group.style.display = 'none';
-            } else {
-                group.style.display = '';
-            }
-        });
-        
-        // Скрываем расширенные поля
-        if (elements.extendedFields) elements.extendedFields.style.display = 'none';
-        if (elements.extendToggle) elements.extendToggle.style.display = 'none';
-        state.extendedVisible = false;
-        
-        showField('form-actions');
-    }
-
-    /**
-     * Настройка полей для проекта
-     */
-    function handleProjectFields() {
-        const photoElements = getPhotoElements();
-        if (elements.extendedFields) elements.extendedFields.style.display = '';
-        if (elements.extendToggle) elements.extendToggle.style.display = 'none';
-        state.extendedVisible = true;
-
-        // Показываем только загрузку файлов
-        if (photoElements.link) photoElements.link.style.display = 'none';
-        if (photoElements.orText) photoElements.orText.style.display = 'none';
-        if (photoElements.upload) photoElements.upload.style.display = '';
-
-        showFields(['hashtags', 'documents', 'performers', 'status', 'project-included']);
-        showCheckboxes();
-        hideField('comment');
-        hideDateFields();
-        showField('form-actions');
-    }
-
-    /**
-     * Настройка полей по умолчанию
-     */
-    function handleDefaultFields() {
-
-        
-        // Скрываем time-slot-group
-        if (elements.timeSlotGroup) {
-            elements.timeSlotGroup.style.display = 'none';
-        }
-        
-        // Показываем все form-group
-        showAllFormGroups();
     }
 
     // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С ПОЛЯМИ ===

@@ -76,37 +76,68 @@
     </div>
 </section>
 
-<section class="">
-    <div class="container">
-        there no any services or projects yet
+<section class="social_feeds">
+    <div class="social_feed">
+        <div class="social_feed_user_name">
+            <div class="social_feed_user_name_image">
+                <img src="https://picsum.photos/60/60" alt="Random Image">
+                <div class="social_feed_user_text_name">Alex Meyer</div>
+            </div>
 
-
-
+            <div class="social_feed_menu"></div>
+        </div>
+        <div class="post_info">
+            <span class="post_id">FKG7H4798127</span>
+            <span class="post_date">25.10.2025</span>
+        </div>
+        <div class="social_feed_text">
+            <p>
+                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of
+                classical
+                Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin
+                professor at
+            </p>
+            <p>
+                Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur,
+                from
+                a
+                Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered
+                the
+                undoubtable source.
+            </p>
+            <div class="read_more">Read more...</div>
+        </div>
+        <div class="social_feed_image_gallery_1">
+            <a href="img/1.jpg" data-pswp-width="1200" data-pswp-height="800"><img src="img/1.jpg" alt="Image 1"></a>
+            <a href="img/2.png" data-pswp-width="1200" data-pswp-height="800"><img src="img/2.png" alt="Image 2"></a>
+            <a href="img/3.webp" data-pswp-width="1200" data-pswp-height="800"><img src="img/3.webp" alt="Image 3"></a>
+            <a href="img/4.jpg" data-pswp-width="1200" data-pswp-height="800"><img src="img/4.jpg" alt="Image 4"></a>
+            <a href="img/5.jpg" data-pswp-width="1200" data-pswp-height="800"><img src="img/5.jpg" alt="Image 5"></a>
+            <a href="img/6.jpg" data-pswp-width="1200" data-pswp-height="800"><img src="img/6.jpg" alt="Image 6"></a>
+            <a href="img/7.jpeg" data-pswp-width="1200" data-pswp-height="800"><img src="img/7.jpeg" alt="Image 6"></a>
+        </div>
+        <div class="social_feed_tags">
+            <span>Lorem</span>
+            <span>ipsum</span>
+            <span>dolor</span>
+            <span>sit</span>
+            <span>amet</span>
+            <span>consectetur</span>
+            <span>adipisicing</span>
+            <span>elit</span>
+        </div>
+        <div class="post_actions">
+            <div class="action_buttons">
+                <button class="action_btn">Chat</button>
+                <button class="action_btn">Comments</button>
+            </div>
+            <button class="order_now">Order now</button>
+        </div>
     </div>
-    <div class="container">
-        there no any services or projects yet
 
 
 
-    </div>
-    <div class="container">
-        there no any services or projects yet
 
-
-
-    </div>
-    <div class="container">
-        there no any services or projects yet
-
-
-
-    </div>
-    <div class="container">
-        there no any services or projects yet
-       
-
-
-    </div>
 </section>
 
 
@@ -123,7 +154,7 @@
 
         <form class="project-form" method="post" enctype="multipart/form-data" action="{% url 'services_and_projects:submit_form' %}">
             {% csrf_token %}
-            <div class="form-group">
+            <div class="form-group" id="form-group-type_of_task">
                 <label for="publish-in">Will published in</label>
                 <select id="publish-in" name="type_of_task" required>
                     <option value="">-- Select type --</option>
@@ -175,21 +206,19 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="form-group-title">
                 <label for="title">Title</label>
                 <input type="text" id="title" name="title" required>
             </div>
-
-            <div class="form-group">
+            <div class="form-group" id="form-group-description">
                 <label for="description">Description</label>
                 <textarea id="description" name="description" rows="4" required></textarea>
             </div>
-
-            <div class="form-group">
-                <label for="photos">Photos</label>
+            <div class="form-group" id="form-group-photos-link">
+                <label for="photos-link">Photos</label>
                 <input type="text" id="photos-link" name="photos-link" placeholder="link to google drive" style="margin-bottom:12px;">
-                <div style="text-align:center;font-weight:600;color:#282d3b;margin-bottom:8px;">or</div>
-                <div class="file-upload-area" id="photos-upload">
+                <div id="form-group-photos-link_or" style="text-align:center;font-weight:600;color:#282d3b;margin-bottom:8px;">or</div>
+                <div id="form-group-photos-link_drop_file" class="file-upload-area" id="photos-upload">
                     <input type="file" id="photos" name="photos" multiple accept="image/*">
                     <div class="drop-zone">
                         <p>Drop files here or click to upload</p>
@@ -198,7 +227,7 @@
             </div>
             
 
-            <div class="form-group">
+            <div class="form-group" id="form-group-hashtags-input">
                 <label for="hashtags-input">Hashtags: <a href="#">Don't find hashtag?</a></label>
                 <div id="hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
                     <input type="text" id="hashtags-input" placeholder="Start typing tag..." autocomplete="off" style="border: none; outline: none; flex: 1; min-width: 120px; background: transparent;">
@@ -206,7 +235,25 @@
                 <div id="hashtags-dropdown" class="hashtag-dropdown-menu"></div>
             </div>
             <input type="hidden" name="hashtags" id="hashtags-hidden">
-
+            
+            <div class="form-group" id="form-group-category">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="">-- Select category --</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" id="form-group-service">
+                <label for="service">Service</label>
+                <select id="service" name="service" required>
+                    <option value="">-- Select service --</option>
+                    {% for serv in services %}
+                    <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div id="form-extend-toggle" class="form-extend-toggle" style="display:none;">
                 <button type="button" class="extend-btn">
                     <span class="extend-icon">
@@ -255,26 +302,12 @@
 
             <div id="form-extended-fields" style="display:none;">
 
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <select id="category" name="category" required>
-                        <option value="">-- Select category --</option>
-                        {% for cat in categories %}
-                        <option value="{{ cat.id }}">{{ cat.category_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="service">Service</label>
-                    <select id="service" name="service" required>
-                        <option value="">-- Select service --</option>
-                        {% for serv in services %}
-                        <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="form-group" id="form-group-documents">
+                    <label for="documents">Documents</label>
+                    <input type="url" id="documents" name="documents" placeholder="Enter document link">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="form-group-performers">
                     <label for="performers">Performer(s)</label>
                     <div class="performers-input-group">
                         <input type="text" id="performers" name="performers" placeholder="Add performer" autocomplete="off">
@@ -284,7 +317,7 @@
                     </div>
                     <div class="performers-list"></div>
                 </div>
-                <div class="form-row">
+                <div id="form-group-date-time" class="form-row">
                     <div class="form-group half">
                         <label for="date-start">Date and time start</label>
                         <input type="date" id="date-start" name="date_start">
@@ -297,14 +330,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="documents">Documents</label>
-                    <input type="url" id="documents" name="documents" placeholder="Enter document link">
-                </div>
-
-
-
-                <div class="form-group">
+                <div class="form-group" id="form-group-status">
                     <label for="status">Add status</label>
                     <select id="status" name="status">
                         <option value="">-- Select status --</option>
@@ -314,7 +340,7 @@
                     </select>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="form-group-project-included">
                     <label for="project-included">Project (task) included</label>
                     <select id="project-included" name="project-included">
                         <option value="">Empty</option>
@@ -324,32 +350,32 @@
                     </select>
                 </div>
 
-                <div class="form-group checkbox">
+                <div class="form-group checkbox" id="form-group-private">
                     <input type="checkbox" id="private" name="private">
                     <label for="private">Make private</label>
                 </div>
 
-                <div class="form-group checkbox">
+                <div class="form-group checkbox" id="form-group-disclose-name-1">
                     <input type="checkbox" id="disclose-name-1" name="disclose_name_1">
                     <label for="disclose-name-1">Disclose your name (company) when publishing</label>
                 </div>
 
-                <div class="form-group checkbox">
+                <div class="form-group checkbox" id="form-group-hidden">
                     <input type="checkbox" id="hidden" name="hidden">
                     <label for="hidden">Hidden (visible just for you)</label>
                 </div>
 
-                <div class="form-group checkbox">
+                <div class="form-group checkbox" id="form-group-disclose-name">
                     <input type="checkbox" id="disclose-name" name="disclose_name">
                     <label for="disclose-name">offline</label>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="form-group-post-code">
                     <label for="post-code">Post code</label>
                     <input type="text" id="post-code" name="post_code" placeholder="post-code">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="form-group-street_details">
                     <label for="street_details">Street details</label>
                     <input type="text" id="street_details" name="street_details" placeholder="Street details">
                 </div>
@@ -357,7 +383,7 @@
                 
             </div>
 
-            <div class="form-actions">
+            <div class="form-actions" id="form-actions">
                 
                 <button type="button" class="btn btn-secondary">Save</button>
             </div>
