@@ -7,7 +7,7 @@ from .models import (
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations,
     PerformersRelations, CommentTaskRelations, ServicesRelations,
     TimeSlotPerformersRelations, CommentTimeSlotRelations,
-    AdvertisingPerformersRelations, CommentAdvertisingRelations,
+    CommentAdvertisingRelations,
     PhotoRelations, Comment
 )
 from decimal import Decimal
@@ -144,12 +144,31 @@ def create_task(request):
 def create_advertising(request):
     if request.method == 'POST':
         try:
+            # Добавляем логирование для отладки
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info("create_advertising function called")
+            
+            # Защита от двойной отправки - проверяем уникальный идентификатор
+            request_id = request.POST.get('request_id')
+            if request_id:
+                # Можно использовать кэш или сессию для отслеживания обработанных запросов
+                from django.core.cache import cache
+                cache_key = f"advertising_request_{request_id}"
+                if cache.get(cache_key):
+                    logger.warning(f"Duplicate request detected: {request_id}")
+                    return JsonResponse({'success': False, 'error': 'Duplicate request'}, status=400)
+                cache.set(cache_key, True, timeout=60)  # 60 секунд
+                logger.info(f"Processing request with ID: {request_id}")
+            
             # Получаем данные из формы для рекламы
             title = none_if_empty(request.POST.get('title'))
             description = none_if_empty(request.POST.get('description'))
             photo_link = none_if_empty(request.POST.get('photo_link') or request.POST.get('photos-link'))
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
             service_id = none_if_empty(request.POST.get('service'))
+
+            logger.info(f"Creating advertising with title: {title}")
 
             # Валидация обязательных полей (service_id не обязателен)
             missing_fields = []
@@ -170,6 +189,8 @@ def create_advertising(request):
                 type_of_task_id=type_of_task_id,
                 services_id=service_id
             )
+            
+            logger.info(f"Advertising created with ID: {advertising.id}")
 
             # ЭТАП 2: Добавляем связанные данные
 
@@ -185,19 +206,7 @@ def create_advertising(request):
                     except AllTags.DoesNotExist:
                         pass
 
-            # Исполнители
-            performers_data = request.POST.get('performers')
-            if performers_data:
-                try:
-                    performers = json.loads(performers_data)
-                    for performer_name in performers:
-                        user, created = User.objects.get_or_create(
-                            username=performer_name,
-                            defaults={'email': f'{performer_name}@example.com'}
-                        )
-                        AdvertisingPerformersRelations.objects.get_or_create(advertising=advertising, user=user)
-                except json.JSONDecodeError:
-                    pass
+
 
             # Комментарии
             comment_text = request.POST.get('comment')
@@ -221,6 +230,7 @@ def create_advertising(request):
                 from .models import AdvertisingOwnerRelations
                 AdvertisingOwnerRelations.objects.get_or_create(advertising=advertising, user=request.user)
 
+            logger.info(f"Advertising {advertising.id} completed successfully")
             return JsonResponse({'success': True, 'type': 'advertising', 'id': advertising.id})
         except Exception as e:
             import traceback
@@ -345,6 +355,11 @@ def handle_form_submission(request):
     """Универсальная функция для обработки всех типов форм"""
     if request.method == 'POST':
         try:
+            # Добавляем логирование для отладки
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"handle_form_submission called with POST data: {dict(request.POST)}")
+            
             # Определяем тип публикации
             type_of_task_id = request.POST.get('type_of_task')
             
@@ -355,16 +370,20 @@ def handle_form_submission(request):
             try:
                 type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
                 type_name = type_of_task.type_of_task_name.lower()
+                logger.info(f"Type of task: {type_name}")
             except TypeOfTask.DoesNotExist:
                 return JsonResponse({'success': False, 'error': 'Invalid type of task'}, status=400)
             
             # Направляем на соответствующую функцию в зависимости от типа
             if 'advertising' in type_name:
+                logger.info("Calling create_advertising")
                 return create_advertising(request)
             elif 'time slot' in type_name or 'timeslot' in type_name:
+                logger.info("Calling create_time_slot")
                 return create_time_slot(request)
             else:
                 # Для остальных типов (My list, Tender, Project) используем create_task
+                logger.info("Calling create_task")
                 return create_task(request)
                 
         except Exception as e:

@@ -40,3 +40,7 @@ def task_tracker(request):
 
 def contdowntimer(request):
     return render(request, 'home/contdowntimer.html')
+
+def user_settings(request):
+    return render(request, 'home/user_settings.html')
+

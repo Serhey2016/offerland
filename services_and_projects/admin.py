@@ -4,7 +4,7 @@ from .models import (
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations, 
     PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
     TimeSlot, Advertising, TaskClientRelations, TimeSlotPerformersRelations, CommentTimeSlotRelations,
-    AdvertisingPerformersRelations, CommentAdvertisingRelations
+    CommentAdvertisingRelations, AdvertisingOwnerRelations
 )
 
 class TaskHashtagRelationsInline(admin.TabularInline):
@@ -53,6 +53,7 @@ admin.site.register(TaskOwnerRelations)
 admin.site.register(TimeSlot, TimeSlotAdmin)
 admin.site.register(Advertising, AdvertisingAdmin)
 admin.site.register(TaskClientRelations)
+admin.site.register(AdvertisingOwnerRelations)
 
 @admin.register(TimeSlotHashtagRelations)
 class TimeSlotHashtagRelationsAdmin(admin.ModelAdmin):
@@ -74,11 +75,7 @@ class CommentTimeSlotRelationsAdmin(admin.ModelAdmin):
     search_fields = ('comment__content', 'time_slot__date_start')
 
 
-@admin.register(AdvertisingPerformersRelations)
-class AdvertisingPerformersRelationsAdmin(admin.ModelAdmin):
-    list_display = ('advertising', 'user', 'date')
-    list_filter = ('date',)
-    search_fields = ('advertising__title', 'user__username')
+
 
 
 @admin.register(CommentAdvertisingRelations)

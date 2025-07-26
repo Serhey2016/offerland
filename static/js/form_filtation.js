@@ -1,65 +1,47 @@
-console.log('form_filtation.js loaded');
-
 let serviceOptionsBackup = null;
 
 function filterServicesByCategory(catId) {
     const serviceSelect = document.getElementById('service');
     if (!serviceSelect) {
-        console.log('serviceSelect not found');
         return;
     }
-    console.log('[filterServicesByCategory] catId:', catId);
-    console.log('[filterServicesByCategory] serviceOptionsBackup:', serviceOptionsBackup);
     // Восстанавливаем все опции из бэкапа
     serviceSelect.innerHTML = '';
     let count = 0;
     serviceOptionsBackup.forEach(opt => {
         const dataCat = opt.getAttribute('data-category');
-        console.log('[filterServicesByCategory] option:', opt.value, 'data-category:', dataCat, 'text:', opt.textContent);
         if (!dataCat || String(dataCat) === String(catId)) {
             serviceSelect.appendChild(opt.cloneNode(true));
             count++;
         }
     });
-    console.log('[filterServicesByCategory] appended', count, 'options');
-    console.log('Filtering for category:', catId);
 }
 
 function initCategoryServiceFiltering() {
     const categorySelect = document.getElementById('category');
     const serviceSelect = document.getElementById('service');
     if (!categorySelect || !serviceSelect) {
-        console.log('categorySelect or serviceSelect not found');
         return;
     }
     // Делаем бэкап всех опций (включая дефолтную) — только если еще не делали!
     if (!serviceOptionsBackup || serviceOptionsBackup.length <= 1) {
         serviceOptionsBackup = Array.from(serviceSelect.options);
-        console.log('[initCategoryServiceFiltering] serviceOptionsBackup (NEW):', serviceOptionsBackup);
-    } else {
-        console.log('[initCategoryServiceFiltering] serviceOptionsBackup (SKIP):', serviceOptionsBackup);
     }
     // Не меняем выбранную категорию, если она пустая (оставляем -- Select category --)
     let initialCat = categorySelect.value;
-    console.log('[initCategoryServiceFiltering] initialCat:', initialCat);
     filterServicesByCategory(initialCat); // если пусто — фильтруем по пустому
     categorySelect.onchange = function() {
-        console.log('[initCategoryServiceFiltering] categorySelect changed:', this.value);
         filterServicesByCategory(this.value);
     };
-    console.log('initCategoryServiceFiltering called');
 }
 
 // Глобальная функция для инициализации фильтрации категорий и сервисов
 window.initCategoryServiceSelects = function() {
-    console.log('[window.initCategoryServiceSelects] called');
     initCategoryServiceFiltering();
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('[DOMContentLoaded] form_filtation.js');
     if (document.querySelector('.modal-overlay') && document.querySelector('.modal-overlay').style.display !== 'none') {
-        console.log('[DOMContentLoaded] modal-overlay visible, initCategoryServiceFiltering');
         initCategoryServiceFiltering();
     }
     const modal = document.querySelector('.modal-overlay');
@@ -68,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
         mutations.forEach(function(mutation) {
             if (mutation.attributeName === 'style') {
                 if (modal.style.display !== 'none') {
-                    console.log('[MutationObserver] modal-overlay opened, initCategoryServiceFiltering');
                     initCategoryServiceFiltering();
                 }
             }

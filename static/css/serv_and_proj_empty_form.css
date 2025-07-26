@@ -451,3 +451,45 @@ textarea {
     font-size: 1.1em;
     text-align: left;
 }
+
+/* Стили для функциональности "Read more..." */
+
+.read_more {
+    color: #007bff;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 8px;
+    display: inline-block;
+    transition: color 0.3s ease;
+    font-size: 14px;
+}
+
+.read_more:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.read_more:active {
+    color: #004085;
+}
+
+/* Стили для состояния "Show less" */
+.read_more.expanded {
+    color: #6c757d;
+}
+
+.read_more.expanded:hover {
+    color: #495057;
+}
+
+/* Стили для текста постов */
+.social_feed_text p {
+    margin-bottom: 8px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+/* Анимация для плавного показа полного текста */
+.social_feed_text p.expanded {
+    transition: all 0.3s ease;
+}

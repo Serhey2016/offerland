@@ -287,9 +287,10 @@ class Advertising(models.Model):
     services = models.ForeignKey('Services', on_delete=models.CASCADE)
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)  # Добавлена связь с TypeOfTask
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='advertisings')
+    creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Creation date')
+    publication_date = models.DateTimeField(auto_now_add=True, verbose_name='Publication date')
     
-    # Добавляем связи многие ко многим через промежуточные таблицы
-    performers = models.ManyToManyField(User, through='AdvertisingPerformersRelations', blank=True)
+    # Связи многие ко многим через промежуточные таблицы
     comments = models.ManyToManyField('Comment', through='CommentAdvertisingRelations', blank=True)
 
     def __str__(self):
@@ -333,18 +334,7 @@ class CommentTimeSlotRelations(models.Model):
         verbose_name_plural = "Comment time slot relations"
 
 
-# Промежуточные таблицы для Advertising
-class AdvertisingPerformersRelations(models.Model):
-    id = models.AutoField(primary_key=True)
-    advertising = models.ForeignKey('Advertising', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        db_table = 'advertising_performers_relations'
-        unique_together = ('advertising', 'user')
-        verbose_name = "Advertising performer relation"
-        verbose_name_plural = "Advertising performer relations"
 
 
 class CommentAdvertisingRelations(models.Model):

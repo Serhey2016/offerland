@@ -237,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function initDragDrop() {
         if (!elements.dropZone) {
-            console.log('Drop zone not found');
             return;
         }
     
@@ -272,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
      * Обработка файлов (заглушка)
      */
     function handleFiles(files) {
-        console.log('Files dropped:', files.length);
         // Здесь добавить логику обработки файлов
     }
 
@@ -357,6 +355,14 @@ document.addEventListener('DOMContentLoaded', () => {
      * Обрабатывает отправку формы
      */
     function handleFormSubmission(button, isPublish = false) {
+        // Защита от повторной отправки
+        if (button.disabled) {
+            return;
+        }
+        
+        // Отключаем кнопку
+        button.disabled = true;
+        
         // Удаляем все старые сообщения
         document.querySelectorAll('.save-success-message').forEach(function(msg) { msg.remove(); });
         // Удаляем старый спиннер
@@ -375,12 +381,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Добавляем информацию о режиме (save/publish)
         formData.append('is_publish', isPublish);
         
+        // Добавляем уникальный идентификатор запроса для защиты от двойной отправки
+        var requestId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        formData.append('request_id', requestId);
+        
         // Добавляем данные исполнителей
         if (state.performerTags.length > 0) {
             formData.append('performers', JSON.stringify(state.performerTags));
         }
         
         // Отправляем AJAX-запрос
+        
         fetch(form.action, {
             method: 'POST',
             body: formData,
@@ -392,6 +403,9 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(function(response) {
             spinner.remove();
+            // Включаем кнопку обратно
+            button.disabled = false;
+            
             if (response.ok) {
                 return response.json();
             } else {
@@ -402,45 +416,83 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(function(data) {
             document.querySelectorAll('.save-success-message').forEach(function(msg) { msg.remove(); });
-            var msg = document.createElement('div');
-            msg.className = 'save-success-message';
             
             if (data.success) {
-                msg.textContent = isPublish ? 'Published successfully!' : 'Saved successfully!';
-                msg.style.color = '#10b981';
-                
-                // Если это публикация, можно закрыть модальное окно
-                if (isPublish && elements.modalOverlay) {
-                    setTimeout(() => {
-                        elements.modalOverlay.style.display = 'none';
-                        // Очищаем форму
-                        form.reset();
-                        state.performerTags = [];
-                        if (elements.performersList) {
-                            elements.performersList.innerHTML = '';
-                        }
-                    }, 2000);
+                                        // Используем SweetAlert2 для успешного сохранения
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: isPublish ? 'Published!' : 'Saved!',
+                                text: isPublish ? 'Data published successfully. Form will close automatically.' : 'Data saved successfully. Form will close automatically.',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                    // Fallback для обычного сообщения
+                    var msg = document.createElement('div');
+                    msg.className = 'save-success-message';
+                    msg.textContent = isPublish ? 'Published successfully!' : 'Saved successfully!';
+                    msg.style.color = '#10b981';
+                    button.parentNode.appendChild(msg);
+                    setTimeout(function() {
+                        msg.remove();
+                    }, 3000);
                 }
+                
+                                        // Закрываем модальное окно после успешного сохранения
+                        if (elements.modalOverlay) {
+                            setTimeout(() => {
+                                // Закрываем модальное окно
+                                elements.modalOverlay.style.display = 'none';
+                                
+                                // Полная очистка формы
+                                resetFormCompletely();
+                            }, 2000);
+                        }
             } else {
-                msg.textContent = data.error || 'Error occurred!';
-                msg.style.color = '#b91c1c';
+                // Используем SweetAlert2 для ошибки
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: data.error || 'Failed to save data.'
+                    });
+                } else {
+                    // Fallback для обычного сообщения
+                    var msg = document.createElement('div');
+                    msg.className = 'save-success-message';
+                    msg.textContent = data.error || 'Error occurred!';
+                    msg.style.color = '#b91c1c';
+                    button.parentNode.appendChild(msg);
+                    setTimeout(function() {
+                        msg.remove();
+                    }, 3000);
+                }
             }
-            
-            button.parentNode.appendChild(msg);
-            setTimeout(function() {
-                msg.remove();
-            }, 3000);
         })
         .catch(function(error) {
             spinner.remove();
-            var msg = document.createElement('div');
-            msg.className = 'save-success-message';
-            msg.style.color = '#b91c1c';
-            msg.textContent = 'Error: ' + error.message;
-            button.parentNode.appendChild(msg);
-            setTimeout(function() {
-                msg.remove();
-            }, 3000);
+            // Включаем кнопку обратно
+            button.disabled = false;
+            
+            // Используем SweetAlert2 для ошибки
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'There was an error submitting the form: ' + error.message
+                });
+            } else {
+                // Fallback для обычного сообщения
+                var msg = document.createElement('div');
+                msg.className = 'save-success-message';
+                msg.style.color = '#b91c1c';
+                msg.textContent = 'Error: ' + error.message;
+                button.parentNode.appendChild(msg);
+                setTimeout(function() {
+                    msg.remove();
+                }, 3000);
+            }
         });
     }
 
@@ -454,43 +506,46 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Закрытие модального окна
         if (elements.closeBtn && elements.modalOverlay) {
-            console.log('Adding close button event');
             elements.closeBtn.addEventListener('click', () => {
-                console.log('Close button clicked');
                 elements.modalOverlay.style.display = 'none';
+                // Очищаем форму при закрытии
+                resetFormCompletely();
             });
-        } else {
-            console.log('Close button or modal overlay not found');
         }
         
         // Открытие модального окна
         if (elements.openBtn && elements.modalOverlay) {
-            console.log('Adding open button event');
             elements.openBtn.addEventListener('click', function() {
-                console.log('Open button clicked');
                 elements.modalOverlay.style.display = 'flex';
-                // Логируем, что лежит в window.initCategoryServiceSelects
-                console.log('window.initCategoryServiceSelects:', window.initCategoryServiceSelects);
                 if (typeof window.initCategoryServiceSelects === 'function') {
                     window.initCategoryServiceSelects();
                 }
                 // Явно обновляем видимость полей
                 if (typeof updateFieldsVisibility === 'function') {
-                    console.log('Calling updateFieldsVisibility after modal open');
                     updateFieldsVisibility();
                 }
             });
-        } else {
-            console.log('Open button or modal overlay not found');
         }
         
         // Закрытие по Escape
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape' && elements.modalOverlay && elements.modalOverlay.style.display !== 'none') {
-       
                 elements.modalOverlay.style.display = 'none';
+                // Очищаем форму при закрытии
+                resetFormCompletely();
             }
         });
+        
+        // Закрытие при клике вне модального окна
+        if (elements.modalOverlay) {
+            elements.modalOverlay.addEventListener('click', function(event) {
+                if (event.target === elements.modalOverlay) {
+                    elements.modalOverlay.style.display = 'none';
+                    // Очищаем форму при закрытии
+                    resetFormCompletely();
+                }
+            });
+        }
     }
 
     // === ИСПОЛНИТЕЛИ ===
@@ -500,7 +555,6 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function initPerformers() {
         if (!elements.performersInput || !elements.performersDropdown) {
-     
             return;
         }
 
@@ -509,12 +563,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Показ/скрытие dropdown
         const showDropdown = () => {
             elements.performersDropdown.style.display = 'block';
-
         };
         const hideDropdown = () => {
             setTimeout(() => {
                 elements.performersDropdown.style.display = 'none';
- 
             }, CONFIG.DROPDOWN_HIDE_DELAY);
         };
 
@@ -630,8 +682,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-        
-  
     }
 
     // === СПИННЕРЫ ===
@@ -652,15 +702,11 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function initFieldsManagement() {
         if (!elements.publishIn) {
-            console.log('Publish In element not found');
             return;
         }
 
- 
-
         // Слушатель изменения типа публикации
         elements.publishIn.addEventListener('change', () => {
-        
             updateFieldsVisibility();
         });
 
@@ -688,8 +734,6 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.extendedFields.style.display = 'none';
             elements.extendToggle.classList.remove('extended');
         }
-        
-   
     }
 
     // === МОДИФИЦИРУЕМ updateFieldsVisibility ===
@@ -787,7 +831,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Показывает поля дат
-     */
+     */  
+
+    
     function showDateFields() {
         const dateStart = document.getElementById('date-start');
         const dateEnd = document.getElementById('date-end');
@@ -815,11 +861,8 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function initOfflineFields() {
         if (elements.offlineCheckbox && elements.postCodeGroup && elements.streetDetailsGroup) {
-           
             elements.offlineCheckbox.addEventListener('change', updateOfflineFields);
             updateOfflineFields(); // Скрыть по умолчанию
-        } else {
-            console.log('Offline elements not found');
         }
     }
 
@@ -832,8 +875,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const display = elements.offlineCheckbox.checked ? '' : 'none';
         elements.postCodeGroup.style.display = display;
         elements.streetDetailsGroup.style.display = display;
-        
-       
     }
 
     // === ФОРМА ===
@@ -843,14 +884,10 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function initForm() {
         if (elements.form) {
-            console.log('Initializing form');
             elements.form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                console.log('Form submitted');
                 // Форма обрабатывается через кнопки Save/Publish
             });
-        } else {
-            console.log('Form element not found');
         }
     }
 
@@ -867,8 +904,65 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             elements.timeSlotGroup.style.display = 'none';
         }
+    }
+
+    /**
+     * Инициализирует функциональность "Read more..." для постов
+     */
+    function initReadMore() {
+        // Удаляем старые обработчики событий
+        const existingReadMoreElements = document.querySelectorAll('.read_more');
+        existingReadMoreElements.forEach(function(element) {
+            element.removeEventListener('click', handleReadMoreClick);
+        });
         
+        // Находим все элементы "Read more..."
+        const readMoreElements = document.querySelectorAll('.read_more');
         
+        readMoreElements.forEach(function(readMoreElement) {
+            readMoreElement.addEventListener('click', handleReadMoreClick);
+        });
+    }
+    
+    /**
+     * Обработчик клика по "Read more..."
+     */
+    function handleReadMoreClick() {
+        // Находим родительский контейнер текста
+        const textContainer = this.closest('.social_feed_text');
+        if (!textContainer) return;
+        
+        // Находим параграф с текстом
+        const textParagraph = textContainer.querySelector('p');
+        if (!textParagraph) return;
+        
+        // Проверяем, развернут ли уже текст
+        const isExpanded = textParagraph.classList.contains('expanded');
+        
+        if (!isExpanded) {
+            // Получаем полный текст из data-атрибута
+            const fullText = textParagraph.getAttribute('data-full-text');
+            if (fullText) {
+                // Показываем полный текст
+                textParagraph.textContent = fullText;
+                textParagraph.classList.add('expanded');
+                
+                // Меняем текст кнопки на "Show less"
+                this.textContent = 'Show less';
+                this.classList.add('expanded');
+            }
+        } else {
+            // Возвращаем к сокращенному тексту
+            const fullText = textParagraph.getAttribute('data-full-text');
+            if (fullText) {
+                textParagraph.textContent = fullText.substring(0, 238) + '...';
+                textParagraph.classList.remove('expanded');
+                
+                // Возвращаем текст кнопки на "Read more..."
+                this.textContent = 'Read more...';
+                this.classList.remove('expanded');
+            }
+        }
     }
 
     // === ИНИЦИАЛИЗАЦИЯ ===
@@ -877,8 +971,6 @@ document.addEventListener('DOMContentLoaded', () => {
      * Главная функция инициализации
      */
     function init() {
-    
-        
         initModal();
         initDragDrop();
         initPerformers();
@@ -886,14 +978,76 @@ document.addEventListener('DOMContentLoaded', () => {
         initFieldsManagement();
         initOfflineFields();
         initForm();
+        initReadMore(); // Инициализация функциональности "Read more..."
         
         // Инициализация отображения блока time_slot_group при загрузке и изменении select
         if (elements.publishIn) {
             elements.publishIn.addEventListener('change', updateTimeSlotGroupVisibility);
             updateTimeSlotGroupVisibility(); // при загрузке
         }
+    }
+
+    /**
+     * Полная очистка формы
+     */
+    function resetFormCompletely() {
+        // Сброс основной формы
+        if (elements.form) {
+            elements.form.reset();
+        }
         
-       
+        // Очистка исполнителей
+        state.performerTags = [];
+        if (elements.performersList) {
+            elements.performersList.innerHTML = '';
+        }
+        
+        // Очистка хэштегов
+        if (elements.hashtagsContainer) {
+            elements.hashtagsContainer.innerHTML = '<input type="text" id="hashtags-input" placeholder="Start typing tag..." autocomplete="off" style="border: none; outline: none; flex: 1; min-width: 120px; background: transparent;">';
+        }
+        
+        // Очистка скрытого поля хэштегов
+        if (elements.hashtagsHidden) {
+            elements.hashtagsHidden.value = '';
+        }
+        
+        // Очистка файлов
+        if (elements.photosInput) {
+            elements.photosInput.value = '';
+        }
+        
+        // Очистка поля ссылки на фото
+        if (elements.photosLink) {
+            elements.photosLink.value = '';
+        }
+        
+        // Сброс всех select элементов
+        const selects = elements.form.querySelectorAll('select');
+        selects.forEach(select => {
+            select.selectedIndex = 0;
+        });
+        
+        // Сброс всех checkbox элементов
+        const checkboxes = elements.form.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        // Скрытие расширенных полей
+        if (elements.extendedFields) {
+            elements.extendedFields.style.display = 'none';
+        }
+        
+        // Скрытие блока time slot
+        if (elements.timeSlotGroup) {
+            elements.timeSlotGroup.style.display = 'none';
+        }
+        
+        // Сброс отображения полей
+        if (typeof updateFieldsVisibility === 'function') {
+            updateFieldsVisibility();
+        }
     }
 
     // Запуск инициализации
