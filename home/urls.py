@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, about, contacts
+from .views import index, about, contacts, settings, upload_avatar, delete_avatar
 from . import views
 
 app_name = 'home'
@@ -8,6 +8,10 @@ urlpatterns = [
     path('', index, name='index'),
     path('about/', about, name='about'),
     path('contacts/', contacts, name='contacts'),
+    path('settings/', settings, name='settings'),
+    path('upload-avatar/', upload_avatar, name='upload_avatar'),
+    path('delete-avatar/', delete_avatar, name='delete_avatar'),
+
 
     path('personal-support/', views.personal_support, name='personal_support'),
     path('services-and-projects/', views.services_and_projects, name='services_and_projects'),

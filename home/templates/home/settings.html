@@ -1,0 +1,338 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link href="{% static 'css/settings.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+
+
+
+{% block content %}
+
+    <div class="settings-container_stngs">
+        <!-- Header -->
+        <div class="settings-header_stngs">
+            <div class="settings-header-icon_stngs">🐼</div>
+            <div class="settings-header-title_stngs">Settings</div>
+        </div>
+
+        <!-- Main content area -->
+        <div class="settings-main_stngs">
+            <!-- Left navigation menu -->
+            <div class="settings-nav_stngs">
+                <a href="#" class="nav-item_stngs active" data-section="profile">Account preferences</a>
+                <a href="#" class="nav-item_stngs" data-section="account">Sign in & security</a>
+            </div>
+
+            <!-- Right content area -->
+            <div class="settings-content_stngs">
+                <!-- Profile information section -->
+                <div class="settings-section_stngs" id="profile-section">
+                    <h5 class="section-title_stngs">Profile information</h5>
+                    <div class="section-item_stngs">
+                        <a href="#" class="item-link_stngs">Name, Legal, location</a>
+                        <span class="arrow_stngs">></span>
+                    </div>
+                    <div class="section-item_stngs">
+                        <a href="#" class="item-link_stngs">Profile photo</a>
+                        <span class="arrow_stngs">></span>
+                    </div>
+                </div>
+
+                <!-- Account access section -->
+                <div class="settings-section_stngs hidden_stngs" id="account-section">
+                    <h5 class="section-title_stngs">Account access</h5>
+                    <div class="section-item_stngs">
+                        <a href="#" class="item-link_stngs">Email address</a>
+                        <span class="email-mask_stngs">04***5x@gmail.com</span>
+                        <span class="arrow_stngs">></span>
+                    </div>
+                    <div class="section-item_stngs">
+                        <a href="#" class="item-link_stngs">Phone number</a>
+                        <span class="arrow_stngs">></span>
+                    </div>
+                    <div class="section-item_stngs">
+                        <a href="#" class="item-link_stngs">Change password</a>
+                        <span class="arrow_stngs">></span>
+                    </div>
+                    <div class="section-item_stngs">
+                        <a href="#" class="item-link_stngs delete-account_stngs">Delete account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Modal for Name, Legal, location -->
+    <div id="nameLegalLocationModal" class="modal_stngs">
+        <div class="modal-content_stngs">
+            <div class="modal-header_stngs">
+                <h3>Name, Legal, location</h3>
+                <span class="close_stngs" data-modal="nameLegalLocationModal">&times;</span>
+            </div>
+            <div class="modal-body_stngs">
+                <form id="nameLegalLocationForm">
+                    <div class="form-group_stngs">
+                        <label for="firstName">First name*</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    
+                    <div class="form-group_stngs">
+                        <label for="lastName">Last name*</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    
+                    <div class="form-group_stngs checkbox-group_stngs">
+                        <label class="checkbox-label_stngs">
+                            <input type="checkbox" id="selfEmployed" name="selfEmployed">
+                            <span class="checkmark_stngs"></span>
+                            I am self employed (can provide services)
+                        </label>
+                    </div>
+                    
+                    <div class="form-group_stngs conditional-field_stngs" id="utrField" style="display: none;">
+                        <label for="utr">UTR (Unique Taxpayer Reference) (if you self employed)</label>
+                        <input type="text" id="utr" name="utr">
+                    </div>
+                    
+                    <div class="form-group_stngs checkbox-group_stngs">
+                        <label class="checkbox-label_stngs">
+                            <input type="checkbox" id="hasCompany" name="hasCompany">
+                            <span class="checkmark_stngs"></span>
+                            I have a company (can provide and order services)
+                        </label>
+                    </div>
+                    
+                    <div class="form-group_stngs conditional-field_stngs" id="companyFields" style="display: none;">
+                        <label for="companyNumber">Company Number</label>
+                        <input type="text" id="companyNumber" name="companyNumber">
+                        
+                        <label for="companyName">Company Name</label>
+                        <input type="text" id="companyName" name="companyName">
+                    </div>
+                    
+                    <div class="form-group_stngs checkbox-group_stngs">
+                        <label class="checkbox-label_stngs">
+                            <input type="checkbox" id="hasWebsite" name="hasWebsite">
+                            <span class="checkmark_stngs"></span>
+                            I have a website
+                        </label>
+                    </div>
+                    
+                    <div class="form-group_stngs conditional-field_stngs" id="websiteField" style="display: none;">
+                        <label for="website">Website</label>
+                        <input type="text" id="website" name="website">
+                    </div>
+                    
+                    <div class="form-section_stngs">
+                        <h4>Location</h4>
+                        
+                        <div class="form-group_stngs">
+                            <label for="country">Country/Region</label>
+                            <input type="text" id="country" name="country">
+                        </div>
+                        
+                        <div class="form-group_stngs">
+                            <label for="postalCode">Postal code</label>
+                            <input type="text" id="postalCode" name="postalCode">
+                        </div>
+                        
+                        <div class="form-group_stngs">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions_stngs">
+                        <button type="submit" class="save-btn_stngs">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Modal for Profile Photo -->
+    <div id="profilePhotoModal" class="modal_stngs">
+        <div class="modal-content_stngs">
+            <div class="modal-header_stngs">
+                <h3>Profile Photo</h3>
+                <span class="close_stngs" data-modal="profilePhotoModal">&times;</span>
+            </div>
+            <div class="modal-body_stngs">
+                <div class="photo-section_stngs">
+                    <div class="current-photo_stngs">
+                        {% if user_avatar_url %}
+                            <img id="currentPhoto" src="{{ user_avatar_url }}" alt="Current profile photo" style="max-width: 100%; border-radius: 8px;">
+                            <div class="photo-placeholder_stngs" id="photoPlaceholder" style="display: none;">
+                                <div class="photo-icon_stngs">👤</div>
+                                <p>No photo uploaded</p>
+                            </div>
+                        {% else %}
+                            <div class="photo-placeholder_stngs" id="photoPlaceholder">
+                                <div class="photo-icon_stngs">👤</div>
+                                <p>No photo uploaded</p>
+                            </div>
+                            <img id="currentPhoto" src="" alt="Current profile photo" style="display: none; max-width: 100%; border-radius: 8px;">
+                        {% endif %}
+                    </div>
+                    
+                    <div class="photo-actions_stngs">
+                        <div class="upload-section_stngs">
+                            <label for="photoUpload" class="upload-btn_stngs">
+                                <span class="upload-icon_stngs">📁</span>
+                                Upload new photo
+                            </label>
+                            <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                            <p class="upload-hint_stngs">JPG, PNG or GIF. Max 5MB.</p>
+                        </div>
+                        
+                        <div class="delete-section_stngs" id="deleteSection" {% if not user_avatar_url %}style="display: none;"{% endif %}>
+                            <button type="button" class="delete-btn_stngs" id="deletePhotoBtn">
+                                <span class="delete-icon_stngs">🗑️</span>
+                                Delete photo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions_stngs">
+                    <button type="button" class="cancel-btn_stngs" data-modal="profilePhotoModal">Cancel</button>
+                    <button type="button" class="save-btn_stngs" id="savePhotoBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Modal for Email Address -->
+    <div id="emailModal" class="modal_stngs">
+        <div class="modal-content_stngs">
+            <div class="modal-header_stngs">
+                <h3>Change Email Address</h3>
+                <span class="close_stngs" data-modal="emailModal">&times;</span>
+            </div>
+            <div class="modal-body_stngs">
+                <form id="emailForm">
+                    <div class="form-group_stngs">
+                        <label for="currentEmail">Current Email Address</label>
+                        <input type="email" id="currentEmail" name="currentEmail" placeholder="Enter your current email address" required>
+                        <p class="field-hint_stngs">Please enter your current email address to verify your identity</p>
+                    </div>
+                    
+                    <div class="form-group_stngs">
+                        <label for="newEmail">New Email Address</label>
+                        <input type="email" id="newEmail" name="newEmail" placeholder="Enter your new email address" required>
+                        <p class="field-hint_stngs">We'll send a verification link to your new email address</p>
+                    </div>
+                    
+                    <div class="form-group_stngs">
+                        <label for="confirmEmail">Confirm New Email Address</label>
+                        <input type="email" id="confirmEmail" name="confirmEmail" placeholder="Re-enter your new email address" required>
+                        <p class="field-hint_stngs">Please re-enter your new email address to confirm</p>
+                    </div>
+                    
+                    <div class="form-actions_stngs">
+                        <button type="button" class="cancel-btn_stngs" data-modal="emailModal">Cancel</button>
+                        <button type="submit" class="save-btn_stngs">Update Email</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Modal for Phone Number -->
+    <div id="phoneModal" class="modal_stngs">
+        <div class="modal-content_stngs">
+            <div class="modal-header_stngs">
+                <h3>Change Phone Number</h3>
+                <span class="close_stngs" data-modal="phoneModal">&times;</span>
+            </div>
+            <div class="modal-body_stngs">
+                <form id="phoneForm">
+                    <div class="form-group_stngs">
+                        <label for="currentPhone">Current Phone Number</label>
+                        <input type="tel" id="currentPhone" name="currentPhone" placeholder="Enter your current phone number" required>
+                        <p class="field-hint_stngs">Please enter your current phone number to verify your identity</p>
+                    </div>
+                    
+                    <div class="form-group_stngs">
+                        <label for="newPhone">New Phone Number</label>
+                        <input type="tel" id="newPhone" name="newPhone" placeholder="Enter your new phone number" required>
+                        <p class="field-hint_stngs">We'll send a verification code to your new phone number</p>
+                    </div>
+                    
+                    <div class="form-group_stngs">
+                        <label for="confirmPhone">Confirm New Phone Number</label>
+                        <input type="tel" id="confirmPhone" name="confirmPhone" placeholder="Re-enter your new phone number" required>
+                        <p class="field-hint_stngs">Please re-enter your new phone number to confirm</p>
+                    </div>
+                    
+                    <div class="form-actions_stngs">
+                        <button type="button" class="cancel-btn_stngs" data-modal="phoneModal">Cancel</button>
+                        <button type="submit" class="save-btn_stngs">Update Phone Number</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Modal for Change Password -->
+    <div id="passwordModal" class="modal_stngs">
+        <div class="modal-content_stngs">
+            <div class="modal-header_stngs">
+                <h3>Change Password</h3>
+                <span class="close_stngs" data-modal="passwordModal">&times;</span>
+            </div>
+            <div class="modal-body_stngs">
+                <form id="passwordForm">
+                    <div class="form-group_stngs">
+                        <label for="currentPassword">Current Password</label>
+                        <div class="password-input-container_stngs">
+                            <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter your current password" required>
+                            <button type="button" class="toggle-password_stngs" data-target="currentPassword">👁️</button>
+                        </div>
+                        <p class="field-hint_stngs">Please enter your current password to verify your identity</p>
+                    </div>
+                    
+                    <div class="form-group_stngs">
+                        <label for="newPassword">New Password</label>
+                        <div class="password-input-container_stngs">
+                            <input type="password" id="newPassword" name="newPassword" placeholder="Enter your new password" required>
+                            <button type="button" class="toggle-password_stngs" data-target="newPassword">👁️</button>
+                        </div>
+                        <p class="field-hint_stngs">Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character</p>
+                        <div class="password-strength_stngs" id="passwordStrength">
+                            <div class="strength-bar_stngs">
+                                <div class="strength-fill_stngs" id="strengthFill"></div>
+                            </div>
+                            <span class="strength-text_stngs" id="strengthText">Weak</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group_stngs">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <div class="password-input-container_stngs">
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your new password" required>
+                            <button type="button" class="toggle-password_stngs" data-target="confirmPassword">👁️</button>
+                        </div>
+                        <p class="field-hint_stngs">Please re-enter your new password to confirm</p>
+                    </div>
+                    
+                    <div class="form-actions_stngs">
+                        <button type="button" class="cancel-btn_stngs" data-modal="passwordModal">Cancel</button>
+                        <button type="submit" class="save-btn_stngs">Update Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'js/settings_profile.js' %}"></script>
+
+{% endblock %}

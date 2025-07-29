@@ -13,7 +13,7 @@ def testpage(request):
     services = Services.objects.all()
     statuses = TaskStatus.objects.all()
     all_tags = json.dumps(list(AllTags.objects.values('id', 'tag')))
-    tasks = Task.objects.filter(taskownerrelations__user=request.user)
+    tasks = Task.objects.filter(taskownerrelations__user=request.user) if request.user.is_authenticated else Task.objects.none()
     
     # --- Динамический блок social_feed ---
     # Получаем все элементы Advertising с их владельцами

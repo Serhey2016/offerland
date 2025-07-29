@@ -1,0 +1,44 @@
+[
+  {
+    "model": "services_and_projects.typeoftask",
+    "pk": 1,
+    "fields": {
+      "type_of_task_name": "my"
+    }
+  },
+  {
+    "model": "services_and_projects.typeoftask",
+    "pk": 2,
+    "fields": {
+      "type_of_task_name": "tender"
+    }
+  },
+  {
+    "model": "services_and_projects.typeoftask",
+    "pk": 3,
+    "fields": {
+      "type_of_task_name": "project"
+    }
+  },
+  {
+    "model": "services_and_projects.typeoftask",
+    "pk": 4,
+    "fields": {
+      "type_of_task_name": "Advertising"
+    }
+  },
+  {
+    "model": "services_and_projects.typeoftask",
+    "pk": 5,
+    "fields": {
+      "type_of_task_name": "orders"
+    }
+  },
+  {
+    "model": "services_and_projects.typeoftask",
+    "pk": 6,
+    "fields": {
+      "type_of_task_name": "Job search"
+    }
+  }
+] 

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '3': 'project',
         '4': 'Advertising',
         '5': 'orders',
-        '6': 'test_type', // если потребуется
+        '6': 'Job search', // если потребуется
     };
 
     // === КОНСТАНТЫ ДЛЯ ID ПОЛЕЙ ===
@@ -197,11 +197,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Загрузка файлов
         dropZone: document.querySelector('.file-upload-area'),
         fileInput: document.querySelector('#photos'),
+        photosInput: document.querySelector('#photos'),
+        photosLink: document.querySelector('#photos-link'),
         
         // Исполнители
         performersInput: document.querySelector('#performers'),
         performersList: document.querySelector('.performers-list'),
         performersDropdown: document.getElementById('performers-dropdown'),
+        
+        // Хэштеги
+        hashtagsContainer: document.querySelector('#hashtags-container'),
+        hashtagsHidden: document.querySelector('#hashtags-hidden'),
+        hashtagsInput: document.querySelector('#hashtags-input'),
+        hashtagsDropdown: document.querySelector('#hashtags-dropdown'),
         
         // Offline поля
         offlineCheckbox: findOfflineCheckbox(),
@@ -551,6 +559,156 @@ document.addEventListener('DOMContentLoaded', () => {
     // === ИСПОЛНИТЕЛИ ===
     
     /**
+     * Инициализирует функциональность хэштегов
+     */
+    function initHashtags() {
+        if (!elements.hashtagsInput || !elements.hashtagsDropdown) {
+            return;
+        }
+
+        // Получаем все доступные хэштеги из data-атрибута
+        const allTagsData = elements.hashtagsContainer.getAttribute('data-all-tags');
+        let allTags = [];
+        
+        try {
+            allTags = JSON.parse(allTagsData || '[]');
+        } catch (e) {
+            console.error('Error parsing hashtags data:', e);
+            allTags = [];
+        }
+
+        // Показ/скрытие dropdown
+        const showDropdown = () => {
+            if (allTags.length > 0) {
+                elements.hashtagsDropdown.style.display = 'block';
+                populateDropdown(elements.hashtagsInput.value);
+            }
+        };
+        
+        const hideDropdown = () => {
+            setTimeout(() => {
+                elements.hashtagsDropdown.style.display = 'none';
+            }, CONFIG.DROPDOWN_HIDE_DELAY);
+        };
+
+        // Заполнение dropdown
+        function populateDropdown(filter = '') {
+            if (!elements.hashtagsDropdown) return;
+            
+            elements.hashtagsDropdown.innerHTML = '';
+            
+            const filteredTags = allTags.filter(tag => 
+                tag.tag.toLowerCase().includes(filter.toLowerCase())
+            );
+            
+            filteredTags.forEach(tag => {
+                const item = document.createElement('div');
+                item.className = 'hashtag-dropdown-item';
+                item.textContent = tag.tag;
+                item.dataset.tagId = tag.id;
+                
+                item.addEventListener('click', () => {
+                    addHashtag(tag.tag, tag.id);
+                    elements.hashtagsInput.value = '';
+                    elements.hashtagsDropdown.style.display = 'none';
+                });
+                
+                elements.hashtagsDropdown.appendChild(item);
+            });
+        }
+
+        // События для показа dropdown
+        elements.hashtagsInput.addEventListener('focus', showDropdown);
+        elements.hashtagsInput.addEventListener('input', (e) => {
+            showDropdown();
+            populateDropdown(e.target.value);
+        });
+        elements.hashtagsInput.addEventListener('click', showDropdown);
+        elements.hashtagsInput.addEventListener('blur', hideDropdown);
+
+        // Обработка клавиш
+        elements.hashtagsInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const value = elements.hashtagsInput.value.trim();
+                if (value) {
+                    addHashtag(value);
+                    elements.hashtagsInput.value = '';
+                }
+            }
+            
+            // Удаление последнего хэштега при Backspace
+            if (e.key === 'Backspace' && elements.hashtagsInput.value === '') {
+                const hashtagChips = elements.hashtagsContainer.querySelectorAll('.hashtag-chip');
+                if (hashtagChips.length > 0) {
+                    const lastChip = hashtagChips[hashtagChips.length - 1];
+                    removeHashtag(lastChip);
+                }
+            }
+        });
+
+        // Клик по dropdown
+        elements.hashtagsDropdown.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+    }
+
+    /**
+     * Добавляет хэштег
+     */
+    function addHashtag(tagName, tagId = null) {
+        // Проверяем, не добавлен ли уже этот хэштег
+        const existingChips = elements.hashtagsContainer.querySelectorAll('.hashtag-chip');
+        for (let chip of existingChips) {
+            if (chip.textContent.trim() === tagName.trim()) {
+                return;
+            }
+        }
+        
+        const chip = createHashtagChip(tagName, tagId);
+        elements.hashtagsContainer.insertBefore(chip, elements.hashtagsInput);
+        updateHashtagsHidden();
+    }
+
+    /**
+     * Создает DOM элемент хэштега
+     */
+    function createHashtagChip(tagName, tagId = null) {
+        const chip = document.createElement('div');
+        chip.className = 'hashtag-chip';
+        chip.textContent = tagName;
+        if (tagId) {
+            chip.dataset.tagId = tagId;
+        }
+
+        // Кнопка удаления
+        const removeBtn = document.createElement('span');
+        removeBtn.className = 'hashtag-remove';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.addEventListener('click', () => removeHashtag(chip));
+        
+        chip.appendChild(removeBtn);
+        return chip;
+    }
+
+    /**
+     * Удаляет хэштег
+     */
+    function removeHashtag(chip) {
+        chip.remove();
+        updateHashtagsHidden();
+    }
+
+    /**
+     * Обновляет скрытое поле с хэштегами
+     */
+    function updateHashtagsHidden() {
+        const chips = elements.hashtagsContainer.querySelectorAll('.hashtag-chip');
+        const tagIds = Array.from(chips).map(chip => chip.dataset.tagId || chip.textContent.trim());
+        elements.hashtagsHidden.value = tagIds.join(',');
+    }
+
+    /**
      * Инициализирует функционал работы с исполнителями
      */
     function initPerformers() {
@@ -888,6 +1046,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 // Форма обрабатывается через кнопки Save/Publish
             });
+            
+            // Добавляем обработчик для кнопки Save
+            const saveButton = elements.form.querySelector('button[type="button"].btn.btn-secondary');
+            if (saveButton) {
+                saveButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleFormSubmission(saveButton, false); // false = save, not publish
+                });
+            }
         }
     }
 

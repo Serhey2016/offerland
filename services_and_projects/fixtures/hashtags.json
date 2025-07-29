@@ -1,0 +1,79 @@
+[
+  {
+    "model": "joblist.alltags",
+    "pk": 13,
+    "fields": {
+      "tag": "handyman"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 14,
+    "fields": {
+      "tag": "repair"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 15,
+    "fields": {
+      "tag": "maintenance"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 16,
+    "fields": {
+      "tag": "installation"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 17,
+    "fields": {
+      "tag": "cleaning"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 18,
+    "fields": {
+      "tag": "plumbing"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 19,
+    "fields": {
+      "tag": "electrical"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 20,
+    "fields": {
+      "tag": "carpentry"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 21,
+    "fields": {
+      "tag": "painting"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 22,
+    "fields": {
+      "tag": "gardening"
+    }
+  },
+  {
+    "model": "joblist.alltags",
+    "pk": 23,
+    "fields": {
+      "tag": "home-improvement"
+    }
+  }
+] 

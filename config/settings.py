@@ -33,6 +33,9 @@ ALLOWED_HOSTS = ['192.168.0.29', 'localhost', '127.0.0.1', '0.0.0.0', '192.168.0
 
 # Application definition
 
+# Custom User Model
+AUTH_USER_MODEL = 'home.CustomUser'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -164,7 +167,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'user_data/services_photos'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 CKEDITOR_5_CONFIGS = {
     'default': {

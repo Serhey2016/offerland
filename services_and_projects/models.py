@@ -284,7 +284,7 @@ class Advertising(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000)
     hashtags = models.ManyToManyField('joblist.AllTags', through='AdvertisingHashtagRelations', blank=True)
-    services = models.ForeignKey('Services', on_delete=models.CASCADE)
+    services = models.ForeignKey('Services', on_delete=models.CASCADE, null=True, blank=True)
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)  # Добавлена связь с TypeOfTask
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='advertisings')
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Creation date')

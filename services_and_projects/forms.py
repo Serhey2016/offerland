@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Task, TypeOfTask, TaskStatus, Finance, ServicesCategory, Services, ServicesRelations, Advertising, TimeSlot
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from joblist.models import AllTags
 from .models import (
@@ -19,6 +19,7 @@ def none_if_empty(val):
 def create_task(request):
     if request.method == 'POST':
         try:
+            User = get_user_model()
             # Получаем данные из формы
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
             title = none_if_empty(request.POST.get('title'))
@@ -144,6 +145,7 @@ def create_task(request):
 def create_advertising(request):
     if request.method == 'POST':
         try:
+            User = get_user_model()
             # Добавляем логирование для отладки
             import logging
             logger = logging.getLogger(__name__)
@@ -242,6 +244,7 @@ def create_advertising(request):
 def create_time_slot(request):
     if request.method == 'POST':
         try:
+            User = get_user_model()
             # Получаем данные из формы для time slot
             date_start = none_if_empty(request.POST.get('date1'))
             date_end = none_if_empty(request.POST.get('date2'))
@@ -375,7 +378,8 @@ def handle_form_submission(request):
                 return JsonResponse({'success': False, 'error': 'Invalid type of task'}, status=400)
             
             # Направляем на соответствующую функцию в зависимости от типа
-            if 'advertising' in type_name:
+            # Учитываем возможную опечатку "adversting" вместо "advertising"
+            if 'advertising' in type_name or 'adversting' in type_name:
                 logger.info("Calling create_advertising")
                 return create_advertising(request)
             elif 'time slot' in type_name or 'timeslot' in type_name:

@@ -1,7 +1,7 @@
 # joblist/models.py
 from django.db import models
 from django.templatetags.static import static
-
+from django.conf import settings
 
 # Create your models here.
 from django.utils import timezone
@@ -189,7 +189,7 @@ class UserVacancyRelation(models.Model):
     ]
 
     id_vacancy = models.ForeignKey(Vacancies, on_delete=models.CASCADE, related_name='user_relations')
-    id_user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='vacancy_relations')
+    id_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='vacancy_relations')
     cover_letter = models.TextField(max_length=600)
     resume = models.FileField(upload_to='resumes/')
     control_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
@@ -198,7 +198,7 @@ class UserVacancyRelation(models.Model):
         return f"{self.id_user.username} - {self.id_vacancy.job_title}"
 
 class RelationWorkNUser(models.Model):
-    user_id = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='work_relations')
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='work_relations')
     company_id = models.ForeignKey(Companies, on_delete=models.CASCADE, related_name='work_relations')
     career_opportunities = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(10)]
