@@ -1,5 +1,23 @@
 // Navigation functionality for settings page
+
+// Global function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('settings_profile.js loaded');
     const navItems = document.querySelectorAll('.nav-item_stngs');
     const sections = document.querySelectorAll('.settings-section_stngs');
 
@@ -24,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Modal functionality
     const nameLegalModal = document.getElementById('nameLegalLocationModal');
-    const nameLegalTrigger = document.querySelector('.item-link_stngs');
+    const nameLegalTrigger = document.getElementById('nameLegalLocationTrigger');
     const closeBtns = document.querySelectorAll('.close_stngs');
     const form = document.getElementById('nameLegalLocationForm');
 
@@ -36,9 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const emailModal = document.getElementById('emailModal');
     const emailTrigger = document.querySelectorAll('.item-link_stngs')[2]; // Third item-link is "Email address"
 
-    // Phone modal
+    // Phone modals
     const phoneModal = document.getElementById('phoneModal');
-    const phoneTrigger = document.querySelectorAll('.item-link_stngs')[3]; // Fourth item-link is "Phone number"
+    const addPhoneModal = document.getElementById('addPhoneModal');
+    const phoneTrigger = document.getElementById('phoneTrigger');
 
     // Password modal
     const passwordModal = document.getElementById('passwordModal');
@@ -48,8 +67,61 @@ document.addEventListener('DOMContentLoaded', function() {
     if (nameLegalTrigger) {
         nameLegalTrigger.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('Name, Legal, location clicked');
+            initializeProfileForm();
             nameLegalModal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+        });
+    } else {
+        console.warn('Element with id nameLegalLocationTrigger not found');
+    }
+    
+    // Function to initialize profile form with current data
+    function initializeProfileForm() {
+        // Set checkbox states based on existing data
+        const utrField = document.getElementById('utr');
+        const companyNumberField = document.getElementById('companyNumber');
+        const companyNameField = document.getElementById('companyName');
+        const websiteField = document.getElementById('website');
+        
+        // Self employed checkbox
+        if (utrField && utrField.value) {
+            document.getElementById('selfEmployed').checked = true;
+            document.getElementById('utrField').style.display = 'block';
+        } else {
+            document.getElementById('selfEmployed').checked = false;
+            document.getElementById('utrField').style.display = 'none';
+        }
+        
+        // Has company checkbox
+        if ((companyNumberField && companyNumberField.value) || (companyNameField && companyNameField.value)) {
+            document.getElementById('hasCompany').checked = true;
+            document.getElementById('companyFields').style.display = 'block';
+        } else {
+            document.getElementById('hasCompany').checked = false;
+            document.getElementById('companyFields').style.display = 'none';
+        }
+        
+        // Has website checkbox
+        if (websiteField && websiteField.value) {
+            document.getElementById('hasWebsite').checked = true;
+            document.getElementById('websiteField').style.display = 'block';
+        } else {
+            document.getElementById('hasWebsite').checked = false;
+            document.getElementById('websiteField').style.display = 'none';
+        }
+        
+        // Log current form data for debugging
+        console.log('Form initialized with data:', {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            utr: document.getElementById('utr').value,
+            companyNumber: document.getElementById('companyNumber').value,
+            companyName: document.getElementById('companyName').value,
+            website: document.getElementById('website').value,
+            country: document.getElementById('country').value,
+            postalCode: document.getElementById('postalCode').value,
+            city: document.getElementById('city').value
         });
     }
 
@@ -87,8 +159,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (phoneTrigger) {
         phoneTrigger.addEventListener('click', function(e) {
             e.preventDefault();
-            phoneModal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            
+            // Check if user has a phone number
+            const hasPhone = this.getAttribute('data-has-phone') === 'true';
+            
+            if (hasPhone) {
+                // User has a phone number - show change modal
+                phoneModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            } else {
+                // User doesn't have a phone number - show add modal
+                addPhoneModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
         });
     }
 
@@ -114,6 +197,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     restorePhotoState();
                 }
                 
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    });
+    
+    // Close modals when clicking on Cancel buttons
+    const cancelBtns = document.querySelectorAll('.cancel-btn_stngs');
+    cancelBtns.forEach(cancelBtn => {
+        cancelBtn.addEventListener('click', function() {
+            const modalId = this.getAttribute('data-modal');
+            const modal = document.getElementById(modalId);
+            if (modal) {
                 modal.style.display = 'none';
                 document.body.style.overflow = 'auto';
             }
@@ -173,6 +269,10 @@ document.addEventListener('DOMContentLoaded', function() {
         selfEmployedCheckbox.addEventListener('change', function() {
             if (this.checked) {
                 utrField.style.display = 'block';
+                // Focus on UTR field when shown
+                setTimeout(() => {
+                    document.getElementById('utr').focus();
+                }, 100);
             } else {
                 utrField.style.display = 'none';
                 document.getElementById('utr').value = '';
@@ -185,6 +285,10 @@ document.addEventListener('DOMContentLoaded', function() {
         hasCompanyCheckbox.addEventListener('change', function() {
             if (this.checked) {
                 companyFields.style.display = 'block';
+                // Focus on company name field when shown
+                setTimeout(() => {
+                    document.getElementById('companyName').focus();
+                }, 100);
             } else {
                 companyFields.style.display = 'none';
                 document.getElementById('companyNumber').value = '';
@@ -198,6 +302,10 @@ document.addEventListener('DOMContentLoaded', function() {
         hasWebsiteCheckbox.addEventListener('change', function() {
             if (this.checked) {
                 websiteField.style.display = 'block';
+                // Focus on website field when shown
+                setTimeout(() => {
+                    document.getElementById('website').focus();
+                }, 100);
             } else {
                 websiteField.style.display = 'none';
                 document.getElementById('website').value = '';
@@ -212,17 +320,70 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Collect form data
             const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
+            const data = {};
             
-            // Here you would typically send the data to your server
-            console.log('Form data:', data);
+            // Convert FormData to object and handle checkboxes
+            for (let [key, value] of formData.entries()) {
+                if (key === 'self_employed' || key === 'has_company' || key === 'has_website') {
+                    data[key] = true;
+                } else {
+                    data[key] = value;
+                }
+            }
             
-            // Show success message (you can customize this)
-            alert('Settings saved successfully!');
+            // Handle checkbox states
+            data.self_employed = document.getElementById('selfEmployed').checked;
+            data.has_company = document.getElementById('hasCompany').checked;
+            data.has_website = document.getElementById('hasWebsite').checked;
             
-            // Close modal
-            nameLegalModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            // Validate required fields
+            if (!data.first_name || !data.last_name) {
+                alert('First name and last name are required');
+                return;
+            }
+            
+            // Validate UTR if self-employed is checked
+            if (data.self_employed && (!data.utr || data.utr.length !== 10 || !/^\d{10}$/.test(data.utr))) {
+                alert('UTR must be exactly 10 digits when self-employed is selected');
+                return;
+            }
+            
+            // Validate company number if has company is checked
+            if (data.has_company && data.company_number && (data.company_number.length !== 8 || !/^\d{8}$/.test(data.company_number))) {
+                alert('Company number must be exactly 8 digits');
+                return;
+            }
+            
+            // Get CSRF token
+            const csrftoken = getCookie('csrftoken');
+            
+            // Send data to server
+            fetch('/update-profile/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Profile updated successfully!');
+                    // Close modal
+                    nameLegalModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    
+                    // Optionally refresh the page to show updated data
+                    // window.location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating profile. Please try again.');
+            });
         });
     }
 
@@ -233,7 +394,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteSection = document.getElementById('deleteSection');
     const deletePhotoBtn = document.getElementById('deletePhotoBtn');
     const savePhotoBtn = document.getElementById('savePhotoBtn');
-    const cancelBtns = document.querySelectorAll('.cancel-btn_stngs');
 
     let selectedFile = null;
     
@@ -292,21 +452,6 @@ document.addEventListener('DOMContentLoaded', function() {
         deletePhotoBtn.addEventListener('click', function() {
             if (confirm('Are you sure you want to delete your profile photo?')) {
                 // Get CSRF token from cookie
-                function getCookie(name) {
-                    let cookieValue = null;
-                    if (document.cookie && document.cookie !== '') {
-                        const cookies = document.cookie.split(';');
-                        for (let i = 0; i < cookies.length; i++) {
-                            const cookie = cookies[i].trim();
-                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                break;
-                            }
-                        }
-                    }
-                    return cookieValue;
-                }
-                
                 const csrftoken = getCookie('csrftoken');
                 
                 // Send delete request to server
@@ -347,21 +492,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('avatar', selectedFile);
                 
                 // Get CSRF token from cookie
-                function getCookie(name) {
-                    let cookieValue = null;
-                    if (document.cookie && document.cookie !== '') {
-                        const cookies = document.cookie.split(';');
-                        for (let i = 0; i < cookies.length; i++) {
-                            const cookie = cookies[i].trim();
-                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                break;
-                            }
-                        }
-                    }
-                    return cookieValue;
-                }
-                
                 const csrftoken = getCookie('csrftoken');
                 
                 // Upload file to server
@@ -417,6 +547,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('phoneForm').reset();
                 }
                 
+                // Reset add phone form
+                if (modalId === 'addPhoneModal') {
+                    document.getElementById('addPhoneForm').reset();
+                }
+                
                 // Reset password form
                 if (modalId === 'passwordModal') {
                     document.getElementById('passwordForm').reset();
@@ -457,7 +592,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Check if current email matches the displayed email
-            const displayedEmail = '04***5x@gmail.com'; // This should match the email shown in the UI
+            const displayedEmail = document.querySelector('.email-mask_stngs').textContent; // Get the masked email from UI
             if (currentEmail !== '0432502095x@gmail.com') { // Full email for verification
                 alert('Current email address does not match our records');
                 return;
@@ -518,17 +653,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Phone form functionality
     const phoneForm = document.getElementById('phoneForm');
+    const addPhoneForm = document.getElementById('addPhoneForm');
     const currentPhoneInput = document.getElementById('currentPhone');
     const newPhoneInput = document.getElementById('newPhone');
     const confirmPhoneInput = document.getElementById('confirmPhone');
+    const addPhoneNumberInput = document.getElementById('addPhoneNumber');
+    const confirmAddPhoneInput = document.getElementById('confirmAddPhone');
 
     if (phoneForm) {
         phoneForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            console.log('Change phone form submitted');
             
             const currentPhone = currentPhoneInput.value.trim();
             const newPhone = newPhoneInput.value.trim();
             const confirmPhone = confirmPhoneInput.value.trim();
+            
+            console.log('Current phone:', currentPhone);
+            console.log('New phone:', newPhone);
+            console.log('Confirm phone:', confirmPhone);
             
             // Validation
             if (!currentPhone || !newPhone || !confirmPhone) {
@@ -563,21 +706,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Here you would typically send the data to your server
-            console.log('Phone change request:', {
-                currentPhone: currentPhone,
-                newPhone: newPhone
+            console.log('Sending AJAX request to /update-phone/');
+            console.log('CSRF token:', getCookie('csrftoken'));
+            
+            // Send AJAX request to update phone number
+            fetch('/update-phone/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    phone_number: newPhone
+                })
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    alert('Phone number updated successfully!');
+                    
+                    // Update the phone trigger to reflect the new state
+                    const phoneTrigger = document.getElementById('phoneTrigger');
+                    if (phoneTrigger) {
+                        phoneTrigger.setAttribute('data-has-phone', 'true');
+                    }
+                    
+                    // Close modal
+                    phoneModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    
+                    // Reset form
+                    phoneForm.reset();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the phone number. Please try again.');
             });
-            
-            // Simulate successful phone change
-            alert('Verification code has been sent to your new phone number. Please check your messages and enter the code.');
-            
-            // Close modal
-            phoneModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            
-            // Reset form
-            phoneForm.reset();
         });
     }
 
@@ -590,6 +761,99 @@ document.addEventListener('DOMContentLoaded', function() {
             if (confirmPhone && newPhone !== confirmPhone) {
                 this.style.borderColor = '#dc3545';
             } else if (confirmPhone && newPhone === confirmPhone) {
+                this.style.borderColor = '#28a745';
+            } else {
+                this.style.borderColor = '#e1e5e9';
+            }
+        });
+    }
+
+    // Add phone form functionality
+    if (addPhoneForm) {
+        addPhoneForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Add phone form submitted');
+            
+            const phoneNumber = addPhoneNumberInput.value.trim();
+            const confirmPhone = confirmAddPhoneInput.value.trim();
+            
+            console.log('Phone number:', phoneNumber);
+            console.log('Confirm phone:', confirmPhone);
+            
+            // Validation
+            if (!phoneNumber || !confirmPhone) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Check if phone numbers match
+            if (phoneNumber !== confirmPhone) {
+                alert('Phone number and confirmation phone number do not match');
+                return;
+            }
+            
+            // Phone format validation (basic international format)
+            const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                alert('Please enter a valid phone number');
+                return;
+            }
+            
+            console.log('Sending AJAX request to /update-phone/');
+            console.log('CSRF token:', getCookie('csrftoken'));
+            
+            // Send AJAX request to add phone number
+            fetch('/update-phone/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    phone_number: phoneNumber
+                })
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    alert('Phone number added successfully!');
+                    
+                    // Update the phone trigger to reflect the new state
+                    const phoneTrigger = document.getElementById('phoneTrigger');
+                    if (phoneTrigger) {
+                        phoneTrigger.setAttribute('data-has-phone', 'true');
+                    }
+                    
+                    // Close modal
+                    addPhoneModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    
+                    // Reset form
+                    addPhoneForm.reset();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding the phone number. Please try again.');
+            });
+        });
+    }
+
+    // Real-time validation for add phone form
+    if (addPhoneNumberInput && confirmAddPhoneInput) {
+        confirmAddPhoneInput.addEventListener('input', function() {
+            const phoneNumber = addPhoneNumberInput.value.trim();
+            const confirmPhone = this.value.trim();
+            
+            if (confirmPhone && phoneNumber !== confirmPhone) {
+                this.style.borderColor = '#dc3545';
+            } else if (confirmPhone && phoneNumber === confirmPhone) {
                 this.style.borderColor = '#28a745';
             } else {
                 this.style.borderColor = '#e1e5e9';
@@ -716,18 +980,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Check if current password is correct (example validation)
-            if (currentPassword !== 'currentPassword123') {
-                alert('Current password is incorrect');
-                return;
-            }
-            
-            // Check if new password is different from current
-            if (newPassword === currentPassword) {
-                alert('New password must be different from current password');
-                return;
-            }
-            
             // Check if new password and confirm password match
             if (newPassword !== confirmPassword) {
                 alert('New password and confirmation password do not match');
@@ -741,30 +993,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Here you would typically send the data to your server
-            console.log('Password change request:', {
-                currentPassword: currentPassword,
-                newPassword: newPassword
+            console.log('Sending password change request to /update-password/');
+            console.log('CSRF token:', getCookie('csrftoken'));
+            
+            // Send AJAX request to change password
+            fetch('/update-password/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    currentPassword: currentPassword,
+                    newPassword: newPassword
+                })
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    alert('Password updated successfully!');
+                    
+                    // Close modal
+                    passwordModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    
+                    // Reset form
+                    passwordForm.reset();
+                    
+                    // Reset password strength indicator
+                    const strengthFill = document.getElementById('strengthFill');
+                    const strengthText = document.getElementById('strengthText');
+                    if (strengthFill && strengthText) {
+                        strengthFill.className = 'strength-fill_stngs';
+                        strengthText.className = 'strength-text_stngs';
+                        strengthText.textContent = 'Weak';
+                    }
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the password. Please try again.');
             });
-            
-            // Simulate successful password change
-            alert('Password updated successfully!');
-            
-            // Close modal
-            passwordModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            
-            // Reset form
-            passwordForm.reset();
-            
-            // Reset password strength indicator
-            const strengthFill = document.getElementById('strengthFill');
-            const strengthText = document.getElementById('strengthText');
-            if (strengthFill && strengthText) {
-                strengthFill.className = 'strength-fill_stngs';
-                strengthText.className = 'strength-text_stngs';
-                strengthText.textContent = 'Weak';
-            }
         });
     }
 
@@ -778,6 +1053,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.style.borderColor = '#dc3545';
             } else if (confirmPassword && newPassword === confirmPassword) {
                 this.style.borderColor = '#28a745';
+            } else {
+                this.style.borderColor = '#e1e5e9';
+            }
+        });
+    }
+    
+    // Real-time validation for UTR field
+    const utrInput = document.getElementById('utr');
+    if (utrInput) {
+        utrInput.addEventListener('input', function() {
+            const value = this.value.replace(/\D/g, ''); // Remove non-digits
+            this.value = value.substring(0, 10); // Limit to 10 digits
+            
+            if (value.length === 10) {
+                this.style.borderColor = '#28a745';
+            } else if (value.length > 0) {
+                this.style.borderColor = '#dc3545';
+            } else {
+                this.style.borderColor = '#e1e5e9';
+            }
+        });
+    }
+    
+    // Real-time validation for Company Number field
+    const companyNumberInput = document.getElementById('companyNumber');
+    if (companyNumberInput) {
+        companyNumberInput.addEventListener('input', function() {
+            const value = this.value.replace(/\D/g, ''); // Remove non-digits
+            this.value = value.substring(0, 8); // Limit to 8 digits
+            
+            if (value.length === 8) {
+                this.style.borderColor = '#28a745';
+            } else if (value.length > 0) {
+                this.style.borderColor = '#dc3545';
+            } else {
+                this.style.borderColor = '#e1e5e9';
+            }
+        });
+    }
+    
+    // Real-time validation for Website field
+    const websiteInput = document.getElementById('website');
+    if (websiteInput) {
+        websiteInput.addEventListener('input', function() {
+            const value = this.value;
+            const urlPattern = /^https?:\/\/.+/;
+            
+            if (value && urlPattern.test(value)) {
+                this.style.borderColor = '#28a745';
+            } else if (value) {
+                this.style.borderColor = '#dc3545';
             } else {
                 this.style.borderColor = '#e1e5e9';
             }

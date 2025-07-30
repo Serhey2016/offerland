@@ -32,7 +32,7 @@
                 <div class="settings-section_stngs" id="profile-section">
                     <h5 class="section-title_stngs">Profile information</h5>
                     <div class="section-item_stngs">
-                        <a href="#" class="item-link_stngs">Name, Legal, location</a>
+                        <a href="#" class="item-link_stngs" id="nameLegalLocationTrigger">Name, Legal, location</a>
                         <span class="arrow_stngs">></span>
                     </div>
                     <div class="section-item_stngs">
@@ -46,11 +46,14 @@
                     <h5 class="section-title_stngs">Account access</h5>
                     <div class="section-item_stngs">
                         <a href="#" class="item-link_stngs">Email address</a>
-                        <span class="email-mask_stngs">04***5x@gmail.com</span>
+                        <span class="email-mask_stngs">{{ masked_email }}</span>
                         <span class="arrow_stngs">></span>
                     </div>
                     <div class="section-item_stngs">
-                        <a href="#" class="item-link_stngs">Phone number</a>
+                        <a href="#" class="item-link_stngs" id="phoneTrigger" data-has-phone="{% if user.phone_number %}true{% else %}false{% endif %}">Phone number</a>
+                        {% if masked_phone %}
+                            <span class="phone-mask_stngs">{{ masked_phone }}</span>
+                        {% endif %}
                         <span class="arrow_stngs">></span>
                     </div>
                     <div class="section-item_stngs">
@@ -74,79 +77,135 @@
             </div>
             <div class="modal-body_stngs">
                 <form id="nameLegalLocationForm">
-                    <div class="form-group_stngs">
-                        <label for="firstName">First name*</label>
-                        <input type="text" id="firstName" name="firstName" required>
-                    </div>
+                    {% csrf_token %}
                     
-                    <div class="form-group_stngs">
-                        <label for="lastName">Last name*</label>
-                        <input type="text" id="lastName" name="lastName" required>
-                    </div>
-                    
-                    <div class="form-group_stngs checkbox-group_stngs">
-                        <label class="checkbox-label_stngs">
-                            <input type="checkbox" id="selfEmployed" name="selfEmployed">
-                            <span class="checkmark_stngs"></span>
-                            I am self employed (can provide services)
-                        </label>
-                    </div>
-                    
-                    <div class="form-group_stngs conditional-field_stngs" id="utrField" style="display: none;">
-                        <label for="utr">UTR (Unique Taxpayer Reference) (if you self employed)</label>
-                        <input type="text" id="utr" name="utr">
-                    </div>
-                    
-                    <div class="form-group_stngs checkbox-group_stngs">
-                        <label class="checkbox-label_stngs">
-                            <input type="checkbox" id="hasCompany" name="hasCompany">
-                            <span class="checkmark_stngs"></span>
-                            I have a company (can provide and order services)
-                        </label>
-                    </div>
-                    
-                    <div class="form-group_stngs conditional-field_stngs" id="companyFields" style="display: none;">
-                        <label for="companyNumber">Company Number</label>
-                        <input type="text" id="companyNumber" name="companyNumber">
+                    <!-- Personal Information -->
+                    <div class="form-section_stngs">
+                        <h4>Personal Information</h4>
                         
-                        <label for="companyName">Company Name</label>
-                        <input type="text" id="companyName" name="companyName">
+                        <div class="form-group_stngs">
+                            <label for="firstName">First name*</label>
+                            <input type="text" id="firstName" name="first_name" value="{{ user.first_name }}" required>
+                        </div>
+                        
+                        <div class="form-group_stngs">
+                            <label for="lastName">Last name*</label>
+                            <input type="text" id="lastName" name="last_name" value="{{ user.last_name }}" required>
+                        </div>
                     </div>
                     
-                    <div class="form-group_stngs checkbox-group_stngs">
-                        <label class="checkbox-label_stngs">
-                            <input type="checkbox" id="hasWebsite" name="hasWebsite">
-                            <span class="checkmark_stngs"></span>
-                            I have a website
-                        </label>
+                    <!-- Business Information -->
+                    <div class="form-section_stngs">
+                        <h4>Business Information</h4>
+                        
+                        <div class="form-group_stngs checkbox-group_stngs">
+                            <label class="checkbox-label_stngs">
+                                <input type="checkbox" id="selfEmployed" name="self_employed" {% if user.utr %}checked{% endif %}>
+                                <span class="checkmark_stngs"></span>
+                                I am self employed (can provide services)
+                            </label>
+                        </div>
+                        
+                        <div class="form-group_stngs conditional-field_stngs" id="utrField" {% if user.utr %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+                            <label for="utr">UTR (Unique Taxpayer Reference)*</label>
+                            <input type="text" id="utr" name="utr" value="{{ user.utr }}" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit UTR number">
+                            <p class="field-hint_stngs">Enter your 10-digit Unique Taxpayer Reference number</p>
+                        </div>
+                        
+                        <div class="form-group_stngs checkbox-group_stngs">
+                            <label class="checkbox-label_stngs">
+                                <input type="checkbox" id="hasCompany" name="has_company" {% if user.company_name or user.company_number %}checked{% endif %}>
+                                <span class="checkmark_stngs"></span>
+                                I have a company (can provide and order services)
+                            </label>
+                        </div>
+                        
+                        <div class="form-group_stngs conditional-field_stngs" id="companyFields" {% if user.company_name or user.company_number %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+                            <div class="form-group_stngs">
+                                <label for="companyNumber">Company Number</label>
+                                <input type="text" id="companyNumber" name="company_number" value="{{ user.company_number }}" maxlength="8" placeholder="8-digit company number">
+                                <p class="field-hint_stngs">Enter your 8-digit UK company registration number</p>
+                            </div>
+                            
+                            <div class="form-group_stngs">
+                                <label for="companyName">Company Name</label>
+                                <input type="text" id="companyName" name="company_name" value="{{ user.company_name }}" placeholder="Your company name">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group_stngs checkbox-group_stngs">
+                            <label class="checkbox-label_stngs">
+                                <input type="checkbox" id="hasWebsite" name="has_website" {% if user.website %}checked{% endif %}>
+                                <span class="checkmark_stngs"></span>
+                                I have a website
+                            </label>
+                        </div>
+                        
+                        <div class="form-group_stngs conditional-field_stngs" id="websiteField" {% if user.website %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+                            <label for="website">Website</label>
+                            <input type="url" id="website" name="website" value="{{ user.website }}" placeholder="https://your-website.com">
+                            <p class="field-hint_stngs">Enter your website URL (including http:// or https://)</p>
+                        </div>
                     </div>
                     
-                    <div class="form-group_stngs conditional-field_stngs" id="websiteField" style="display: none;">
-                        <label for="website">Website</label>
-                        <input type="text" id="website" name="website">
-                    </div>
-                    
+                    <!-- Location Information -->
                     <div class="form-section_stngs">
                         <h4>Location</h4>
                         
                         <div class="form-group_stngs">
                             <label for="country">Country/Region</label>
-                            <input type="text" id="country" name="country">
+                            <select id="country" name="country" class="form-select_stngs">
+                                <option value="">Select a country</option>
+                                <option value="GB" {% if user.country.code == 'GB' %}selected{% endif %}>United Kingdom</option>
+                                <option value="US" {% if user.country.code == 'US' %}selected{% endif %}>United States</option>
+                                <option value="CA" {% if user.country.code == 'CA' %}selected{% endif %}>Canada</option>
+                                <option value="AU" {% if user.country.code == 'AU' %}selected{% endif %}>Australia</option>
+                                <option value="DE" {% if user.country.code == 'DE' %}selected{% endif %}>Germany</option>
+                                <option value="FR" {% if user.country.code == 'FR' %}selected{% endif %}>France</option>
+                                <option value="IT" {% if user.country.code == 'IT' %}selected{% endif %}>Italy</option>
+                                <option value="ES" {% if user.country.code == 'ES' %}selected{% endif %}>Spain</option>
+                                <option value="NL" {% if user.country.code == 'NL' %}selected{% endif %}>Netherlands</option>
+                                <option value="BE" {% if user.country.code == 'BE' %}selected{% endif %}>Belgium</option>
+                                <option value="IE" {% if user.country.code == 'IE' %}selected{% endif %}>Ireland</option>
+                                <option value="CH" {% if user.country.code == 'CH' %}selected{% endif %}>Switzerland</option>
+                                <option value="AT" {% if user.country.code == 'AT' %}selected{% endif %}>Austria</option>
+                                <option value="SE" {% if user.country.code == 'SE' %}selected{% endif %}>Sweden</option>
+                                <option value="NO" {% if user.country.code == 'NO' %}selected{% endif %}>Norway</option>
+                                <option value="DK" {% if user.country.code == 'DK' %}selected{% endif %}>Denmark</option>
+                                <option value="FI" {% if user.country.code == 'FI' %}selected{% endif %}>Finland</option>
+                                <option value="PL" {% if user.country.code == 'PL' %}selected{% endif %}>Poland</option>
+                                <option value="CZ" {% if user.country.code == 'CZ' %}selected{% endif %}>Czech Republic</option>
+                                <option value="HU" {% if user.country.code == 'HU' %}selected{% endif %}>Hungary</option>
+                                <option value="RO" {% if user.country.code == 'RO' %}selected{% endif %}>Romania</option>
+                                <option value="BG" {% if user.country.code == 'BG' %}selected{% endif %}>Bulgaria</option>
+                                <option value="HR" {% if user.country.code == 'HR' %}selected{% endif %}>Croatia</option>
+                                <option value="SI" {% if user.country.code == 'SI' %}selected{% endif %}>Slovenia</option>
+                                <option value="SK" {% if user.country.code == 'SK' %}selected{% endif %}>Slovakia</option>
+                                <option value="LT" {% if user.country.code == 'LT' %}selected{% endif %}>Lithuania</option>
+                                <option value="LV" {% if user.country.code == 'LV' %}selected{% endif %}>Latvia</option>
+                                <option value="EE" {% if user.country.code == 'EE' %}selected{% endif %}>Estonia</option>
+                                <option value="MT" {% if user.country.code == 'MT' %}selected{% endif %}>Malta</option>
+                                <option value="CY" {% if user.country.code == 'CY' %}selected{% endif %}>Cyprus</option>
+                                <option value="LU" {% if user.country.code == 'LU' %}selected{% endif %}>Luxembourg</option>
+                                <option value="PT" {% if user.country.code == 'PT' %}selected{% endif %}>Portugal</option>
+                                <option value="GR" {% if user.country.code == 'GR' %}selected{% endif %}>Greece</option>
+                            </select>
                         </div>
                         
                         <div class="form-group_stngs">
                             <label for="postalCode">Postal code</label>
-                            <input type="text" id="postalCode" name="postalCode">
+                            <input type="text" id="postalCode" name="postal_code" value="{{ user.postal_code }}" placeholder="Enter your postal code">
                         </div>
                         
                         <div class="form-group_stngs">
                             <label for="city">City</label>
-                            <input type="text" id="city" name="city">
+                            <input type="text" id="city" name="city" value="{{ user.city }}" placeholder="Enter your city">
                         </div>
                     </div>
                     
                     <div class="form-actions_stngs">
-                        <button type="submit" class="save-btn_stngs">Save</button>
+                        <button type="button" class="cancel-btn_stngs" data-modal="nameLegalLocationModal">Cancel</button>
+                        <button type="submit" class="save-btn_stngs">Save Changes</button>
                     </div>
                 </form>
             </div>
@@ -241,7 +300,7 @@
         </div>
     </div>
 
-    <!-- Popup Modal for Phone Number -->
+    <!-- Popup Modal for Phone Number Change (when phone exists) -->
     <div id="phoneModal" class="modal_stngs">
         <div class="modal-content_stngs">
             <div class="modal-header_stngs">
@@ -259,7 +318,7 @@
                     <div class="form-group_stngs">
                         <label for="newPhone">New Phone Number</label>
                         <input type="tel" id="newPhone" name="newPhone" placeholder="Enter your new phone number" required>
-                        <p class="field-hint_stngs">We'll send a verification code to your new phone number</p>
+                        <p class="field-hint_stngs">Enter your new phone number to update your profile</p>
                     </div>
                     
                     <div class="form-group_stngs">
@@ -271,6 +330,36 @@
                     <div class="form-actions_stngs">
                         <button type="button" class="cancel-btn_stngs" data-modal="phoneModal">Cancel</button>
                         <button type="submit" class="save-btn_stngs">Update Phone Number</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Modal for Add Phone Number (when phone doesn't exist) -->
+    <div id="addPhoneModal" class="modal_stngs">
+        <div class="modal-content_stngs">
+            <div class="modal-header_stngs">
+                <h3>Add Phone Number</h3>
+                <span class="close_stngs" data-modal="addPhoneModal">&times;</span>
+            </div>
+            <div class="modal-body_stngs">
+                <form id="addPhoneForm">
+                    <div class="form-group_stngs">
+                        <label for="addPhoneNumber">Phone Number</label>
+                        <input type="tel" id="addPhoneNumber" name="phone_number" placeholder="Enter your phone number" required>
+                        <p class="field-hint_stngs">Enter your phone number to add it to your profile</p>
+                    </div>
+                    
+                    <div class="form-group_stngs">
+                        <label for="confirmAddPhone">Confirm Phone Number</label>
+                        <input type="tel" id="confirmAddPhone" name="confirm_phone" placeholder="Re-enter your phone number" required>
+                        <p class="field-hint_stngs">Please re-enter your phone number to confirm</p>
+                    </div>
+                    
+                    <div class="form-actions_stngs">
+                        <button type="button" class="cancel-btn_stngs" data-modal="addPhoneModal">Cancel</button>
+                        <button type="submit" class="save-btn_stngs">Add Phone Number</button>
                     </div>
                 </form>
             </div>

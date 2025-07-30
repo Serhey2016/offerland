@@ -144,6 +144,14 @@
     margin-right: 12px;
 }
 
+/* Phone mask */
+.phone-mask_stngs {
+    color: #666;
+    font-size: 14px;
+    margin-left: auto;
+    margin-right: 12px;
+}
+
 /* Delete account special styling */
 .delete-account_stngs {
     color: #666 !important;
@@ -712,4 +720,163 @@
 
 .strength-text_stngs.strong {
     color: #28a745;
+}
+
+/* Additional styles for profile form */
+.form-select_stngs {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    color: #1a1a1a;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-select_stngs:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-select_stngs option {
+    padding: 8px;
+}
+
+/* URL input styling */
+.form-group_stngs input[type="url"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    color: #1a1a1a;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group_stngs input[type="url"]:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-group_stngs input[type="url"]:invalid {
+    border-color: #dc3545;
+}
+
+.form-group_stngs input[type="url"]:valid {
+    border-color: #28a745;
+}
+
+/* Enhanced field hints */
+.field-hint_stngs {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+/* Form sections spacing */
+.form-section_stngs {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.form-section_stngs:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Required field indicator */
+.form-group_stngs label[for*="firstName"]::after,
+.form-group_stngs label[for*="lastName"]::after,
+.form-group_stngs label[for*="utr"]::after {
+    content: " *";
+    color: #dc3545;
+}
+
+/* Checkbox improvements */
+.checkbox-label_stngs {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.checkbox-label_stngs:hover {
+    background-color: #f8f9fa;
+}
+
+.checkbox-label_stngs input[type="checkbox"] {
+    margin-right: 12px;
+    transform: scale(1.2);
+}
+
+/* Conditional fields animation */
+.conditional-field_stngs {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.conditional-field_stngs[style*="display: block"] {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form validation styles */
+.form-group_stngs input:invalid {
+    border-color: #dc3545;
+}
+
+.form-group_stngs input:valid {
+    border-color: #28a745;
+}
+
+/* Loading state for save button */
+.save-btn_stngs.loading {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.save-btn_stngs.loading::after {
+    content: " Saving...";
+}
+
+/* Success message styling */
+.success-message_stngs {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: none;
+}
+
+.error-message_stngs {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: none;
 }
