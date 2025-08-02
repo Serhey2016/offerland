@@ -5,6 +5,7 @@
 
 {% block extra_styles %}
 <link rel="stylesheet" href="{% static 'adminpanel_userside/css/pages/login-v3.css' %}">
+<link rel="stylesheet" href="{% static 'adminpanel_userside/css/pages/login-custom.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -20,26 +21,27 @@
         <div class="panel">
           <div class="panel-body">
             <div class="brand">
-
+              <h2 style="color: #667eea; margin: 0; font-weight: 600;">Welcome Back</h2>
+              <p style="color: #6c757d; margin: 10px 0 0 0; font-size: 14px;">Sign in to your account</p>
             </div>
             <form method="post" action="{% url 'adminpanel_userside:login' %}" autocomplete="off">
               {% csrf_token %}
               <div class="form-group form-material floating">
-                <input type="email" class="form-control" name="username" />
-                <label class="floating-label">Email</label>
+                <input type="email" class="form-control" name="username" placeholder=" " required />
+                <label class="floating-label">Email Address</label>
               </div>
               <div class="form-group form-material floating">
-                <input type="password" class="form-control" name="password" />
+                <input type="password" class="form-control" name="password" placeholder=" " required />
                 <label class="floating-label">Password</label>
               </div>
-              <div class="form-group clearfix">
+              <div class="form-group clearfix" style="margin-bottom: 25px;">
                 <div class="checkbox-custom checkbox-inline checkbox-primary checkbox-lg pull-left">
                   <input type="checkbox" id="inputCheckbox" name="remember">
-                  <label for="inputCheckbox">Remember me</label>
+                  <label for="inputCheckbox" style="color: #6c757d; font-size: 14px;">Remember me</label>
                 </div>
-                <a class="pull-right" href="forgot-password.html">Forgot password?</a>
+                <a class="pull-right forgot-password" href="{% url 'adminpanel_userside:forgot_password' %}" style="color: #667eea; text-decoration: none; font-size: 14px;">Forgot password?</a>
               </div>
-              <button type="submit" class="btn btn-primary btn-block btn-lg margin-top-40">Sign in</button>
+              <button type="submit" class="btn btn-primary btn-block btn-lg margin-top-40" style="margin-top: 30px !important;">Sign in</button>
             </form>
             {% if messages %}
             <div class="messages">
@@ -51,13 +53,14 @@
             </div>
           {% endif %}
             <div class="social">
-              <a class="btn btn-icon btn-round social-twitter" href="javascript:void(0)">
+              <p style="color: #6c757d; font-size: 14px; margin-bottom: 15px;">Or continue with</p>
+              <a class="btn btn-icon btn-round social-twitter" href="javascript:void(0)" title="Sign in with Apple">
                 <i class="icon bd-apple" aria-hidden="true"></i>
               </a>
-              <a class="btn btn-icon btn-round social-facebook" href="javascript:void(0)">
+              <a class="btn btn-icon btn-round social-facebook" href="javascript:void(0)" title="Sign in with LinkedIn">
                 <i class="icon bd-linkedin" aria-hidden="true"></i>
               </a>
-              <a class="btn btn-icon btn-round social-google-plus" href="javascript:void(0)">
+              <a class="btn btn-icon btn-round social-google-plus" href="javascript:void(0)" title="Sign in with Google">
                 <i class="icon bd-google-plus" aria-hidden="true"></i>
               </a>
             </div>
@@ -68,6 +71,7 @@
       </div>
     </div>
 
-
+    <!-- Custom JavaScript for login enhancements -->
+    <script src="{% static 'adminpanel_userside/js/login-enhancements.js' %}"></script>
 
 {% endblock %}

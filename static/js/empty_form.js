@@ -544,7 +544,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // Закрытие при клике вне модального окна
+        // Закрытие при клике вне модального окна - ОТКЛЮЧЕНО
+        // Теперь форма не закрывается при клике на фон
+        /*
         if (elements.modalOverlay) {
             elements.modalOverlay.addEventListener('click', function(event) {
                 if (event.target === elements.modalOverlay) {
@@ -554,6 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+        */
     }
 
     // === ИСПОЛНИТЕЛИ ===

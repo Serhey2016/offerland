@@ -34,8 +34,33 @@ def testpage(request):
             'task': task
         })
     
+    # Получаем все задачи для отображения в потоке
+    tasks_for_feed = Task.objects.select_related('type_of_task', 'status', 'finance').prefetch_related(
+        'photos', 'hashtags', 'performers', 'services'
+    ).order_by('-created_at')
+    
+    # Создаем список всех элементов для потока (реклама + задачи)
+    feed_items = []
+    
+    # Добавляем рекламу
+    for item in advertising_data:
+        feed_items.append({
+            'type': 'advertising',
+            'data': item
+        })
+    
+    # Добавляем задачи
+    for task in tasks_for_feed:
+        feed_items.append({
+            'type': 'task',
+            'data': task
+        })
+    
+    # Сортируем по дате создания (новые сначала)
+    feed_items.sort(key=lambda x: x['data'].created_at if x['type'] == 'task' else x['data']['advertising'].creation_date, reverse=True)
+    
     # Пагинация
-    paginator = Paginator(advertising_data, 5)  # 5 элементов на страницу
+    paginator = Paginator(feed_items, 10)  # 10 элементов на страницу
     page = request.GET.get('page', 1)
     
     try:
@@ -61,3 +86,44 @@ def testpage(request):
         'page_obj': page_obj,
         'get_params': get_params,
     })
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+
+@login_required
+@require_POST
+def save_task_notes(request, task_id):
+    """Сохранение заметок к задаче"""
+    try:
+        task = Task.objects.get(id=task_id)
+        
+        # Проверяем, что пользователь имеет доступ к задаче
+        # (владелец или исполнитель)
+        is_owner = TaskOwnerRelations.objects.filter(task=task, user=request.user).exists()
+        is_performer = task.performers.filter(id=request.user.id).exists()
+        
+        if not (is_owner or is_performer):
+            return JsonResponse({
+                'success': False,
+                'error': 'You do not have permission to edit this task'
+            }, status=403)
+        
+        notes = request.POST.get('notes', '').strip()
+        task.note = notes
+        task.save()
+        
+        return JsonResponse({
+            'success': True
+        })
+        
+    except Task.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Task not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error saving: {str(e)}'
+        }, status=500)

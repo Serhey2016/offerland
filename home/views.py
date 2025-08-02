@@ -404,4 +404,58 @@ def update_password(request):
         }, status=500)
 
 
+@login_required
+@csrf_exempt
+@require_http_methods(["POST"])
+def delete_account(request):
+    """
+    Удаление аккаунта пользователя с подтверждением пароля
+    """
+    try:
+        user = request.user
+        data = json.loads(request.body)
+        
+        password = data.get('password', '').strip()
+        
+        # Validation
+        if not password:
+            return JsonResponse({
+                'success': False,
+                'message': 'Password is required to delete account'
+            }, status=400)
+        
+        # Check if password is correct
+        if not user.check_password(password):
+            return JsonResponse({
+                'success': False,
+                'message': 'Incorrect password'
+            }, status=400)
+        
+        # Delete user avatar if exists
+        if user.avatar:
+            try:
+                user.avatar.delete(save=False)
+            except:
+                pass  # Ignore errors if file doesn't exist
+        
+        # Delete user account
+        user.delete()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Account deleted successfully'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error deleting account: {str(e)}'
+        }, status=500)
+
+
 

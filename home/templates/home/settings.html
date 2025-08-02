@@ -417,6 +417,38 @@
         </div>
     </div>
 
+    <!-- Popup Modal for Delete Account -->
+    <div id="deleteAccountModal" class="modal_stngs">
+        <div class="modal-content_stngs">
+            <div class="modal-header_stngs">
+                <h3>Delete Account</h3>
+                <span class="close_stngs" data-modal="deleteAccountModal">&times;</span>
+            </div>
+            <div class="modal-body_stngs">
+                <div class="warning-message_stngs">
+                    <p><strong>⚠️ Warning:</strong> This action cannot be undone. All your data will be permanently deleted.</p>
+                    <p>Please enter your password to confirm account deletion.</p>
+                </div>
+                <form id="deleteAccountForm">
+                    {% csrf_token %}
+                    <div class="form-group_stngs">
+                        <label for="deletePassword">Password</label>
+                        <div class="password-input-container_stngs">
+                            <input type="password" id="deletePassword" name="password" placeholder="Enter your password" required>
+                            <button type="button" class="toggle-password_stngs" data-target="deletePassword">👁️</button>
+                        </div>
+                        <p class="field-hint_stngs">Enter your password to confirm account deletion</p>
+                    </div>
+                    
+                    <div class="form-actions_stngs">
+                        <button type="button" class="cancel-btn_stngs" data-modal="deleteAccountModal">Cancel</button>
+                        <button type="submit" class="delete-btn_stngs">Delete Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     
 {% endblock %}
 

@@ -1,0 +1,226 @@
+/* Alertify Integration Custom Styles */
+
+/* Ensure notifications appear in top-right corner */
+.ajs-notifier {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+    z-index: 9999 !important;
+}
+
+/* Override any alertify default positioning */
+.ajs-notifier.ajs-notifier {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+}
+
+/* Custom notification styling */
+.ajs-message {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-size: 14px !important;
+    padding: 12px 16px !important;
+    margin-bottom: 10px !important;
+    min-width: 300px !important;
+    max-width: 400px !important;
+}
+
+/* Success notification styling */
+.ajs-success {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border: 1px solid #c3e6cb !important;
+}
+
+/* Error notification styling */
+.ajs-error {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border: 1px solid #f5c6cb !important;
+}
+
+/* Warning notification styling */
+.ajs-warning {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    border: 1px solid #ffeaa7 !important;
+}
+
+/* Info/Message notification styling */
+.ajs-message.ajs-message {
+    background-color: #d1ecf1 !important;
+    color: #0c5460 !important;
+    border: 1px solid #bee5eb !important;
+}
+
+/* Animation for notifications - slide from top-right */
+.ajs-message {
+    animation: slideInTopRight 0.3s ease-out !important;
+}
+
+@keyframes slideInTopRight {
+    from {
+        transform: translateX(100%) translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    .ajs-notifier {
+        top: 10px !important;
+        right: 10px !important;
+        left: auto !important;
+        bottom: auto !important;
+    }
+    
+    .ajs-notifier.ajs-notifier {
+        top: 10px !important;
+        right: 10px !important;
+        left: auto !important;
+        bottom: auto !important;
+    }
+    
+    .alertify-logs {
+        top: 10px !important;
+        right: 10px !important;
+        bottom: auto !important;
+        left: auto !important;
+    }
+    
+    /* Mobile responsive for all alertify elements */
+    [class*="alertify"],
+    [class*="ajs-"] {
+        top: 10px !important;
+        right: 10px !important;
+        bottom: auto !important;
+        left: auto !important;
+    }
+    
+    .ajs-message {
+        min-width: auto !important;
+        max-width: none !important;
+        width: 100% !important;
+    }
+}
+
+/* Ensure notifications don't interfere with task feed popups */
+.ajs-notifier {
+    pointer-events: none !important;
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+}
+
+.ajs-message {
+    pointer-events: auto !important;
+}
+
+/* Additional force positioning */
+body .ajs-notifier {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+}
+
+/* Override alertify-logs positioning */
+.alertify-logs {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 9999 !important;
+}
+
+/* Force top-right positioning for all alertify elements */
+.alertify-logs,
+.alertify-logs *,
+.ajs-notifier,
+.ajs-notifier * {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    bottom: auto !important;
+    left: auto !important;
+}
+
+/* Override any alertify positioning with maximum specificity */
+html body .alertify-logs,
+html body .ajs-notifier,
+html body .alertify-logs *,
+html body .ajs-notifier * {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+}
+
+/* Target specific alertify classes that might be used */
+.alertify-logs.show,
+.alertify-logs.hide,
+.alertify-logs > *,
+.ajs-notifier.show,
+.ajs-notifier.hide,
+.ajs-notifier > * {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+}
+
+/* Target any element with alertify in class name */
+[class*="alertify"] {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+}
+
+/* Target any element with ajs- in class name */
+[class*="ajs-"] {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+}
+
+/* Loading state for save operation */
+.ajs-message.ajs-loading {
+    background-color: #e2e3e5 !important;
+    color: #383d41 !important;
+    border: 1px solid #d6d8db !important;
+}
+
+/* Close button styling if present */
+.ajs-close {
+    color: inherit !important;
+    opacity: 0.7 !important;
+    transition: opacity 0.2s ease !important;
+}
+
+.ajs-close:hover {
+    opacity: 1 !important;
+} 

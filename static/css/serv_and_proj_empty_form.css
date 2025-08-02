@@ -10,6 +10,13 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    /* Предотвращаем закрытие при клике на фон */
+    pointer-events: none;
+}
+
+/* Разрешаем клики только на саму форму */
+.modal-overlay .modal-form {
+    pointer-events: auto;
 }
 
 .modal-form {

@@ -152,6 +152,60 @@
     margin-right: 12px;
 }
 
+/* Warning message for delete account */
+.warning-message_stngs {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    color: #856404;
+}
+
+.warning-message_stngs p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.warning-message_stngs p:last-child {
+    margin-bottom: 0;
+}
+
+.warning-message_stngs strong {
+    color: #dc3545;
+}
+
+/* Delete account button styling */
+.delete-btn_stngs {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-left: 10px;
+}
+
+.delete-btn_stngs:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.delete-btn_stngs:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.3);
+}
+
+.delete-btn_stngs:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
 /* Delete account special styling */
 .delete-account_stngs {
     color: #666 !important;

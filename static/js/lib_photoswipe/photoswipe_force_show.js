@@ -4,8 +4,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function setupPhotoSwipe() {
-    const links = document.querySelectorAll('.social_feed_image_gallery_1 a');
+    // Настройка для галереи social_feed_image_gallery_1
+    const galleryLinks = document.querySelectorAll('.social_feed_image_gallery_1 a');
+    setupGalleryLinks(galleryLinks, '.social_feed_image_gallery_1', 'a');
     
+    // Настройка для фотографий в social_feed_details_photos
+    const detailPhotoLinks = document.querySelectorAll('.social_feed_details_photos a.photo-gallery-item');
+    setupGalleryLinks(detailPhotoLinks, '.social_feed_details_photos', 'a.photo-gallery-item');
+}
+
+function setupGalleryLinks(links, gallerySelector, linkSelector) {
     links.forEach(function(link, index) {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -15,8 +23,8 @@ function setupPhotoSwipe() {
             const dataHeight = link.getAttribute('data-pswp-height') || 800;
             
             // Находим все изображения в текущей галерее
-            const gallery = link.closest('.social_feed_image_gallery_1');
-            const allLinks = gallery.querySelectorAll('a');
+            const gallery = link.closest(gallerySelector);
+            const allLinks = gallery.querySelectorAll(linkSelector);
             const currentIndex = Array.from(allLinks).indexOf(link);
             
             showPhotoSwipe(allLinks, currentIndex);

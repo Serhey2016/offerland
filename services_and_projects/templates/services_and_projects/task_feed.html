@@ -1,0 +1,200 @@
+{% load static %}
+
+
+<div class="social_feed2">
+    <div class="post_info_block">
+        <div class="post_info_dates">
+            <div class="post_info_start_date_column">
+                <span class="post_info_start_date">start date:</span>
+                <span class="post_start_date">{{ task.created_at|date:'d.m.Y' }}</span>
+            </div>
+            <div class="post_info_dates_type_of_task">{{ task.type_of_task.type_of_task_name }}</div>
+            <div class="post_info_end_date_column">
+                <span class="post_info_end_date">last update:</span>
+                <span class="post_end_date">{{ task.updated_at|date:'d.m.Y' }}</span>
+            </div>
+        </div>
+        <div class="social_feed_menu"></div>
+    </div>
+    
+    <div class="post_info_title_row">
+        <div class="post_info_project_or_task_title_column">
+            <span class="post_info_project_or_task_title_text">{{ task.title }}</span>
+        </div>
+        <div class="post_info_icons_scroll">
+            <div id="note_button_007_post_info_icon_notes_{{ task.id }}" class="post_info_icon notes-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="76.191" height="50.794" viewBox="0 0 76.191 50.794">
+                    <path id="notes_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24" d="M120-669.206v-8.466h50.794v8.466Zm0-21.164v-8.466h76.191v8.466Zm0-21.164V-720h76.191v8.466Z" transform="translate(-120 720)" fill="#dfb30b"/>
+                </svg>   
+            </div>
+
+        </div>
+    </div>
+
+    <div class="social_feed_hide_icon" id="socialFeedHideIcon_{{ task.id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35" viewBox="0 0 86.55 86.55">
+            <defs>
+                <filter id="Ellipse_16" x="0" y="0" width="86.55" height="86.55" filterUnits="userSpaceOnUse">
+                    <feOffset dy="3" input="SourceAlpha" />
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feFlood flood-opacity="0.161" />
+                    <feComposite operator="in" in2="blur" />
+                </filter>
+                <filter id="Ellipse_16-2" x="0" y="0" width="86.55" height="86.55" filterUnits="userSpaceOnUse">
+                    <feOffset dy="3" input="SourceAlpha" />
+                    <feGaussianBlur stdDeviation="3" result="blur-2" />
+                    <feFlood flood-opacity="0.161" result="color" />
+                    <feComposite operator="out" in="SourceGraphic" in2="blur-2" />
+                    <feComposite operator="in" in="color" />
+                    <feComposite operator="in" in2="SourceGraphic" />
+                </filter>
+            </defs>
+            <g id="Group_4185" data-name="Group 4185" transform="translate(9 6)">
+                <g data-type="innerShadowGroup">
+                    <g transform="matrix(1, 0, 0, 1, -9, -6)" filter="url(#Ellipse_16)">
+                        <g id="Ellipse_16-3" data-name="Ellipse 16" transform="translate(9 6)" fill="#fefbd7" stroke="#ececec" stroke-width="1">
+                            <circle cx="34.275" cy="34.275" r="34.275" stroke="none" />
+                            <circle cx="34.275" cy="34.275" r="33.775" fill="none" />
+                        </g>
+                    </g>
+                    <circle id="Ellipse_16-4" data-name="Ellipse 16" cx="34.275" cy="34.275" r="34.275" transform="translate(0)" fill="#fefbd7" />
+                    <g transform="matrix(1, 0, 0, 1, -9, -6)" filter="url(#Ellipse_16-2)">
+                        <circle id="Ellipse_16-5" data-name="Ellipse 16" cx="34.275" cy="34.275" r="34.275" transform="translate(9 6)" fill="#fff" />
+                    </g>
+                    <g id="Ellipse_16-6" data-name="Ellipse 16" transform="translate(0)" fill="none" stroke="#ececec" stroke-width="1">
+                        <circle cx="34.275" cy="34.275" r="34.275" stroke="none" />
+                        <circle cx="34.275" cy="34.275" r="33.775" fill="none" />
+                    </g>
+                </g>
+                <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24" d="M17,33.99,0,17,17,0l3.017,3.017L6.033,17,20.012,30.974Z" transform="translate(52.029 22.465) rotate(90)" fill="gray" />
+            </g>
+        </svg>
+    </div>
+
+    <div class="social_feed_details" id="socialFeedDetails_{{ task.id }}" style="display:none;">
+        <div class="social_feed_details_section">
+            <div class="social_feed_details_label">Description:</div>
+            <div class="social_feed_details_text">
+                {{ task.description|linebreaks }}
+            </div>
+        </div>
+        
+        {% if task.photo_link or task.photos.all %}
+        <div class="social_feed_details_section">
+            <div class="social_feed_details_label">Photos:</div>
+            <div class="social_feed_details_photos">
+                {% if task.photo_link %}
+                    <a href="{{ task.photo_link }}" target="_blank" class="photo-link-exclude">
+                        Link
+                    </a>
+                {% endif %}
+                {% for photo in task.photos.all %}
+                    {% if photo.photo %}
+                        <a href="{{ photo.photo.url }}" data-pswp-width="1200" data-pswp-height="800" target="_blank" class="photo-gallery-item">
+                            <img src="{{ photo.photo.url }}" alt="Task photo">
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if task.hashtags.all %}
+        <div class="social_feed_details_section">
+            <div class="social_feed_details_label">Hashtags:</div>
+            <div class="social_feed_tags">
+                {% for hashtag in task.hashtags.all %}
+                    <span>{{ hashtag.tag }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="social_feed_details_section">
+            <div class="social_feed_details_grid">
+                <div class="social_feed_details_grid_client"><b>Client:</b> 
+                    {% if task.taskclientrelations_set.first %}
+                        {{ task.taskclientrelations_set.first.client.get_full_name|default:task.taskclientrelations_set.first.client.username }}
+                    {% else %}
+                        Not assigned
+                    {% endif %}
+                </div>
+                <div class="social_feed_details_grid_date_start"><b>Date, time start:</b> 
+                    {% if task.date_start %}
+                        {{ task.date_start|date:'d.m.Y' }}
+                        {% if task.time_start %}
+                            {{ task.time_start|time:'H:i' }}
+                        {% endif %}
+                    {% else %}
+                        Not set
+                    {% endif %}
+                </div>
+                <div class="social_feed_details_grid_date_end"><b>Date, time end:</b> 
+                    {% if task.date_end %}
+                        {{ task.date_end|date:'d.m.Y' }}
+                        {% if task.time_end %}
+                            {{ task.time_end|time:'H:i' }}
+                        {% endif %}
+                    {% else %}
+                        Not set
+                    {% endif %}
+                </div>
+                {% if task.documents %}
+                <div class="social_feed_details_grid_documents"><b>Documents:</b> <a href="{{ task.documents }}">Link</a></div>
+                {% endif %}
+                <div class="social_feed_details_grid_project_private"><b>Project private?:</b> {% if task.is_private %}Yes{% else %}No{% endif %}</div>
+                <div class="social_feed_details_grid_customer_name"><b>Customer name:</b> 
+                    {% if task.disclose_name %}
+                        {% if task.taskownerrelations_set.first %}
+                            {{ task.taskownerrelations_set.first.user.get_full_name|default:task.taskownerrelations_set.first.user.username }}
+                        {% else %}
+                            Not assigned
+                        {% endif %}
+                    {% else %}
+                        Hidden
+                    {% endif %}
+                </div>
+                <div class="social_feed_details_grid_stakeholders"><b>Stakeholders:</b> 
+                    {% for performer in task.performers.all %}
+                        {{ performer.get_full_name|default:performer.username }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        Need a performer
+                    {% endfor %}
+                </div>
+                <div class="social_feed_details_grid_status"><b>Status:</b> 
+                    {% if task.status %}
+                        {{ task.status.name }}
+                    {% else %}
+                        Not set
+                    {% endif %}
+                    {% if task.is_published %} - Published{% endif %}
+                </div>
+                <div class="social_feed_details_task_number"><b>Task number:</b> {{ task.id }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Попап для блокнота -->
+<div id="note_button_007_notesPopup_{{ task.id }}" class="notes-popup-overlay notes-popup">
+    <div class="notes-popup-content">
+                        <div class="notes-popup-header">
+                    <h3 class="notes-popup-title">Notes for task #{{ task.id }}</h3>
+                    <button class="notes-popup-close notes-close-btn">&times;</button>
+                </div>
+        <div class="notes-popup-body">
+            <form id="note_button_007_notesForm_{{ task.id }}" method="POST" action="{% url 'services_and_projects:save_task_notes' task.id %}" class="notes-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="task_notes_{{ task.id }}">Notes:</label>
+                    <textarea id="note_button_007_task_notes_{{ task.id }}" name="notes" class="form-control notes-textarea">{{ task.note|default:'' }}</textarea>
+                </div>
+                <div class="notes-popup-actions">
+                    <button type="submit" class="btn btn-primary notes-save-btn">Save</button>
+                    <button type="button" class="btn btn-secondary notes-cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

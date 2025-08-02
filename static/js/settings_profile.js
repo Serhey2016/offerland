@@ -1109,4 +1109,74 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Delete account functionality
+    const deleteAccountModal = document.getElementById('deleteAccountModal');
+    const deleteAccountTrigger = document.querySelector('.delete-account_stngs');
+    const deleteAccountForm = document.getElementById('deleteAccountForm');
+
+    // Open delete account modal when clicking on "Delete account"
+    if (deleteAccountTrigger) {
+        deleteAccountTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            deleteAccountModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    // Handle delete account form submission
+    if (deleteAccountForm) {
+        deleteAccountForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('deletePassword').value;
+            
+            if (!password) {
+                alert('Please enter your password to confirm account deletion.');
+                return;
+            }
+
+            // Show confirmation dialog
+            if (!confirm('Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.')) {
+                return;
+            }
+
+            // Send delete request
+            fetch('/delete-account/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    alert('Account deleted successfully! You will be redirected to the home page.');
+                    
+                    // Close modal
+                    deleteAccountModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    
+                    // Reset form
+                    deleteAccountForm.reset();
+                    
+                    // Redirect to home page after a short delay
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting your account. Please try again.');
+            });
+        });
+    }
 });
