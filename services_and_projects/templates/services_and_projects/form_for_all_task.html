@@ -20,7 +20,7 @@
             </div>
 
             <!-- Time slot group (hidden by default) -->
-            <div id="time-slot-group" class="time_slot_group">
+            <div id="time-slot-group" class="time_slot_group" style="display: none;">
                 <div class=" time-slot-group-title">Time - slot:</div>
                 <div class="time-slot-group-inputs">
                     <div class="date_time_slot">
@@ -61,15 +61,15 @@
                 </div>
             </div>
 
-            <div class="form-group" id="form-group-title">
+            <div class="form-group" id="form-group-title" style="display: none;">
                 <label for="title">Title</label>
                 <input type="text" id="title" name="title" required>
             </div>
-            <div class="form-group" id="form-group-description">
+            <div class="form-group" id="form-group-description" style="display: none;">
                 <label for="description">Description</label>
                 <textarea id="description" name="description" rows="4" required></textarea>
             </div>
-            <div class="form-group" id="form-group-photos-link">
+            <div class="form-group" id="form-group-photos-link" style="display: none;">
                 <label for="photos-link">Photos</label>
                 <input type="text" id="photos-link" name="photos-link" placeholder="link to google drive" style="margin-bottom:12px;">
                 <div id="form-group-photos-link_or" style="text-align:center;font-weight:600;color:#282d3b;margin-bottom:8px;">or</div>
@@ -82,7 +82,7 @@
             </div>
             
 
-            <div class="form-group" id="form-group-hashtags-input">
+            <div class="form-group" id="form-group-hashtags-input" style="display: none;">
                 <label for="hashtags-input">Hashtags: <a href="#">Don't find hashtag?</a></label>
                 <div id="hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
                     <input type="text" id="hashtags-input" placeholder="Start typing tag..." autocomplete="off" style="border: none; outline: none; flex: 1; min-width: 120px; background: transparent;">
@@ -91,7 +91,7 @@
             </div>
             <input type="hidden" name="hashtags" id="hashtags-hidden">
             
-            <div class="form-group" id="form-group-category">
+            <div class="form-group" id="form-group-category" style="display: none;">
                 <label for="category">Category</label>
                 <select id="category" name="category" required>
                     <option value="">-- Select category --</option>
@@ -100,7 +100,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-group" id="form-group-service">
+            <div class="form-group" id="form-group-service" style="display: none;">
                 <label for="service">Service</label>
                 <select id="service" name="service" required>
                     <option value="">-- Select service --</option>
@@ -238,7 +238,7 @@
                 
             </div>
 
-            <div class="form-actions" id="form-actions">
+            <div class="form-actions" id="form-actions" style="display: none;">
                 
                 <button type="button" class="btn btn-secondary">Save</button>
             </div>

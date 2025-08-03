@@ -550,7 +550,12 @@ document.addEventListener('DOMContentLoaded', () => {
      * Инициализирует функциональность хэштегов
      */
     function initHashtags() {
-        if (!elements.hashtagsInput || !elements.hashtagsDropdown) {
+        if (!elements.hashtagsInput || !elements.hashtagsDropdown || !elements.hashtagsContainer) {
+            console.log('Hashtags elements not found:', {
+                input: !!elements.hashtagsInput,
+                dropdown: !!elements.hashtagsDropdown,
+                container: !!elements.hashtagsContainer
+            });
             return;
         }
 
@@ -560,6 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             allTags = JSON.parse(allTagsData || '[]');
+            console.log('Parsed hashtags:', allTags);
         } catch (e) {
             console.error('Error parsing hashtags data:', e);
             allTags = [];
@@ -567,8 +573,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Показ/скрытие dropdown
         const showDropdown = () => {
+            console.log('Showing dropdown, tags count:', allTags.length);
             if (allTags.length > 0) {
                 elements.hashtagsDropdown.style.display = 'block';
+                console.log('Dropdown display set to block');
                 populateDropdown(elements.hashtagsInput.value);
             }
         };
@@ -583,19 +591,23 @@ document.addEventListener('DOMContentLoaded', () => {
         function populateDropdown(filter = '') {
             if (!elements.hashtagsDropdown) return;
             
+            console.log('Populating dropdown with filter:', filter);
             elements.hashtagsDropdown.innerHTML = '';
             
             const filteredTags = allTags.filter(tag => 
                 tag.tag.toLowerCase().includes(filter.toLowerCase())
             );
             
+            console.log('Filtered tags:', filteredTags);
+            
             filteredTags.forEach(tag => {
                 const item = document.createElement('div');
-                item.className = 'hashtag-dropdown-item';
+                item.className = 'dropdown-item';
                 item.textContent = tag.tag;
                 item.dataset.tagId = tag.id;
                 
                 item.addEventListener('click', () => {
+                    console.log('Tag clicked:', tag.tag);
                     addHashtag(tag.tag, tag.id);
                     elements.hashtagsInput.value = '';
                     elements.hashtagsDropdown.style.display = 'none';
@@ -606,13 +618,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // События для показа dropdown
-        elements.hashtagsInput.addEventListener('focus', showDropdown);
+        elements.hashtagsInput.addEventListener('focus', (e) => {
+            console.log('Hashtags input focused');
+            showDropdown();
+        });
         elements.hashtagsInput.addEventListener('input', (e) => {
+            console.log('Hashtags input changed:', e.target.value);
             showDropdown();
             populateDropdown(e.target.value);
         });
-        elements.hashtagsInput.addEventListener('click', showDropdown);
-        elements.hashtagsInput.addEventListener('blur', hideDropdown);
+        elements.hashtagsInput.addEventListener('click', (e) => {
+            console.log('Hashtags input clicked');
+            showDropdown();
+        });
+        elements.hashtagsInput.addEventListener('blur', (e) => {
+            console.log('Hashtags input blurred');
+            hideDropdown();
+        });
 
         // Обработка клавиш
         elements.hashtagsInput.addEventListener('keydown', (e) => {
@@ -962,6 +984,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         initModal();
         initDragDrop();
+        initHashtags();
         initPerformers();
         initSpinners();
         initFieldsManagement();
@@ -993,6 +1016,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Очистка хэштегов
         if (elements.hashtagsContainer) {
             elements.hashtagsContainer.innerHTML = '<input type="text" id="hashtags-input" placeholder="Start typing tag..." autocomplete="off" style="border: none; outline: none; flex: 1; min-width: 120px; background: transparent;">';
+            // Переинициализируем хэштеги после очистки
+            initHashtags();
         }
         
         // Очистка скрытого поля хэштегов
