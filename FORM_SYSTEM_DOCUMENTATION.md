@@ -168,6 +168,92 @@ else:
 - `type_of_task`, `services`
 - `hashtags` (через поле `ts-hashtags` - вводится вручную, разделяется запятыми)
 
+## ID блоков для каждого типа задач
+
+### 1. Advertising
+```
+- form-group-type_of_task (Will published in)
+- form-group-category
+- form-group-service  
+- form-group-title
+- form-group-description
+- form-group-photos-link
+- form-group-photos-link_drop_file
+- form-group-hashtags-input
+- form-group-documents
+- form-group-performers
+- form-group-date-time
+- form-group-disclose-name-1
+- form-group-hidden
+- form-group-post-code
+- form-group-disclose-name
+- form-group-street_details
+- form-actions (кнопки)
+```
+
+### 2. Tender
+```
+- form-group-type_of_task (Will published in)
+- form-group-category
+- form-group-service
+- form-group-hashtags-input
+- form-group-documents
+- form-group-performers
+- form-group-status
+- form-group-project-included
+- form-group-photos-link
+- form-actions (кнопки)
+```
+
+### 3. Project
+```
+- form-group-type_of_task (Will published in)
+- form-group-category
+- form-group-service
+- form-group-hashtags-input
+- form-group-documents
+- form-group-performers
+- form-group-status
+- form-group-project-included
+- form-group-photos-link
+- form-actions (кнопки)
+```
+
+### 4. My list (Task)
+```
+- form-group-type_of_task (Will published in)
+- form-group-title
+- form-group-description
+- form-actions (кнопки)
+```
+
+### 5. Time slot
+```
+- form-group-type_of_task (Will published in)
+- time-date-input
+- form-group-reserved-time
+- form-group-start-location
+- form-group-cost-hour
+- form-group-min-slot
+- form-group-hashtags-input
+- form-group-category
+- form-group-service
+- form-actions (кнопки)
+```
+
+### 6. Job search
+```
+- form-group-type_of_task (Will published in)
+- form-group-title
+- form-actions (кнопки)
+```
+
+**Примечания:**
+- `form-group-type_of_task` (поле "Will published in") должно быть видимым для всех типов
+- `form-actions` (кнопки действий) должно быть видимым для всех типов
+- Все остальные поля скрываются для типов, где они не нужны
+- Поля `form-group-photos-link_or` и `hashtags-hidden` скрываются для всех типов, так как это служебные элементы
+
 ## Особенности
 
 ### Хэштеги
