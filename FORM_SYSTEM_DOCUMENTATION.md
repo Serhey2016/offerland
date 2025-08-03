@@ -34,7 +34,7 @@
 
 ### Frontend (JavaScript)
 
-#### `static/js/empty_form.js`
+#### `static/js/form_for_all_task.js`
 Основной файл для управления формами:
 
 **Ключевые функции:**
@@ -72,8 +72,8 @@
 project_root/
 ├── static/
 │   ├── js/
-│   │   ├── empty_form.js
-│   │   ├── form_filtation.js
+│   │   ├── form_for_all_task.js
+
 │   │   └── ...
 │   └── css/
 │       ├── main.css
@@ -303,14 +303,14 @@ else:
 ### Для разработчиков
 
 1. **Добавление нового типа публикации:**
-   - Добавить в `TYPE_MAP` в `empty_form.js`
-   - Создать функцию `handleNewTypeFields()` в `empty_form.js`
+   - Добавить в `TYPE_MAP` в `form_for_all_task.js`
+- Создать функцию `handleNewTypeFields()` в `form_for_all_task.js`
    - Добавить обработку в `updateFieldsVisibility()`
    - Создать функцию `create_new_type()` в `forms.py`
    - Добавить URL pattern
 
 2. **Изменение полей:**
-   - Обновить соответствующие функции в `empty_form.js`
+   - Обновить соответствующие функции в `form_for_all_task.js`
    - Обновить модели в `models.py`
    - Создать миграцию
 
@@ -382,7 +382,7 @@ if request.user.is_authenticated:
 ```
 
 ### AJAX и фронтенд
-- Форма отправляется через AJAX (см. `handleFormSubmission` в `static/js/empty_form.js`).
+- Форма отправляется через AJAX (см. `handleFormSubmission` в `static/js/form_for_all_task.js`).
 - Все данные (включая performers, hashtags, comments, photos, services) отправляются одной формой.
 - Сервер обрабатывает данные, создаёт основную сущность, связанные объекты и owner relation.
 - Пользователь, создавший Task, Advertising или TimeSlot, автоматически становится владельцем через owner relations.

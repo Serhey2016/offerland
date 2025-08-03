@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '3': 'project',
         '4': 'Advertising',
         '5': 'orders',
-        '6': 'Job search', // если потребуется
+        '6': 'Job search',
     };
 
     // === КОНСТАНТЫ ДЛЯ ID ПОЛЕЙ ===
@@ -130,16 +130,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (el) el.style.display = visible ? '' : 'none';
         });
     }
+    
     function hideAllCheckboxes() {
         document.querySelectorAll('.form-group.checkbox').forEach(group => {
             group.style.display = 'none';
         });
     }
+    
     function showAllCheckboxes() {
         document.querySelectorAll('.form-group.checkbox').forEach(group => {
             group.style.display = '';
         });
     }
+    
     function hideDateFields() {
         const dateStart = document.getElementById('date-start');
         if (dateStart) {
@@ -147,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (formRow) formRow.style.display = 'none';
         }
     }
+    
     function showDateFields() {
         const dateStart = document.getElementById('date-start');
         const dateEnd = document.getElementById('date-end');
@@ -220,7 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
         timeSlotGroup: document.getElementById('time-slot-group')
     };
 
-
     // === СОСТОЯНИЕ ПРИЛОЖЕНИЯ ===
     let state = {
         performerTags: [],
@@ -247,8 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!elements.dropZone) {
             return;
         }
-    
-
         
         // Предотвращаем стандартное поведение
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -280,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function handleFiles(files) {
         // Здесь добавить логику обработки файлов
+        console.log('Files dropped:', files);
     }
 
     /**
@@ -399,7 +401,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Отправляем AJAX-запрос
-        
         fetch(form.action, {
             method: 'POST',
             body: formData,
@@ -426,16 +427,16 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.save-success-message').forEach(function(msg) { msg.remove(); });
             
             if (data.success) {
-                                        // Используем SweetAlert2 для успешного сохранения
-                        if (typeof Swal !== 'undefined') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: isPublish ? 'Published!' : 'Saved!',
-                                text: isPublish ? 'Data published successfully. Form will close automatically.' : 'Data saved successfully. Form will close automatically.',
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
-                        } else {
+                // Используем SweetAlert2 для успешного сохранения
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: isPublish ? 'Published!' : 'Saved!',
+                        text: isPublish ? 'Data published successfully. Form will close automatically.' : 'Data saved successfully. Form will close automatically.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
                     // Fallback для обычного сообщения
                     var msg = document.createElement('div');
                     msg.className = 'save-success-message';
@@ -447,16 +448,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 3000);
                 }
                 
-                                        // Закрываем модальное окно после успешного сохранения
-                        if (elements.modalOverlay) {
-                            setTimeout(() => {
-                                // Закрываем модальное окно
-                                elements.modalOverlay.style.display = 'none';
-                                
-                                // Полная очистка формы
-                                resetFormCompletely();
-                            }, 2000);
-                        }
+                // Закрываем модальное окно после успешного сохранения
+                if (elements.modalOverlay) {
+                    setTimeout(() => {
+                        // Закрываем модальное окно
+                        elements.modalOverlay.style.display = 'none';
+                        
+                        // Полная очистка формы
+                        resetFormCompletely();
+                    }, 2000);
+                }
             } else {
                 // Используем SweetAlert2 для ошибки
                 if (typeof Swal !== 'undefined') {
@@ -510,8 +511,6 @@ document.addEventListener('DOMContentLoaded', () => {
      * Инициализирует обработчики модального окна
      */
     function initModal() {
-    
-        
         // Закрытие модального окна
         if (elements.closeBtn && elements.modalOverlay) {
             elements.closeBtn.addEventListener('click', () => {
@@ -543,23 +542,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 resetFormCompletely();
             }
         });
-        
-        // Закрытие при клике вне модального окна - ОТКЛЮЧЕНО
-        // Теперь форма не закрывается при клике на фон
-        /*
-        if (elements.modalOverlay) {
-            elements.modalOverlay.addEventListener('click', function(event) {
-                if (event.target === elements.modalOverlay) {
-                    elements.modalOverlay.style.display = 'none';
-                    // Очищаем форму при закрытии
-                    resetFormCompletely();
-                }
-            });
-        }
-        */
     }
 
-    // === ИСПОЛНИТЕЛИ ===
+    // === ХЭШТЕГИ ===
     
     /**
      * Инициализирует функциональность хэштегов
@@ -711,6 +696,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.hashtagsHidden.value = tagIds.join(',');
     }
 
+    // === ИСПОЛНИТЕЛИ ===
+    
     /**
      * Инициализирует функционал работы с исполнителями
      */
@@ -718,8 +705,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!elements.performersInput || !elements.performersDropdown) {
             return;
         }
-
-
 
         // Показ/скрытие dropdown
         const showDropdown = () => {
@@ -794,8 +779,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.performersList) {
             elements.performersList.appendChild(tag);
         }
-        
-
     }
 
     /**
@@ -851,9 +834,12 @@ document.addEventListener('DOMContentLoaded', () => {
      * Инициализирует спиннеры для полей ввода
      */
     function initSpinners() {
-
-        
-        // Спиннер для поля клиента - удалено
+        // Спиннер для поля исполнителей
+        if (elements.performersInput) {
+            elements.performersInput.addEventListener('input', () => {
+                handleSpinnerTimeout('performer', elements.performersInput);
+            });
+        }
     }
 
     // === УПРАВЛЕНИЕ ПОЛЯМИ ФОРМЫ ===
@@ -897,122 +883,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // === МОДИФИЦИРУЕМ updateFieldsVisibility ===
+    /**
+     * Обновляет видимость полей в зависимости от типа
+     */
     function updateFieldsVisibility() {
         if (!elements.publishIn) return;
         const publishType = TYPE_MAP[elements.publishIn.value]?.toLowerCase() || elements.publishIn.value?.toLowerCase();
         handleTypeFields(publishType);
         updateOfflineFields();
-    }
-
-    // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С ПОЛЯМИ ===
-    
-    /**
-     * Получает элементы фотографий
-     */
-    function getPhotoElements() {
-        return {
-            link: document.getElementById('photos-link'),
-            upload: document.getElementById('photos-upload'),
-            orText: document.getElementById('photos-link')?.nextElementSibling
-        };
-    }
-
-    /**
-     * Показывает поле по ID
-     */
-    function showField(fieldId) {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            const group = fieldId === 'form-actions' ? field : field.parentNode;
-            group.style.display = '';
-        }
-    }
-
-    /**
-     * Скрывает поле по ID
-     */
-    function hideField(fieldId) {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            const group = fieldId === 'form-actions' ? field : field.parentNode;
-            group.style.display = 'none';
-        }
-    }
-
-    /**
-     * Показывает несколько полей
-     */
-    function showFields(fieldIds) {
-        fieldIds.forEach(showField);
-    }
-
-    /**
-     * Скрывает несколько полей
-     */
-    function hideFields(fieldIds) {
-        fieldIds.forEach(hideField);
-    }
-
-    /**
-     * Показывает все form-group
-     */
-    function showAllFormGroups() {
-        document.querySelectorAll('.form-group').forEach(group => {
-            if (group.id !== 'time-slot-group') {
-                group.style.display = '';
-            }
-        });
-    }
-
-    /**
-     * Показывает чекбоксы
-     */
-    function showCheckboxes() {
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]#disclose-name');
-        checkboxes.forEach(cb => {
-            if (cb.parentNode) cb.parentNode.style.display = '';
-        });
-    }
-
-    /**
-     * Скрывает чекбоксы
-     */
-    function hideCheckboxes() {
-        const privateCheckbox = document.getElementById('private');
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]#disclose-name');
-        
-        if (privateCheckbox && privateCheckbox.parentNode) {
-            privateCheckbox.parentNode.style.display = 'none';
-        }
-        checkboxes.forEach(cb => {
-            if (cb.parentNode) cb.parentNode.style.display = 'none';
-        });
-    }
-
-    /**
-     * Показывает поля дат
-     */  
-
-    
-    function showDateFields() {
-        const dateStart = document.getElementById('date-start');
-        const dateEnd = document.getElementById('date-end');
-        if (dateStart && dateEnd) {
-            const formRow = dateStart.parentNode?.parentNode;
-            if (formRow) formRow.style.display = '';
-        }
-    }
-
-    /**
-     * Скрывает поля дат
-     */
-    function hideDateFields() {
-        const dateStart = document.getElementById('date-start');
-        if (dateStart) {
-            const formRow = dateStart.parentNode?.parentNode;
-            if (formRow) formRow.style.display = 'none';
-        }
     }
 
     // === OFFLINE ПОЛЯ ===
@@ -1076,65 +954,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Инициализирует функциональность "Read more..." для постов
-     */
-    function initReadMore() {
-        // Удаляем старые обработчики событий
-        const existingReadMoreElements = document.querySelectorAll('.read_more');
-        existingReadMoreElements.forEach(function(element) {
-            element.removeEventListener('click', handleReadMoreClick);
-        });
-        
-        // Находим все элементы "Read more..."
-        const readMoreElements = document.querySelectorAll('.read_more');
-        
-        readMoreElements.forEach(function(readMoreElement) {
-            readMoreElement.addEventListener('click', handleReadMoreClick);
-        });
-    }
-    
-    /**
-     * Обработчик клика по "Read more..."
-     */
-    function handleReadMoreClick() {
-        // Находим родительский контейнер текста
-        const textContainer = this.closest('.social_feed_text');
-        if (!textContainer) return;
-        
-        // Находим параграф с текстом
-        const textParagraph = textContainer.querySelector('p');
-        if (!textParagraph) return;
-        
-        // Проверяем, развернут ли уже текст
-        const isExpanded = textParagraph.classList.contains('expanded');
-        
-        if (!isExpanded) {
-            // Получаем полный текст из data-атрибута
-            const fullText = textParagraph.getAttribute('data-full-text');
-            if (fullText) {
-                // Показываем полный текст
-                textParagraph.textContent = fullText;
-                textParagraph.classList.add('expanded');
-                
-                // Меняем текст кнопки на "Show less"
-                this.textContent = 'Show less';
-                this.classList.add('expanded');
-            }
-        } else {
-            // Возвращаем к сокращенному тексту
-            const fullText = textParagraph.getAttribute('data-full-text');
-            if (fullText) {
-                textParagraph.textContent = fullText.substring(0, 238) + '...';
-                textParagraph.classList.remove('expanded');
-                
-                // Возвращаем текст кнопки на "Read more..."
-                this.textContent = 'Read more...';
-                this.classList.remove('expanded');
-            }
-        }
-    }
-
     // === ИНИЦИАЛИЗАЦИЯ ===
     
     /**
@@ -1148,7 +967,6 @@ document.addEventListener('DOMContentLoaded', () => {
         initFieldsManagement();
         initOfflineFields();
         initForm();
-        initReadMore(); // Инициализация функциональности "Read more..."
         
         // Инициализация отображения блока time_slot_group при загрузке и изменении select
         if (elements.publishIn) {
@@ -1223,3 +1041,65 @@ document.addEventListener('DOMContentLoaded', () => {
     // Запуск инициализации
     init();
 });
+
+// === ФИЛЬТРАЦИЯ КАТЕГОРИЙ И СЕРВИСОВ ===
+let serviceOptionsBackup = null;
+
+function filterServicesByCategory(catId) {
+    const serviceSelect = document.getElementById('service');
+    if (!serviceSelect) {
+        return;
+    }
+    // Восстанавливаем все опции из бэкапа
+    serviceSelect.innerHTML = '';
+    let count = 0;
+    serviceOptionsBackup.forEach(opt => {
+        const dataCat = opt.getAttribute('data-category');
+        if (!dataCat || String(dataCat) === String(catId)) {
+            serviceSelect.appendChild(opt.cloneNode(true));
+            count++;
+        }
+    });
+}
+
+function initCategoryServiceFiltering() {
+    const categorySelect = document.getElementById('category');
+    const serviceSelect = document.getElementById('service');
+    if (!categorySelect || !serviceSelect) {
+        return;
+    }
+    // Делаем бэкап всех опций (включая дефолтную) — только если еще не делали!
+    if (!serviceOptionsBackup || serviceOptionsBackup.length <= 1) {
+        serviceOptionsBackup = Array.from(serviceSelect.options);
+    }
+    // Не меняем выбранную категорию, если она пустая (оставляем -- Select category --)
+    let initialCat = categorySelect.value;
+    filterServicesByCategory(initialCat); // если пусто — фильтруем по пустому
+    categorySelect.onchange = function() {
+        filterServicesByCategory(this.value);
+    };
+}
+
+// Глобальная функция для инициализации фильтрации категорий и сервисов
+window.initCategoryServiceSelects = function() {
+    initCategoryServiceFiltering();
+};
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.querySelector('.modal-overlay') && document.querySelector('.modal-overlay').style.display !== 'none') {
+        initCategoryServiceFiltering();
+    }
+    const modal = document.querySelector('.modal-overlay');
+    if (!modal) return;
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'style') {
+                if (modal.style.display !== 'none') {
+                    initCategoryServiceFiltering();
+                }
+            }
+        });
+    });
+    observer.observe(modal, { attributes: true });
+}); 
