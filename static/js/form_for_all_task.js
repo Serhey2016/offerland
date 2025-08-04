@@ -10,19 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
         '1': 'my',
         '2': 'tender',
         '3': 'project',
-        '4': 'Advertising',
+        '4': 'advertising',
         '5': 'orders',
-        '6': 'Job search',
+        '6': 'job-search',
     };
 
     // === КОНСТАНТЫ ДЛЯ ID ПОЛЕЙ ===
     const FIELD_IDS = {
+        formGroupTypeOfTask: 'form-group-type_of_task',  
         formGroupCategory: 'form-group-category',
         formGroupService: 'form-group-service',
         formGroupTitle: 'form-group-title',
         formGroupDescription: 'form-group-description',
-        formGroupPhotosLinkOr: 'form-group-photos-link_or',
-        formGroupPhotosLinkDropFile: 'form-group-photos-link_drop_file',
         photosLink: 'photos-link',
         formGroupHashtagsInput: 'form-group-hashtags-input',
         hashtagsHidden: 'hashtags-hidden',
@@ -32,20 +31,46 @@ document.addEventListener('DOMContentLoaded', () => {
         formGroupDiscloseName1: 'form-group-disclose-name-1',
         formGroupHidden: 'form-group-hidden',
         formGroupPostCode: 'form-group-post-code',
-        formGroupDiscloseName: 'form-group-disclose-name',
+        formGroupOffline: 'form-group-offline',
         formGroupStreetDetails: 'form-group-street_details',
+        formGroupPrivate: 'form-group-private',
+        formGroupProjectIncluded: 'form-group-project-included',
+        formGroupStatus: 'form-group-status',
+        formExtendToggle: 'form-extend-toggle',
+        formGroupMinSlot: 'form-group-min-slot',
+        formGroupCostHour: 'form-group-cost-hour',
+        formGroupStartLocation: 'form-group-start-location',
+        formGroupReservedTime: 'form-group-reserved-time',
+        buttonFormActions: 'button-form-actions',
+
+        status: 'status',
+        projectIncluded: 'project-included',
+        comment: 'comment',
+        formGroupPhotosLink1: 'form-group-photos-link1',
+        formGroupPhotosLink2: 'form-group-photos-link2',
+        formGroupPhotosLink3: 'form-group-photos-link3',
     };
 
     // === КОНФИГ ДЛЯ РАЗНЫХ ТИПОВ ПУБЛИКАЦИЙ ===
     const FORM_CONFIG = {
-        advertising: {
+        // Пустой селект - показываем только селект типа
+        empty: {
+            show: [FIELD_IDS.formGroupTypeOfTask],  
+            hide: Object.values(FIELD_IDS).filter(id => id !== FIELD_IDS.formGroupTypeOfTask),  // 
+            hideCheckboxes: true,
+            hideDateFields: true,
+            showExtended: false,
+            showExtendToggle: false,
+        },
+
+        // My - все поля кроме фото и кнопок
+        my: {
             show: [
+                FIELD_IDS.formGroupTypeOfTask,  
                 FIELD_IDS.formGroupCategory,
                 FIELD_IDS.formGroupService,
                 FIELD_IDS.formGroupTitle,
                 FIELD_IDS.formGroupDescription,
-                FIELD_IDS.formGroupPhotosLinkDropFile,
-                FIELD_IDS.photosLink,
                 FIELD_IDS.formGroupHashtagsInput,
                 FIELD_IDS.formGroupDocuments,
                 FIELD_IDS.formGroupPerformers,
@@ -53,33 +78,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 FIELD_IDS.formGroupDiscloseName1,
                 FIELD_IDS.formGroupHidden,
                 FIELD_IDS.formGroupPostCode,
-                FIELD_IDS.formGroupDiscloseName,
+                FIELD_IDS.formGroupOffline,
                 FIELD_IDS.formGroupStreetDetails,
+                FIELD_IDS.formGroupPrivate,
+                FIELD_IDS.buttonFormActions,
             ],
             hide: [
-                FIELD_IDS.hashtagsHidden,
                 FIELD_IDS.photosLink,
-                FIELD_IDS.formGroupPhotosLinkOr,
+                FIELD_IDS.formActions,
+                FIELD_IDS.extendedFields,
             ],
             hideCheckboxes: false,
             hideDateFields: false,
             showExtended: false,
-            showExtendToggle: false,
+            showExtendToggle: true,
         },
+
+        // Tender - только основные поля
         tender: {
             show: [
+                FIELD_IDS.formGroupTypeOfTask,  // ← ДОБАВИТЬ
                 FIELD_IDS.formGroupCategory,
                 FIELD_IDS.formGroupService,
                 FIELD_IDS.formGroupHashtagsInput,
                 FIELD_IDS.formGroupDocuments,
                 FIELD_IDS.formGroupPerformers,
-                FIELD_IDS.status,
-                FIELD_IDS.projectIncluded,
-                FIELD_IDS.formActions,
+                FIELD_IDS.formGroupStatus,
+                FIELD_IDS.formGroupProjectIncluded,
             ],
             hide: [
-                FIELD_IDS.comment,
-                FIELD_IDS.timeSlotGroup,
+                FIELD_IDS.photosLink,
+                FIELD_IDS.formActions,
                 FIELD_IDS.extendedFields,
                 FIELD_IDS.formGroupPhotosLinkOr,
                 FIELD_IDS.formGroupPhotosLinkDropFile,
@@ -89,38 +118,106 @@ document.addEventListener('DOMContentLoaded', () => {
             showExtended: true,
             showExtendToggle: false,
         },
-        my: {
-            show: Object.values(FIELD_IDS),
-            hide: [],
-            hideCheckboxes: false,
-            hideDateFields: false,
-            showExtended: false,
-            showExtendToggle: true,
-        },
+
+        // Project - похож на tender
         project: {
-            show: [FIELD_IDS.formGroupCategory, FIELD_IDS.formGroupService, FIELD_IDS.formGroupHashtagsInput, FIELD_IDS.formGroupDocuments, FIELD_IDS.formGroupPerformers, FIELD_IDS.status, FIELD_IDS.projectIncluded, FIELD_IDS.formActions],
-            hide: [FIELD_IDS.comment, FIELD_IDS.timeSlotGroup, FIELD_IDS.extendedFields],
+            show: [
+                FIELD_IDS.formGroupTypeOfTask,  // ← ДОБАВИТЬ
+                FIELD_IDS.formGroupCategory,
+                FIELD_IDS.formGroupService,
+                FIELD_IDS.formGroupHashtagsInput,
+                FIELD_IDS.formGroupDocuments,
+                FIELD_IDS.formGroupPerformers,
+                FIELD_IDS.formGroupStatus,
+                FIELD_IDS.formGroupProjectIncluded,
+            ],
+            hide: [
+                FIELD_IDS.photosLink,
+                FIELD_IDS.formActions,
+                FIELD_IDS.extendedFields,
+            ],
             hideCheckboxes: false,
             hideDateFields: true,
             showExtended: true,
             showExtendToggle: false,
         },
+
+        // Advertising - все поля включая фото
+        advertising: {
+            show: [
+                FIELD_IDS.formGroupTypeOfTask,  // ← ДОБАВИТЬ
+                FIELD_IDS.formGroupCategory,
+                FIELD_IDS.formGroupService,
+                FIELD_IDS.formGroupTitle,
+                FIELD_IDS.formGroupDescription,
+                FIELD_IDS.formGroupHashtagsInput,
+                FIELD_IDS.formGroupDocuments,
+                FIELD_IDS.formGroupPerformers,
+                FIELD_IDS.formGroupDateTime,
+                FIELD_IDS.formGroupDiscloseName1,
+                FIELD_IDS.formGroupHidden,
+                FIELD_IDS.formGroupPostCode,
+                FIELD_IDS.formGroupOffline,
+                FIELD_IDS.formGroupStreetDetails,
+                FIELD_IDS.formGroupPrivate,
+                FIELD_IDS.formActions,
+                FIELD_IDS.buttonFormActions,
+            ],
+            hide: [
+                FIELD_IDS.hashtagsHidden,
+                FIELD_IDS.formGroupPhotosLinkOr,
+            ],
+            hideCheckboxes: false,
+            hideDateFields: false,
+            showExtended: false,
+            showExtendToggle: false,
+        },
+
+        // Orders - только time slot
         orders: {
-            show: [FIELD_IDS.timeSlotGroup, FIELD_IDS.formActions],
-            hide: Object.values(FIELD_IDS).filter(id => id !== FIELD_IDS.timeSlotGroup && id !== FIELD_IDS.formActions),
+            show: [
+                FIELD_IDS.formGroupTypeOfTask,  // ← ДОБАВИТЬ
+                FIELD_IDS.formGroupMinSlot,
+                FIELD_IDS.formGroupCostHour,
+                FIELD_IDS.formGroupStartLocation,
+                FIELD_IDS.formGroupReservedTime,
+            ],
+            hide: Object.values(FIELD_IDS).filter(id => 
+                id !== FIELD_IDS.formGroupTypeOfTask && 
+                id !== FIELD_IDS.formGroupMinSlot &&
+                id !== FIELD_IDS.formGroupCostHour &&
+                id !== FIELD_IDS.formGroupStartLocation &&
+                id !== FIELD_IDS.formGroupReservedTime
+            ),
             hideCheckboxes: true,
             hideDateFields: true,
             showExtended: false,
             showExtendToggle: false,
         },
-        default: {
-            show: Object.values(FIELD_IDS),
-            hide: [],
+
+        // Job search - похож на my но без расширенных полей
+        'job-search': {
+            show: [
+                FIELD_IDS.formGroupTypeOfTask,  
+                FIELD_IDS.formGroupCategory,
+                FIELD_IDS.formGroupService,
+                FIELD_IDS.formGroupTitle,
+                FIELD_IDS.formGroupDescription,
+                FIELD_IDS.formGroupHashtagsInput,
+                FIELD_IDS.formGroupDocuments,
+                FIELD_IDS.formGroupPerformers,
+                FIELD_IDS.formActions,
+                FIELD_IDS.buttonFormActions,
+            ],
+            hide: [
+                FIELD_IDS.photosLink,
+                FIELD_IDS.extendedFields,
+            ],
             hideCheckboxes: false,
             hideDateFields: false,
             showExtended: false,
             showExtendToggle: false,
-        }
+        },
     };
 
     // === УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ДЛЯ ВИДИМОСТИ ===
@@ -162,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК ДЛЯ ТИПОВ ===
     function handleTypeFields(type) {
-        const config = FORM_CONFIG[type] || FORM_CONFIG.default;
+        const config = FORM_CONFIG[type] || FORM_CONFIG.empty;
         setFieldsVisibility(config.show, true);
         setFieldsVisibility(config.hide, false);
         if (config.hideCheckboxes) hideAllCheckboxes(); else showAllCheckboxes();
@@ -194,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Форма
         form: document.querySelector('.project-form'),
         publishIn: document.getElementById('publish-in'),
-        extendedFields: document.getElementById('form-extended-fields'),
+
         extendToggle: document.getElementById('form-extend-toggle'),
         extendBtn: document.querySelector('.extend-btn'),
         
@@ -884,7 +981,7 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.extendBtn.addEventListener('click', toggleExtendedFields);
         }
 
-        // Инициализация при загрузке
+        // Инициализация при загрузке - скрываем все поля кроме типа задачи
         updateFieldsVisibility();
     }
 
@@ -910,7 +1007,39 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function updateFieldsVisibility() {
         if (!elements.publishIn) return;
-        const publishType = TYPE_MAP[elements.publishIn.value]?.toLowerCase() || elements.publishIn.value?.toLowerCase();
+        
+        const selectedValue = elements.publishIn.value;
+        
+        // Если тип не выбран или пустой
+        if (!selectedValue || selectedValue === '') {
+            // Скрываем все поля кроме form-group-type_of_task
+            Object.values(FIELD_IDS).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            
+            // ПОКАЗЫВАЕМ ТОЛЬКО БЛОК ТИПА ЗАДАЧИ
+            const typeOfTaskEl = document.getElementById(FIELD_IDS.formGroupTypeOfTask);
+            if (typeOfTaskEl) typeOfTaskEl.style.display = '';
+            if (elements.timeSlotGroup) {
+                elements.timeSlotGroup.style.display = 'none';
+            }
+            if (elements.extendedFields) {
+                elements.extendedFields.style.display = 'none';
+            }
+            if (elements.formActions) {
+                elements.formActions.style.display = 'none';
+            }
+            
+            return;
+        }
+        
+        // Определяем тип с учетом регистра
+        let publishType = TYPE_MAP[selectedValue];
+        if (!publishType) {
+            publishType = selectedValue.toLowerCase();
+        }
+        
         handleTypeFields(publishType);
         updateOfflineFields();
     }
@@ -1056,6 +1185,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.timeSlotGroup) {
             elements.timeSlotGroup.style.display = 'none';
         }
+        
+        // Скрытие всех полей формы кроме типа задачи
+        Object.values(FIELD_IDS).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+        
+        // Скрытие кнопок действий
+        if (elements.formActions) {
+            elements.formActions.style.display = 'none';
+        }
+        
+
         
         // Сброс отображения полей
         if (typeof updateFieldsVisibility === 'function') {
