@@ -67,31 +67,36 @@ document.addEventListener('DOMContentLoaded', () => {
         my: {
             show: [
                 FIELD_IDS.formGroupTypeOfTask,  
-                FIELD_IDS.formGroupCategory,
-                FIELD_IDS.formGroupService,
                 FIELD_IDS.formGroupTitle,
                 FIELD_IDS.formGroupDescription,
-                FIELD_IDS.formGroupHashtagsInput,
-                FIELD_IDS.formGroupDocuments,
-                FIELD_IDS.formGroupPerformers,
-                FIELD_IDS.formGroupDateTime,
-                FIELD_IDS.formGroupDiscloseName1,
-                FIELD_IDS.formGroupHidden,
-                FIELD_IDS.formGroupPostCode,
-                FIELD_IDS.formGroupOffline,
-                FIELD_IDS.formGroupStreetDetails,
-                FIELD_IDS.formGroupPrivate,
                 FIELD_IDS.buttonFormActions,
             ],
             hide: [
                 FIELD_IDS.photosLink,
                 FIELD_IDS.formActions,
                 FIELD_IDS.extendedFields,
+                FIELD_IDS.formGroupHashtagsInput,
+                FIELD_IDS.formGroupCategory,
+                FIELD_IDS.formGroupService,
+                FIELD_IDS.formGroupReservedTime,
+                FIELD_IDS.formGroupStartLocation,
+                FIELD_IDS.formGroupCostHour,
+                FIELD_IDS.formGroupMinSlot,
+                FIELD_IDS.formExtendToggle,
+                FIELD_IDS.formGroupDocuments,
+                FIELD_IDS.formGroupPerformers,
+                FIELD_IDS.formGroupDateTime,
+                FIELD_IDS.formGroupPrivate,
+                FIELD_IDS.formGroupDiscloseName1,
+                FIELD_IDS.formGroupHidden,
+                FIELD_IDS.formGroupOffline,
+                FIELD_IDS.formGroupPostCode,
+                FIELD_IDS.formGroupStreetDetails,
             ],
-            hideCheckboxes: false,
-            hideDateFields: false,
+            hideCheckboxes: true,
+            hideDateFields: true,
             showExtended: false,
-            showExtendToggle: true,
+            showExtendToggle: false,
         },
 
         // Tender - только основные поля
@@ -151,24 +156,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 FIELD_IDS.formGroupTitle,
                 FIELD_IDS.formGroupDescription,
                 FIELD_IDS.formGroupHashtagsInput,
-                FIELD_IDS.formGroupDocuments,
-                FIELD_IDS.formGroupPerformers,
-                FIELD_IDS.formGroupDateTime,
-                FIELD_IDS.formGroupDiscloseName1,
-                FIELD_IDS.formGroupHidden,
                 FIELD_IDS.formGroupPostCode,
-                FIELD_IDS.formGroupOffline,
                 FIELD_IDS.formGroupStreetDetails,
-                FIELD_IDS.formGroupPrivate,
                 FIELD_IDS.formActions,
                 FIELD_IDS.buttonFormActions,
             ],
             hide: [
                 FIELD_IDS.hashtagsHidden,
                 FIELD_IDS.formGroupPhotosLinkOr,
+                FIELD_IDS.formGroupDocuments,
+                FIELD_IDS.formGroupPerformers,
+                FIELD_IDS.formGroupDateTime,
+                FIELD_IDS.formGroupPrivate,
+                FIELD_IDS.formGroupDiscloseName1,
+                FIELD_IDS.formGroupHidden,
+                FIELD_IDS.formGroupOffline,
             ],
-            hideCheckboxes: false,
-            hideDateFields: false,
+            hideCheckboxes: true,
+            hideDateFields: true,
             showExtended: false,
             showExtendToggle: false,
         },
@@ -177,44 +182,66 @@ document.addEventListener('DOMContentLoaded', () => {
         orders: {
             show: [
                 FIELD_IDS.formGroupTypeOfTask,  // ← ДОБАВИТЬ
+                FIELD_IDS.formGroupCategory,
+                FIELD_IDS.formGroupService,
                 FIELD_IDS.formGroupMinSlot,
                 FIELD_IDS.formGroupCostHour,
                 FIELD_IDS.formGroupStartLocation,
                 FIELD_IDS.formGroupReservedTime,
+                FIELD_IDS.formGroupDateTime,
+                FIELD_IDS.formGroupHashtagsInput,
+                FIELD_IDS.buttonFormActions,
             ],
             hide: Object.values(FIELD_IDS).filter(id => 
                 id !== FIELD_IDS.formGroupTypeOfTask && 
+                id !== FIELD_IDS.formGroupCategory &&
+                id !== FIELD_IDS.formGroupService &&
                 id !== FIELD_IDS.formGroupMinSlot &&
                 id !== FIELD_IDS.formGroupCostHour &&
                 id !== FIELD_IDS.formGroupStartLocation &&
-                id !== FIELD_IDS.formGroupReservedTime
+                id !== FIELD_IDS.formGroupReservedTime &&
+                id !== FIELD_IDS.formGroupDateTime &&
+                id !== FIELD_IDS.formGroupHashtagsInput &&
+                id !== FIELD_IDS.buttonFormActions
             ),
             hideCheckboxes: true,
-            hideDateFields: true,
+            hideDateFields: false,
             showExtended: false,
             showExtendToggle: false,
         },
 
-        // Job search - похож на my но без расширенных полей
+        // Job search - только основные поля
         'job-search': {
             show: [
                 FIELD_IDS.formGroupTypeOfTask,  
-                FIELD_IDS.formGroupCategory,
-                FIELD_IDS.formGroupService,
                 FIELD_IDS.formGroupTitle,
-                FIELD_IDS.formGroupDescription,
-                FIELD_IDS.formGroupHashtagsInput,
-                FIELD_IDS.formGroupDocuments,
-                FIELD_IDS.formGroupPerformers,
-                FIELD_IDS.formActions,
                 FIELD_IDS.buttonFormActions,
             ],
             hide: [
                 FIELD_IDS.photosLink,
                 FIELD_IDS.extendedFields,
+                FIELD_IDS.formGroupCategory,
+                FIELD_IDS.formGroupService,
+                FIELD_IDS.formGroupDescription,
+                FIELD_IDS.formGroupHashtagsInput,
+                FIELD_IDS.formGroupDocuments,
+                FIELD_IDS.formGroupPerformers,
+                FIELD_IDS.formGroupDateTime,
+                FIELD_IDS.formGroupPrivate,
+                FIELD_IDS.formGroupDiscloseName1,
+                FIELD_IDS.formGroupHidden,
+                FIELD_IDS.formGroupOffline,
+                FIELD_IDS.formGroupPostCode,
+                FIELD_IDS.formGroupStreetDetails,
+                FIELD_IDS.formGroupReservedTime,
+                FIELD_IDS.formGroupStartLocation,
+                FIELD_IDS.formGroupCostHour,
+                FIELD_IDS.formGroupMinSlot,
+                FIELD_IDS.formExtendToggle,
+                FIELD_IDS.formActions,
             ],
-            hideCheckboxes: false,
-            hideDateFields: false,
+            hideCheckboxes: true,
+            hideDateFields: true,
             showExtended: false,
             showExtendToggle: false,
         },
@@ -675,6 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 elements.hashtagsDropdown.style.display = 'block';
                 console.log('Dropdown display set to block');
                 populateDropdown(elements.hashtagsInput.value);
+                positionDropdown();
             }
         };
         
@@ -683,6 +711,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 elements.hashtagsDropdown.style.display = 'none';
             }, CONFIG.DROPDOWN_HIDE_DELAY);
         };
+
+        // Функция для правильного позиционирования dropdown
+        function positionDropdown() {
+            if (!elements.hashtagsContainer || !elements.hashtagsDropdown) return;
+            
+            const container = elements.hashtagsContainer;
+            const dropdown = elements.hashtagsDropdown;
+            const containerRect = container.getBoundingClientRect();
+            const modalForm = container.closest('.modal-form');
+            
+            if (!modalForm) return;
+            
+            const modalRect = modalForm.getBoundingClientRect();
+            const availableSpaceBelow = modalRect.bottom - containerRect.bottom;
+            const availableSpaceAbove = containerRect.top - modalRect.top;
+            const dropdownHeight = Math.min(200, allTags.length * 40); // Примерная высота dropdown
+            
+            // Сбрасываем стили позиционирования
+            dropdown.style.position = 'fixed';
+            dropdown.style.top = '';
+            dropdown.style.bottom = '';
+            dropdown.style.left = '';
+            dropdown.style.right = '';
+            
+            // Определяем, где больше места - сверху или снизу
+            if (availableSpaceBelow >= dropdownHeight || availableSpaceBelow > availableSpaceAbove) {
+                // Показываем снизу
+                dropdown.style.top = (containerRect.bottom + 2) + 'px';
+                dropdown.style.left = containerRect.left + 'px';
+                dropdown.style.right = (window.innerWidth - containerRect.right) + 'px';
+            } else {
+                // Показываем сверху
+                dropdown.style.bottom = (window.innerHeight - containerRect.top + 2) + 'px';
+                dropdown.style.left = containerRect.left + 'px';
+                dropdown.style.right = (window.innerWidth - containerRect.right) + 'px';
+            }
+            
+            // Ограничиваем ширину
+            dropdown.style.maxWidth = containerRect.width + 'px';
+        }
 
         // Заполнение dropdown
         function populateDropdown(filter = '') {
@@ -712,6 +780,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 elements.hashtagsDropdown.appendChild(item);
             });
+            
+            // Перепозиционируем dropdown после заполнения
+            if (elements.hashtagsDropdown.style.display === 'block') {
+                positionDropdown();
+            }
         }
 
         // События для показа dropdown
@@ -731,6 +804,13 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.hashtagsInput.addEventListener('blur', (e) => {
             console.log('Hashtags input blurred');
             hideDropdown();
+        });
+
+        // Обработчик изменения размера окна для перепозиционирования dropdown
+        window.addEventListener('resize', () => {
+            if (elements.hashtagsDropdown.style.display === 'block') {
+                positionDropdown();
+            }
         });
 
         // Обработка клавиш

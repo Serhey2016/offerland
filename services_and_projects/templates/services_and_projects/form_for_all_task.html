@@ -63,15 +63,7 @@
             </div>
 
 
-            <div class="form-group" id="form-group-hashtags-input" style="display: none;">
-                <label for="hashtags-input">Hashtags: <a href="#">Don't find hashtag?</a></label>
-                <div id="hashtags-container" class="form-control hashtag-chip-container" tabindex="0"
-                    data-all-tags='{{ all_tags|safe }}'>
-                    <input type="text" id="hashtags-input" placeholder="Start typing tag..." autocomplete="off"
-                        style="border: none; outline: none; flex: 1; min-width: 120px; background: transparent;">
-                </div>
-                <div id="hashtags-dropdown" class="hashtag-dropdown-menu"></div>
-            </div>
+
             <input type="hidden" name="hashtags" id="hashtags-hidden">
 
             <div class="form-group" id="form-group-category" style="display: none;">
@@ -93,14 +85,25 @@
                     {% endfor %}
                 </select>
             </div>
-
+            <div id="form-group-date-time" class="form-row" style="display: none;">
+                <div class="form-group half">
+                    <label for="date-start">Date and time start</label>
+                    <input type="date" id="date-start" name="date_start">
+                    <input type="time" id="time-start" name="time_start" style="margin-top:6px;">
+                </div>
+                <div class="form-group half">
+                    <label for="date-end">Date and time end</label>
+                    <input type="date" id="date-end" name="date_end">
+                    <input type="time" id="time-end" name="time_end" style="margin-top:6px;">
+                </div>
+            </div>
  
              <div class="form-group" id="form-group-reserved-time" style="display: none;">
-                 <label for="reserved-time">Reserved time on road:</label>
+                 <label for="reserved-time">Reserved time on road:(minutes)</label>
                  <input type="text" id="reserved-time" name="reserved_time" placeholder="e.g. 30 min">
              </div>
              <div class="form-group" id="form-group-start-location" style="display: none;">
-                 <label for="start-location">Start location:</label>
+                 <label for="start-location">Start location:(post-code)</label>
                  <input type="text" id="start-location" name="start_location" placeholder="Enter start location">
              </div>
              
@@ -110,8 +113,17 @@
              </div>
              <div class="form-group" id="form-group-min-slot" style="display: none;">
                  <label for="min-slot">Minimum slot (minutes) :</label>
-                 <input type="number" id="min-slot" name="min_slot" placeholder="e.g. 1 hour">
+                 <input type="number" id="min-slot" name="min_slot" placeholder="e.g. 60 minutes">
              </div>
+             <div class="form-group" id="form-group-hashtags-input" style="display: none;">
+                <label for="hashtags-input">Hashtags: <a href="#">Don't find hashtag?</a></label>
+                <div id="hashtags-container" class="form-control hashtag-chip-container" tabindex="0"
+                    data-all-tags='{{ all_tags|safe }}'>
+                    <input type="text" id="hashtags-input" placeholder="Start typing tag..." autocomplete="off"
+                        style="border: none; outline: none; flex: 1; min-width: 120px; background: transparent;">
+                </div>
+                <div id="hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+            </div>
             <div id="form-extend-toggle" class="form-extend-toggle" style="display:none;">
                 <button type="button" class="extend-btn">
                     <span class="extend-icon">
@@ -174,18 +186,7 @@
                     </div>
                     <div class="performers-list"></div>
                 </div>
-                <div id="form-group-date-time" class="form-row" style="display: none;">
-                    <div class="form-group half">
-                        <label for="date-start">Date and time start</label>
-                        <input type="date" id="date-start" name="date_start">
-                        <input type="time" id="time-start" name="time_start" style="margin-top:6px;">
-                    </div>
-                    <div class="form-group half">
-                        <label for="date-end">Date and time end</label>
-                        <input type="date" id="date-end" name="date_end">
-                        <input type="time" id="time-end" name="time_end" style="margin-top:6px;">
-                    </div>
-                </div>
+
 
                 <div class="form-group" id="form-group-status" style="display: none;">
                     <label for="status">Add status</label>

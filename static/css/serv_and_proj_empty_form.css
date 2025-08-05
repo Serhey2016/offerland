@@ -408,18 +408,15 @@ textarea {
 }
 .hashtag-dropdown-menu {
     display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
+    position: fixed;
     background: #fff;
     border: 1px solid #eee;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(40,45,59,0.08);
-    z-index: 100;
+    box-shadow: 0 4px 12px rgba(40,45,59,0.15);
+    z-index: 10000;
     max-height: 200px;
     overflow-y: auto;
-    margin-top: 2px;
+    min-width: 200px;
 }
 .hashtag-dropdown-menu .dropdown-item {
     padding: 8px 14px;
