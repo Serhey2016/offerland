@@ -303,4 +303,26 @@
     margin-left: -20px;
     margin-right: -20px;
     margin-bottom: -20px;
+    max-height: 500px;
+    overflow-y: auto;
 }
+
+/* Стилизация скроллбара для social_feed_details2 */
+.social_feed_details2::-webkit-scrollbar {
+    width: 8px;
+}
+
+.social_feed_details2::-webkit-scrollbar-track {
+    background: rgba(226, 254, 195, 0.2);
+    border-radius: 4px;
+}
+
+.social_feed_details2::-webkit-scrollbar-thumb {
+    background: #E2FEC3;
+    border-radius: 4px;
+}
+
+.social_feed_details2::-webkit-scrollbar-thumb:hover {
+    background: #c8e8a0;
+}
+
