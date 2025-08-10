@@ -326,3 +326,8 @@
     background: #c8e8a0;
 }
 
+/* Плавная анимация для social_feed_details2 */
+.social_feed_details2 {
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}

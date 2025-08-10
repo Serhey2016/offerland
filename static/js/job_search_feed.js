@@ -19,23 +19,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 const isExpanded = icon.classList.contains('expanded');
                 
                 if (isExpanded) {
-                    // Сворачиваем с анимацией
+                    // Сворачиваем с плавной анимацией
+                    detailsContainer.style.maxHeight = detailsContainer.scrollHeight + 'px';
+                    
+                    // Небольшая задержка для корректной анимации
+                    setTimeout(() => {
+                        detailsContainer.style.maxHeight = '0px';
+                        detailsContainer.style.padding = '0px';
+                        detailsContainer.style.margin = '0px';
+                        detailsContainer.style.border = 'none';
+                        
+                        // Скрываем после завершения анимации
+                        setTimeout(() => {
+                            detailsContainer.style.display = 'none';
+                        }, 300);
+                    }, 10);
+                    
                     detailsContainer.classList.remove('expanded');
                     detailsContainer.classList.add('collapsed');
-                    
-                    // Скрываем после анимации
-                    setTimeout(() => {
-                        detailsContainer.style.display = 'none';
-                    }, 300);
-                    
                     icon.classList.remove('expanded');
                     icon.classList.add('collapsed');
                 } else {
-                    // Разворачиваем с анимацией
+                    // Разворачиваем с плавной анимацией
                     detailsContainer.style.display = 'block';
+                    detailsContainer.style.maxHeight = '0px';
+                    detailsContainer.style.padding = '0px';
+                    detailsContainer.style.margin = '0px';
+                    detailsContainer.style.border = 'none';
+                    
+                    // Небольшая задержка для корректной анимации
+                    setTimeout(() => {
+                        detailsContainer.style.maxHeight = '500px';
+                        detailsContainer.style.padding = '24px';
+                        detailsContainer.style.margin = '0px -20px -20px -20px';
+                        detailsContainer.style.border = '2px solid #E2FEC3';
+                        detailsContainer.style.borderTop = 'none';
+                    }, 10);
+                    
                     detailsContainer.classList.remove('collapsed');
                     detailsContainer.classList.add('expanded');
-                    
                     icon.classList.remove('collapsed');
                     icon.classList.add('expanded');
                 }
