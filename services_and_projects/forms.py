@@ -41,12 +41,22 @@ def create_task(request):
             category_id = none_if_empty(request.POST.get('category'))
             service_id = none_if_empty(request.POST.get('service'))
 
-            # Валидация обязательных полей (service_id и category_id не обязательны)
+            # Валидация обязательных полей
             missing_fields = []
             if not title:
                 missing_fields.append('Title')
-            if not description:
+            
+            # Для задач типа "Job search" description не обязателен
+            if not description and type_of_task_id:
+                try:
+                    type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
+                    if type_of_task.type_of_task_name != 'Job search':
+                        missing_fields.append('Description')
+                except TypeOfTask.DoesNotExist:
+                    missing_fields.append('Description')
+            elif not description:
                 missing_fields.append('Description')
+                
             if missing_fields:
                 return JsonResponse({
                     'success': False,

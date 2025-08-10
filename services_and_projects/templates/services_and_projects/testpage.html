@@ -11,6 +11,7 @@
 <link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet">
 <link href="{% static 'css/photoswipe.css' %}" rel="stylesheet">
 <link href="{% static 'css/photoswipe_fix.css' %}" rel="stylesheet">
+<link href="{% static 'css/job_search_feed.css' %}" rel="stylesheet">
 
 
 <!-- css library -->
@@ -139,7 +140,11 @@
             {% if item.type == 'advertising' %}
                 {% include 'services_and_projects/advertising_feed.html' with advertising=item.data.advertising %}
             {% elif item.type == 'task' %}
-                {% include 'services_and_projects/task_feed.html' with task=item.data %}
+                {% if item.data.type_of_task.type_of_task_name == 'Job search' %}
+                    {% include 'services_and_projects/job_search_feed.html' with task=item.data %}
+                {% else %}
+                    {% include 'services_and_projects/task_feed.html' with task=item.data %}
+                {% endif %}
             {% endif %}
         {% endfor %}
     {% else %}
@@ -504,6 +509,7 @@
 <script src="{% static 'js/advertising_feed.js' %}"></script>
 <script src="{% static 'js/tasks_projects_tenders.js' %}"></script>
 <script src="{% static 'js/social_feed_hide_icon.js' %}"></script>
+<script src="{% static 'js/job_search_feed.js' %}"></script>
 
 <script>
 // Плавная прокрутка для тегов

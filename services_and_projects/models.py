@@ -121,7 +121,7 @@ class Task(models.Model):
     id = models.AutoField(primary_key=True)
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
-    description = models.TextField(max_length=5000)
+    description = models.TextField(max_length=5000, blank=True, null=True)
     photo_link = models.CharField(max_length=2000, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

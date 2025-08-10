@@ -6,7 +6,7 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 1000;
@@ -494,6 +494,75 @@ textarea {
 }
 
 /* Анимация для плавного показа полного текста */
+
+/* Класи для керування видимістю блоків */
+.form-group.hidden,
+.form-actions.hidden {
+    display: none !important;
+}
+
+.form-group.visible,
+.form-actions.visible {
+    display: block !important;
+}
+
+/* Для checkbox груп */
+.form-group.checkbox.hidden {
+    display: none !important;
+}
+
+.form-group.checkbox.visible {
+    display: flex !important;
+}
 .social_feed_text p.expanded {
     transition: all 0.3s ease;
+}
+
+
+/* Для input поля посилання на фото */
+.photos-link-input {
+    margin-bottom: 12px;
+}
+
+/* Для тексту "or" між полями */
+.photos-link-or {
+    text-align: center;
+    font-weight: 600;
+    color: #282d3b;
+    margin-bottom: 8px;
+}
+
+/* Для time input */
+.time-input {
+    margin-top: 6px;
+}
+
+/* Для поля хештегів */
+.hashtags-input-field {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+    background: transparent;
+}
+
+/* Гарантуємо видимість select елементів */
+.form-group.visible select {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    opacity: 1 !important;
+}
+
+/* Додаткові стилі для select в form-group-status */
+#form-group-status.visible select {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    padding: 10px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
 }

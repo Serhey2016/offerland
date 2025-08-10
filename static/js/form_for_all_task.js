@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formGroupService: 'form-group-service',
         formGroupTitle: 'form-group-title',
         formGroupDescription: 'form-group-description',
-        photosLink: 'photos-link',
+        photosLink: 'photos-link', // Загальний photos link (може використовуватися в інших місцях)
         formGroupHashtagsInput: 'form-group-hashtags-input',
         hashtagsHidden: 'hashtags-hidden',
         formGroupDocuments: 'form-group-documents',
@@ -49,6 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
         formGroupPhotosLink1: 'form-group-photos-link1',
         formGroupPhotosLink2: 'form-group-photos-link2',
         formGroupPhotosLink3: 'form-group-photos-link3',
+        formGroupPhotosLinkOr: 'form-group-photos-link_or3',
+        formGroupPhotosLinkDropFile: 'form-group-photos-link_drop_file3',
+        formActions: 'form-actions',
+        extendedFields: 'extended-fields',
     };
 
     // === КОНФИГ ДЛЯ РАЗНЫХ ТИПОВ ПУБЛИКАЦИЙ ===
@@ -110,9 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 FIELD_IDS.formGroupPerformers,
                 FIELD_IDS.formGroupStatus,
                 FIELD_IDS.formGroupProjectIncluded,
+                FIELD_IDS.formGroupPhotosLink1,
             ],
             hide: [
-                FIELD_IDS.photosLink,
                 FIELD_IDS.formActions,
                 FIELD_IDS.extendedFields,
                 FIELD_IDS.formGroupPhotosLinkOr,
@@ -135,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 FIELD_IDS.formGroupPerformers,
                 FIELD_IDS.formGroupStatus,
                 FIELD_IDS.formGroupProjectIncluded,
+                FIELD_IDS.formGroupPhotosLink2,
             ],
             hide: [
                 FIELD_IDS.photosLink,
@@ -156,8 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 FIELD_IDS.formGroupTitle,
                 FIELD_IDS.formGroupDescription,
                 FIELD_IDS.formGroupHashtagsInput,
-                FIELD_IDS.formGroupPostCode,
-                FIELD_IDS.formGroupStreetDetails,
+                FIELD_IDS.formGroupPhotosLink2,
                 FIELD_IDS.formActions,
                 FIELD_IDS.buttonFormActions,
             ],
@@ -171,6 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 FIELD_IDS.formGroupDiscloseName1,
                 FIELD_IDS.formGroupHidden,
                 FIELD_IDS.formGroupOffline,
+                FIELD_IDS.formGroupPostCode,
+                FIELD_IDS.formGroupStreetDetails,
             ],
             hideCheckboxes: true,
             hideDateFields: true,
@@ -250,8 +256,55 @@ document.addEventListener('DOMContentLoaded', () => {
     // === УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ДЛЯ ВИДИМОСТИ ===
     function setFieldsVisibility(fieldIds, visible) {
         fieldIds.forEach(id => {
+            if (id === undefined) {
+                console.error('Found undefined field ID in array:', fieldIds);
+                return;
+            }
             const el = document.getElementById(id);
-            if (el) el.style.display = visible ? '' : 'none';
+            if (el) {
+                if (visible) {
+                    el.classList.remove('hidden');
+                    el.classList.add('visible');
+                    el.style.display = '';
+                } else {
+                    el.classList.remove('visible');
+                    el.classList.add('hidden');
+                    el.style.display = 'none';
+                }
+                console.log(`Setting ${id} visibility to: ${visible ? 'visible' : 'hidden'}`);
+                
+                // Додаткова діагностика для photos-link1
+                if (id === 'form-group-photos-link1') {
+                    console.log(`Photos link1 element found:`, el);
+                    console.log(`Photos link1 display after setting:`, el.style.display);
+                    console.log(`Photos link1 computed style:`, window.getComputedStyle(el).display);
+                    console.log(`Photos link1 classes:`, el.className);
+                }
+                
+                // Додаткова діагностика для form-group-status
+                if (id === 'form-group-status') {
+                    console.log(`Status element found:`, el);
+                    console.log(`Status display after setting:`, el.style.display);
+                    console.log(`Status computed style:`, window.getComputedStyle(el).display);
+                    console.log(`Status classes:`, el.className);
+                    
+                    // Додаткова діагностика для select елемента всередині
+                    const selectEl = el.querySelector('select');
+                    if (selectEl) {
+                        console.log(`Status select element found:`, selectEl);
+                        console.log(`Status select display:`, selectEl.style.display);
+                        console.log(`Status select computed style:`, window.getComputedStyle(selectEl).display);
+                        console.log(`Status select visibility:`, selectEl.style.visibility);
+                        console.log(`Status select computed visibility:`, window.getComputedStyle(selectEl).visibility);
+                        console.log(`Status select height:`, selectEl.style.height);
+                        console.log(`Status select computed height:`, window.getComputedStyle(selectEl).height);
+                    } else {
+                        console.warn(`Select element not found inside form-group-status`);
+                    }
+                }
+            } else {
+                console.warn(`Element with id '${id}' not found`);
+            }
         });
     }
     
@@ -286,13 +339,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК ДЛЯ ТИПОВ ===
     function handleTypeFields(type) {
+        console.log(`Handling type: ${type}`);
         const config = FORM_CONFIG[type] || FORM_CONFIG.empty;
+        console.log('Config:', config);
         setFieldsVisibility(config.show, true);
         setFieldsVisibility(config.hide, false);
         if (config.hideCheckboxes) hideAllCheckboxes(); else showAllCheckboxes();
         if (config.hideDateFields) hideDateFields(); else showDateFields();
         if (elements.extendedFields) elements.extendedFields.style.display = config.showExtended ? '' : 'none';
         if (elements.extendToggle) elements.extendToggle.style.display = config.showExtendToggle ? 'flex' : 'none';
+        
+        // Управление атрибутом required для поля description
+        const descriptionField = document.getElementById('description');
+        if (descriptionField) {
+            if (type === 'job-search') {
+                descriptionField.removeAttribute('required');
+                console.log('Removed required attribute from description field for job-search');
+            } else {
+                descriptionField.setAttribute('required', 'required');
+                console.log('Added required attribute to description field for other types');
+            }
+        }
     }
 
     // === УТИЛИТЫ ===
@@ -647,6 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Открытие модального окна
         if (elements.openBtn && elements.modalOverlay) {
             elements.openBtn.addEventListener('click', function() {
+                console.log('Opening modal via button click');
                 elements.modalOverlay.style.display = 'flex';
                 if (typeof window.initCategoryServiceSelects === 'function') {
                     window.initCategoryServiceSelects();
@@ -655,6 +723,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof updateFieldsVisibility === 'function') {
                     updateFieldsVisibility();
                 }
+            });
+        } else {
+            console.warn('Modal open button or overlay not found:', {
+                openBtn: !!elements.openBtn,
+                modalOverlay: !!elements.modalOverlay
             });
         }
         
@@ -1063,6 +1136,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Инициализация при загрузке - скрываем все поля кроме типа задачи
         updateFieldsVisibility();
+        
+        // Устанавливаем правильный атрибут required для description при инициализации
+        const descriptionField = document.getElementById('description');
+        if (descriptionField) {
+            descriptionField.setAttribute('required', 'required');
+        }
     }
 
     /**
@@ -1191,6 +1270,13 @@ document.addEventListener('DOMContentLoaded', () => {
      * Главная функция инициализации
      */
     function init() {
+        console.log('Initializing form_for_all_task.js');
+        console.log('Modal elements:', {
+            openBtn: !!elements.openBtn,
+            modalOverlay: !!elements.modalOverlay,
+            closeBtn: !!elements.closeBtn
+        });
+        
         initModal();
         initDragDrop();
         initHashtags();

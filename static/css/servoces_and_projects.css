@@ -1167,8 +1167,16 @@ body {
 .social_feed_hide_icon {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    /* Используем top вместо bottom для фиксации позиции */
+    top: calc(100% - 17.5px); /* Позиционируем от верхней границы с учетом высоты иконки */
+    width: 35px;
+    height: 35px;
+    margin-left: -17.5px;
     z-index: 1000;
+    cursor: pointer;
+    /* Фиксируем позицию чтобы не смещалась при разворачивании */
+    transform: translateZ(0);
+
 }
 
 .social_feed_details .social_feed_tags,

@@ -1,0 +1,306 @@
+/* Job Feed Application Styles */
+
+/* Основной блок заявки на работу */
+.job_feed_application {
+    background-color: #FEFBD7;
+    width: 95%;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 8px auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Контейнер для кнопок */
+.social_feed_button_container_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* Стили для первой кнопки (💡) */
+.social_feed_button_container_button {
+    display: flex;
+    align-items: center;
+}
+
+.social_feed_button_container_button a {
+    display: block;
+    text-decoration: none;
+}
+
+/* Стили для второй кнопки (+) */
+.social_feed_button_container_button2 {
+    display: flex;
+    align-items: center;
+}
+
+.social_feed_button_container_button2 a {
+    display: block;
+    text-decoration: none;
+}
+
+/* Детали действий */
+.job_feed_actions_details {
+    width: 95%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    /* Добавляем плавную анимацию для сворачивания/разворачивания */
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* Состояние свернутости */
+.job_feed_actions_details.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Состояние развернутости */
+.job_feed_actions_details.expanded {
+    max-height: 1000px; /* Достаточно большое значение для всех элементов */
+    opacity: 1;
+}
+
+/* Отдельный элемент действия */
+.job_feed_action_details {
+    background-color: #FEFBD7;
+    border-radius: 12px;
+    padding: 5px 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    /* Добавляем плавную анимацию для элементов */
+    transition: all 0.3s ease;
+}
+
+/* Состояние элементов при свернутом состоянии */
+.job_feed_actions_details.collapsed .job_feed_action_details {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* Состояние элементов при развернутом состоянии */
+.job_feed_actions_details.expanded .job_feed_action_details {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Кнопка "next" */
+.job_feed_next_action {
+    background-color: #90EE90;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+/* Состояние кнопки при свернутом состоянии */
+.job_feed_actions_details.collapsed + .job_feed_next_action {
+    opacity: 0;
+    transform: translateY(-10px);
+    margin: 0 auto;
+}
+
+/* Состояние кнопки при развернутом состоянии */
+.job_feed_actions_details.expanded + .job_feed_next_action {
+    opacity: 1;
+    transform: translateY(0);
+    margin: 10px auto;
+}
+
+.job_feed_next_action:hover {
+    background-color: #7CCD7C;
+}
+
+/* Иконка действия */
+.job_feed_ca_icon_action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Название компании */
+.job_feed_ca_company_name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #282D3B;
+    margin-left: 15px;
+}
+
+/* Ссылка на работу */
+.job_feed_ca_job_link {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+}
+
+/* Иконка CV */
+.job_feed_ca_job_cv {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+}
+
+/* Статус */
+.job_feed_ca_status {
+    color: #808080;
+
+    font-weight: 500;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+/* Иконка разворачивания */
+.job_feed_ca_expand_icon {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+/* Состояние иконки при свернутом состоянии - стрелка направлена вправо */
+.job_feed_ca_expand_icon.collapsed {
+    transform: rotate(90deg);
+}
+
+/* Состояние иконки при развернутом состоянии - стрелка направлена вниз */
+.job_feed_ca_expand_icon.expanded {
+    transform: rotate(0deg);
+}
+
+/* Иконка выполнения действия */
+.job_feed_action_details_icon_done {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+/* Текст действия */
+.job_feed_action_details_text {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+    color: #282D3B;
+}
+
+/* Контейнер для даты и времени */
+.job_feed_action_datetime_container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 15px;
+    gap: 2px;
+}
+
+/* Дата действия */
+.job_feed_action_details_date {
+    font-size: 18px;
+    color: #282D3B;
+    font-weight: 500;
+}
+
+/* Время действия */
+.job_feed_action_icon_time {
+    font-size: 12px;
+    color: #282D3B;
+    font-weight: 500;
+    margin-bottom: -10px;
+}
+
+/* Иконка помощи */
+.job_feed_action_icon_help {
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+/* Job Feed Hide Icon - исправленная версия для избежания смещения при вращении */
+.social_feed_hide_icon2 {
+    position: absolute;
+    left: 50%;
+    /* Используем top вместо bottom для фиксации позиции */
+    top: calc(100% - 17.5px); /* Позиционируем от верхней границы с учетом высоты иконки */
+    width: 35px;
+    height: 35px;
+    margin-left: -17.5px;
+    z-index: 1000;
+    cursor: pointer;
+    /* Фиксируем позицию чтобы не смещалась при разворачивании */
+    transform: translateZ(0);
+    /* Принудительно фиксируем позицию относительно родительского контейнера */
+    position: absolute !important;
+}
+
+/* Вращаем только содержимое иконки */
+.social_feed_hide_icon2 svg {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    transform-origin: center;
+}
+
+/* Стили для состояния развернуто */
+.social_feed_hide_icon2.expanded svg {
+    transform: rotate(180deg);
+}
+
+/* Стили для состояния свернуто */
+.social_feed_hide_icon2.collapsed svg {
+    transform: rotate(0deg);
+}
+
+/* Плавная анимация для social_feed_details */
+.social_feed_details {
+    transition: opacity 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+/* Состояние свернуто */
+.social_feed_details.collapsed {
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* Состояние развернуто */
+.social_feed_details.expanded {
+    opacity: 1;
+    max-height: none;
+    padding: inherit;
+    margin: inherit;
+}
+
+
+.social_feed_details2 {
+    background: #808080;
+    color: #E2FEC3;
+    border-radius: 0 0 24px 24px;
+    padding: 24px;
+    border: 2px solid #E2FEC3;
+    border-top: none;
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: -20px;
+}
