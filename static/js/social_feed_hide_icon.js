@@ -1,194 +1,161 @@
-// Функция для инициализации обработчиков событий
-function initializeHideIcons() {
-    console.log('Initializing hide icons...');
-    
-    // Для всех иконок на странице
-    const hideIcons = document.querySelectorAll('.social_feed_hide_icon');
-    console.log('Found hide icons:', hideIcons.length);
+// social_feed_hide_icon.js - Функциональность для скрытия/показа деталей постов
+
+// Глобальные переменные
+let initializedIcons = new Set();
+let transitionInProgress = false;
+
+// Инициализация при загрузке страницы
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHideIcons);
+} else {
+    initHideIcons();
+}
+
+// Основная функция инициализации
+function initHideIcons() {
+    const hideIcons = document.querySelectorAll('[id^="socialFeedHideIcon_"]');
     
     if (hideIcons.length === 0) {
-        console.log('No hide icons found on page');
         return;
     }
     
-    hideIcons.forEach(function(hideIcon, index) {
-        // Проверяем, не инициализировали ли мы уже эту иконку
-        if (hideIcon.dataset.initialized === 'true') {
-            console.log('Icon already initialized:', hideIcon.id);
-            return;
-        }
-        
-        // Ищем svg внутри иконки
-        const svg = hideIcon.querySelector('svg');
-        
-        // Получаем ID иконки и ищем соответствующий details
+    hideIcons.forEach((hideIcon, index) => {
         const iconId = hideIcon.id;
-        if (!iconId || !iconId.startsWith('socialFeedHideIcon_')) {
-            console.log('Invalid icon ID:', iconId);
+        
+        if (initializedIcons.has(iconId)) {
             return;
         }
         
         const taskId = iconId.replace('socialFeedHideIcon_', '');
-        const details = document.getElementById(`socialFeedDetails_${taskId}`);
-        
-        console.log(`Processing icon ${index + 1}:`, iconId, 'taskId:', taskId, 'details found:', !!details);
+        const details = document.querySelector(`[id^="socialFeedDetails_${taskId}"]`);
+        const svg = hideIcon.querySelector('svg');
         
         if (!hideIcon || !details || !svg) {
-            console.log('Missing required elements for icon:', iconId);
-            console.log('hideIcon:', !!hideIcon, 'details:', !!details, 'svg:', !!svg);
             return;
         }
+        
+        // Инициализация иконки
+        initIcon(hideIcon, details, svg, taskId);
+        initializedIcons.add(iconId);
+    });
+    
+    // Глобальные обработчики событий
+    initGlobalEventHandlers();
+}
 
-        // Начальные стили для анимации
-        details.style.transition = 'max-height 0.5s cubic-bezier(.4,2,.6,1), opacity 0.4s';
-        details.style.overflow = 'hidden';
-        details.style.maxHeight = '0px';
-        details.style.opacity = '0';
-        let expanded = false;
-        let isTransitioning = false;
-
-        // Обработчик клика для всей иконки и всех её дочерних элементов
-        function handleIconClick(e) {
-            console.log('Icon clicked:', iconId, 'target:', e.target.tagName, 'target id:', e.target.id);
-            e.preventDefault();
-            e.stopPropagation();
-            
-            if (isTransitioning) {
-                console.log('Transition in progress, ignoring click');
-                return;
-            }
-            expanded = !expanded;
-            if (expanded) {
-                console.log('Expanding details for task:', taskId);
-                details.style.display = 'block';
-                // Нужно для плавного раскрытия
-                void details.offsetWidth;
-                details.style.maxHeight = details.scrollHeight + 'px';
-                details.style.opacity = '1';
-                svg.style.transition = 'transform 0.4s cubic-bezier(.4,2,.6,1)';
-                svg.style.transform = 'rotate(180deg)';
-            } else {
-                console.log('Collapsing details for task:', taskId);
-                details.style.maxHeight = '0px';
-                details.style.opacity = '0';
-                svg.style.transition = 'transform 0.4s cubic-bezier(.4,2,.6,1)';
-                svg.style.transform = 'rotate(0deg)';
-                isTransitioning = true;
-            }
+// Инициализация отдельной иконки
+function initIcon(hideIcon, details, svg, taskId) {
+    let isExpanded = false;
+    
+    // Обработчик клика
+    hideIcon.addEventListener('click', function(e) {
+        if (transitionInProgress) {
+            return;
         }
-
-        // Добавляем обработчик на всю иконку
-        hideIcon.addEventListener('click', handleIconClick);
         
-        // Также добавляем обработчик на SVG и все его дочерние элементы
-        svg.addEventListener('click', handleIconClick);
-        
-        // Добавляем обработчики на все дочерние элементы SVG
-        const svgChildren = svg.querySelectorAll('*');
-        svgChildren.forEach(function(child) {
-            child.addEventListener('click', handleIconClick);
-        });
-
-        details.addEventListener('transitionend', function(e) {
-            if (!expanded && (e.propertyName === 'max-height' || e.propertyName === 'opacity')) {
-                details.style.display = 'none';
-                isTransitioning = false;
-                console.log('Transition ended, hiding details for task:', taskId);
-            }
-        });
-        
-        // Отмечаем иконку как инициализированную
-        hideIcon.dataset.initialized = 'true';
-        console.log('Icon initialized successfully:', iconId);
+        if (isExpanded) {
+            collapseDetails(details, svg, taskId);
+        } else {
+            expandDetails(details, svg, taskId);
+        }
+        isExpanded = !isExpanded;
+    });
+    
+    // Обработчик окончания анимации
+    details.addEventListener('transitionend', function() {
+        if (!isExpanded) {
+            details.style.display = 'none';
+        }
+        transitionInProgress = false;
     });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('social_feed_hide_icon.js loaded');
-    console.log('Document ready, initializing...');
-    initializeHideIcons();
+// Развертывание деталей
+function expandDetails(details, svg, taskId) {
+    transitionInProgress = true;
+    details.style.display = 'block';
     
-    // Глобальное делегирование событий для динамически загруженных элементов
+    // Анимация развертывания
+    requestAnimationFrame(() => {
+        details.style.maxHeight = details.scrollHeight + 'px';
+        details.style.opacity = '1';
+        
+        // Поворот иконки
+        svg.style.transform = 'rotate(180deg)';
+    });
+}
+
+// Сворачивание деталей
+function collapseDetails(details, svg, taskId) {
+    transitionInProgress = true;
+    
+    // Анимация сворачивания
+    details.style.maxHeight = '0';
+    details.style.opacity = '0';
+    
+    // Поворот иконки
+    svg.style.transform = 'rotate(0deg)';
+}
+
+// Глобальные обработчики событий
+function initGlobalEventHandlers() {
+    if (window.globalHideIconHandlersInitialized) {
+        return;
+    }
+    
+    // Глобальный обработчик для динамически добавленных иконок
     document.addEventListener('click', function(e) {
-        const hideIcon = e.target.closest('.social_feed_hide_icon');
-        if (hideIcon) {
-            console.log('Global click handler triggered for icon');
-            const iconId = hideIcon.id;
-            if (!iconId || !iconId.startsWith('socialFeedHideIcon_')) return;
-            
-            const taskId = iconId.replace('socialFeedHideIcon_', '');
-            const details = document.getElementById(`socialFeedDetails_${taskId}`);
-            const svg = hideIcon.querySelector('svg');
-            
-            if (!details || !svg) {
-                console.log('Missing elements for global handler:', iconId);
-                return;
-            }
-            
-            // Проверяем текущее состояние
-            const isExpanded = details.style.display !== 'none' && details.style.maxHeight !== '0px';
-            console.log('Global handler - isExpanded:', isExpanded, 'for task:', taskId);
-            
-            if (isExpanded) {
-                // Скрываем
-                details.style.maxHeight = '0px';
-                details.style.opacity = '0';
-                svg.style.transition = 'transform 0.4s cubic-bezier(.4,2,.6,1)';
-                svg.style.transform = 'rotate(0deg)';
-            } else {
-                // Показываем
-                details.style.display = 'block';
-                void details.offsetWidth;
-                details.style.maxHeight = details.scrollHeight + 'px';
-                details.style.opacity = '1';
-                svg.style.transition = 'transform 0.4s cubic-bezier(.4,2,.6,1)';
-                svg.style.transform = 'rotate(180deg)';
-            }
+        const hideIcon = e.target.closest('[id^="socialFeedHideIcon_"]');
+        if (!hideIcon) {
+            return;
+        }
+        
+        const iconId = hideIcon.id;
+        const taskId = iconId.replace('socialFeedHideIcon_', '');
+        const details = document.querySelector(`[id^="socialFeedDetails_${taskId}"]`);
+        const svg = hideIcon.querySelector('svg');
+        
+        if (!details || !svg) {
+            return;
+        }
+        
+        // Проверяем состояние
+        const isExpanded = details.style.display !== 'none' && details.style.maxHeight !== '0px';
+        
+        if (isExpanded) {
+            collapseDetails(details, svg, taskId);
+        } else {
+            expandDetails(details, svg, taskId);
         }
     });
     
-    // Глобальная обработка transitionend для всех элементов
+    // Глобальный обработчик окончания анимации
     document.addEventListener('transitionend', function(e) {
-        if (e.target.classList.contains('social_feed_details')) {
+        if (e.target.matches('[id^="socialFeedDetails_"]')) {
             const details = e.target;
-            const isExpanded = details.style.maxHeight !== '0px' && details.style.maxHeight !== '';
+            const isExpanded = details.style.maxHeight !== '0px';
             
-            if (!isExpanded && (e.propertyName === 'max-height' || e.propertyName === 'opacity')) {
+            if (!isExpanded) {
                 details.style.display = 'none';
-                console.log('Global transitionend - hiding details');
             }
+            transitionInProgress = false;
         }
     });
     
-    // Наблюдатель за изменениями DOM для динамически загруженных элементов
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'childList') {
-                const newIcons = document.querySelectorAll('.social_feed_hide_icon:not([data-initialized="true"])');
-                if (newIcons.length > 0) {
-                    console.log('New icons found, reinitializing...');
-                    initializeHideIcons();
-                }
-            }
-        });
-    });
-    
-    // Начинаем наблюдение за изменениями в DOM
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+    window.globalHideIconHandlersInitialized = true;
+}
+
+// Дополнительная инициализация при полной загрузке страницы
+window.addEventListener('load', function() {
+    const icons = document.querySelectorAll('[id^="socialFeedHideIcon_"]');
+    if (icons.length > initializedIcons.size) {
+        initHideIcons();
+    }
 });
 
-// Экспортируем функцию для ручного вызова
-window.initializeHideIcons = initializeHideIcons;
-
-// Дополнительная проверка при загрузке window
-window.addEventListener('load', function() {
-    console.log('Window loaded, checking for icons again...');
-    const icons = document.querySelectorAll('.social_feed_hide_icon');
-    console.log('Icons found on window load:', icons.length);
-    if (icons.length > 0) {
-        initializeHideIcons();
-    }
-}); 
+// Экспорт функций
+window.HideIconManager = {
+    init: initHideIcons,
+    expand: expandDetails,
+    collapse: collapseDetails
+}; 

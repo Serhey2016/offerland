@@ -1,251 +1,452 @@
 {% load static %}
-<div class="modal-overlay">
+
+<!-- Include Type Selection Modal -->
+{% include 'services_and_projects/types_feed_form.html' %}
+
+<!-- Alertify CSS -->
+<link rel="stylesheet" href="{% static 'css/lib_alertify/alertify.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/lib_alertify/themes/default.min.css' %}">
+
+<!-- Main CSS for forms -->
+<link rel="stylesheet" href="{% static 'css/serv_and_proj_empty_form.css' %}">
+
+<!-- Advertising Form -->
+<div id="advertising-form" class="modal-overlay" style="display: none;">
     <div class="modal-form">
         <button class="modal_close_btn">
             <svg width="24" height="24" viewBox="0 0 24 24">
-                <path
-                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
             </svg>
         </button>
 
-        <form class="project-form" method="post" enctype="multipart/form-data"
-            action="{% url 'services_and_projects:submit_form' %}">
+        <form class="project-form" id="advertising-form" method="post" enctype="multipart/form-data" action="{% url 'services_and_projects:submit_form' %}">
             {% csrf_token %}
-            <div class="form-group" id="form-group-type_of_task">
-                <label for="publish-in">Will published in</label>
-                <select id="publish-in" name="type_of_task" required>
-                    <option value="0">-- Select type --</option>
-                    {% for t in types %}
-                    <option value="{{ t.id }}">{{ t.type_of_task_name }}</option>
-                    {% endfor %}
-                </select>
+            <input type="hidden" name="type_of_task" value="4"> <!-- Advertising -->
+            
+            <div class="form-group">
+                <label for="advertising-title">Title</label>
+                <input type="text" id="advertising-title" name="title" required>
             </div>
-
-
-
-            <div class="form-group" id="form-group-title">
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title" required>
+            
+            <div class="form-group">
+                <label for="advertising-description">Description</label>
+                <textarea id="advertising-description" name="description" rows="4" required></textarea>
             </div>
-            <div class="form-group" id="form-group-description">
-                <label for="description">Description</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
-            </div>
-
-            <div class="form-group" id="form-group-photos-link1">
-                <label for="photos-link1" id="photos-label1">Photos</label>
-                <input type="text" id="photos-link1" name="photos-link" placeholder="link to google drive"
-                    class="photos-link-input">
-            </div>
-
-            <div class="form-group" id="form-group-photos-link2">
-                <label for="photos-link" id="photos-label2">Photos</label>
-                <div class="file-upload-area" id="photos-upload2">
-                    <input type="file" id="photos2" name="photos" multiple accept="image/*">
+            
+            <div class="form-group">
+                <label for="advertising-photos">Photos</label>
+                <div class="file-upload-area">
+                    <input type="file" id="advertising-photos" name="photos" multiple accept="image/*">
                     <div class="drop-zone">
                         <p>Drop files here or click to upload</p>
                     </div>
                 </div>
             </div>
-
-            <div class="form-group" id="form-group-photos-link3">
-                <label for="photos-link" id="photos-labe3">Photos</label>
-                <input type="text" id="photos-link3" name="photos-link" placeholder="link to google drive"
-                    class="photos-link-input">
-                <div id="form-group-photos-link_or3" class="photos-link-or">or</div>
-                <div id="form-group-photos-link_drop_file3" class="file-upload-area" id="photos-upload3">
-                    <input type="file" id="photos3" name="photos" multiple accept="image/*">
-                    <div class="drop-zone">
-                        <p>Drop files here or click to upload</p>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <input type="hidden" name="hashtags" id="hashtags-hidden">
-
-            <div class="form-group" id="form-group-category">
-                <label for="category">Category</label>
-                <select id="category" name="category" required>
+            
+            <div class="form-group">
+                <label for="advertising-category">Category</label>
+                <select id="advertising-category" name="category" required>
                     <option value="">-- Select category --</option>
                     {% for cat in categories %}
                     <option value="{{ cat.id }}">{{ cat.category_name }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-group" id="form-group-service">
-                <label for="service">Service</label>
-                <select id="service" name="service" required>
+            
+            <div class="form-group">
+                <label for="advertising-service">Service</label>
+                <select id="advertising-service" name="service" required>
                     <option value="">-- Select service --</option>
                     {% for serv in services %}
-                    <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}
-                    </option>
+                    <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
                     {% endfor %}
                 </select>
             </div>
-                            <div id="form-group-date-time" class="form-row">
-                    <div class="form-group half">
-                        <label for="date-start">Date and time start</label>
-                        <input type="date" id="date-start" name="date_start">
-                        <input type="time" id="time-start" name="time_start" class="time-input">
-                    </div>
-                    <div class="form-group half">
-                        <label for="date-end">Date and time end</label>
-                        <input type="date" id="date-end" name="date_end">
-                        <input type="time" id="time-end" name="time_end" class="time-input">
-                    </div>
+            
+            <div class="form-group">
+                <label for="advertising-hashtags">Hashtags: <a href="#">Don't find hashtag?</a></label>
+                <div id="advertising-hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
+                    <input type="text" id="advertising-hashtags-input" placeholder="Start typing tag..." autocomplete="off" class="hashtags-input-field">
                 </div>
- 
-             <div class="form-group" id="form-group-reserved-time">
-                 <label for="reserved-time">Reserved time on road:(minutes)</label>
-                 <input type="text" id="reserved-time" name="reserved_time" placeholder="e.g. 30 min">
-             </div>
-             <div class="form-group" id="form-group-start-location">
-                 <label for="start-location">Start location:(post-code)</label>
-                 <input type="text" id="start-location" name="start_location" placeholder="Enter start location">
-             </div>
-             
-             <div class="form-group" id="form-group-cost-hour">
-                 <label for="cost-hour">Cost of one hour of work in £:</label>
-                 <input type="number" id="cost-hour" name="cost_hour" placeholder="e.g. 100">
-             </div>
-             <div class="form-group" id="form-group-min-slot">
-                 <label for="min-slot">Minimum slot (minutes) :</label>
-                 <input type="number" id="min-slot" name="min_slot" placeholder="e.g. 60 minutes">
-             </div>
-             <div class="form-group" id="form-group-hashtags-input">
-                <label for="hashtags-input">Hashtags: <a href="#">Don't find hashtag?</a></label>
-                <div id="hashtags-container" class="form-control hashtag-chip-container" tabindex="0"
-                    data-all-tags='{{ all_tags|safe }}'>
-                    <input type="text" id="hashtags-input" placeholder="Start typing tag..." autocomplete="off"
-                        class="hashtags-input-field">
-                </div>
-                <div id="hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+                <div id="advertising-hashtags-dropdown" class="hashtag-dropdown-menu"></div>
             </div>
-            <div id="form-extend-toggle" class="form-extend-toggle">
-                <button type="button" class="extend-btn">
-                    <span class="extend-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            width="36.130" height="27.194" viewBox="0 0 45.162 33.992">
-                            <defs>
-                                <filter id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24" x="0" y="0"
-                                    width="45.162" height="33.992" filterUnits="userSpaceOnUse">
-                                    <feOffset dy="3" input="SourceAlpha" />
-                                    <feGaussianBlur stdDeviation="3" result="blur" />
-                                    <feFlood flood-opacity="0.161" />
-                                    <feComposite operator="in" in2="blur" />
-                                    <feComposite in="SourceGraphic" />
-                                </filter>
-                                <filter id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-2" x="0" y="0"
-                                    width="45.162" height="33.992" filterUnits="userSpaceOnUse">
-                                    <feOffset dy="3" input="SourceAlpha" />
-                                    <feGaussianBlur stdDeviation="3" result="blur-2" />
-                                    <feFlood flood-opacity="0.161" result="color" />
-                                    <feComposite operator="out" in="SourceGraphic" in2="blur-2" />
-                                    <feComposite operator="in" in="color" />
-                                    <feComposite operator="in" in2="SourceGraphic" />
-                                </filter>
-                            </defs>
-                            <g data-type="innerShadowGroup">
-                                <g transform="matrix(1, 0, 0, 1, 0, 0)"
-                                    filter="url(#arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24)">
-                                    <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-3"
-                                        data-name="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                                        d="M13.581,27.162,0,13.581,13.581,0l2.411,2.411L4.821,13.581l11.17,11.17Z"
-                                        transform="translate(36.16 6) rotate(90)" />
-                                </g>
-                                <g transform="matrix(1, 0, 0, 1, 0, 0)"
-                                    filter="url(#arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-2)">
-                                    <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24-4"
-                                        data-name="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                                        d="M13.581,27.162,0,13.581,13.581,0l2.411,2.411L4.821,13.581l11.17,11.17Z"
-                                        transform="translate(36.16 6) rotate(90)" fill="#fff" />
-                                </g>
-                            </g>
-                        </svg>
-                    </span>
-                    <!-- <span>Extend</span> -->
-                </button>
-            </div>
-
-                <div class="form-group" id="form-group-documents">
-                    <label for="documents">Documents</label>
-                    <input type="url" id="documents" name="documents" placeholder="Enter document link">
-                </div>
-
-                <div class="form-group" id="form-group-performers">
-                    <label for="performers">Performer(s)</label>
-                    <div class="performers-input-group">
-                        <input type="text" id="performers" name="performers" placeholder="Add performer"
-                            autocomplete="off">
-                        <div class="performers-dropdown" id="performers-dropdown">
-                            <div class="dropdown-item need-performer">Need a performer</div>
-                        </div>
-                    </div>
-                    <div class="performers-list"></div>
-                </div>
-
-
-                <div class="form-group" id="form-group-status">
-                    <label for="status">Add status</label>
-                    <select id="status" name="status">
-                        <option value="">-- Select status --</option>
-                        {% for status in statuses %}
-                        <option value="{{ status.id }}">{{ status.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group" id="form-group-project-included">
-                    <label for="project-included">Project (task) included</label>
-                    <select id="project-included" name="project-included">
-                        <option value="">Empty</option>
-                        {% for task in tasks %}
-                        <option value="{{ task.id }}">{{ task.title }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group checkbox" id="form-group-private">
-                    <input type="checkbox" id="private" name="private">
-                    <label for="private">Make private</label>
-                </div>
-
-                <div class="form-group checkbox" id="form-group-disclose-name-1">
-                    <input type="checkbox" id="disclose-name-1" name="disclose_name_1">
-                    <label for="disclose-name-1">Disclose your name (company) when publishing</label>
-                </div>
-
-                <div class="form-group checkbox" id="form-group-hidden">
-                    <input type="checkbox" id="hidden" name="hidden">
-                    <label for="hidden">Hidden (visible just for you)</label>
-                </div>
-
-                <div class="form-group checkbox" id="form-group-offline">
-                    <input type="checkbox" id="disclose-name" name="disclose_name">
-                    <label for="disclose-name">offline</label>
-                </div>
-
-                <div class="form-group" id="form-group-post-code">
-                    <label for="post-code">Post code</label>
-                    <input type="text" id="post-code" name="post_code" placeholder="post-code">
-                </div>
-
-                <div class="form-group" id="form-group-street_details">
-                    <label for="street_details">Street details</label>
-                    <input type="text" id="street_details" name="street_details" placeholder="Street details">
-                </div>
-
-
-           
-
-            <div class="form-actions" id="button-form-actions">
-
-                <button type="button" class="btn btn-secondary">Save</button>
+            
+            <input type="hidden" name="hashtags" id="advertising-hashtags-hidden">
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary save-btn">Save</button>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Job Search Form -->
+<div id="job-search-form" class="modal-overlay" style="display: none;">
+    <div class="modal-form">
+        <button class="modal_close_btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+        </button>
+
+        <form class="project-form" id="job-search-form" method="post" action="{% url 'services_and_projects:submit_form' %}">
+            {% csrf_token %}
+            <input type="hidden" name="type_of_task" value="6"> <!-- Job Search -->
+            
+            <div class="form-group">
+                <label for="job-search-title">Title</label>
+                <input type="text" id="job-search-title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="job-search-hashtags">Hashtags: <a href="#">Don't find hashtag?</a></label>
+                <div id="job-search-hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
+                    <input type="text" id="job-search-hashtags-input" placeholder="Start typing tag..." autocomplete="off" class="hashtags-input-field">
+                </div>
+                <div id="job-search-hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+            </div>
+            
+            <input type="hidden" name="hashtags" id="job-search-hashtags-hidden">
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary save-btn">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Time Slot Form -->
+<div id="time-slot-form" class="modal-overlay" style="display: none;">
+    <div class="modal-form">
+        <button class="modal_close_btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+        </button>
+
+        <form class="project-form" id="time-slot-form" method="post" action="{% url 'services_and_projects:submit_form' %}">
+            {% csrf_token %}
+            <input type="hidden" name="type_of_task" value="5"> <!-- Time Slot -->
+            
+            <div class="form-group">
+                <label for="time-slot-category">Category</label>
+                <select id="time-slot-category" name="category" required>
+                    <option value="">-- Select category --</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="time-slot-service">Service</label>
+                <select id="time-slot-service" name="service" required>
+                    <option value="">-- Select service --</option>
+                    {% for serv in services %}
+                    <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="time-slot-date-start">Date and time start</label>
+                    <input type="date" id="time-slot-date-start" name="date_start" required>
+                    <input type="time" id="time-slot-time-start" name="time_start" class="time-input" required>
+                </div>
+                <div class="form-group half">
+                    <label for="time-slot-date-end">Date and time end</label>
+                    <input type="date" id="time-slot-date-end" name="date_end" required>
+                    <input type="time" id="time-slot-time-end" name="time_end" class="time-input" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="time-slot-reserved-time">Reserved time on road (minutes)</label>
+                <input type="text" id="time-slot-reserved-time" name="reserved_time" placeholder="e.g. 30 min" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="time-slot-start-location">Start location (post-code)</label>
+                <input type="text" id="time-slot-start-location" name="start_location" placeholder="Enter start location" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="time-slot-cost-hour">Cost of one hour of work in £</label>
+                <input type="number" id="time-slot-cost-hour" name="cost_hour" placeholder="e.g. 100" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="time-slot-min-slot">Minimum slot (minutes)</label>
+                <input type="number" id="time-slot-min-slot" name="min_slot" placeholder="e.g. 60 minutes" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="time-slot-hashtags">Hashtags: <a href="#">Don't find hashtag?</a></label>
+                <div id="time-slot-hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
+                    <input type="text" id="time-slot-hashtags-input" placeholder="Start typing tag..." autocomplete="off" class="hashtags-input-field">
+                </div>
+                <div id="time-slot-hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+            </div>
+            
+            <input type="hidden" name="hashtags" id="time-slot-hashtags-hidden">
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary save-btn">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- My List Form -->
+<div id="my-list-form" class="modal-overlay" style="display: none;">
+    <div class="modal-form">
+        <button class="modal_close_btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+        </button>
+
+        <form class="project-form" id="my-list-form" method="post" action="{% url 'services_and_projects:submit_form' %}">
+            {% csrf_token %}
+            <input type="hidden" name="type_of_task" value="1"> <!-- My List -->
+            
+            <div class="form-group">
+                <label for="my-list-title">Title</label>
+                <input type="text" id="my-list-title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="my-list-description">Description</label>
+                <textarea id="my-list-description" name="description" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="my-list-hashtags">Hashtags: <a href="#">Don't find hashtag?</a></label>
+                <div id="my-list-hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
+                    <input type="text" id="my-list-hashtags-input" placeholder="Start typing tag..." autocomplete="off" class="hashtags-input-field">
+                </div>
+                <div id="my-list-hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+            </div>
+            
+            <input type="hidden" name="hashtags" id="my-list-hashtags-hidden">
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary save-btn">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tender Form -->
+<div id="tender-form" class="modal-overlay" style="display: none;">
+    <div class="modal-form">
+        <button class="modal_close_btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+        </button>
+
+        <form class="project-form" id="tender-form" method="post" action="{% url 'services_and_projects:submit_form' %}">
+            {% csrf_token %}
+            <input type="hidden" name="type_of_task" value="2"> <!-- Tender -->
+            
+            <div class="form-group">
+                <label for="tender-title">Title</label>
+                <input type="text" id="tender-title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="tender-description">Description</label>
+                <textarea id="tender-description" name="description" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="tender-photos">Photos - link</label>
+                <input type="text" id="tender-photos" name="photos-link" placeholder="link to google drive">
+            </div>
+            
+            <div class="form-group">
+                <label for="tender-category">Category</label>
+                <select id="tender-category" name="category" required>
+                    <option value="">-- Select category --</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="tender-service">Service</label>
+                <select id="tender-service" name="service" required>
+                    <option value="">-- Select service --</option>
+                    {% for serv in services %}
+                    <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="tender-hashtags">Hashtags: <a href="#">Don't find hashtag?</a></label>
+                <div id="tender-hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
+                    <input type="text" id="tender-hashtags-input" placeholder="Start typing tag..." autocomplete="off" class="hashtags-input-field">
+                </div>
+                <div id="tender-hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+            </div>
+            
+            <input type="hidden" name="hashtags" id="tender-hashtags-hidden">
+            
+            <div class="form-group">
+                <label for="tender-documents">Documents</label>
+                <input type="url" id="tender-documents" name="documents" placeholder="Enter document link">
+            </div>
+            
+            <div class="form-group">
+                <label for="tender-performers">Performer(s)</label>
+                <div class="performers-input-group">
+                    <input type="text" id="tender-performers" name="performers" placeholder="Add performer" autocomplete="off">
+                    <div class="performers-dropdown" id="tender-performers-dropdown">
+                        <div class="dropdown-item need-performer">Need a performer</div>
+                    </div>
+                </div>
+                <div class="performers-list" id="tender-performers-list"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="tender-status">Add status</label>
+                <select id="tender-status" name="status">
+                    <option value="">-- Select status --</option>
+                    {% for status in statuses %}
+                    <option value="{{ status.id }}">{{ status.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="tender-project-included">Project (task) included</label>
+                <select id="tender-project-included" name="project-included">
+                    <option value="">Empty</option>
+                    {% for task in tasks %}
+                    <option value="{{ task.id }}">{{ task.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary save-btn">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Project Form -->
+<div id="project-form" class="modal-overlay" style="display: none;">
+    <div class="modal-form">
+        <button class="modal_close_btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+        </button>
+
+        <form class="project-form" id="project-form" method="post" enctype="multipart/form-data" action="{% url 'services_and_projects:submit_form' %}">
+            {% csrf_token %}
+            <input type="hidden" name="type_of_task" value="3"> <!-- Project -->
+            
+            <div class="form-group">
+                <label for="project-title">Title</label>
+                <input type="text" id="project-title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="project-description">Description</label>
+                <textarea id="project-description" name="description" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="project-photos">Photos - drop file</label>
+                <div class="file-upload-area">
+                    <input type="file" id="project-photos" name="photos" multiple accept="image/*">
+                    <div class="drop-zone">
+                        <p>Drop files here or click to upload</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="project-category">Category</label>
+                <select id="project-category" name="category" required>
+                    <option value="">-- Select category --</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="project-service">Service</label>
+                <select id="project-service" name="service" required>
+                    <option value="">-- Select service --</option>
+                    {% for serv in services %}
+                    <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="project-hashtags">Hashtags: <a href="#">Don't find hashtag?</a></label>
+                <div id="project-hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
+                    <input type="text" id="project-hashtags-input" placeholder="Start typing tag..." autocomplete="off" class="hashtags-input-field">
+                </div>
+                <div id="project-hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+            </div>
+            
+            <input type="hidden" name="hashtags" id="project-hashtags-hidden">
+            
+            <div class="form-group">
+                <label for="project-documents">Documents</label>
+                <input type="url" id="project-documents" name="documents" placeholder="Enter document link">
+            </div>
+            
+            <div class="form-group">
+                <label for="project-performers">Performer(s)</label>
+                <div class="performers-input-group">
+                    <input type="text" id="project-performers" name="performers" placeholder="Add performer" autocomplete="off">
+                    <div class="performers-dropdown" id="project-performers-dropdown">
+                        <div class="dropdown-item need-performer">Need a performer</div>
+                    </div>
+                </div>
+                <div class="performers-list" id="project-performers-list"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="project-status">Add status</label>
+                <select id="project-status" name="status">
+                    <option value="">-- Select status --</option>
+                    {% for status in statuses %}
+                    <option value="{{ status.id }}">{{ status.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="project-project-included">Project (task) included</label>
+                <select id="project-project-included" name="project-included">
+                    <option value="">Empty</option>
+                    {% for task in tasks %}
+                    <option value="{{ task.id }}">{{ task.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary save-btn">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Alertify Library -->
+<script src="{% static 'js/lib_alertify/alertify.min.js' %}"></script>
+<script src="{% static 'js/lib_alertify/alertify_integra.js' %}"></script>
 
 <script src="{% static 'js/form_for_all_task.js' %}"></script>

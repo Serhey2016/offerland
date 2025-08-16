@@ -20,6 +20,14 @@ def create_task(request):
     if request.method == 'POST':
         try:
             User = get_user_model()
+            # Добавляем логирование для отладки
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info("=== CREATE TASK START ===")
+            logger.info(f"Request method: {request.method}")
+            logger.info(f"Request user: {request.user}")
+            logger.info(f"Request POST data: {dict(request.POST)}")
+            
             # Получаем данные из формы
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
             title = none_if_empty(request.POST.get('title'))
@@ -88,15 +96,50 @@ def create_task(request):
 
             # Хэштеги
             hashtags_data = request.POST.get('hashtags')
-            if hashtags_data:
-                # Парсим строку с ID, разделенными запятыми
-                hashtag_ids = [id.strip() for id in hashtags_data.split(',') if id.strip()]
-                for tag_id in hashtag_ids:
-                    try:
-                        tag_obj = AllTags.objects.get(id=tag_id)
-                        TaskHashtagRelations.objects.get_or_create(task=task, hashtag=tag_obj)
-                    except AllTags.DoesNotExist:
-                        pass
+            if hashtags_data and hashtags_data.strip():
+                try:
+                    # Парсим JSON данные о хэштегах
+                    hashtag_items = json.loads(hashtags_data)
+                    logger.info(f"Parsed hashtag items for task: {hashtag_items}")
+                    
+                    for item in hashtag_items:
+                        if item.get('type') == 'existing' and item.get('id'):
+                            # Существующий тег с ID
+                            try:
+                                tag_obj = AllTags.objects.get(id=item['id'])
+                                TaskHashtagRelations.objects.get_or_create(task=task, hashtag=tag_obj)
+                            except AllTags.DoesNotExist:
+                                pass
+                                
+                        elif item.get('type') == 'new' and item.get('name'):
+                            # Новый тег без ID
+                            tag_name = item['name'].strip()
+                            if tag_name:
+                                try:
+                                    # Создаем новый тег или получаем существующий
+                                    tag_obj, created = AllTags.objects.get_or_create(tag=tag_name)
+                                    # Создаем связь с задачей
+                                    TaskHashtagRelations.objects.get_or_create(task=task, hashtag=tag_obj)
+                                except Exception as e:
+                                    pass
+                        else:
+                            # Fallback для старого формата (просто ID через запятую)
+                            try:
+                                if isinstance(item, str) and item.strip().isdigit():
+                                    tag_obj = AllTags.objects.get(id=item.strip())
+                                    TaskHashtagRelations.objects.get_or_create(task=task, hashtag=tag_obj)
+                            except (AllTags.DoesNotExist, ValueError):
+                                pass
+                                
+                except json.JSONDecodeError:
+                    # Fallback для старого формата
+                    hashtag_ids = [id.strip() for id in hashtags_data.split(',') if id.strip()]
+                    for tag_id in hashtag_ids:
+                        try:
+                            tag_obj = AllTags.objects.get(id=tag_id)
+                            TaskHashtagRelations.objects.get_or_create(task=task, hashtag=tag_obj)
+                        except AllTags.DoesNotExist:
+                            pass
 
             # Сервисы
             if service_id:
@@ -144,6 +187,8 @@ def create_task(request):
                 from .models import TaskOwnerRelations
                 TaskOwnerRelations.objects.get_or_create(task=task, user=request.user)
 
+            logger.info(f"Task {task.id} completed successfully")
+            logger.info("=== CREATE TASK COMPLETED ===")
             return JsonResponse({'success': True, 'type': 'task', 'id': task.id})
         except Exception as e:
             import traceback
@@ -159,7 +204,12 @@ def create_advertising(request):
             # Добавляем логирование для отладки
             import logging
             logger = logging.getLogger(__name__)
-            logger.info("create_advertising function called")
+            logger.info("=== CREATE ADVERTISING START ===")
+            logger.info(f"Request method: {request.method}")
+            logger.info(f"Request user: {request.user}")
+            logger.info(f"Request POST data: {dict(request.POST)}")
+            logger.info(f"Request FILES data: {dict(request.FILES)}")
+            logger.info(f"Request headers: {dict(request.headers)}")
             
             # Защита от двойной отправки - проверяем уникальный идентификатор
             request_id = request.POST.get('request_id')
@@ -179,6 +229,13 @@ def create_advertising(request):
             photo_link = none_if_empty(request.POST.get('photo_link') or request.POST.get('photos-link'))
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
             service_id = none_if_empty(request.POST.get('service'))
+
+            logger.info(f"Parsed form data:")
+            logger.info(f"  - title: {title}")
+            logger.info(f"  - description: {description}")
+            logger.info(f"  - photo_link: {photo_link}")
+            logger.info(f"  - type_of_task_id: {type_of_task_id}")
+            logger.info(f"  - service_id: {service_id}")
 
             logger.info(f"Creating advertising with title: {title}")
 
@@ -208,16 +265,72 @@ def create_advertising(request):
 
             # Хэштеги
             hashtags_data = request.POST.get('hashtags')
-            if hashtags_data:
-                # Парсим строку с ID, разделенными запятыми
-                hashtag_ids = [id.strip() for id in hashtags_data.split(',') if id.strip()]
-                for tag_id in hashtag_ids:
-                    try:
-                        tag_obj = AllTags.objects.get(id=tag_id)
-                        AdvertisingHashtagRelations.objects.get_or_create(advertising=advertising, hashtag=tag_obj)
-                    except AllTags.DoesNotExist:
-                        pass
-
+            logger.info(f"Hashtags data received: '{hashtags_data}'")
+            logger.info(f"All POST data: {dict(request.POST)}")
+            
+            if hashtags_data and hashtags_data.strip():
+                try:
+                    # Парсим JSON данные о хэштегах
+                    hashtag_items = json.loads(hashtags_data)
+                    logger.info(f"Parsed hashtag items: {hashtag_items}")
+                    
+                    for item in hashtag_items:
+                        if item.get('type') == 'existing' and item.get('id'):
+                            # Существующий тег с ID
+                            try:
+                                tag_obj = AllTags.objects.get(id=item['id'])
+                                logger.info(f"Found existing tag: {tag_obj.tag} (ID: {tag_obj.id})")
+                                relation, created = AdvertisingHashtagRelations.objects.get_or_create(
+                                    advertising=advertising, 
+                                    hashtag=tag_obj
+                                )
+                                if created:
+                                    logger.info(f"Created hashtag relation: {relation.id}")
+                                else:
+                                    logger.info(f"Hashtag relation already exists: {relation.id}")
+                            except AllTags.DoesNotExist:
+                                logger.warning(f"Tag with ID {item['id']} not found")
+                                continue
+                            except Exception as e:
+                                logger.error(f"Error creating hashtag relation for tag {item['id']}: {e}")
+                                
+                        elif item.get('type') == 'new' and item.get('name'):
+                            # Новый тег без ID
+                            tag_name = item['name'].strip()
+                            if tag_name:
+                                try:
+                                    # Создаем новый тег или получаем существующий
+                                    tag_obj, created = AllTags.objects.get_or_create(tag=tag_name)
+                                    if created:
+                                        logger.info(f"Created new tag: {tag_obj.tag} (ID: {tag_obj.id})")
+                                    else:
+                                        logger.info(f"Found existing tag with same name: {tag_obj.tag} (ID: {tag_obj.id})")
+                                    
+                                    # Создаем связь с рекламой
+                                    relation, created = AdvertisingHashtagRelations.objects.get_or_create(
+                                        advertising=advertising, 
+                                        hashtag=tag_obj
+                                    )
+                                    if created:
+                                        logger.info(f"Created hashtag relation for new tag: {relation.id}")
+                                    else:
+                                        logger.info(f"Hashtag relation already exists for new tag: {relation.id}")
+                                        
+                                except Exception as e:
+                                    logger.error(f"Error creating new tag '{tag_name}': {e}")
+                                    continue
+                        else:
+                            logger.warning(f"Invalid hashtag item format: {item}")
+                            
+                    logger.info(f"Successfully processed {len(hashtag_items)} hashtag items")
+                    
+                except json.JSONDecodeError as e:
+                    logger.error(f"Error parsing hashtags JSON: {e}")
+                    logger.error(f"Raw hashtags data: {hashtags_data}")
+                except Exception as e:
+                    logger.error(f"Unexpected error processing hashtags: {e}")
+            else:
+                logger.warning("No hashtags data received or empty string")
 
 
             # Комментарии
@@ -243,9 +356,12 @@ def create_advertising(request):
                 AdvertisingOwnerRelations.objects.get_or_create(advertising=advertising, user=request.user)
 
             logger.info(f"Advertising {advertising.id} completed successfully")
+            logger.info("=== CREATE ADVERTISING COMPLETED ===")
             return JsonResponse({'success': True, 'type': 'advertising', 'id': advertising.id})
         except Exception as e:
             import traceback
+            logger.error(f"Error in create_advertising: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             print('Error in create_advertising:', e)
             traceback.print_exc()
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
@@ -255,6 +371,14 @@ def create_time_slot(request):
     if request.method == 'POST':
         try:
             User = get_user_model()
+            # Добавляем логирование для отладки
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info("=== CREATE TIME SLOT START ===")
+            logger.info(f"Request method: {request.method}")
+            logger.info(f"Request user: {request.user}")
+            logger.info(f"Request POST data: {dict(request.POST)}")
+            
             # Получаем данные из формы для time slot
             date_start = none_if_empty(request.POST.get('date1'))
             date_end = none_if_empty(request.POST.get('date2'))
@@ -309,16 +433,52 @@ def create_time_slot(request):
 
             # Хэштеги
             hashtags_data = request.POST.get('ts-hashtags')
-            if hashtags_data:
-                # Парсим строку с названиями хэштегов, разделенными запятыми
-                hashtag_names = [name.strip() for name in hashtags_data.split(',') if name.strip()]
-                for tag_name in hashtag_names:
-                    try:
-                        # Ищем хэштег по названию или создаем новый
-                        tag_obj, created = AllTags.objects.get_or_create(tag=tag_name)
-                        TimeSlotHashtagRelations.objects.get_or_create(time_slot=time_slot, hashtag=tag_obj)
-                    except Exception:
-                        pass
+            if hashtags_data and hashtags_data.strip():
+                try:
+                    # Парсим JSON данные о хэштегах
+                    hashtag_items = json.loads(hashtags_data)
+                    logger.info(f"Parsed hashtag items for time slot: {hashtag_items}")
+                    
+                    for item in hashtag_items:
+                        if item.get('type') == 'existing' and item.get('id'):
+                            # Существующий тег с ID
+                            try:
+                                tag_obj = AllTags.objects.get(id=item['id'])
+                                TimeSlotHashtagRelations.objects.get_or_create(time_slot=time_slot, hashtag=tag_obj)
+                            except AllTags.DoesNotExist:
+                                pass
+                                
+                        elif item.get('type') == 'new' and item.get('name'):
+                            # Новый тег без ID
+                            tag_name = item['name'].strip()
+                            if tag_name:
+                                try:
+                                    # Создаем новый тег или получаем существующий
+                                    tag_obj, created = AllTags.objects.get_or_create(tag=tag_name)
+                                    # Создаем связь с time slot
+                                    TimeSlotHashtagRelations.objects.get_or_create(time_slot=time_slot, hashtag=tag_obj)
+                                except Exception as e:
+                                    pass
+                        else:
+                            # Fallback для старого формата (просто названия через запятую)
+                            try:
+                                if isinstance(item, str) and item.strip():
+                                    tag_name = item.strip()
+                                    tag_obj, created = AllTags.objects.get_or_create(tag=tag_name)
+                                    TimeSlotHashtagRelations.objects.get_or_create(time_slot=time_slot, hashtag=tag_obj)
+                            except Exception as e:
+                                pass
+                                
+                except json.JSONDecodeError:
+                    # Fallback для старого формата
+                    hashtag_names = [name.strip() for name in hashtags_data.split(',') if name.strip()]
+                    for tag_name in hashtag_names:
+                        try:
+                            # Ищем хэштег по названию или создаем новый
+                            tag_obj, created = AllTags.objects.get_or_create(tag=tag_name)
+                            TimeSlotHashtagRelations.objects.get_or_create(time_slot=time_slot, hashtag=tag_obj)
+                        except Exception:
+                            pass
 
             # Исполнители
             performers_data = request.POST.get('performers')
@@ -356,9 +516,13 @@ def create_time_slot(request):
                 from .models import TimeSlotOwnerRelations
                 TimeSlotOwnerRelations.objects.get_or_create(time_slot=time_slot, user=request.user)
 
+            logger.info(f"Time slot {time_slot.id} completed successfully")
+            logger.info("=== CREATE TIME SLOT COMPLETED ===")
             return JsonResponse({'success': True, 'type': 'time_slot', 'id': time_slot.id})
         except Exception as e:
             import traceback
+            logger.error(f"Error in create_time_slot: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             print('Error in create_time_slot:', e)
             traceback.print_exc()
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
@@ -371,20 +535,27 @@ def handle_form_submission(request):
             # Добавляем логирование для отладки
             import logging
             logger = logging.getLogger(__name__)
-            logger.info(f"handle_form_submission called with POST data: {dict(request.POST)}")
+            logger.info("=== HANDLE FORM SUBMISSION START ===")
+            logger.info(f"Request method: {request.method}")
+            logger.info(f"Request user: {request.user}")
+            logger.info(f"Request POST data: {dict(request.POST)}")
+            logger.info(f"Request FILES data: {dict(request.FILES)}")
+            logger.info(f"Request headers: {dict(request.headers)}")
             
             # Определяем тип публикации
             type_of_task_id = request.POST.get('type_of_task')
             
             if not type_of_task_id:
+                logger.error("Type of task is required but not provided")
                 return JsonResponse({'success': False, 'error': 'Type of task is required'}, status=400)
             
             # Получаем объект TypeOfTask для определения типа
             try:
                 type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
                 type_name = type_of_task.type_of_task_name.lower()
-                logger.info(f"Type of task: {type_name}")
+                logger.info(f"Type of task: {type_name} (ID: {type_of_task_id})")
             except TypeOfTask.DoesNotExist:
+                logger.error(f"Invalid type of task ID: {type_of_task_id}")
                 return JsonResponse({'success': False, 'error': 'Invalid type of task'}, status=400)
             
             # Направляем на соответствующую функцию в зависимости от типа
@@ -402,8 +573,11 @@ def handle_form_submission(request):
                 
         except Exception as e:
             import traceback
+            logger.error(f"Error in handle_form_submission: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             print('Error in handle_form_submission:', e)
             traceback.print_exc()
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
     
+    logger.error("Only POST method allowed")
     return JsonResponse({'error': 'Only POST allowed'}, status=405)

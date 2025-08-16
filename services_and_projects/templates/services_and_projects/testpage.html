@@ -2,9 +2,9 @@
 {% load static %}
 
 {% comment %}http://localhost:8000/blog/about/{% endcomment %}
-{% block extra_head %}
 
-<!-- custom styles -->
+{% block extra_head %}
+<!-- Custom styles -->
 <link href="{% static 'css/servoces_and_projects.css' %}" rel="stylesheet">
 <link href="{% static 'css/serv_and_proj_empty_form.css' %}" rel="stylesheet">
 <link href="{% static 'css/chat_styles.css' %}" rel="stylesheet">
@@ -13,8 +13,7 @@
 <link href="{% static 'css/photoswipe_fix.css' %}" rel="stylesheet">
 <link href="{% static 'css/job_search_feed.css' %}" rel="stylesheet">
 
-
-<!-- css library -->
+<!-- CSS libraries -->
 <link href="{% static 'css/lib_alertify/alertify.css' %}" rel="stylesheet">
 <link href="{% static 'css/lib_alertify/alertify.min.css' %}" rel="stylesheet">
 <link href="{% static 'css/lib_alertify/alertify_integra.css' %}" rel="stylesheet">
@@ -24,15 +23,10 @@
 <link href="{% static 'css/lib_alertify/themes/default.min.css' %}" rel="stylesheet">
 <link href="{% static 'css/lib_alertify/themes/default.rtl.css' %}" rel="stylesheet">
 <link href="{% static 'css/lib_alertify/themes/default.rtl.min.css' %}" rel="stylesheet">
-
-
-
-
-
 {% endblock %}
 
-
 {% block content %}
+<!-- Filter and Search Section -->
 <section class="">
     <div class="container">
         <div class="filter_search_container">
@@ -97,6 +91,7 @@
     </div>
 </section>
 
+<!-- Social Feeds Section -->
 <section class="social_feeds">
     <div class="social_feed_time_slot">
         <div class="social_feed_time_slot_body_text">
@@ -106,7 +101,6 @@
                     <div class="sftsts1_use_name">Jack Nikolson</div>
                     <div class="sftsts1_hour_price">1 hour: 35 £</div>
                     <div class="sftsts1_hour_price">min slot 9 hours</div>
-
                 </div>
                 <div class="social_feed_time_slot_text_section_2">
                     <div class="sftsts2_aviability">Available at: 07.23 - 08.11</div>
@@ -131,10 +125,10 @@
             </div>
         </div>
         <div class="social_feed_time_slot_buttons">
-
             <button class="social_feed_time_slot_book_now_button">Book now</button>
         </div>
     </div>
+    
     {% if page_obj %}
         {% for item in page_obj %}
             {% if item.type == 'advertising' %}
@@ -156,6 +150,7 @@
     {% endif %}
 </section>
 
+<!-- Pagination -->
 {% if page_obj.has_other_pages %}
 <div class="col-lg-12 col-12">
     <div class="text-center mb-3">
@@ -197,311 +192,33 @@
 </div>
 {% endif %}
 
-{% comment %} Форма создания задач {% endcomment %}
+<!-- Include Forms -->
 {% include 'services_and_projects/form_for_all_task.html' %}
 
+<!-- Include Navigation Components -->
+{% include 'services_and_projects/navigation_components.html' %}
 
+<!-- Include Chat Components -->
+{% include 'services_and_projects/chat_components.html' %}
 
-
-
-
-{% comment %} Bottom menus {% endcomment %}
-<div class="fixed_circle_menu">
-    <button class="fixed_circle main">
-        <svg xmlns="http://www.w3.org/2000/svg" width="60.531" height="60.531" viewBox="0 0 60.531 60.531">
-            <path id="open_in_new_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M126.726-779.469a6.477,6.477,0,0,1-4.75-1.976,6.476,6.476,0,0,1-1.976-4.75v-47.08a6.476,6.476,0,0,1,1.976-4.75,6.477,6.477,0,0,1,4.75-1.976h23.54v6.726h-23.54v47.08h47.08v-23.54h6.726v23.54a6.476,6.476,0,0,1-1.976,4.75,6.476,6.476,0,0,1-4.75,1.976Zm15.805-17.823L137.823-802,169.1-833.274H156.991V-840h23.54v23.54h-6.726v-12.106Z"
-                transform="translate(-120 840)" fill="#333a49" />
-        </svg>
-
-    </button>
-    <button class="fixed_circle sub sub1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="65.49" height="62.215" viewBox="0 0 65.49 62.215">
-            <path id="star_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M102.43-831.456l10.315-6.222,10.315,6.3-2.7-11.788,9.087-7.859-11.952-1.064-4.748-11.133L108-852.167,96.045-851.1l9.087,7.941Zm-9.905,13.671,5.321-23L80-856.26l23.576-2.047L112.745-880l9.169,21.694,23.576,2.047-17.846,15.472,5.321,23-20.22-12.2ZM112.745-846.436Z"
-                transform="translate(-80 880)" fill="#333a49" />
-        </svg>
-
-    </button>
-    <button class="fixed_circle sub sub2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="31.732" height="31.732" viewBox="0 0 31.732 31.732">
-            <path id="add_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M213.6-741.867H200V-746.4h13.6V-760h4.533v13.6h13.6v4.533h-13.6v13.6H213.6Z"
-                transform="translate(-200 760)" fill="#333a49" />
-        </svg>
-
-    </button>
-    <button class="fixed_circle sub sub3">
-        <svg width="20.4" height="20.4" viewBox="0 0 24 24" fill="none">
-            <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="#282D3B" />
-        </svg>
-    </button>
-
-</div>
-<div class="nav_menu">
-    <button class="nav-arrow nav-arrow-left">
-        <svg xmlns="http://www.w3.org/2000/svg" width="21.82" height="37.062" viewBox="0 0 21.82 37.062">
-            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                transform="translate(0 880)" fill="#333a49" />
-        </svg>
-
-    </button>
-    <button class="nav-arrow nav-arrow-right">
-        <svg class="" xmlns="http://www.w3.org/2000/svg" width="21.82" height="37.062" viewBox="0 0 21.82 37.062">
-            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                transform="translate(21.82 -842.938) rotate(180)" fill="#333a49" />
-        </svg>
-
-    </button>
-    <button class="nav-arrow nav-arrow-up">
-        <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
-            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                transform="translate(-842.938) rotate(90)" fill="#333a49" />
-        </svg>
-
-    </button>
-    <button class="nav-arrow nav-arrow-down">
-        <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
-            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                transform="translate(880 21.82) rotate(-90)" fill="#333a49" />
-        </svg>
-
-    </button>
-
-    <div class="nav_menu_content">
-
-        <div class="nav_menu_sub_category_name">
-            <div class="nav_menu_sub_category_name_1">All</div>
-            <div class="nav_menu_category_name">Business Support</div>
-        </div>
-        <div class="nav_menu_sub_category_name_2">
-            <div class="active"></div>
-            <div></div>
-            <div></div>
-            <div></div>
-
-        </div>
-        <div class="nav_menu_cat_change">
-            <div class="active"></div>
-
-            <div></div>
-            <div></div>
-        </div>
-
-
-    </div>
-</div>
-{% comment %} Чат {% endcomment %}
-
-<div class="chat_messages_container">
-    <div class="cmc_search_container">
-        <div class="cmc_search_text">Find person</div>
-        <input class="cmc_search_input" type="text">
-    </div>
-    <div class="cmc_contacts_container">
-        <div class="cmc_contacts_text">Chats</div>
-        <div class="cmc_contact">
-            <a href="#">
-                <div class="cmc_circule_photo"></div>
-                <span class="cmc_user_name">Mark Nelson</span>
-                <span class="cmc_last_date">6/22/2025</span>
-                <div class="cmc_send_message_button"></div>
-            </a>
-        </div>
-        <div class="cmc_contact">
-            <a href="#">
-                <div class="cmc_circule_photo"></div>
-                <span class="cmc_user_name">Mark Nelson</span>
-                <span class="cmc_last_date">6/22/2025</span>
-                <div class="cmc_send_message_button"></div>
-            </a>
-        </div>
-        <div class="cmc_contact">
-            <a href="#">
-                <div class="cmc_circule_photo"></div>
-                <span class="cmc_user_name">Mark Nelson</span>
-                <span class="cmc_last_date">6/22/2025</span>
-                <div class="cmc_send_message_button"></div>
-            </a>
-        </div>
-        <div class="cmc_contact">
-            <a href="#">
-                <div class="cmc_circule_photo"></div>
-                <span class="cmc_user_name">Mark Nelson</span>
-                <span class="cmc_last_date">6/22/2025</span>
-                <div class="cmc_send_message_button"></div>
-            </a>
-        </div>
-        <div class="cmc_contact">
-            <a href="#">
-                <div class="cmc_circule_photo"></div>
-                <span class="cmc_user_name">Mark Nelson</span>
-                <span class="cmc_last_date">6/22/2025</span>
-                <div class="cmc_send_message_button"></div>
-            </a>
-        </div>
-        <div class="cmc_contact">
-            <a href="#">
-                <div class="cmc_circule_photo"></div>
-                <span class="cmc_user_name">Mark Nelson</span>
-                <span class="cmc_last_date">6/22/2025</span>
-                <div class="cmc_send_message_button"></div>
-            </a>
-        </div>
-        <div class="cmc_contact">
-            <a href="#">
-                <div class="cmc_circule_photo"></div>
-                <span class="cmc_user_name">Mark Nelson</span>
-                <span class="cmc_last_date">6/22/2025</span>
-                <div class="cmc_send_message_button"></div>
-            </a>
-        </div>
-        <div class="cmc_contact">
-            <a href="#">
-                <div class="cmc_circule_photo"></div>
-                <span class="cmc_user_name">Mark Nelson</span>
-                <span class="cmc_last_date">6/22/2025</span>
-                <div class="cmc_send_message_button"></div>
-            </a>
-        </div>
-    </div>
-
-</div>
-
-
-<!-- Оверлей для popup -->
-<div class="overlay_cmc_messages" id="cmcMessagesOverlay" style="display:none;">
-    <div class="cmc_messages_container">
-        <button class="cmc_messages_left_top_button_back">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-            </svg>
-        </button>
-        <button class="cmc_messages_container_close_btn">×</button>
-        <div class="cmc_messages_area">
-            <div class="cmc_message_communication_container">
-                <div class="cmc_message_text">Hello, how are you?</div>
-                <span class="cmc_message_date">6/22/2025 10:00</span>
-            </div>
-            <div class="cmc_message cmc_message_sent">
-                <div class="cmc_message_text">I am fine, thank you!</div>
-                <span class="cmc_message_date">6/22/2025 10:01</span>
-            </div>
-            <div class="cmc_message_communication_container">
-                <div class="cmc_message_text">Hello, how are you?</div>
-                <span class="cmc_message_date">6/22/2025 10:00</span>
-            </div>
-            <div class="cmc_message cmc_message_sent">
-                <div class="cmc_message_text">I am fine, thank you!</div>
-                <span class="cmc_message_date">6/22/2025 10:01</span>
-            </div>
-            <div class="cmc_message_communication_container">
-                <div class="cmc_message_text">Hello, how are you?</div>
-                <span class="cmc_message_date">6/22/2025 10:00</span>
-            </div>
-            <div class="cmc_message cmc_message_sent">
-                <div class="cmc_message_text">I am fine, thank you!</div>
-                <span class="cmc_message_date">6/22/2025 10:01</span>
-            </div>
-            <div class="cmc_message_communication_container">
-                <div class="cmc_message_text">Hello, how are you?</div>
-                <span class="cmc_message_date">6/22/2025 10:00</span>
-            </div>
-            <div class="cmc_message cmc_message_sent">
-                <div class="cmc_message_text">I am fine, thank you!</div>
-                <span class="cmc_message_date">6/22/2025 10:01</span>
-            </div>
-            <div class="cmc_message_communication_container">
-                <div class="cmc_message_text">Hello, how are you?</div>
-                <span class="cmc_message_date">6/22/2025 10:00</span>
-            </div>
-            <div class="cmc_message cmc_message_sent">
-                <div class="cmc_message_text">I am fine, thank you!</div>
-                <span class="cmc_message_date">6/22/2025 10:01</span>
-            </div>
-            <div class="cmc_message_communication_container">
-                <div class="cmc_message_text">Hello, how are you?</div>
-                <span class="cmc_message_date">6/22/2025 10:00</span>
-            </div>
-            <div class="cmc_message cmc_message_sent">
-                <div class="cmc_message_text">I am fine, thank you!</div>
-                <span class="cmc_message_date">6/22/2025 10:01</span>
-            </div>
-            <div class="cmc_message_communication_container">
-                <div class="cmc_message_text">Hello, how are you?</div>
-                <span class="cmc_message_date">6/22/2025 10:00</span>
-            </div>
-            <div class="cmc_message cmc_message_sent">
-                <div class="cmc_message_text">I am fine, thank you!</div>
-                <span class="cmc_message_date">6/22/2025 10:01</span>
-            </div>
-        </div>
-        <div class="cmc_message_bottom_container">
-            <textarea name="cmc_message_for_send" id=""></textarea>
-            <button class="cmc_message_send_button"></button>
-            <button class="add_file"></button>
-        </div>
-    </div>
-</div>
-
-<!-- PhotoSwipe UI контейнер -->
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="pswp__bg"></div>
-    <div class="pswp__scroll-wrap">
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-        <div class="pswp__ui pswp__ui--hidden">
-            <div class="pswp__top-bar">
-                <div class="pswp__counter"></div>
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-                <button class="pswp__button pswp__button--share" title="Share"></button>
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Include PhotoSwipe UI -->
+{% include 'services_and_projects/photoswipe_ui.html' %}
 
 {% endblock %}
 
-
 {% block extra_js %}
-
-<!-- libraries -->
+<!-- JavaScript libraries -->
 <script src="{% static 'js/lib_sweetalert2/sweetalert2.all.min.js' %}"></script>
 <script src="{% static 'js/lib_sweetalert2/sweetalert2_modif.js' %}"></script>
 <script src="{% static 'js/lib_photoswipe/photoswipe.umd.min.js' %}"></script>
 <script src="{% static 'js/lib_photoswipe/photoswipe-lightbox.umd.min.js' %}"></script>
 <script src="{% static 'js/lib_photoswipe/photoswipe_force_show.js' %}"></script>
-<!-- <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script> -->
 <script src="{% static 'js/lib_ckeditor/ckeditor.js' %}"></script>
 <script src="{% static 'js/lib_alertify/alertify.js' %}"></script>
 <script src="{% static 'js/lib_alertify/alertify.min.js' %}"></script>
 <script src="{% static 'js/lib_alertify/alertify_integra.js' %}"></script>
 
-<!-- Other scripts -->
+<!-- Application scripts -->
 <script src="{% static 'js/fixed_circule_menu.js' %}"></script>
 <script src="{% static 'js/nav_menu_bottom_right.js' %}"></script>
 <script src="{% static 'js/form_for_all_task.js' %}"></script>
@@ -510,79 +227,5 @@
 <script src="{% static 'js/tasks_projects_tenders.js' %}"></script>
 <script src="{% static 'js/social_feed_hide_icon.js' %}"></script>
 <script src="{% static 'js/job_search_feed.js' %}"></script>
-
-<script>
-// Плавная прокрутка для тегов
-document.addEventListener('DOMContentLoaded', function() {
-    const tagSections = document.querySelectorAll('.social_feed_time_slot_tag_section');
-    
-    tagSections.forEach(section => {
-        const scrollContainer = section.querySelector('.social_feed_tags_scroll_container');
-        const tagsContainer = section.querySelector('.social_feed_tags');
-        
-        if (!scrollContainer || !tagsContainer) return;
-        
-        let isScrolling = false;
-        let scrollDirection = 0;
-        let scrollInterval;
-        
-        // Функция для плавной прокрутки
-        function smoothScroll() {
-            if (scrollDirection !== 0) {
-                scrollContainer.scrollLeft += scrollDirection * 2;
-                
-                // Остановка прокрутки при достижении краев
-                if (scrollDirection > 0 && scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
-                    scrollDirection = 0;
-                } else if (scrollDirection < 0 && scrollContainer.scrollLeft <= 0) {
-                    scrollDirection = 0;
-                }
-            }
-        }
-        
-        // Обработчик движения мыши
-        section.addEventListener('mousemove', function(e) {
-            const rect = section.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const width = rect.width;
-            
-            // Определяем зоны прокрутки (20px от краев)
-            const scrollZone = 20;
-            
-            if (x < scrollZone) {
-                // Прокрутка влево
-                scrollDirection = -1;
-                if (!isScrolling) {
-                    isScrolling = true;
-                    scrollInterval = setInterval(smoothScroll, 16); // ~60fps
-                }
-            } else if (x > width - scrollZone) {
-                // Прокрутка вправо
-                scrollDirection = 1;
-                if (!isScrolling) {
-                    isScrolling = true;
-                    scrollInterval = setInterval(smoothScroll, 16); // ~60fps
-                }
-            } else {
-                // Остановка прокрутки
-                scrollDirection = 0;
-                if (isScrolling) {
-                    isScrolling = false;
-                    clearInterval(scrollInterval);
-                }
-            }
-        });
-        
-        // Остановка прокрутки при выходе мыши
-        section.addEventListener('mouseleave', function() {
-            scrollDirection = 0;
-            if (isScrolling) {
-                isScrolling = false;
-                clearInterval(scrollInterval);
-            }
-        });
-    });
-});
-</script>
-
+<script src="{% static 'js/testpage.js' %}"></script>
 {% endblock %}
