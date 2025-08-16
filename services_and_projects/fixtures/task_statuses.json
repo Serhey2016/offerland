@@ -1,0 +1,58 @@
+[
+  {
+    "model": "services_and_projects.taskstatus",
+    "pk": 1,
+    "fields": {
+      "name": "Canceled"
+    }
+  },
+  {
+    "model": "services_and_projects.taskstatus",
+    "pk": 2,
+    "fields": {
+      "name": "Completed"
+    }
+  },
+  {
+    "model": "services_and_projects.taskstatus",
+    "pk": 3,
+    "fields": {
+      "name": "Published"
+    }
+  },
+  {
+    "model": "services_and_projects.taskstatus",
+    "pk": 4,
+    "fields": {
+      "name": "Delegated (Waiting)"
+    }
+  },
+  {
+    "model": "services_and_projects.taskstatus",
+    "pk": 5,
+    "fields": {
+      "name": "Someday/Maybe"
+    }
+  },
+  {
+    "model": "services_and_projects.taskstatus",
+    "pk": 6,
+    "fields": {
+      "name": "Projects"
+    }
+  },
+  {
+    "model": "services_and_projects.taskstatus",
+    "pk": 7,
+    "fields": {
+      "name": "In progress (Next)"
+    }
+  },
+  {
+    "model": "services_and_projects.taskstatus",
+    "pk": 8,
+    "fields": {
+      "name": "Saved (inbox)"
+    }
+  }
+]

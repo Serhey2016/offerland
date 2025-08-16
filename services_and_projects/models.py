@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from joblist.models import AllTags
+from joblist.models import AllTags, Companies
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
@@ -382,6 +382,88 @@ class TaskClientRelations(models.Model):
         unique_together = ('task', 'client')
         verbose_name = "Task Client relation"
         verbose_name_plural = "Task Client relations"
+
+
+class JobSearch(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='job_search')
+    title = models.CharField(max_length=60)
+    start_date = models.DateTimeField()
+    last_update = models.DateTimeField(auto_now=True)
+    notes = models.TextField()
+    
+    RESULT_CHOICES = [
+        ('find_job', 'Find job'),
+        ('not_find', 'Not find'),
+    ]
+    result_of_task = models.CharField(max_length=10, choices=RESULT_CHOICES, default='not_find')
+    
+    # Связь многие ко многим с Activities через промежуточную таблицу
+    activities = models.ManyToManyField('Activities', through='JobSearchActivitiesRelations', blank=True)
+
+    def __str__(self):
+        return f"Job Search: {self.title} by {self.user}"
+
+    class Meta:
+        db_table = 'job_search'
+        verbose_name = "Job Search"
+        verbose_name_plural = "Job Searches"
+
+
+class Activities(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=60)
+    location = models.CharField(max_length=120)
+    cv_file = models.FileField(upload_to='user_data/cv_files/', max_length=2097152)  # 2MB = 2,097,152 bytes
+    link_to_vacancy = models.CharField(max_length=3000)
+    job_description = models.TextField()
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    
+    STATUS_CHOICES = [
+        ('successful', 'Successful'),
+        ('unsuccessful', 'Unsuccessful'),
+        ('canceled', 'Canceled'),
+    ]
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='unsuccessful')
+    
+    start_date = models.DateTimeField()
+    last_update = models.DateTimeField(auto_now=True)
+    context = models.CharField(max_length=2000)
+    
+    # Связи многие ко многим через промежуточные таблицы
+    tasks = models.ManyToManyField('Task', through='ActivitiesTaskRelations', blank=True)
+
+    def __str__(self):
+        return f"Activity: {self.title} at {self.company}"
+
+    class Meta:
+        db_table = 'activities'
+        verbose_name = "Activity"
+        verbose_name_plural = "Activities"
+
+
+class JobSearchActivitiesRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    job_search = models.ForeignKey(JobSearch, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Activities, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'job_search_n_activities'
+        unique_together = ('job_search', 'activity')
+        verbose_name = "Job Search Activity relation"
+        verbose_name_plural = "Job Search Activity relations"
+
+
+class ActivitiesTaskRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    activity = models.ForeignKey(Activities, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'activities_n_task'
+        unique_together = ('activity', 'task')
+        verbose_name = "Activity Task relation"
+        verbose_name_plural = "Activity Task relations"
 
 
 @receiver(post_delete, sender=PhotoRelations)
