@@ -1,7 +1,7 @@
 {% load static %}
 
 {% comment %}
-    Этот шаблон работает только с объектом JobSearch
+Этот шаблон работает только с объектом JobSearch
 {% endcomment %}
 
 {% if job_search %}
@@ -24,12 +24,7 @@
     <div class="post_info_title_row">
         <div class="post_info_project_or_task_title_column">
             <span class="post_info_project_or_task_title_text">{{ job_search.title }}</span>
-            <div class="job_search_result">
-                <span class="result_label">Result:</span>
-                <span class="result_value {% if job_search.result_of_task == 'find_job' %}success{% else %}pending{% endif %}">
-                    {{ job_search.get_result_of_task_display }}
-                </span>
-            </div>
+           
         </div>
         <div class="post_info_icons_scroll">
             <div id="note_button_007_post_info_icon_notes_{{ job_search.id }}" class="post_info_icon notes-icon">
@@ -44,71 +39,59 @@
         <div class="social_feed_button_container_row">
             <span class="social_feed_button_container_button">
                 <a href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="65" height="65" viewBox="0 0 84 84">
-                        <defs>
-                          <filter id="Ellipse_17" x="0" y="0" width="84" height="84" filterUnits="userSpaceOnUse">
-                            <feOffset dy="3" input="SourceAlpha"/>
-                            <feGaussianBlur stdDeviation="3" result="blur"/>
-                            <feFlood flood-opacity="0.161"/>
-                            <feComposite operator="in" in2="blur"/>
-                            <feComposite in="SourceGraphic"/>
-                          </filter>
-                          <filter id="Ellipse_17-2" x="0" y="0" width="84" height="84" filterUnits="userSpaceOnUse">
-                            <feOffset dy="3" input="SourceAlpha"/>
-                            <feGaussianBlur stdDeviation="3" result="blur-2"/>
-                            <feFlood flood-opacity="0.161" result="color"/>
-                            <feComposite operator="out" in="SourceGraphic" in2="blur-2"/>
-                            <feComposite operator="in" in="color"/>
-                            <feComposite operator="in" in2="SourceGraphic"/>
-                          </filter>
-                        </defs>
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="65"
+                        height="65" viewBox="0 0 84 84">
+
                         <g id="Group_222" data-name="Group 222" transform="translate(-641 -581)">
-                          <g data-type="innerShadowGroup">
-                            <g transform="matrix(1, 0, 0, 1, 641, 581)" filter="url(#Ellipse_17)">
-                              <circle id="Ellipse_17-3" data-name="Ellipse 17" cx="33" cy="33" r="33" transform="translate(9 6)" fill="#fff"/>
-                            </g>
-                            <g transform="matrix(1, 0, 0, 1, 641, 581)" filter="url(#Ellipse_17-2)">
-                              <circle id="Ellipse_17-4" data-name="Ellipse 17" cx="33" cy="33" r="33" transform="translate(9 6)" fill="#fff"/>
-                            </g>
-                          </g>
-                          <text id="_" data-name="💡" transform="translate(650.437 637)" fill="#6f6d6d" font-size="46" font-family="SegoeUIEmoji, Segoe UI Emoji"><tspan x="0" y="0">💡</tspan></text>
+
+                            <text id="_" data-name="💡" transform="translate(650.437 637)" fill="#6f6d6d" font-size="46"
+                                font-family="SegoeUIEmoji, Segoe UI Emoji">
+                                <tspan x="0" y="0">💡</tspan>
+                            </text>
                         </g>
-                      </svg>
+                    </svg>
                 </a>
-                  
+
             </span>
             <span class="social_feed_button_container_button2" id="social_feed_button_container_button2_id">
-                <a href="#"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="65" height="65" viewBox="0 0 85 86">
-                    <defs>
-                      <filter id="Ellipse_13" x="0" y="1" width="85" height="85" filterUnits="userSpaceOnUse">
-                        <feOffset dy="3" input="SourceAlpha"/>
-                        <feGaussianBlur stdDeviation="3" result="blur"/>
-                        <feFlood flood-opacity="0.161"/>
-                        <feComposite operator="in" in2="blur"/>
-                        <feComposite in="SourceGraphic"/>
-                      </filter>
-                      <filter id="Ellipse_13-2" x="0" y="1" width="85" height="85" filterUnits="userSpaceOnUse">
-                        <feOffset dy="3" input="SourceAlpha"/>
-                        <feGaussianBlur stdDeviation="3" result="blur-2"/>
-                        <feFlood flood-opacity="0.161" result="color"/>
-                        <feComposite operator="out" in="SourceGraphic" in2="blur-2"/>
-                        <feComposite operator="in" in="color"/>
-                        <feComposite operator="in" in2="SourceGraphic"/>
-                      </filter>
-                    </defs>
-                    <g id="Group_232" data-name="Group 232" transform="translate(-634.761 -1613.451)">
-                      <g data-type="innerShadowGroup">
-                        <g transform="matrix(1, 0, 0, 1, 634.76, 1613.45)" filter="url(#Ellipse_13)">
-                          <circle id="Ellipse_13-3" data-name="Ellipse 13" cx="33.5" cy="33.5" r="33.5" transform="translate(9 7)" fill="#fff"/>
+                <a href="#"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        width="65" height="65" viewBox="0 0 85 86">
+                        <defs>
+                            <filter id="Ellipse_13" x="0" y="1" width="85" height="85" filterUnits="userSpaceOnUse">
+                                <feOffset dy="3" input="SourceAlpha" />
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feFlood flood-opacity="0.161" />
+                                <feComposite operator="in" in2="blur" />
+                                <feComposite in="SourceGraphic" />
+                            </filter>
+                            <filter id="Ellipse_13-2" x="0" y="1" width="85" height="85" filterUnits="userSpaceOnUse">
+                                <feOffset dy="3" input="SourceAlpha" />
+                                <feGaussianBlur stdDeviation="3" result="blur-2" />
+                                <feFlood flood-opacity="0.161" result="color" />
+                                <feComposite operator="out" in="SourceGraphic" in2="blur-2" />
+                                <feComposite operator="in" in="color" />
+                                <feComposite operator="in" in2="SourceGraphic" />
+                            </filter>
+                        </defs>
+                        <g id="Group_232" data-name="Group 232" transform="translate(-634.761 -1613.451)">
+                            <g data-type="innerShadowGroup">
+                                <g transform="matrix(1, 0, 0, 1, 634.76, 1613.45)" filter="url(#Ellipse_13)">
+                                    <circle id="Ellipse_13-3" data-name="Ellipse 13" cx="33.5" cy="33.5" r="33.5"
+                                        transform="translate(9 7)" fill="#fff" />
+                                </g>
+                                <g transform="matrix(1, 0, 0, 1, 634.76, 1613.45)" filter="url(#Ellipse_13-2)">
+                                    <circle id="Ellipse_13-4" data-name="Ellipse 13" cx="33.5" cy="33.5" r="33.5"
+                                        transform="translate(9 7)" fill="#fff" />
+                                </g>
+                            </g>
+                            <text id="_" data-name="+" transform="translate(677.261 1680.451)" fill="#fff478"
+                                stroke="#fcd53f" stroke-width="2" font-size="74" font-family="Comfortaa-Bold, Comfortaa"
+                                font-weight="700">
+                                <tspan x="-20.239" y="0">+</tspan>
+                            </text>
                         </g>
-                        <g transform="matrix(1, 0, 0, 1, 634.76, 1613.45)" filter="url(#Ellipse_13-2)">
-                          <circle id="Ellipse_13-4" data-name="Ellipse 13" cx="33.5" cy="33.5" r="33.5" transform="translate(9 7)" fill="#fff"/>
-                        </g>
-                      </g>
-                      <text id="_" data-name="+" transform="translate(677.261 1680.451)" fill="#fff478" stroke="#fcd53f" stroke-width="2" font-size="74" font-family="Comfortaa-Bold, Comfortaa" font-weight="700"><tspan x="-20.239" y="0">+</tspan></text>
-                    </g>
-                  </svg>
-                  </a>
+                    </svg>
+                </a>
             </span>
         </div>
     </div>
@@ -161,168 +144,109 @@
         </svg>
     </div>
 
-            <div class="social_feed_details2" id="socialFeedDetails_{{ job_search.id }}" style="display:none;">
-            {% if job_search.activities.all %}
-        <div class="job_search_activities">
-            <h4>Activities:</h4>
+    <div class="social_feed_details2" id="socialFeedDetails_{{ job_search.id }}" style="display:none;">
+
+        {% if job_search.activities.all %}
             {% for activity in job_search.activities.all %}
-            <div class="activity_item">
-                <div class="activity_header">
-                    <span class="activity_title">{{ activity.title }}</span>
-                    <span class="activity_company">{{ activity.company.company_name }}</span>
-                    <span class="activity_status {{ activity.status }}">{{ activity.get_status_display }}</span>
-                </div>
-                <div class="activity_details">
-                    <p><strong>Location:</strong> {{ activity.location }}</p>
-                    <p><strong>Description:</strong> {{ activity.job_description|truncatewords:30 }}</p>
-                    <p><strong>Date:</strong> {{ activity.start_date|date:'d.m.Y' }}</p>
-                    {% if activity.link_to_vacancy %}
-                    <p><strong>Vacancy Link:</strong> <a href="{{ activity.link_to_vacancy }}" target="_blank">View</a></p>
+            <div class="job_feed_application" id="job_feed_application_{{ activity.id }}">
+                <span class="job_feed_ca_icon_action" id="job_feed_ca_icon_action_{{ activity.id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="42.88" height="35.1" viewBox="0 0 60.937 48.75">
+                        <path id="label_important_24dp_000000_FILL0_wght400_GRAD0_opsz24"
+                            d="M80-751.25l18.281-24.375L80-800h39.609a6.048,6.048,0,0,1,2.742.648,5.841,5.841,0,0,1,2.133,1.79l16.453,21.937-16.453,21.937a5.843,5.843,0,0,1-2.133,1.79,6.05,6.05,0,0,1-2.742.648Zm12.187-6.094h27.422l13.711-18.281-13.711-18.281H92.187L105.9-775.625ZM112.754-775.625Z"
+                            transform="translate(-80 800)" fill="#eca2f5" />
+                    </svg>
+                </span>
+                <span class="job_feed_ca_company_name" id="job_feed_ca_company_name_{{ activity.id }}">{{ activity.company.company_name }}</span>
+                <span class="job_feed_ca_job_link" id="job_feed_ca_job_link_{{ activity.id }}">
+                    <a href="{{ activity.link_to_vacancy }}" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="33.106" height="16.553" viewBox="0 0 33.106 16.553">
+                            <path id="link_24dp_000000_FILL0_wght400_GRAD0_opsz24_job_feed"
+                                d="M94.9-663.447H88.276a7.977,7.977,0,0,1-5.856-2.421A7.976,7.976,0,0,1,80-671.724a7.977,7.977,0,0,1,2.421-5.856A7.976,7.976,0,0,1,88.276-680H94.9v3.31H88.276a4.788,4.788,0,0,0-3.517,1.448,4.789,4.789,0,0,0-1.448,3.517,4.789,4.789,0,0,0,1.448,3.517,4.789,4.789,0,0,0,3.517,1.448H94.9Zm-4.966-6.621v-3.31h13.242v3.31Zm8.276,6.621v-3.311h6.621a4.789,4.789,0,0,0,3.517-1.448,4.789,4.789,0,0,0,1.448-3.517,4.789,4.789,0,0,0-1.448-3.517,4.788,4.788,0,0,0-3.517-1.448H98.208V-680h6.621a7.976,7.976,0,0,1,5.856,2.421,7.977,7.977,0,0,1,2.421,5.856,7.977,7.977,0,0,1-2.421,5.856,7.977,7.977,0,0,1-5.856,2.421Z"
+                                transform="translate(-80 680)" fill="#cecece" />
+                        </svg>
+                    </a>
+                </span>
+                <span class="job_feed_ca_job_cv" id="job_feed_ca_job_cv_{{ activity.id }}">
+                    {% if activity.cv_file %}
+                    <a href="{{ activity.cv_file.url }}" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="31.515" height="27.515" viewBox="0 0 31.515 27.515">
+                            <path id="deployed_code_account_24dp_000000_FILL0_wght400_GRAD0_opsz24"
+                                d="M104.242-772.485a2.656,2.656,0,0,1-.646-.081,1.776,1.776,0,0,1-.606-.283l-4.848-2.828a2.243,2.243,0,0,1-.869-.869,2.413,2.413,0,0,1-.3-1.192v-5.7a2.414,2.414,0,0,1,.3-1.192,2.244,2.244,0,0,1,.869-.869l4.848-2.828a1.779,1.779,0,0,1,.606-.283,2.655,2.655,0,0,1,.646-.081,1.966,1.966,0,0,1,.626.1,3.25,3.25,0,0,1,.586.263L110.3-785.5a2.394,2.394,0,0,1,.889.869,2.3,2.3,0,0,1,.323,1.192v5.7a2.3,2.3,0,0,1-.323,1.192,2.392,2.392,0,0,1-.889.869l-4.848,2.828a3.254,3.254,0,0,1-.586.263A1.968,1.968,0,0,1,104.242-772.485ZM92.929-787.071a6.225,6.225,0,0,1-4.566-1.9,6.225,6.225,0,0,1-1.9-4.566,6.225,6.225,0,0,1,1.9-4.566,6.225,6.225,0,0,1,4.566-1.9,6.225,6.225,0,0,1,4.566,1.9,6.225,6.225,0,0,1,1.9,4.566,6.225,6.225,0,0,1-1.9,4.566A6.225,6.225,0,0,1,92.929-787.071ZM80-774.142v-4.525a4.872,4.872,0,0,1,.687-2.505,4.48,4.48,0,0,1,1.9-1.778,25.308,25.308,0,0,1,4.646-1.778,21,21,0,0,1,5.7-.727h.566a1.523,1.523,0,0,1,.485.081,11.227,11.227,0,0,0-.545,1.515,12.571,12.571,0,0,0-.343,1.636h-.162a16.94,16.94,0,0,0-5.151.727,26.56,26.56,0,0,0-3.737,1.455,1.572,1.572,0,0,0-.586.566,1.519,1.519,0,0,0-.222.808v1.293H93.414a10.237,10.237,0,0,0,.646,1.677,13.365,13.365,0,0,0,.889,1.556ZM92.929-790.3a3.112,3.112,0,0,0,2.283-.949,3.113,3.113,0,0,0,.949-2.283,3.112,3.112,0,0,0-.949-2.283,3.112,3.112,0,0,0-2.283-.95,3.112,3.112,0,0,0-2.283.95,3.112,3.112,0,0,0-.949,2.283,3.113,3.113,0,0,0,.949,2.283A3.112,3.112,0,0,0,92.929-790.3ZM92.929-793.536ZM93.414-777.374Zm7.03-6.707,3.8,2.222,3.8-2.222-3.8-2.182Zm5.01,8.4,3.636-2.1v-4.444l-3.636,2.141Zm-6.061-2.1,3.636,2.141v-4.4l-3.636-2.141Z"
+                                transform="translate(-80 800)" />
+                        </svg>
+                    </a>
+                    {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="31.515" height="27.515" viewBox="0 0 31.515 27.515">
+                        <path id="deployed_code_account_24dp_000000_FILL0_wght400_GRAD0_opsz24"
+                            d="M104.242-772.485a2.656,2.656,0,0,1-.646-.081,1.776,1.776,0,0,1-.606-.283l-4.848-2.828a2.243,2.243,0,0,1-.869-.869,2.413,2.413,0,0,1-.3-1.192v-5.7a2.414,2.414,0,0,1,.3-1.192,2.244,2.244,0,0,1,.869-.869l4.848-2.828a1.779,1.779,0,0,1,.606-.283,2.655,2.655,0,0,1,.646-.081,1.966,1.966,0,0,1,.626.1,3.25,3.25,0,0,1,.586.263L110.3-785.5a2.394,2.394,0,0,1,.889.869,2.3,2.3,0,0,1,.323,1.192v5.7a2.3,2.3,0,0,1-.323,1.192,2.392,2.392,0,0,1-.889.869l-4.848,2.828a3.254,3.254,0,0,1-.586.263A1.968,1.968,0,0,1,104.242-772.485ZM92.929-787.071a6.225,6.225,0,0,1-4.566-1.9,6.225,6.225,0,0,1-1.9-4.566,6.225,6.225,0,0,1,1.9-4.566,6.225,6.225,0,0,1,4.566-1.9,6.225,6.225,0,0,1,4.566,1.9,6.225,6.225,0,0,1,1.9,4.566,6.225,6.225,0,0,1-1.9,4.566A6.225,6.225,0,0,1,92.929-787.071ZM80-774.142v-4.525a4.872,4.872,0,0,1,.687-2.505,4.48,4.48,0,0,1,1.9-1.778,25.308,25.308,0,0,1,4.646-1.778,21,21,0,0,1,5.7-.727h.566a1.523,1.523,0,0,1,.485.081,11.227,11.227,0,0,0-.545,1.515,12.571,12.571,0,0,0-.343,1.636h-.162a16.94,16.94,0,0,0-5.151.727,26.56,26.56,0,0,0-3.737,1.455,1.572,1.572,0,0,0-.586.566,1.519,1.519,0,0,0-.222.808v1.293H93.414a10.237,10.237,0,0,0,.646,1.677,13.365,13.365,0,0,0,.889,1.556ZM92.929-790.3a3.112,3.112,0,0,0,2.283-.949,3.113,3.113,0,0,0,.949-2.283,3.112,3.112,0,0,0-.949-2.283,3.112,3.112,0,0,0-2.283-.95,3.112,3.112,0,0,0-2.283.95,3.112,3.112,0,0,0-.949,2.283,3.113,3.113,0,0,0,.949,2.283A3.112,3.112,0,0,0,92.929-790.3ZM92.929-793.536ZM93.414-777.374Zm7.03-6.707,3.8,2.222,3.8-2.222-3.8-2.182Zm5.01,8.4,3.636-2.1v-4.444l-3.636,2.141Zm-6.061-2.1,3.636,2.141v-4.4l-3.636-2.141Z"
+                            transform="translate(-80 800)" />
+                    </svg>
                     {% endif %}
+                </span>
+                <span class="job_feed_ca_status" id="job_feed_ca_status_{{ activity.id }}">{{ activity.get_status_display|default:activity.status }}</span>
+                <span class="job_feed_ca_expand_icon" id="job_feed_ca_expand_icon_{{ activity.id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18.842" height="11.093" viewBox="0 0 18.842 11.093">
+                        <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
+                            d="M9.421,18.842,0,9.421,9.421,0l1.672,1.672L3.344,9.421l7.749,7.749Z"
+                            transform="translate(0 11.093) rotate(-90)" />
+                    </svg>
+                </span>
+            </div>
+            <div class="job_feed_actions_details" id="job_feed_actions_details_{{ activity.id }}">
+                <div class="job_feed_action_details" id="job_feed_action_details_{{ activity.id }}_1">
+                    <span class="job_feed_action_details_icon_done" id="job_feed_action_details_icon_done_{{ activity.id }}_1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 33.425 33.425">
+                            <path id="check_circle_24dp_000000_FILL0_wght400_GRAD0_opsz24_1"
+                                d="M94.373-855.6l11.782-11.783-2.34-2.34-9.443,9.443-4.763-4.763-2.34,2.34Zm2.34,9.025a16.277,16.277,0,0,1-6.518-1.316,16.883,16.883,0,0,1-5.306-3.572,16.874,16.874,0,0,1-3.572-5.306A16.274,16.274,0,0,1,80-863.287a16.274,16.274,0,0,1,1.316-6.518,16.876,16.876,0,0,1,3.572-5.306,16.876,16.876,0,0,1,5.306-3.572A16.279,16.279,0,0,1,96.713-880a16.279,16.279,0,0,1,6.518,1.316,16.876,16.876,0,0,1,5.306,3.572,16.876,16.876,0,0,1,3.572,5.306,16.274,16.274,0,0,1,1.316,6.518,16.274,16.274,0,0,1-1.316,6.518,16.874,16.874,0,0,1-3.572,5.306,16.882,16.882,0,0,1-5.306,3.572A16.277,16.277,0,0,1,96.713-846.575Zm0-3.343A12.9,12.9,0,0,0,106.2-853.8a12.9,12.9,0,0,0,3.886-9.484,12.9,12.9,0,0,0-3.886-9.484,12.9,12.9,0,0,0-9.484-3.886,12.9,12.9,0,0,0-9.484,3.886,12.9,12.9,0,0,0-3.886,9.484,12.9,12.9,0,0,0,3.886,9.484A12.9,12.9,0,0,0,96.713-849.917ZM96.713-863.287Z"
+                                transform="translate(-80 880)" fill="#00e608" />
+                        </svg>
+                    </span>
+                    <span class="job_feed_action_details_text" id="job_feed_action_details_text_{{ activity.id }}_1">Send resume</span>
+                    <span class="job_feed_action_datetime_container" id="job_feed_action_datetime_container_{{ activity.id }}_1">
+                        <span class="job_feed_action_details_date" id="job_feed_action_details_date_{{ activity.id }}_1">
+                            {% if activity.start_date %}
+                                {{ activity.start_date|date:'d.m.Y' }}
+                            {% else %}
+                                {{ activity.last_update|date:'d.m.Y' }}
+                            {% endif %}
+                        </span>
+                    </span>
+                    <span class="job_feed_action_icon_help" id="job_feed_action_icon_help_{{ activity.id }}_1">
+                        💡
+                    </span>
                 </div>
+                <div class="job_feed_action_details" id="job_feed_action_details_{{ activity.id }}_2">
+                    <span class="job_feed_action_details_icon_done" id="job_feed_action_details_icon_done_{{ activity.id }}_2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 33.425 33.425">
+                            <path id="check_circle_24dp_000000_FILL0_wght400_GRAD0_opsz24_2"
+                                d="M94.373-855.6l11.782-11.783-2.34-2.34-9.443,9.443-4.763-4.763-2.34,2.34Zm2.34,9.025a16.277,16.277,0,0,1-6.518-1.316,16.883,16.883,0,0,1-5.306-3.572,16.874,16.874,0,0,1-3.572-5.306A16.274,16.274,0,0,1,80-863.287a16.274,16.274,0,0,1,1.316-6.518,16.876,16.876,0,0,1,3.572-5.306,16.876,16.876,0,0,1,5.306-3.572A16.279,16.279,0,0,1,96.713-880a16.279,16.279,0,0,1,6.518,1.316,16.876,16.876,0,0,1,5.306,3.572,16.876,16.876,0,0,1,3.572,5.306,16.274,16.274,0,0,1,1.316,6.518,16.274,16.274,0,0,1-1.316,6.518,16.874,16.874,0,0,1-3.572,5.306,16.882,16.882,0,0,1-5.306,3.572A16.277,16.277,0,0,1,96.713-846.575Zm0-3.343A12.9,12.9,0,0,0,106.2-853.8a12.9,12.9,0,0,0,3.886-9.484,12.9,12.9,0,0,0-3.886-9.484,12.9,12.9,0,0,0-9.484-3.886,12.9,12.9,0,0,0-9.484,3.886,12.9,12.9,0,0,0-3.886,9.484,12.9,12.9,0,0,0,3.886,9.484A12.9,12.9,0,0,0,96.713-849.917ZM96.713-863.287Z"
+                                transform="translate(-80 880)" fill="#e8e8e8" />
+                        </svg>
+                    </span>
+                    <span class="job_feed_action_details_text" id="job_feed_action_details_text_{{ activity.id }}_2">Technical interview</span>
+                    <span class="job_feed_action_datetime_container" id="job_feed_action_datetime_container_{{ activity.id }}_2">
+                        <span class="job_feed_action_icon_time" id="job_feed_action_time_{{ activity.id }}_2">9:00 - 11:00</span>
+                        <span class="job_feed_action_details_date" id="job_feed_action_details_date_{{ activity.id }}_2">
+                            {% if activity.start_date %}
+                                {{ activity.start_date|date:'d.m.Y' }}
+                            {% else %}
+                                {{ activity.last_update|date:'d.m.Y' }}
+                            {% endif %}
+                        </span>
+                    </span>
+                    <span class="job_feed_action_icon_help" id="job_feed_action_icon_help_{{ activity.id }}_2">
+                        💡
+                    </span>
+                </div>
+                <button class="job_feed_next_action" id="job_feed_next_action_{{ activity.id }}">next</button>
             </div>
             {% endfor %}
-        </div>
+        {% else %}
+            <div class="job_feed_no_activities">
+                <p>No activities yet. Click the + button to add your first job search activity.</p>
+            </div>
         {% endif %}
-        
-        <div class="job_feed_application" id="job_feed_application_id">
-            <span class="job_feed_ca_icon_action" id="job_feed_ca_icon_action_id">
-                <svg xmlns="http://www.w3.org/2000/svg" width="33.627" height="33.627"
-                    viewBox="0 0 33.627 33.627">
-                    <path id="directions_alt_24dp_000000_FILL0_wght400_GRAD0_opsz24_job_feed"
-                        d="M96.813-846.373a3.216,3.216,0,0,1-1.24-.252,3.421,3.421,0,0,1-1.114-.757L81.009-860.833a3.42,3.42,0,0,1-.757-1.114,3.216,3.216,0,0,1-.252-1.24,3.217,3.217,0,0,1,.252-1.24,3.419,3.419,0,0,1,.757-1.114L94.46-878.991a3.42,3.42,0,0,1,1.114-.757,3.215,3.215,0,0,1,1.24-.252,3.215,3.215,0,0,1,1.24.252,3.42,3.42,0,0,1,1.114.757l13.451,13.451a3.419,3.419,0,0,1,.757,1.114,3.217,3.217,0,0,1,.252,1.24,3.217,3.217,0,0,1-.252,1.24,3.42,3.42,0,0,1-.757,1.114L99.167-847.382a3.421,3.421,0,0,1-1.114.757A3.216,3.216,0,0,1,96.813-846.373Zm-6.725-10.088,6.725,6.725,13.451-13.451L96.813-876.637,83.363-863.187Zm6.725,1.681,8.407-8.407-8.407-8.407-2.354,2.354,4.287,4.371H88.407v3.363h10.34l-4.287,4.372ZM96.813-863.187Z"
-                        transform="translate(-80 880)" fill="#ecbf63" />
-                </svg>
-            </span>
-            <span class="job_feed_ca_company_name" id="job_feed_ca_company_name_id">Apple</span>
-            <span class="job_feed_ca_job_link" id="job_feed_ca_job_link_id">
-                <svg xmlns="http://www.w3.org/2000/svg" width="33.106" height="16.553"
-                    viewBox="0 0 33.106 16.553">
-                    <path id="link_24dp_000000_FILL0_wght400_GRAD0_opsz24_job_feed"
-                        d="M94.9-663.447H88.276a7.977,7.977,0,0,1-5.856-2.421A7.976,7.976,0,0,1,80-671.724a7.977,7.977,0,0,1,2.421-5.856A7.976,7.976,0,0,1,88.276-680H94.9v3.31H88.276a4.788,4.788,0,0,0-3.517,1.448,4.789,4.789,0,0,0-1.448,3.517,4.789,4.789,0,0,0,1.448,3.517,4.789,4.789,0,0,0,3.517,1.448H94.9Zm-4.966-6.621v-3.31h13.242v3.31Zm8.276,6.621v-3.311h6.621a4.789,4.789,0,0,0,3.517-1.448,4.789,4.789,0,0,0,1.448-3.517,4.789,4.789,0,0,0-1.448-3.517,4.788,4.788,0,0,0-3.517-1.448H98.208V-680h6.621a7.976,7.976,0,0,1,5.856,2.421,7.977,7.977,0,0,1,2.421,5.856,7.977,7.977,0,0,1-2.421,5.856,7.977,7.977,0,0,1-5.856,2.421Z"
-                        transform="translate(-80 680)" fill="#cecece" />
-                </svg>
-            </span>
-            <span class="job_feed_ca_job_cv" id="job_feed_ca_job_cv_id">
-                <svg xmlns="http://www.w3.org/2000/svg" width="31.515" height="27.515"
-                    viewBox="0 0 31.515 27.515">
-                    <path id="deployed_code_account_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                        d="M104.242-772.485a2.656,2.656,0,0,1-.646-.081,1.776,1.776,0,0,1-.606-.283l-4.848-2.828a2.243,2.243,0,0,1-.869-.869,2.413,2.413,0,0,1-.3-1.192v-5.7a2.414,2.414,0,0,1,.3-1.192,2.244,2.244,0,0,1,.869-.869l4.848-2.828a1.779,1.779,0,0,1,.606-.283,2.655,2.655,0,0,1,.646-.081,1.966,1.966,0,0,1,.626.1,3.25,3.25,0,0,1,.586.263L110.3-785.5a2.394,2.394,0,0,1,.889.869,2.3,2.3,0,0,1,.323,1.192v5.7a2.3,2.3,0,0,1-.323,1.192,2.392,2.392,0,0,1-.889.869l-4.848,2.828a3.254,3.254,0,0,1-.586.263A1.968,1.968,0,0,1,104.242-772.485ZM92.929-787.071a6.225,6.225,0,0,1-4.566-1.9,6.225,6.225,0,0,1-1.9-4.566,6.225,6.225,0,0,1,1.9-4.566,6.225,6.225,0,0,1,4.566-1.9,6.225,6.225,0,0,1,4.566,1.9,6.225,6.225,0,0,1,1.9,4.566,6.225,6.225,0,0,1-1.9,4.566A6.225,6.225,0,0,1,92.929-787.071ZM80-774.142v-4.525a4.872,4.872,0,0,1,.687-2.505,4.48,4.48,0,0,1,1.9-1.778,25.308,25.308,0,0,1,4.646-1.778,21,21,0,0,1,5.7-.727h.566a1.523,1.523,0,0,1,.485.081,11.227,11.227,0,0,0-.545,1.515,12.571,12.571,0,0,0-.343,1.636h-.162a16.94,16.94,0,0,0-5.151.727,26.56,26.56,0,0,0-3.737,1.455,1.572,1.572,0,0,0-.586.566,1.519,1.519,0,0,0-.222.808v1.293H93.414a10.237,10.237,0,0,0,.646,1.677,13.365,13.365,0,0,0,.889,1.556ZM92.929-790.3a3.112,3.112,0,0,0,2.283-.949,3.113,3.113,0,0,0,.949-2.283,3.112,3.112,0,0,0-.949-2.283,3.112,3.112,0,0,0-2.283-.95,3.112,3.112,0,0,0-2.283.95,3.112,3.112,0,0,0-.949,2.283,3.113,3.113,0,0,0,.949,2.283A3.112,3.112,0,0,0,92.929-790.3ZM92.929-793.536ZM93.414-777.374Zm7.03-6.707,3.8,2.222,3.8-2.222-3.8-2.182Zm5.01,8.4,3.636-2.1v-4.444l-3.636,2.141Zm-6.061-2.1,3.636,2.141v-4.4l-3.636-2.141Z"
-                        transform="translate(-80 800)" />
-                </svg>
-            </span>
-            <span class="job_feed_ca_status" id="job_feed_ca_status_id">applied</span>
-            <span class="job_feed_ca_expand_icon" id="job_feed_ca_expand_icon_id">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18.842" height="11.093"
-                    viewBox="0 0 18.842 11.093">
-                    <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                        d="M9.421,18.842,0,9.421,9.421,0l1.672,1.672L3.344,9.421l7.749,7.749Z"
-                        transform="translate(0 11.093) rotate(-90)" />
-                </svg>
-            </span>
-        </div>
-        <div class="job_feed_actions_details" id="job_feed_actions_details_id">
-            <div class="job_feed_action_details" id="job_feed_action_details_1">
-                <span class="job_feed_action_details_icon_done" id="job_feed_action_details_icon_done_1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 33.425 33.425">
-                        <path id="check_circle_24dp_000000_FILL0_wght400_GRAD0_opsz24_1" d="M94.373-855.6l11.782-11.783-2.34-2.34-9.443,9.443-4.763-4.763-2.34,2.34Zm2.34,9.025a16.277,16.277,0,0,1-6.518-1.316,16.883,16.883,0,0,1-5.306-3.572,16.874,16.874,0,0,1-3.572-5.306A16.274,16.274,0,0,1,80-863.287a16.274,16.274,0,0,1,1.316-6.518,16.876,16.876,0,0,1,3.572-5.306,16.876,16.876,0,0,1,5.306-3.572A16.279,16.279,0,0,1,96.713-880a16.279,16.279,0,0,1,6.518,1.316,16.876,16.876,0,0,1,5.306,3.572,16.876,16.876,0,0,1,3.572,5.306,16.274,16.274,0,0,1,1.316,6.518,16.274,16.274,0,0,1-1.316,6.518,16.874,16.874,0,0,1-3.572,5.306,16.882,16.882,0,0,1-5.306,3.572A16.277,16.277,0,0,1,96.713-846.575Zm0-3.343A12.9,12.9,0,0,0,106.2-853.8a12.9,12.9,0,0,0,3.886-9.484,12.9,12.9,0,0,0-3.886-9.484,12.9,12.9,0,0,0-9.484-3.886,12.9,12.9,0,0,0-9.484,3.886,12.9,12.9,0,0,0-3.886,9.484,12.9,12.9,0,0,0,3.886,9.484A12.9,12.9,0,0,0,96.713-849.917ZM96.713-863.287Z" transform="translate(-80 880)" fill="#00e608"/>
-                      </svg>                                  
-                </span>
-                <span class="job_feed_action_details_text" id="job_feed_action_details_text_1">Send resume</span>
-                <span class="job_feed_action_datetime_container" id="job_feed_action_datetime_container_1">
-                    <span class="job_feed_action_details_date" id="job_feed_action_details_date_1">03.23.2025</span>
-                </span>
-                <span class="job_feed_action_icon_help" id="job_feed_action_icon_help_1">
-                    💡
-                </span>
-            </div>
-            <div class="job_feed_action_details" id="job_feed_action_details_2">
-                <span class="job_feed_action_details_icon_done" id="job_feed_action_details_icon_done_2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 33.425 33.425">
-                        <path id="check_circle_24dp_000000_FILL0_wght400_GRAD0_opsz24_2" d="M94.373-855.6l11.782-11.783-2.34-2.34-9.443,9.443-4.763-4.763-2.34,2.34Zm2.34,9.025a16.277,16.277,0,0,1-6.518-1.316,16.883,16.883,0,0,1-5.306-3.572,16.874,16.874,0,0,1-3.572-5.306A16.274,16.274,0,0,1,80-863.287a16.274,16.274,0,0,1,1.316-6.518,16.876,16.876,0,0,1,3.572-5.306,16.876,16.876,0,0,1,5.306-3.572A16.279,16.279,0,0,1,96.713-880a16.279,16.279,0,0,1,6.518,1.316,16.876,16.876,0,0,1,5.306,3.572,16.876,16.876,0,0,1,3.572,5.306,16.274,16.274,0,0,1,1.316,6.518,16.274,16.274,0,0,1-1.316,6.518,16.874,16.874,0,0,1-3.572,5.306,16.882,16.882,0,0,1-5.306,3.572A16.277,16.277,0,0,1,96.713-846.575Zm0-3.343A12.9,12.9,0,0,0,106.2-853.8a12.9,12.9,0,0,0,3.886-9.484,12.9,12.9,0,0,0-3.886-9.484,12.9,12.9,0,0,0-9.484-3.886,12.9,12.9,0,0,0-9.484,3.886,12.9,12.9,0,0,0-3.886,9.484,12.9,12.9,0,0,0,3.886,9.484A12.9,12.9,0,0,0,96.713-849.917ZM96.713-863.287Z" transform="translate(-80 880)" fill="#e8e8e8"/>
-                    </svg>                                                                  
-                </span>
-                <span class="job_feed_action_details_text" id="job_feed_action_details_text_2">Technicall interview</span>
-                <span class="job_feed_action_datetime_container" id="job_feed_action_datetime_container_2">
-                    <span class="job_feed_action_icon_time" id="job_feed_action_time_2">9:00 - 11:00</span>
-                    <span class="job_feed_action_details_date" id="job_feed_action_details_date_2">03.23.2025</span>
-                </span>
-                <span class="job_feed_action_icon_help" id="job_feed_action_icon_help_2">
-                    💡
-                </span>
-            </div>
-        </div>
-        <button class="job_feed_next_action" id="job_feed_next_action_id">next</button>
 
-        <div class="job_feed_application" id="job_feed_application_id">
-            <span class="job_feed_ca_icon_action" id="job_feed_ca_icon_action_id">
-                <svg xmlns="http://www.w3.org/2000/svg" width="33.627" height="33.627"
-                    viewBox="0 0 33.627 33.627">
-                    <path id="directions_alt_24dp_000000_FILL0_wght400_GRAD0_opsz24_job_feed"
-                        d="M96.813-846.373a3.216,3.216,0,0,1-1.24-.252,3.421,3.421,0,0,1-1.114-.757L81.009-860.833a3.42,3.42,0,0,1-.757-1.114,3.216,3.216,0,0,1-.252-1.24,3.217,3.217,0,0,1,.252-1.24,3.419,3.419,0,0,1,.757-1.114L94.46-878.991a3.42,3.42,0,0,1,1.114-.757,3.215,3.215,0,0,1,1.24-.252,3.215,3.215,0,0,1,1.24.252,3.42,3.42,0,0,1,1.114.757l13.451,13.451a3.419,3.419,0,0,1,.757,1.114,3.217,3.217,0,0,1,.252,1.24,3.217,3.217,0,0,1-.252,1.24,3.42,3.42,0,0,1-.757,1.114L99.167-847.382a3.421,3.421,0,0,1-1.114.757A3.216,3.216,0,0,1,96.813-846.373Zm-6.725-10.088,6.725,6.725,13.451-13.451L96.813-876.637,83.363-863.187Zm6.725,1.681,8.407-8.407-8.407-8.407-2.354,2.354,4.287,4.371H88.407v3.363h10.34l-4.287,4.372ZM96.813-863.187Z"
-                        transform="translate(-80 880)" fill="#ecbf63" />
-                </svg>
-            </span>
-            <span class="job_feed_ca_company_name" id="job_feed_ca_company_name_id">Apple</span>
-            <span class="job_feed_ca_job_link" id="job_feed_ca_job_link_id">
-                <svg xmlns="http://www.w3.org/2000/svg" width="33.106" height="16.553"
-                    viewBox="0 0 33.106 16.553">
-                    <path id="link_24dp_000000_FILL0_wght400_GRAD0_opsz24_job_feed"
-                        d="M94.9-663.447H88.276a7.977,7.977,0,0,1-5.856-2.421A7.976,7.976,0,0,1,80-671.724a7.977,7.977,0,0,1,2.421-5.856A7.976,7.976,0,0,1,88.276-680H94.9v3.31H88.276a4.788,4.788,0,0,0-3.517,1.448,4.789,4.789,0,0,0-1.448,3.517,4.789,4.789,0,0,0,1.448,3.517,4.789,4.789,0,0,0,3.517,1.448H94.9Zm-4.966-6.621v-3.31h13.242v3.31Zm8.276,6.621v-3.311h6.621a4.789,4.789,0,0,0,3.517-1.448,4.789,4.789,0,0,0,1.448-3.517,4.789,4.789,0,0,0-1.448-3.517,4.788,4.788,0,0,0-3.517-1.448H98.208V-680h6.621a7.976,7.976,0,0,1,5.856,2.421,7.977,7.977,0,0,1,2.421,5.856,7.977,7.977,0,0,1-2.421,5.856,7.977,7.977,0,0,1-5.856,2.421Z"
-                        transform="translate(-80 680)" fill="#cecece" />
-                </svg>
-            </span>
-            <span class="job_feed_ca_job_cv" id="job_feed_ca_job_cv_id">
-                <svg xmlns="http://www.w3.org/2000/svg" width="31.515" height="27.515"
-                    viewBox="0 0 31.515 27.515">
-                    <path id="deployed_code_account_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                        d="M104.242-772.485a2.656,2.656,0,0,1-.646-.081,1.776,1.776,0,0,1-.606-.283l-4.848-2.828a2.243,2.243,0,0,1-.869-.869,2.413,2.413,0,0,1-.3-1.192v-5.7a2.414,2.414,0,0,1,.3-1.192,2.244,2.244,0,0,1,.869-.869l4.848-2.828a1.779,1.779,0,0,1,.606-.283,2.655,2.655,0,0,1,.646-.081,1.966,1.966,0,0,1,.626.1,3.25,3.25,0,0,1,.586.263L110.3-785.5a2.394,2.394,0,0,1,.889.869,2.3,2.3,0,0,1,.323,1.192v5.7a2.3,2.3,0,0,1-.323,1.192,2.392,2.392,0,0,1-.889.869l-4.848,2.828a3.254,3.254,0,0,1-.586.263A1.968,1.968,0,0,1,104.242-772.485ZM92.929-787.071a6.225,6.225,0,0,1-4.566-1.9,6.225,6.225,0,0,1-1.9-4.566,6.225,6.225,0,0,1,1.9-4.566,6.225,6.225,0,0,1,4.566-1.9,6.225,6.225,0,0,1,4.566,1.9,6.225,6.225,0,0,1,1.9,4.566,6.225,6.225,0,0,1-1.9,4.566A6.225,6.225,0,0,1,92.929-787.071ZM80-774.142v-4.525a4.872,4.872,0,0,1,.687-2.505,4.48,4.48,0,0,1,1.9-1.778,25.308,25.308,0,0,1,4.646-1.778,21,21,0,0,1,5.7-.727h.566a1.523,1.523,0,0,1,.485.081,11.227,11.227,0,0,0-.545,1.515,12.571,12.571,0,0,0-.343,1.636h-.162a16.94,16.94,0,0,0-5.151.727,26.56,26.56,0,0,0-3.737,1.455,1.572,1.572,0,0,0-.586.566,1.519,1.519,0,0,0-.222.808v1.293H93.414a10.237,10.237,0,0,0,.646,1.677,13.365,13.365,0,0,0,.889,1.556ZM92.929-790.3a3.112,3.112,0,0,0,2.283-.949,3.113,3.113,0,0,0,.949-2.283,3.112,3.112,0,0,0-.949-2.283,3.112,3.112,0,0,0-2.283-.95,3.112,3.112,0,0,0-2.283.95,3.112,3.112,0,0,0-.949,2.283,3.113,3.113,0,0,0,.949,2.283A3.112,3.112,0,0,0,92.929-790.3ZM92.929-793.536ZM93.414-777.374Zm7.03-6.707,3.8,2.222,3.8-2.222-3.8-2.182Zm5.01,8.4,3.636-2.1v-4.444l-3.636,2.141Zm-6.061-2.1,3.636,2.141v-4.4l-3.636-2.141Z"
-                        transform="translate(-80 800)" />
-                </svg>
-            </span>
-            <span class="job_feed_ca_status" id="job_feed_ca_status_id">applied</span>
-            <span class="job_feed_ca_expand_icon" id="job_feed_ca_expand_icon_id">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18.842" height="11.093"
-                    viewBox="0 0 18.842 11.093">
-                    <path id="arrow_back_ios_24dp_000000_FILL0_wght400_GRAD0_opsz24"
-                        d="M9.421,18.842,0,9.421,9.421,0l1.672,1.672L3.344,9.421l7.749,7.749Z"
-                        transform="translate(0 11.093) rotate(-90)" />
-                </svg>
-            </span>
-        </div>
-        <div class="job_feed_actions_details" id="job_feed_actions_details_id">
-            <div class="job_feed_action_details" id="job_feed_action_details_1">
-                <span class="job_feed_action_details_icon_done" id="job_feed_action_details_icon_done_1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 33.425 33.425">
-                        <path id="check_circle_24dp_000000_FILL0_wght400_GRAD0_opsz24_1" d="M94.373-855.6l11.782-11.783-2.34-2.34-9.443,9.443-4.763-4.763-2.34,2.34Zm2.34,9.025a16.277,16.277,0,0,1-6.518-1.316,16.883,16.883,0,0,1-5.306-3.572,16.874,16.874,0,0,1-3.572-5.306A16.274,16.274,0,0,1,80-863.287a16.274,16.274,0,0,1,1.316-6.518,16.876,16.876,0,0,1,3.572-5.306,16.876,16.876,0,0,1,5.306-3.572A16.279,16.279,0,0,1,96.713-880a16.279,16.279,0,0,1,6.518,1.316,16.876,16.876,0,0,1,5.306,3.572,16.876,16.876,0,0,1,3.572,5.306,16.274,16.274,0,0,1,1.316,6.518,16.274,16.274,0,0,1-1.316,6.518,16.874,16.874,0,0,1-3.572,5.306,16.882,16.882,0,0,1-5.306,3.572A16.277,16.277,0,0,1,96.713-846.575Zm0-3.343A12.9,12.9,0,0,0,106.2-853.8a12.9,12.9,0,0,0,3.886-9.484,12.9,12.9,0,0,0-3.886-9.484,12.9,12.9,0,0,0-9.484-3.886,12.9,12.9,0,0,0-9.484,3.886,12.9,12.9,0,0,0-3.886,9.484,12.9,12.9,0,0,0,3.886,9.484A12.9,12.9,0,0,0,96.713-849.917ZM96.713-863.287Z" transform="translate(-80 880)" fill="#00e608"/>
-                      </svg>                                  
-                </span>
-                <span class="job_feed_action_details_text" id="job_feed_action_details_text_1">Send resume</span>
-                <span class="job_feed_action_datetime_container" id="job_feed_action_datetime_container_1">
-                    <span class="job_feed_action_details_date" id="job_feed_action_details_date_1">03.23.2025</span>
-                </span>
-                <span class="job_feed_action_icon_help" id="job_feed_action_icon_help_1">
-                    💡
-                </span>
-            </div>
-            <div class="job_feed_action_details" id="job_feed_action_details_2">
-                <span class="job_feed_action_details_icon_done" id="job_feed_action_details_icon_done_2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 33.425 33.425">
-                        <path id="check_circle_24dp_000000_FILL0_wght400_GRAD0_opsz24_2" d="M94.373-855.6l11.782-11.783-2.34-2.34-9.443,9.443-4.763-4.763-2.34,2.34Zm2.34,9.025a16.277,16.277,0,0,1-6.518-1.316,16.883,16.883,0,0,1-5.306-3.572,16.874,16.874,0,0,1-3.572-5.306A16.274,16.274,0,0,1,80-863.287a16.274,16.274,0,0,1,1.316-6.518,16.876,16.876,0,0,1,3.572-5.306,16.876,16.876,0,0,1,5.306-3.572A16.279,16.279,0,0,1,96.713-880a16.279,16.279,0,0,1,6.518,1.316,16.876,16.876,0,0,1,5.306,3.572,16.876,16.876,0,0,1,3.572,5.306,16.274,16.274,0,0,1,1.316,6.518,16.274,16.274,0,0,1-1.316,6.518,16.874,16.874,0,0,1-3.572,5.306,16.882,16.882,0,0,1-5.306,3.572A16.277,16.277,0,0,1,96.713-846.575Zm0-3.343A12.9,12.9,0,0,0,106.2-853.8a12.9,12.9,0,0,0,3.886-9.484,12.9,12.9,0,0,0-3.886-9.484,12.9,12.9,0,0,0-9.484-3.886,12.9,12.9,0,0,0-9.484,3.886,12.9,12.9,0,0,0-3.886,9.484,12.9,12.9,0,0,0,3.886,9.484A12.9,12.9,0,0,0,96.713-849.917ZM96.713-863.287Z" transform="translate(-80 880)" fill="#e8e8e8"/>
-                    </svg>                                                                  
-                </span>
-                <span class="job_feed_action_details_text" id="job_feed_action_details_text_2">Technicall interview</span>
-                <span class="job_feed_action_datetime_container" id="job_feed_action_datetime_container_2">
-                    <span class="job_feed_action_icon_time" id="job_feed_action_time_2">9:00 - 11:00</span>
-                    <span class="job_feed_action_details_date" id="job_feed_action_details_date_2">03.23.2025</span>
-                </span>
-                <span class="job_feed_action_icon_help" id="job_feed_action_icon_help_2">
-                    💡
-                </span>
-            </div>
-            <button class="job_feed_next_action" id="job_feed_next_action_id">next</button>
-        </div>
-        
     </div>
 </div>
 
@@ -331,68 +255,45 @@
     <div class="modal-form">
         <button class="modal_close_btn">
             <svg width="24" height="24" viewBox="0 0 24 24">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
             </svg>
         </button>
 
-        <form class="project-form" id="add-activity-form-{{ job_search.id }}" method="post" enctype="multipart/form-data" action="{% url 'services_and_projects:add_job_search_activity' job_search.id %}">
+        <form class="project-form" id="add-activity-form-{{ job_search.id }}" method="post"
+            enctype="multipart/form-data"
+            action="{% url 'services_and_projects:add_job_search_activity' job_search.id %}">
             {% csrf_token %}
-            
-            <div class="form-group">
-                <label for="activity-title-{{ job_search.id }}">Title</label>
-                <input type="text" id="activity-title-{{ job_search.id }}" name="title" required>
-            </div>
-            
+
             <div class="form-group">
                 <label for="activity-company-{{ job_search.id }}">Company</label>
-                <input type="text" id="activity-company-{{ job_search.id }}" name="company_name" placeholder="Enter company name" required>
+                <!-- DEBUG: all_companies = {{ all_companies|safe }} -->
+                <div id="activity-company-container-{{ job_search.id }}" class="form-control company-chip-container"
+                    tabindex="0" data-all-companies='{{ all_companies|safe }}'>
+                    <input type="text" id="activity-company-input-{{ job_search.id }}"
+                        placeholder="Start typing company name..." autocomplete="off" class="company-input-field">
+                </div>
+                <div id="activity-company-dropdown-{{ job_search.id }}" class="company-dropdown-menu"></div>
+                <input type="hidden" name="company_name" id="activity-company-hidden-{{ job_search.id }}">
             </div>
-            
-            <div class="form-group">
-                <label for="activity-location-{{ job_search.id }}">Location</label>
-                <input type="text" id="activity-location-{{ job_search.id }}" name="location" placeholder="Enter location" required>
-            </div>
-            
+
             <div class="form-group">
                 <label for="activity-vacancy-link-{{ job_search.id }}">Vacancy Link</label>
-                <input type="url" id="activity-vacancy-link-{{ job_search.id }}" name="link_to_vacancy" placeholder="https://example.com/vacancy" required>
+                <input type="url" id="activity-vacancy-link-{{ job_search.id }}" name="link_to_vacancy"
+                    placeholder="https://example.com/vacancy" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="activity-cv-file-{{ job_search.id }}">CV File</label>
                 <div class="file-upload-area">
-                    <input type="file" id="activity-cv-file-{{ job_search.id }}" name="cv_file" accept=".pdf,.doc,.docx" required>
+                    <input type="file" id="activity-cv-file-{{ job_search.id }}" name="cv_file"
+                        accept=".pdf,.doc,.docx">
                     <div class="drop-zone">
                         <p>Drop CV file here or click to upload</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="form-group">
-                <label for="activity-job-description-{{ job_search.id }}">Job Description</label>
-                <textarea id="activity-job-description-{{ job_search.id }}" name="job_description" rows="4" placeholder="Enter job description" required></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="activity-status-{{ job_search.id }}">Activity Status</label>
-                <select id="activity-status-{{ job_search.id }}" name="status" required>
-                    <option value="">-- Select status --</option>
-                    <option value="successful">Successful</option>
-                    <option value="unsuccessful">Unsuccessful</option>
-                    <option value="canceled">Canceled</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="activity-start-date-{{ job_search.id }}">Start Date</label>
-                <input type="datetime-local" id="activity-start-date-{{ job_search.id }}" name="start_date" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="activity-context-{{ job_search.id }}">Context</label>
-                <textarea id="activity-context-{{ job_search.id }}" name="context" rows="3" placeholder="Additional context or notes"></textarea>
-            </div>
-            
+
             <div class="form-actions">
                 <button type="submit" class="btn btn-secondary save-btn">Save Activity</button>
             </div>

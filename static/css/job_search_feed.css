@@ -15,6 +15,23 @@
     position: relative;
 }
 
+/* Стили для случая, когда нет активностей */
+.job_feed_no_activities {
+    background-color: #f8f9fa;
+    width: 95%;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 8px auto;
+    text-align: center;
+    border: 2px dashed #dee2e6;
+}
+
+.job_feed_no_activities p {
+    margin: 0;
+    color: #6c757d;
+    font-style: italic;
+}
+
 /* Контейнер для кнопок */
 .social_feed_button_container_row {
     display: flex;
@@ -76,163 +93,163 @@
 /* Отдельный элемент действия */
 .job_feed_action_details {
     background-color: #FEFBD7;
-    border-radius: 12px;
-    padding: 5px 20px;
+    border-radius: 10px;
+    padding: 8px;
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-    /* Добавляем плавную анимацию для элементов */
-    transition: all 0.3s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Состояние элементов при свернутом состоянии */
-.job_feed_actions_details.collapsed .job_feed_action_details {
-    opacity: 0;
-    transform: translateY(-10px);
-}
-
-/* Состояние элементов при развернутом состоянии */
-.job_feed_actions_details.expanded .job_feed_action_details {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Кнопка "next" */
-.job_feed_next_action {
-    background-color: #90EE90;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 12px 30px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    margin: 20px auto;
-    display: block;
-    transition: all 0.3s ease;
-}
-
-/* Состояние кнопки при свернутом состоянии */
-.job_feed_actions_details.collapsed + .job_feed_next_action {
-    opacity: 0;
-    transform: translateY(-10px);
-    margin: 0 auto;
-}
-
-/* Состояние кнопки при развернутом состоянии */
-.job_feed_actions_details.expanded + .job_feed_next_action {
-    opacity: 1;
-    transform: translateY(0);
-    margin: 10px auto;
-}
-
-.job_feed_next_action:hover {
-    background-color: #7CCD7C;
-}
-
-/* Иконка действия */
-.job_feed_ca_icon_action {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Название компании */
-.job_feed_ca_company_name {
-    font-size: 18px;
-    font-weight: 600;
-    color: #282D3B;
-    margin-left: 15px;
-}
-
-/* Ссылка на работу */
-.job_feed_ca_job_link {
-    display: flex;
-    align-items: center;
-    margin-left: 15px;
-}
-
-/* Иконка CV */
-.job_feed_ca_job_cv {
-    display: flex;
-    align-items: center;
-    margin-left: 15px;
-}
-
-/* Статус */
-.job_feed_ca_status {
-    color: #808080;
-
-    font-weight: 500;
-    margin-left: auto;
-    margin-right: 10px;
-}
-
-/* Иконка разворачивания */
-.job_feed_ca_expand_icon {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-/* Состояние иконки при свернутом состоянии - стрелка направлена вправо */
-.job_feed_ca_expand_icon.collapsed {
-    transform: rotate(90deg);
-}
-
-/* Состояние иконки при развернутом состоянии - стрелка направлена вниз */
-.job_feed_ca_expand_icon.expanded {
-    transform: rotate(0deg);
-}
-
-/* Иконка выполнения действия */
+/* Иконка статуса действия */
 .job_feed_action_details_icon_done {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-right: 15px;
+    margin-right: 10px;
 }
 
 /* Текст действия */
 .job_feed_action_details_text {
     flex: 1;
-    font-size: 16px;
     font-weight: 500;
-    color: #282D3B;
+    color: #333;
 }
 
-/* Контейнер для даты и времени */
+/* Контейнер даты и времени */
 .job_feed_action_datetime_container {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-right: 15px;
-    gap: 2px;
+    margin-right: 10px;
 }
 
 /* Дата действия */
 .job_feed_action_details_date {
-    font-size: 18px;
-    color: #282D3B;
-    font-weight: 500;
+    font-size: 0.85em;
+    color: #666;
 }
 
 /* Время действия */
 .job_feed_action_icon_time {
-    font-size: 12px;
-    color: #282D3B;
-    font-weight: 500;
-    margin-bottom: -10px;
+    font-size: 0.8em;
+    color: #888;
+    margin-bottom: 2px;
 }
 
 /* Иконка помощи */
 .job_feed_action_icon_help {
-    font-size: 20px;
+    font-size: 1.2em;
     margin-left: 10px;
+}
+
+/* Кнопка следующего действия */
+.job_feed_next_action {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin: 10px auto;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.job_feed_next_action:hover {
+    background-color: #0056b3;
+}
+
+/* Стили для ссылок */
+.job_feed_ca_job_link a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.job_feed_ca_job_cv a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+/* Стили для статусов активностей */
+.job_feed_ca_status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 500;
+    text-transform: capitalize;
+    min-width: 80px;
+    text-align: center;
+}
+
+.job_feed_ca_status:contains("successful") {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.job_feed_ca_status:contains("unsuccessful") {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.job_feed_ca_status:contains("canceled") {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* Стили для названия компании */
+.job_feed_ca_company_name {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1em;
+}
+
+/* Стили для иконок */
+.job_feed_ca_icon_action,
+.job_feed_ca_job_link,
+.job_feed_ca_job_cv,
+.job_feed_ca_expand_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.job_feed_ca_icon_action:hover,
+.job_feed_ca_job_link:hover,
+.job_feed_ca_job_cv:hover,
+.job_feed_ca_expand_icon:hover {
+    opacity: 0.7;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .job_feed_application {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .job_feed_action_details {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    
+    .job_feed_action_datetime_container {
+        align-items: center;
+        margin-right: 0;
+    }
+    
+    .job_feed_ca_status {
+        min-width: auto;
+        padding: 4px 8px;
+    }
 }
 
 /* Job Feed Hide Icon - исправленная версия для избежания смещения при вращении */
@@ -244,7 +261,7 @@
     width: 35px;
     height: 35px;
     margin-left: -17.5px;
-    z-index: 1000;
+    z-index: 999;
     cursor: pointer;
     /* Фиксируем позицию чтобы не смещалась при разворачивании */
     transform: translateZ(0);
@@ -641,11 +658,65 @@
 
 .drop-zone {
     color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drop-zone:hover {
+    color: #007bff;
 }
 
 .drop-zone p {
     margin: 0;
     font-size: 14px;
+}
+
+/* Стили для информации о выбранном файле */
+.file-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.file-name {
+    font-weight: 500;
+    color: #495057;
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-size {
+    font-size: 12px;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+.remove-file-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.remove-file-btn:hover {
+    background: #c82333;
 }
 
 .form-actions {
@@ -703,4 +774,127 @@
     .save-btn {
         width: 100%;
     }
+}
+
+/* --- Company Chips & Dropdown --- */
+.company-chip-container {
+    min-height: 38px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    cursor: text;
+    position: relative;
+    background: #fff;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 4px 8px;
+    gap: 4px;
+}
+
+/* --- Job Feed Application Styles --- */
+.job_feed_ca_job_link {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.job_feed_ca_job_link:hover {
+    opacity: 0.8;
+}
+
+.job_feed_ca_job_link a {
+    display: block;
+    transition: opacity 0.2s;
+}
+
+.job_feed_ca_job_link a:hover {
+    opacity: 0.8;
+}
+
+.job_feed_ca_job_cv {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.job_feed_ca_job_cv:hover {
+    opacity: 0.8;
+}
+
+/* Стили для выбранной компании в поле ввода */
+.company-input-field.selected {
+    background-color: #e8f5e8;
+    border-color: #28a745;
+    color: #28a745;
+    font-weight: 500;
+}
+
+/* Стили для иконок статуса */
+.job_feed_ca_status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help; /* Показываем, что есть tooltip */
+}
+
+.job_feed_ca_status svg {
+    width: 38px;
+    height: 36px;
+    transition: transform 0.2s ease;
+}
+
+.job_feed_ca_status:hover svg {
+    transform: scale(1.1);
+}
+
+.company-dropdown-menu {
+    display: none;
+    position: fixed;
+    background: #fff;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(40,45,59,0.15);
+    z-index: 999999;
+    max-height: 200px;
+    overflow-y: auto;
+    min-width: 200px;
+    margin-top: 4px;
+}
+
+/* Отладочные стили для выпадающего списка */
+.company-dropdown-menu[style*="display: block"] {
+    background: #ffffcc !important;
+    border: 3px solid #ff0000 !important;
+}
+
+.company-dropdown-menu .company-dropdown-item {
+    padding: 8px 14px;
+    cursor: pointer;
+    color: #282D3B;
+    border-radius: 8px;
+    transition: background 0.2s;
+    font-size: 15px;
+}
+
+.company-dropdown-menu .company-dropdown-item:hover {
+    background: #f0f0f0;
+}
+
+.company-dropdown-menu .company-dropdown-item.create-new-company {
+    background: #f8f9fa;
+    border-left: 3px solid #28a745;
+    font-style: italic;
+}
+
+.company-dropdown-menu .company-dropdown-item.create-new-company:hover {
+    background: #e9ecef;
+}
+
+.company-dropdown-menu .company-dropdown-item.no-results {
+    color: #6c757d;
+    font-style: italic;
+    cursor: default;
+}
+
+.company-dropdown-menu .company-dropdown-item.no-results:hover {
+    background: transparent;
 }

@@ -412,23 +412,23 @@ class JobSearch(models.Model):
 
 class Activities(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=60)
-    location = models.CharField(max_length=120)
-    cv_file = models.FileField(upload_to='user_data/cv_files/', max_length=2097152)  # 2MB = 2,097,152 bytes
-    link_to_vacancy = models.CharField(max_length=3000)
-    job_description = models.TextField()
-    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    title = models.CharField(max_length=60, blank=True, default='')
+    location = models.CharField(max_length=120, blank=True, default='')
+    cv_file = models.FileField(upload_to='user_data/cv_files/', max_length=2097152, blank=True, null=True)  # 2MB = 2,097,152 bytes
+    link_to_vacancy = models.CharField(max_length=3000)  # Обязательное поле
+    job_description = models.TextField(blank=True, default='')
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE, to_field='id_company')  # Обязательное поле
     
     STATUS_CHOICES = [
         ('successful', 'Successful'),
         ('unsuccessful', 'Unsuccessful'),
         ('canceled', 'Canceled'),
     ]
-    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='unsuccessful')
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='unsuccessful', blank=True)
     
-    start_date = models.DateTimeField()
+    start_date = models.DateTimeField(blank=True, null=True)
     last_update = models.DateTimeField(auto_now=True)
-    context = models.CharField(max_length=2000)
+    context = models.CharField(max_length=2000, blank=True, default='')
     
     # Связи многие ко многим через промежуточные таблицы
     tasks = models.ManyToManyField('Task', through='ActivitiesTaskRelations', blank=True)

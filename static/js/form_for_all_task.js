@@ -863,6 +863,13 @@ document.addEventListener('DOMContentLoaded', () => {
         saveButtons.forEach((button, index) => {
             console.log(`Initializing save button ${index}:`, button);
             
+            // Пропускаем кнопки Save Activity - они обрабатываются в job_search_feed.js
+            const form = button.closest('form');
+            if (form && form.id && form.id.startsWith('add-activity-form-')) {
+                console.log(`Skipping Save Activity button for form: ${form.id}`);
+                return;
+            }
+            
             // Убираем старые обработчики
             button.removeEventListener('click', button._clickHandler);
             
