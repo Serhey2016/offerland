@@ -217,7 +217,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.3s ease;
 }
 
 .job_feed_ca_icon_action:hover,
@@ -225,6 +225,16 @@
 .job_feed_ca_job_cv:hover,
 .job_feed_ca_expand_icon:hover {
     opacity: 0.7;
+}
+
+/* Стили для иконки разворачивания в свернутом состоянии */
+.job_feed_ca_expand_icon.collapsed {
+    transform: rotate(90deg);
+}
+
+/* Стили для иконки разворачивания в развернутом состоянии */
+.job_feed_ca_expand_icon.expanded {
+    transform: rotate(0deg);
 }
 
 /* Адаптивность */

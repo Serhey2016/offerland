@@ -271,3 +271,51 @@ def add_job_search_activity(request, job_search_id):
             'error': f'Error adding activity: {str(e)}'
         }, status=500)
 
+
+@login_required
+@require_POST
+def start_job_search(request, job_search_id):
+    """Set start date for Job Search"""
+    try:
+        job_search = JobSearch.objects.get(id=job_search_id)
+        
+        # Check if user has permission to start this job search
+        if job_search.user != request.user:
+            return JsonResponse({
+                'success': False,
+                'error': 'You do not have permission to start this job search'
+            }, status=403)
+        
+        # Check if start date is already set
+        if job_search.start_date:
+            return JsonResponse({
+                'success': False,
+                'warning': True,
+                'message': 'You have already started the process'
+            })
+        
+        # Set current date as start date
+        from django.utils import timezone
+        job_search.start_date = timezone.now()
+        job_search.save()
+        
+        # Format date for display
+        formatted_date = job_search.start_date.strftime('%d.%m.%Y')
+        
+        return JsonResponse({
+            'success': True,
+            'start_date': formatted_date,
+            'message': 'Job search started successfully'
+        })
+        
+    except JobSearch.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Job Search not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error starting job search: {str(e)}'
+        }, status=500)
+

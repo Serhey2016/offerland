@@ -83,6 +83,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обработчик для сворачивания/разворачивания деталей каждой активности
     const expandIcons = document.querySelectorAll('[id^="job_feed_ca_expand_icon_"]');
     expandIcons.forEach(icon => {
+        // Инициализируем состояние иконки при загрузке страницы
+        const activityId = icon.id.replace('job_feed_ca_expand_icon_', '');
+        const actionsDetails = document.getElementById(`job_feed_actions_details_${activityId}`);
+        
+        if (actionsDetails && actionsDetails.classList.contains('collapsed')) {
+            // Если детали свернуты, добавляем класс collapsed к иконке
+            icon.classList.add('collapsed');
+        } else {
+            // Если детали развернуты, добавляем класс expanded к иконке
+            icon.classList.add('expanded');
+        }
+        
         icon.addEventListener('click', function() {
             const activityId = icon.id.replace('job_feed_ca_expand_icon_', '');
             const actionsDetails = document.getElementById(`job_feed_actions_details_${activityId}`);
@@ -93,11 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (isCollapsed) {
                     actionsDetails.classList.remove('collapsed');
                     actionsDetails.classList.add('expanded');
-                    icon.style.transform = 'rotate(0deg)';
+                    icon.classList.remove('collapsed');
+                    icon.classList.add('expanded');
                 } else {
                     actionsDetails.classList.remove('expanded');
                     actionsDetails.classList.add('collapsed');
-                    icon.style.transform = 'rotate(90deg)';
+                    icon.classList.remove('expanded');
+                    icon.classList.add('collapsed');
                 }
             }
         });

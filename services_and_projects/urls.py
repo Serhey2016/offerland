@@ -16,4 +16,5 @@ urlpatterns = [
     path('save_job_search_notes/<int:job_search_id>/', save_job_search_notes, name='save_job_search_notes'),
     path('add_job_search_activity/<int:job_search_id>/', add_job_search_activity, name='add_job_search_activity'),
     path('create_activity_task/<int:activity_id>/', create_activity_task, name='create_activity_task'),
+    path('start_job_search/<int:job_search_id>/', views.start_job_search, name='start_job_search'),
 ]

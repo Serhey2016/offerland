@@ -550,10 +550,12 @@ def create_job_search(request):
                 }, status=400)
             
             # Всегда создаем новую запись JobSearch
+            from django.utils import timezone
             job_search = JobSearch.objects.create(
                 user=request.user,
-                title=title
-                # start_date и last_update заполнятся автоматически
+                title=title,
+                start_date=timezone.now()
+                # last_update заполнится автоматически
             )
             logger.info(f"Created new JobSearch {job_search.id}")
             

@@ -4,7 +4,8 @@ from .models import (
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations, 
     PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
     TimeSlot, Advertising, TaskClientRelations, TimeSlotPerformersRelations, CommentTimeSlotRelations,
-    CommentAdvertisingRelations, AdvertisingOwnerRelations, JobSearch, Activities, JobSearchActivitiesRelations
+    CommentAdvertisingRelations, AdvertisingOwnerRelations, JobSearch, Activities, JobSearchActivitiesRelations,
+    ActivitiesTaskRelations
 )
 
 class TaskHashtagRelationsInline(admin.TabularInline):
@@ -121,6 +122,22 @@ class CommentTimeSlotRelationsAdmin(admin.ModelAdmin):
 class CommentAdvertisingRelationsAdmin(admin.ModelAdmin):
     list_display = ('comment', 'advertising')
     search_fields = ('comment__content', 'advertising__title')
+
+@admin.register(ActivitiesTaskRelations)
+class ActivitiesTaskRelationsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'activity', 'task', 'get_activity_title', 'get_task_title')
+    list_filter = ('activity__status', 'activity__company')
+    search_fields = ('activity__title', 'task__title', 'activity__company__company_name')
+    
+    def get_activity_title(self, obj):
+        return obj.activity.title if obj.activity and obj.activity.title else '-'
+    get_activity_title.short_description = 'Activity Title'
+    get_activity_title.admin_order_field = 'activity__title'
+    
+    def get_task_title(self, obj):
+        return obj.task.title if obj.task and obj.task.title else '-'
+    get_task_title.short_description = 'Task Title'
+    get_task_title.admin_order_field = 'task__title'
 
 # Регистрируем новые модели
 admin.site.register(Activities, ActivitiesAdmin)

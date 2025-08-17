@@ -388,7 +388,7 @@ class JobSearch(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_searches')
     title = models.CharField(max_length=60)
-    start_date = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField(blank=True, null=True)
     last_update = models.DateTimeField(auto_now=True)
     notes = models.TextField(blank=True, null=True)
     
