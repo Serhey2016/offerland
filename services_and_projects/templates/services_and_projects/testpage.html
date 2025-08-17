@@ -139,6 +139,8 @@
                 {% else %}
                     {% include 'services_and_projects/task_feed.html' with task=item.data %}
                 {% endif %}
+            {% elif item.type == 'job_search' %}
+                {% include 'services_and_projects/job_search_feed.html' with job_search=item.data %}
             {% endif %}
         {% endfor %}
     {% else %}

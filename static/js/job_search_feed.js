@@ -3,6 +3,23 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Инициализация функциональности job feed
     
+    // Обработчик для кнопки добавления новой активности (+)
+    const addActivityButtons = document.querySelectorAll('[id="social_feed_button_container_button2_id"]');
+    addActivityButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const jobSearchId = button.closest('.social_feed2').querySelector('[id^="jobFeedHideIcon_"]').id.replace('jobFeedHideIcon_', '');
+            const activityForm = document.getElementById(`add-activity-form-${jobSearchId}`);
+            
+            if (activityForm) {
+                activityForm.style.display = 'block';
+                console.log('Add activity form opened for JobSearch ID:', jobSearchId);
+            } else {
+                console.error('Add activity form not found for JobSearch ID:', jobSearchId);
+            }
+        });
+    });
+    
     // Обработчик для сворачивания/разворачивания деталей job feed
     const jobFeedHideIcons = document.querySelectorAll('[id^="jobFeedHideIcon_"]');
     jobFeedHideIcons.forEach(icon => {
@@ -102,6 +119,104 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Обработчик для иконок заметок
+    const notesIcons = document.querySelectorAll('[id^="note_button_007_post_info_icon_notes_"]');
+    notesIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            const jobSearchId = icon.id.replace('note_button_007_post_info_icon_notes_', '');
+            const notesPopup = document.getElementById(`note_button_007_notesPopup_${jobSearchId}`);
+            
+            if (notesPopup) {
+                notesPopup.classList.add('show');
+                console.log('Notes popup opened for JobSearch ID:', jobSearchId);
+            } else {
+                console.error('Notes popup not found for JobSearch ID:', jobSearchId);
+            }
+        });
+    });
+    
+    // Обработчик для закрытия попапа заметок
+    const closeNotesButtons = document.querySelectorAll('.notes-close-btn');
+    closeNotesButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const popup = button.closest('.notes-popup-overlay');
+            if (popup) {
+                popup.classList.remove('show');
+            }
+        });
+    });
+    
+    // Обработчик для кнопки Cancel в попапе заметок
+    const cancelNotesButtons = document.querySelectorAll('.notes-cancel-btn');
+    cancelNotesButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const popup = button.closest('.notes-popup-overlay');
+            if (popup) {
+                popup.classList.remove('show');
+            }
+        });
+    });
+    
+    // Обработчик для отправки формы заметок
+    const notesForms = document.querySelectorAll('[id^="note_button_007_notesForm_"]');
+    notesForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const jobSearchId = form.id.replace('note_button_007_notesForm_', '');
+            const notesTextarea = form.querySelector('textarea[name="notes"]');
+            const notes = notesTextarea ? notesTextarea.value : '';
+            
+            console.log('Submitting notes for JobSearch ID:', jobSearchId, 'Notes:', notes);
+            
+            // Отправляем AJAX запрос
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Notes saved successfully');
+                    // Закрываем попап
+                    const popup = form.closest('.notes-popup-overlay');
+                    if (popup) {
+                        popup.classList.remove('show');
+                    }
+                    // Можно добавить уведомление об успешном сохранении
+                    if (window.alertify) {
+                        window.alertify.success('Notes saved successfully!');
+                    }
+                } else {
+                    console.error('Error saving notes:', data.error);
+                    if (window.alertify) {
+                        window.alertify.error('Error saving notes: ' + (data.error || 'Unknown error'));
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting notes form:', error);
+                if (window.alertify) {
+                    window.alertify.error('Error saving notes: ' + error.message);
+                }
+            });
+        });
+    });
+    
+    // Убираем закрытие попапа при клике на фон
+    // const notesPopups = document.querySelectorAll('.notes-popup-overlay');
+    // notesPopups.forEach(popup => {
+    //     popup.addEventListener('click', function(e) {
+    //         if (e.target === popup) {
+    //             popup.classList.remove('show');
+    //         }
+    //     });
+    // });
+    
     // Обработчик для иконок помощи
     const helpIcons = document.querySelectorAll('.job_feed_action_icon_help');
     helpIcons.forEach(icon => {
@@ -126,6 +241,68 @@ document.addEventListener('DOMContentLoaded', function() {
         icon.addEventListener('click', function() {
             console.log('CV icon clicked');
             // Здесь можно добавить логику для просмотра/редактирования CV
+        });
+    });
+    
+    // Обработчик для закрытия формы добавления активности
+    const closeActivityFormButtons = document.querySelectorAll('.modal_close_btn');
+    closeActivityFormButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = button.closest('.modal_close_btn').closest('.modal-overlay');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+    
+    // Обработчик для отправки формы добавления активности
+    const activityForms = document.querySelectorAll('[id^="add-activity-form-"]');
+    activityForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const jobSearchId = form.id.replace('add-activity-form-', '');
+            
+            console.log('Submitting activity form for JobSearch ID:', jobSearchId);
+            
+            // Отправляем AJAX запрос
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Activity added successfully');
+                    // Закрываем форму
+                    const modal = form.closest('.modal-overlay');
+                    if (modal) {
+                        modal.classList.remove('show');
+                    }
+                    // Показываем уведомление об успехе
+                    if (window.alertify) {
+                        window.alertify.success('Activity added successfully!');
+                    }
+                    // Перезагружаем страницу для отображения новой активности
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    console.error('Error adding activity:', data.error);
+                    if (window.alertify) {
+                        window.alertify.error('Error adding activity: ' + (data.error || 'Unknown error'));
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting activity form:', error);
+                if (window.alertify) {
+                    window.alertify.error('Error adding activity: ' + error.message);
+                }
+            });
         });
     });
 });

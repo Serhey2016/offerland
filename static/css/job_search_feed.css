@@ -331,3 +331,376 @@
     transition: all 0.3s ease-in-out;
     overflow: hidden;
 }
+
+/* Стили для попапа заметок */
+.notes-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 10000;
+    /* Центрирование с помощью flexbox */
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.notes-popup-overlay.show {
+    display: flex;
+}
+
+.notes-popup-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.notes-popup-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notes-popup-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fbd551;
+}
+
+.notes-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #fbd551;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.notes-close-btn:hover {
+    background-color: rgba(251, 213, 81, 0.1);
+    color: #fbd551;
+}
+
+.notes-popup-body {
+    padding: 24px;
+}
+
+.notes-form .form-group {
+    margin-bottom: 20px;
+}
+
+.notes-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.notes-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+.notes-textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.notes-popup-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.notes-save-btn,
+.notes-cancel-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notes-save-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.notes-save-btn:hover {
+    background-color: #0056b3;
+}
+
+.notes-cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.notes-cancel-btn:hover {
+    background-color: #545b62;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .notes-popup-content {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .notes-popup-header {
+        padding: 16px 20px 12px;
+    }
+    
+    .notes-popup-body {
+        padding: 20px;
+    }
+    
+    .notes-popup-actions {
+        flex-direction: column;
+    }
+    
+    .notes-save-btn,
+    .notes-cancel-btn {
+        width: 100%;
+    }
+}
+
+/* Стили для модального окна добавления активности */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 10000;
+}
+
+.modal-overlay.show {
+    display: block;
+}
+
+.modal-form {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+    /* Центрирование по горизонтали */
+    margin: 50px auto 0;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal_close_btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    z-index: 1001;
+}
+
+.modal_close_btn:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.project-form {
+    padding: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-row .form-group.half {
+    flex: 0 0 calc(50% - 7.5px);
+}
+
+.file-upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.2s ease;
+    cursor: pointer;
+}
+
+.file-upload-area:hover {
+    border-color: #007bff;
+}
+
+.file-upload-area input[type="file"] {
+    display: none;
+}
+
+.drop-zone {
+    color: #666;
+}
+
+.drop-zone p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.save-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .modal-form {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .project-form {
+        padding: 20px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-row .form-group.half {
+        flex: 1;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .save-btn {
+        width: 100%;
+    }
+}

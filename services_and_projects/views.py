@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.http import urlencode
-from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations
-from joblist.models import AllTags
+from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch
+from joblist.models import AllTags, Companies
+from django.utils import timezone
 import json
 
 # Create your views here.
@@ -39,7 +40,10 @@ def testpage(request):
         'photos', 'hashtags', 'performers', 'services'
     ).order_by('-created_at')
     
-    # Создаем список всех элементов для потока (реклама + задачи)
+    # Получаем все записи JobSearch для отображения в потоке
+    job_searches_for_feed = JobSearch.objects.select_related('user').order_by('-start_date')
+    
+    # Создаем список всех элементов для потока (реклама + задачи + job searches)
     feed_items = []
     
     # Добавляем рекламу
@@ -56,8 +60,15 @@ def testpage(request):
             'data': task
         })
     
+    # Добавляем JobSearch записи
+    for job_search in job_searches_for_feed:
+        feed_items.append({
+            'type': 'job_search',
+            'data': job_search
+        })
+    
     # Сортируем по дате создания (новые сначала)
-    feed_items.sort(key=lambda x: x['data'].created_at if x['type'] == 'task' else x['data']['advertising'].creation_date, reverse=True)
+    feed_items.sort(key=lambda x: x['data'].created_at if x['type'] == 'task' else x['data'].start_date if x['type'] == 'job_search' else x['data']['advertising'].creation_date, reverse=True)
     
     # Пагинация
     paginator = Paginator(feed_items, 10)  # 10 элементов на страницу
@@ -126,4 +137,123 @@ def save_task_notes(request, task_id):
         return JsonResponse({
             'success': False,
             'error': f'Error saving: {str(e)}'
+        }, status=500)
+
+@login_required
+@require_POST
+def save_job_search_notes(request, job_search_id):
+    """Сохранение заметок к Job Search"""
+    try:
+        job_search = JobSearch.objects.get(id=job_search_id)
+        
+        # Проверяем, что пользователь имеет доступ к Job Search
+        if job_search.user != request.user:
+            return JsonResponse({
+                'success': False,
+                'error': 'You do not have permission to edit this job search'
+            }, status=403)
+        
+        notes = request.POST.get('notes', '').strip()
+        job_search.notes = notes
+        job_search.save()  # last_update автоматически обновится
+        
+        return JsonResponse({
+            'success': True
+        })
+        
+    except JobSearch.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Job Search not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error saving: {str(e)}'
+        }, status=500)
+
+@login_required
+@require_POST
+def add_job_search_activity(request, job_search_id):
+    """Добавление новой активности к Job Search"""
+    try:
+        job_search = JobSearch.objects.get(id=job_search_id)
+        
+        # Проверяем, что пользователь имеет доступ к Job Search
+        if job_search.user != request.user:
+            return JsonResponse({
+                'success': False,
+                'error': 'You do not have permission to add activity to this job search'
+            }, status=403)
+        
+        # Получаем данные из формы
+        title = request.POST.get('title', '').strip()
+        company_name = request.POST.get('company_name', '').strip()
+        location = request.POST.get('location', '').strip()
+        link_to_vacancy = request.POST.get('link_to_vacancy', '').strip()
+        job_description = request.POST.get('job_description', '').strip()
+        status = request.POST.get('status', 'unsuccessful')
+        start_date_str = request.POST.get('start_date', '')
+        context = request.POST.get('context', '').strip()
+        
+        # Валидация обязательных полей
+        if not all([title, company_name, location, link_to_vacancy, job_description, start_date_str]):
+            return JsonResponse({
+                'success': False,
+                'error': 'All required fields must be filled'
+            }, status=400)
+        
+        # Парсим дату
+        try:
+            start_date = timezone.datetime.fromisoformat(start_date_str.replace('Z', '+00:00'))
+        except ValueError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Invalid date format'
+            }, status=400)
+        
+        # Получаем или создаем компанию
+        company, created = Companies.objects.get_or_create(
+            company_name=company_name,
+            defaults={
+                'description': f'Company created from Job Search activity: {title}'
+            }
+        )
+        
+        # Создаем активность
+        from .models import Activities
+        activity = Activities.objects.create(
+            title=title,
+            location=location,
+            cv_file=request.FILES.get('cv_file'),
+            link_to_vacancy=link_to_vacancy,
+            job_description=job_description,
+            company=company,
+            status=status,
+            start_date=start_date,
+            context=context
+        )
+        
+        # Связываем активность с Job Search
+        from .models import JobSearchActivitiesRelations
+        JobSearchActivitiesRelations.objects.create(
+            job_search=job_search,
+            activity=activity
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'activity_id': activity.id,
+            'message': 'Activity added successfully'
+        })
+        
+    except JobSearch.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Job Search not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error adding activity: {str(e)}'
         }, status=500)

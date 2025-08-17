@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Task, TypeOfTask, TaskStatus, Finance, ServicesCategory, Services, ServicesRelations, Advertising, TimeSlot
+from .models import Task, TypeOfTask, TaskStatus, Finance, ServicesCategory, Services, ServicesRelations, Advertising, TimeSlot, JobSearch
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from joblist.models import AllTags
@@ -528,6 +528,48 @@ def create_time_slot(request):
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
     return JsonResponse({'error': 'Only POST allowed'}, status=405)
 
+def create_job_search(request):
+    """Создание записи Job Search"""
+    if request.method == 'POST':
+        try:
+            # Добавляем логирование для отладки
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info("=== CREATE JOB SEARCH START ===")
+            logger.info(f"Request method: {request.method}")
+            logger.info(f"Request user: {request.user}")
+            logger.info(f"Request POST data: {dict(request.POST)}")
+            
+            # Получаем данные из формы
+            title = request.POST.get('title', '').strip()
+            
+            if not title:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Title is required'
+                }, status=400)
+            
+            # Всегда создаем новую запись JobSearch
+            job_search = JobSearch.objects.create(
+                user=request.user,
+                title=title
+                # start_date и last_update заполнятся автоматически
+            )
+            logger.info(f"Created new JobSearch {job_search.id}")
+            
+            logger.info("=== CREATE JOB SEARCH COMPLETED ===")
+            return JsonResponse({'success': True, 'type': 'job_search', 'id': job_search.id})
+            
+        except Exception as e:
+            import traceback
+            logger.error(f"Error in create_job_search: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            print('Error in create_job_search:', e)
+            traceback.print_exc()
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Only POST allowed'}, status=405)
+
 def handle_form_submission(request):
     """Универсальная функция для обработки всех типов форм"""
     if request.method == 'POST':
@@ -566,6 +608,9 @@ def handle_form_submission(request):
             elif 'time slot' in type_name or 'timeslot' in type_name:
                 logger.info("Calling create_time_slot")
                 return create_time_slot(request)
+            elif 'job search' in type_name:
+                logger.info("Calling create_job_search")
+                return create_job_search(request)
             else:
                 # Для остальных типов (My list, Tender, Project) используем create_task
                 logger.info("Calling create_task")

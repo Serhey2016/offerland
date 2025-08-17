@@ -4,7 +4,7 @@ from .models import (
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations, 
     PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
     TimeSlot, Advertising, TaskClientRelations, TimeSlotPerformersRelations, CommentTimeSlotRelations,
-    CommentAdvertisingRelations, AdvertisingOwnerRelations
+    CommentAdvertisingRelations, AdvertisingOwnerRelations, JobSearch
 )
 
 class TaskHashtagRelationsInline(admin.TabularInline):
@@ -54,6 +54,7 @@ admin.site.register(TimeSlot, TimeSlotAdmin)
 admin.site.register(Advertising, AdvertisingAdmin)
 admin.site.register(TaskClientRelations)
 admin.site.register(AdvertisingOwnerRelations)
+admin.site.register(JobSearch)
 
 @admin.register(TimeSlotHashtagRelations)
 class TimeSlotHashtagRelationsAdmin(admin.ModelAdmin):

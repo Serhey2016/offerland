@@ -386,11 +386,11 @@ class TaskClientRelations(models.Model):
 
 class JobSearch(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='job_search')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_searches')
     title = models.CharField(max_length=60)
-    start_date = models.DateTimeField()
+    start_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
-    notes = models.TextField()
+    notes = models.TextField(blank=True, null=True)
     
     RESULT_CHOICES = [
         ('find_job', 'Find job'),
