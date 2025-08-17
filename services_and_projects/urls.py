@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import testpage, save_task_notes, save_job_search_notes, add_job_search_activity
 from . import views
-from services_and_projects.forms import create_task, create_advertising, create_time_slot, create_job_search, handle_form_submission
+from services_and_projects.forms import create_task, create_advertising, create_time_slot, create_job_search, handle_form_submission, create_activity_task
 
 app_name = 'services_and_projects'
 
@@ -15,4 +15,5 @@ urlpatterns = [
     path('save_task_notes/<int:task_id>/', save_task_notes, name='save_task_notes'),
     path('save_job_search_notes/<int:job_search_id>/', save_job_search_notes, name='save_job_search_notes'),
     path('add_job_search_activity/<int:job_search_id>/', add_job_search_activity, name='add_job_search_activity'),
+    path('create_activity_task/<int:activity_id>/', create_activity_task, name='create_activity_task'),
 ]

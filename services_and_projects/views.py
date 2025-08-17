@@ -270,3 +270,4 @@ def add_job_search_activity(request, job_search_id):
             'success': False,
             'error': f'Error adding activity: {str(e)}'
         }, status=500)
+

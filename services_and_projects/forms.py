@@ -626,3 +626,122 @@ def handle_form_submission(request):
     
     logger.error("Only POST method allowed")
     return JsonResponse({'error': 'Only POST allowed'}, status=405)
+
+def create_activity_task(request, activity_id):
+    """Создание новой таски для активности"""
+    print(f"=== CREATE ACTIVITY TASK DEBUG ===")
+    print(f"Request method: {request.method}")
+    print(f"Activity ID: {activity_id}")
+    print(f"Request user: {request.user}")
+    print(f"Request POST data: {dict(request.POST)}")
+    print(f"Request headers: {dict(request.headers)}")
+    
+    if request.method == 'POST':
+        try:
+            from .models import Activities, ActivitiesTaskRelations, Task, TaskStatus, JobSearchActivitiesRelations, TypeOfTask
+            
+            # Получаем активность
+            activity = Activities.objects.get(id=activity_id)
+            
+            # Проверяем, что пользователь имеет доступ к активности
+            # (через связь с JobSearch)
+            try:
+                # Получаем связь с JobSearch через промежуточную таблицу
+                job_search_relation = JobSearchActivitiesRelations.objects.get(activity=activity)
+                job_search = job_search_relation.job_search
+                
+                # Проверяем права доступа
+                if job_search.user != request.user:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'You do not have permission to create task for this activity'
+                    }, status=403)
+                    
+            except JobSearchActivitiesRelations.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Activity not found or not linked to job search'
+                }, status=404)
+            
+            # Получаем данные из формы
+            title = request.POST.get('title', '').strip()
+            description = request.POST.get('description', '').strip()
+            
+            # Валидация обязательных полей
+            if not title:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Title is required'
+                }, status=400)
+            
+            # Получаем тип задачи по умолчанию (Job search) или создаем новый
+            type_of_task, created = TypeOfTask.objects.get_or_create(
+                type_of_task_name='Job search'
+            )
+            print(f"Type of task: {type_of_task} (created: {created})")
+            
+            # Получаем статус задачи по умолчанию
+            default_status, created = TaskStatus.objects.get_or_create(
+                name='Saved (inbox)'
+            )
+            print(f"Default status: {default_status} (created: {created})")
+            
+            # Создаем таску
+            print(f"Creating task with title: {title}, description: {description}")
+            task = Task.objects.create(
+                type_of_task=type_of_task,
+                title=title,
+                description=description,
+                status=default_status,
+                is_private=False,
+                disclose_name=False,
+                hidden=False,
+                is_published=False
+            )
+            print(f"Task created successfully with ID: {task.id}")
+            
+            # Связываем таску с активностью
+            print(f"Creating ActivitiesTaskRelations for activity {activity.id} and task {task.id}")
+            ActivitiesTaskRelations.objects.create(
+                activity=activity,
+                task=task
+            )
+            print(f"ActivitiesTaskRelations created successfully")
+            
+            return JsonResponse({
+                'success': True,
+                'task_id': task.id,
+                'task_title': task.title,
+                'task_description': task.description,
+                'task_updated_at': task.updated_at.strftime('%d.%m.%Y'),
+                'message': 'Task created successfully'
+            })
+            
+        except Activities.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Activity not found'
+            }, status=404)
+        except JobSearchActivitiesRelations.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Activity not linked to any job search'
+            }, status=404)
+        except Exception as e:
+            import traceback
+            print(f"Error in create_activity_task: {e}")
+            print(f"Traceback: {traceback.format_exc()}")
+            # Log to Django logger if available
+            try:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Error in create_activity_task: {e}")
+                logger.error(f"Traceback: {traceback.format_exc()}")
+            except:
+                pass
+            return JsonResponse({
+                'success': False,
+                'error': f'Error creating task: {str(e)}'
+            }, status=500)
+    
+    return JsonResponse({'error': 'Only POST allowed'}, status=405)
