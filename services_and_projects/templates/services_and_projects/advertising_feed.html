@@ -1,18 +1,18 @@
 {% load static %}
 
-<div class="social_feed">
+<div class="social_feed" data-post-id="{{ advertising.id }}" data-post-type="advertising">
     <div class="social_feed_user_name">
         <div class="social_feed_user_name_image">
-            {% if advertising.owner and advertising.owner.avatar %}
-                <img src="{{ advertising.owner.avatar.url }}" alt="User Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+            {% if owner and owner.avatar %}
+                <img src="{{ owner.avatar.url }}" alt="User Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
             {% else %}
                 <div style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 32px;">
-                    {{ advertising.owner.get_default_avatar_emoji|default:"👤" }}
+                    {{ owner.get_default_avatar_emoji|default:"👤" }}
                 </div>
             {% endif %}
             <div class="social_feed_user_text_name">
-                {% if advertising.owner %}
-                    {{ advertising.owner.get_full_name|default:advertising.owner.username }}
+                {% if owner %}
+                    {{ owner.get_full_name|default:owner.username }}
                 {% else %}
                     Anonymous User
                 {% endif %}
@@ -20,12 +20,6 @@
         </div>
         <div class="social_feed_menu">
             <div class="social_feed_overflow_menu" id="overflow_menu_{{ advertising.id }}">
-                <div class="social_feed_overflow_menu_item start" data-action="start" data-id="{{ advertising.id }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                    Start
-                </div>
                 <div class="social_feed_overflow_menu_item edit" data-action="edit" data-id="{{ advertising.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
@@ -82,5 +76,5 @@
     </div>
 </div>
 
-<!-- Подключаем скрипт для Overflow Menu -->
-<script src="{% static 'js/social_feed_overflow_menu.js' %}"></script> 
+<!-- Подключаем скрипт для Advertising Feed -->
+<script src="{% static 'js/advertising_feed.js' %}"></script> 

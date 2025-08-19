@@ -1,6 +1,68 @@
-// Job Feed JavaScript Functionality
+// Job Feed JavaScript Functionality (wrapped to avoid globals)
+(function() {
+    if (window.__JobSearchFeedBootstrapped__) {
+        return; // уже инициализировано
+    }
+    window.__JobSearchFeedBootstrapped__ = true;
 
-document.addEventListener('DOMContentLoaded', function() {
+    // Переменные для dropdown menu
+    let activeJobSearchDropdown = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // === CSS СТИЛИ ДЛЯ CV ФАЙЛОВ ===
+    const cvFileStyles = `
+        .cv-file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            margin-top: 10px;
+        }
+        
+        .cv-file-name {
+            flex-grow: 1;
+            font-weight: 500;
+            word-break: break-word;
+        }
+        
+        .cv-file-size {
+            font-size: 12px;
+            color: #666;
+            flex-shrink: 0;
+        }
+        
+        .remove-cv-file-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .remove-cv-file-btn:hover {
+            background: #ff5252;
+        }
+    `;
+    
+    // Добавляем стили на страницу
+    if (!document.getElementById('cv-file-upload-styles')) {
+        const styleSheet = document.createElement('style');
+        styleSheet.id = 'cv-file-upload-styles';
+        styleSheet.textContent = cvFileStyles;
+        document.head.appendChild(styleSheet);
+    }
+
     // Инициализация функциональности job feed
     
     // Проверяем наличие alertify для обработки ошибок
@@ -17,25 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    // Инициализация компаний
+    // Инициализация компаний и dropdown menu
     initCompanies();
-    
-    // Проверяем, есть ли формы активности на странице
-    const foundActivityForms = document.querySelectorAll('[id^="add-activity-form-"]');
-    console.log('Found activity forms:', foundActivityForms.length);
-    
-    // Проверяем, есть ли контейнеры компаний на странице
-    const foundCompanyContainers = document.querySelectorAll('.company-chip-container');
-    console.log('Found company containers:', foundCompanyContainers.length);
-    
-    // Проверяем, есть ли контейнеры компаний в формах активности
-    foundActivityForms.forEach((form, index) => {
-        const companyContainer = form.querySelector('.company-chip-container');
-        console.log(`Form ${index} company container:`, companyContainer);
-        if (companyContainer) {
-            console.log(`Form ${index} company container data:`, companyContainer.dataset.allCompanies);
-        }
-    });
+    initJobSearchDropdownMenu();
     
     // Обработчик для кнопки добавления новой активности (+)
     const addActivityButtons = document.querySelectorAll('[id="social_feed_button_container_button2_id"]');
@@ -47,15 +93,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (activityForm) {
                 activityForm.style.display = 'block';
-                console.log('Add activity form opened for JobSearch ID:', jobSearchId);
                 
                 // Повторно инициализируем компании для этой формы
                 setTimeout(() => {
                     initCompanies();
                     initStatusIcons();
                 }, 100);
-            } else {
-                console.error('Add activity form not found for JobSearch ID:', jobSearchId);
             }
         });
     });
@@ -225,17 +268,22 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
-});
+    });
+
+    // Экспортируем часть API, если нужно в будущем
+    window.JobSearchFeed = {
+        initCompanies: initCompanies,
+        initStatusIcons: initStatusIcons
+    };
+})();
 
 // Функция инициализации компаний
 function initCompanies() {
     const companyContainers = document.querySelectorAll('.company-chip-container');
-    console.log('Found company containers:', companyContainers.length);
     
     companyContainers.forEach((container, index) => {
         // Проверяем, были ли уже добавлены обработчики
         if (container.dataset.initialized === 'true') {
-            console.log(`Company container ${index}: Already initialized, skipping`);
             return;
         }
         
@@ -243,41 +291,17 @@ function initCompanies() {
         const dropdown = container.nextElementSibling;
         const hiddenInput = dropdown.nextElementSibling;
         const rawData = container.dataset.allCompanies || '[]';
-        console.log(`Container ${index} raw data:`, rawData);
         
         let allCompanies = [];
         try {
             allCompanies = JSON.parse(rawData);
-            console.log(`Container ${index} parsed companies:`, allCompanies);
         } catch (error) {
-            console.error(`Container ${index} JSON parse error:`, error);
-            console.error('Raw data:', rawData);
             allCompanies = [];
         }
         
-        console.log(`Container ${index}:`, {
-            container: container,
-            input: input,
-            hiddenInput: hiddenInput,
-            dropdown: dropdown,
-            allCompaniesCount: allCompanies.length,
-            allCompanies: allCompanies,
-            containerHTML: container.outerHTML,
-            nextSibling: container.nextElementSibling,
-            nextNextSibling: container.nextElementSibling?.nextElementSibling
-        });
-        
         if (!input || !hiddenInput || !dropdown) {
-            console.log(`Container ${index}: Missing required elements`);
-            console.log('Input:', input);
-            console.log('HiddenInput:', hiddenInput);
-            console.log('Dropdown:', dropdown);
             return;
         }
-        
-        // Проверяем, что dropdown имеет правильный класс
-        console.log(`Container ${index} dropdown classes:`, dropdown.className);
-        console.log(`Container ${index} dropdown tag:`, dropdown.tagName);
         
         let selectedCompanies = [];
         
@@ -304,7 +328,7 @@ function initCompanies() {
                 // Скрываем выпадающий список
                 dropdown.style.display = 'none';
                 
-                console.log('Company selected:', { id: companyId, name: companyName });
+
             }
         });
         
@@ -330,8 +354,6 @@ function initCompanies() {
         // Обработчик изменения поля ввода (для очистки выбранной компании)
         input.addEventListener('input', function() {
             const query = this.value.toLowerCase();
-            console.log('Input event, query:', query);
-            console.log('All companies available:', allCompanies);
             
             // Если пользователь изменил текст, очищаем выбранную компанию
             if (query !== selectedCompanies[0]?.name?.toLowerCase()) {
@@ -343,22 +365,12 @@ function initCompanies() {
             const filteredCompanies = allCompanies.filter(company => 
                 company.company_name.toLowerCase().includes(query)
             );
-            console.log('Filtered companies:', filteredCompanies);
             
             if (query.length > 0) {
                 displayCompanyDropdown(filteredCompanies, dropdown);
                 dropdown.style.display = 'block';
-                console.log('Dropdown shown, display:', dropdown.style.display);
-                console.log('Dropdown element:', dropdown);
-                console.log('Dropdown computed style:', window.getComputedStyle(dropdown));
-                console.log('Dropdown position:', {
-                    top: dropdown.style.top,
-                    left: dropdown.style.left,
-                    width: dropdown.style.width
-                });
             } else {
                 dropdown.style.display = 'none';
-                console.log('Dropdown hidden');
             }
         });
         
@@ -369,21 +381,19 @@ function initCompanies() {
                 selectedCompanies = [];
                 updateHiddenInput(hiddenInput, selectedCompanies);
                 this.classList.remove('selected');
-                console.log('Field cleared');
+
             }
         });
         
         // Помечаем контейнер как инициализированный
         container.dataset.initialized = 'true';
-        console.log(`Company container ${index}: Initialized successfully`);
     });
     
-    // Инициализация полей загрузки файлов
-    initFileUploads();
+    // Инициализация полей загрузки CV файлов
+    initCVFileUploads();
     
-    // Проверяем, есть ли поля загрузки файлов на странице
-    const foundFileUploadAreas = document.querySelectorAll('.file-upload-area');
-    console.log('Found file upload areas:', foundFileUploadAreas.length);
+    // Проверяем, есть ли поля загрузки CV файлов на странице
+    const foundCVFileUploadAreas = document.querySelectorAll('.file-upload-area');
     
     // Инициализация иконок статуса
     initStatusIcons();
@@ -391,7 +401,6 @@ function initCompanies() {
 
 // Функция отображения выпадающего списка компаний
 function displayCompanyDropdown(companies, dropdown) {
-    console.log('Displaying dropdown with companies:', companies);
     dropdown.innerHTML = '';
     
     if (companies.length === 0) {
@@ -416,8 +425,6 @@ function displayCompanyDropdown(companies, dropdown) {
         dropdown.style.left = rect.left + 'px';
         dropdown.style.width = rect.width + 'px';
     }
-    
-    console.log('Dropdown HTML:', dropdown.innerHTML);
 }
 
 // Функция обновления скрытого поля
@@ -431,50 +438,39 @@ function updateHiddenInput(hiddenInput, companies) {
     }
 }
 
-// Функция инициализации полей загрузки файлов
-function initFileUploads() {
-    const fileUploadAreas = document.querySelectorAll('.file-upload-area');
-    console.log('Initializing file uploads, found areas:', fileUploadAreas.length);
+// Функция инициализации полей загрузки CV файлов
+function initCVFileUploads() {
+    // Ищем только поля загрузки CV файлов в формах активности job search
+    const cvFileUploadAreas = document.querySelectorAll('[id^="add-activity-form-"] .file-upload-area');
     
-    fileUploadAreas.forEach((area, index) => {
+    cvFileUploadAreas.forEach((area, index) => {
         // Проверяем, были ли уже добавлены обработчики
-        if (area.dataset.initialized === 'true') {
-            console.log(`File upload area ${index}: Already initialized, skipping`);
+        if (area.dataset.cvFileUploadInitialized === 'true') {
             return;
         }
         
         const fileInput = area.querySelector('input[type="file"]');
         const dropZone = area.querySelector('.drop-zone');
         
-        console.log(`File upload area ${index}:`, {
-            area: area,
-            fileInput: fileInput,
-            dropZone: dropZone
-        });
-        
         if (!fileInput || !dropZone) {
-            console.log(`File upload area ${index}: Missing required elements`);
             return;
         }
         
         // Обработчик клика по drop-zone
         dropZone.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Drop zone clicked, triggering file input');
             fileInput.click();
         });
         
         // Обработчик изменения файла
         fileInput.addEventListener('change', function() {
-            console.log('File input changed, files:', this.files);
             if (this.files.length > 0) {
                 const file = this.files[0];
-                console.log('Selected file:', file.name, file.size, file.type);
-                updateFileDisplay(dropZone, file);
+                updateCVFileDisplay(dropZone, file);
             }
         });
         
-        // Обработчик drag & drop
+        // Обработчик drag & drop для CV файлов
         area.addEventListener('dragover', function(e) {
             e.preventDefault();
             this.style.borderColor = '#007bff';
@@ -495,38 +491,37 @@ function initFileUploads() {
             if (e.dataTransfer.files.length > 0) {
                 const file = e.dataTransfer.files[0];
                 fileInput.files = e.dataTransfer.files;
-                updateFileDisplay(dropZone, file);
+                updateCVFileDisplay(dropZone, file);
             }
         });
         
-        // Помечаем область как инициализированную
-        area.dataset.initialized = 'true';
-        console.log(`File upload area ${index}: Initialized successfully`);
+        // Помечаем область как инициализированную для CV файлов
+        area.dataset.cvFileUploadInitialized = 'true';
     });
 }
 
-// Функция обновления отображения выбранного файла
-function updateFileDisplay(dropZone, file) {
-    // Проверяем тип файла
+// Функция обновления отображения выбранного CV файла
+function updateCVFileDisplay(dropZone, file) {
+    // Проверяем тип файла - только документы
     const allowedTypes = ['.pdf', '.doc', '.docx'];
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
     
     if (!allowedTypes.includes(fileExtension)) {
-        alert('Please select a valid file type: PDF, DOC, or DOCX');
+        alert('Please select a valid CV file type: PDF, DOC, or DOCX');
         return;
     }
     
     // Обновляем отображение
     dropZone.innerHTML = `
-        <div class="file-info">
-            <div class="file-name">${file.name}</div>
-            <div class="file-size">${formatFileSize(file.size)}</div>
-            <button type="button" class="remove-file-btn">&times;</button>
+        <div class="cv-file-info">
+            <div class="cv-file-name">${file.name}</div>
+            <div class="cv-file-size">${formatCVFileSize(file.size)}</div>
+            <button type="button" class="remove-cv-file-btn">&times;</button>
         </div>
     `;
     
     // Добавляем обработчик для кнопки удаления
-    const removeBtn = dropZone.querySelector('.remove-file-btn');
+    const removeBtn = dropZone.querySelector('.remove-cv-file-btn');
     if (removeBtn) {
         removeBtn.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -537,8 +532,8 @@ function updateFileDisplay(dropZone, file) {
     }
 }
 
-// Функция форматирования размера файла
-function formatFileSize(bytes) {
+// Функция форматирования размера CV файла
+function formatCVFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -549,26 +544,20 @@ function formatFileSize(bytes) {
 // Функция инициализации иконок статуса
 function initStatusIcons() {
     const statusElements = document.querySelectorAll('.job_feed_ca_status');
-    console.log('Found status elements:', statusElements.length);
     
     statusElements.forEach((element, index) => {
         // Проверяем, были ли уже добавлены иконки
         if (element.dataset.initialized === 'true') {
-            console.log(`Status element ${index}: Already initialized, skipping`);
             return;
         }
         
         const statusText = element.textContent.trim();
-        console.log(`Status element ${index}: Status text: "${statusText}"`);
         
         // Заменяем текст на соответствующую иконку
         const statusIcon = getStatusIcon(statusText);
         if (statusIcon) {
             element.innerHTML = statusIcon;
             element.title = statusText; // Добавляем tooltip с текстом статуса
-            console.log(`Status element ${index}: Icon replaced successfully`);
-        } else {
-            console.log(`Status element ${index}: No icon found for status: "${statusText}"`);
         }
         
         // Помечаем элемент как инициализированный
@@ -582,20 +571,133 @@ function getStatusIcon(statusText) {
     
     if (status.includes('successful') || status.includes('успешно')) {
         return `<svg xmlns="http://www.w3.org/2000/svg" width="38.238" height="36.5" viewBox="0 0 38.238 36.5">
-            <path id="verified_24dp_000000_FILL0_wght400_GRAD0_opsz24" d="M53.21-863.5l-3.3-5.562-6.257-1.391.608-6.431L40-881.75l4.258-4.867-.608-6.431,6.257-1.39L53.21-900l5.91,2.52,5.91-2.52,3.3,5.562,6.257,1.39-.608,6.431,4.258,4.867-4.258,4.867.608,6.431-6.257,1.391-3.3,5.562-5.91-2.52Zm1.477-4.432,4.432-1.912,4.519,1.912,2.433-4.171,4.78-1.13-.435-4.867,3.215-3.65-3.215-3.737.435-4.867-4.78-1.043-2.52-4.171-4.432,1.912L54.6-895.568,52.167-891.4l-4.78,1.043.435,4.867-3.215,3.737,3.215,3.65-.435,4.954,4.78,1.043ZM59.119-881.75Zm-1.825,6.17,9.82-9.82-2.433-2.52-7.387,7.387-3.737-3.65-2.433,2.433Z" transform="translate(-40 900)" fill="#a7c70b"/>
+            <path id="verified_24dp_000000_FILL0_wght400_GRAD0_opsz24" d="M53.21-863.5l-3.3-5.562-6.257-1.391.608-6.431L40-881.75l4.258-4.867-.608-6.431,6.257-1.39L53.21-900l5.91,2.52,5.91-2.52,3.3,5.562,6.257,1.39-.608,6.431,4.258,4.867-4.258,4.867.608,6.431-6.257,1.391-3.3,5.562-5.91-2.52Zm1.477-4.432,4.432-1.912,4.519,1.912,2.433-4.171,4.78-1.13-.435-4.867,3.215-3.65-3.215-3.737.435-4.867-4.78-1.043-2.52-4.171-4.432,1.912L54.6-895.568,52.167-891.4l-4.78,1.043.435,4.867-3.215,3.737,3.215,3.65-.435,4.954,4.78,1.043ZM59.119-881.75Zm-1.825,6.17,9.82-9.82-2.433-2.52-7.387,7.387-3.737-3.65-2.433,2.433Z" transform="translate (-40 900)" fill="#a7c70b"/>
         </svg>`;
     } else if (status.includes('unsuccessful') || status.includes('неуспешно')) {
         return `<svg xmlns="http://www.w3.org/2000/svg" width="38.499" height="38.499" viewBox="0 0 38.499 38.499">
-            <path id="error_24dp_000000_FILL0_wght400_GRAD0_opsz24" d="M99.25-851.126a1.863,1.863,0,0,0,1.372-.553,1.863,1.863,0,0,0,.553-1.372,1.862,1.862,0,0,0-.553-1.371,1.862,1.862,0,0,0-1.372-.553,1.862,1.862,0,0,0-1.372.553,1.862,1.862,0,0,0-.553,1.371,1.863,1.863,0,0,0,.553,1.372A1.863,1.863,0,0,0,99.25-851.126Zm-1.925-7.7h3.85v-11.55h-3.85ZM99.25-841.5a18.744,18.744,0,0,1-7.507-1.516,19.44,19.44,0,0,1-6.112-4.115,19.438,19.44,0,0,1-4.115-6.112A18.744,18.744,0,0,1,80-860.75a18.744,18.744,0,0,1,1.516-7.507,19.439,19.44,0,0,1,4.115-6.112,19.436,19.44,0,0,1,6.112-4.115A18.742,18.742,0,0,1,99.25-880a18.742,18.742,0,0,1,7.507,1.516,19.436,19.44,0,0,1,6.112,4.115,19.439,19.44,0,0,1,4.115,6.112,18.744,18.744,0,0,1,1.516,7.507,18.744,18.744,0,0,1-1.516,7.507,19.438,19.44,0,0,1-4.115,6.112,19.44,19.44,0,0,1-6.112,4.115A18.744,18.744,0,0,1,99.25-841.5Zm0-3.85a14.862,14.862,0,0,0,10.924-4.476,14.862,14.862,0,0,0,4.476-10.924,14.862,14.862,0,0,0-4.476-10.924A14.863,14.863,0,0,0,99.25-876.15a14.863,14.863,0,0,0-10.924,4.476A14.862,14.862,0,0,0,83.85-860.75a14.862,14.862,0,0,0,4.476,10.924A14.862,14.862,0,0,0,99.25-845.351ZM99.25-860.75Z" transform="translate(-80 880)" fill="#00d5ff"/>
+            <path id="error_24dp_000000_FILL0_wght400_GRAD0_opsz24" d="M99.25-851.126a1.863,1.863,0,0,0,1.372-.553,1.863,1.863,0,0,0,.553-1.372,1.862,1.862,0,0,0-.553-1.371,1.862,1.862,0,0,0-1.372-.553,1.862,1.862,0,0,0-1.372.553,1.862,1.862,0,0,0-.553,1.371,1.863,1.863,0,0,0,.553,1.372A1.863,1.863,0,0,0,99.25-851.126Zm-1.925-7.7h3.85v-11.55h-3.85ZM99.25-841.5a18.744,18.744,0,0,1-7.507-1.516,19.44,19.44,0,0,1-6.112-4.115,19.438,19.44,0,0,1-4.115-6.112A18.744,18.744,0,0,1,80-860.75a18.744,18.744,0,0,1,1.516-7.507,19.439,19.44,0,0,1,4.115-6.112,19.436,19.44,0,0,1,6.112-4.115A18.742,18.742,0,0,1,99.25-880a18.742,18.742,0,0,1,7.507,1.516,19.436,19.44,0,0,1,6.112,4.115,19.439,19.44,0,0,1,4.115,6.112,18.744,18.744,0,0,1,1.516,7.507,18.744,18.744,0,0,1-1.516,7.507,19.438,19.44,0,0,1-4.115,6.112,19.44,19.44,0,0,1-6.112,4.115A18.744,18.744,0,0,1,99.25-841.5Zm0-3.85a14.862,14.862,0,0,0,10.924-4.476,14.862,14.862,0,0,0,4.476-10.924,14.862,14.862,0,0,0-4.476-10.924A14.863,14.863,0,0,0,99.25-876.15a14.863,14.863,0,0,0-10.924,4.476A14.862,14.862,0,0,0,83.85-860.75a14.862,14.862,0,0,0,4.476,10.924A14.862,14.862,0,0,0,99.25-845.351ZM99.25-860.75Z" transform="translate (-80 880)" fill="#00d5ff"/>
         </svg>`;
     } else if (status.includes('canceled') || status.includes('отменено')) {
         return `<svg xmlns="http://www.w3.org/2000/svg" width="38.499" height="38.499" viewBox="0 0 38.499 38.499">
-            <path id="cancel_24dp_000000_FILL0_wght400_GRAD0_opsz24" d="M99.25-851.126a1.863,1.863,0,0,0,1.372-.553,1.863,1.863,0,0,0,.553-1.372,1.862,1.862,0,0,0-.553-1.371,1.862,1.862,0,0,0-1.372-.553,1.862,1.862,0,0,0-1.372.553,1.862,1.862,0,0,0-.553,1.371,1.863,1.863,0,0,0,.553,1.372A1.863,1.863,0,0,0,99.25-851.126Zm-1.925-7.7h3.85v-11.55h-3.85ZM99.25-841.5a18.744,18.744,0,0,1-7.507-1.516,19.44,19.44,0,0,1-6.112-4.115,19.438,19.44,0,0,1-4.115-6.112A18.744,18.744,0,0,1,80-860.75a18.744,18.744,0,0,1,1.516-7.507,19.439,19.44,0,0,1,4.115-6.112,19.436,19.44,0,0,1,6.112-4.115A18.742,18.742,0,0,1,99.25-880a18.742,18.742,0,0,1,7.507,1.516,19.436,19.44,0,0,1,6.112,4.115,19.439,19.44,0,0,1,4.115,6.112,18.744,18.744,0,0,1,1.516,7.507,18.744,18.744,0,0,1-1.516,7.507,19.438,19.44,0,0,1-4.115,6.112,19.44,19.44,0,0,1-6.112,4.115A18.744,18.744,0,0,1,99.25-841.5Zm0-3.85a14.862,14.862,0,0,0,10.924-4.476,14.862,14.862,0,0,0,4.476-10.924,14.862,14.862,0,0,0-4.476-10.924A14.863,14.863,0,0,0,99.25-876.15a14.863,14.863,0,0,0-10.924,4.476A14.862,14.862,0,0,0,83.85-860.75a14.862,14.862,0,0,0,4.476,10.924A14.862,14.862,0,0,0,99.25-845.351ZM99.25-860.75Z" transform="translate(-80 880)" fill="#ff6b6b"/>
+            <path id="cancel_24dp_000000_FILL0_wght400_GRAD0_opsz24" d="M99.25-851.126a1.863,1.863,0,0,0,1.372-.553,1.863,1.863,0,0,0,.553-1.372,1.862,1.862,0,0,0-.553-1.371,1.862,1.862,0,0,0-1.372-.553,1.862,1.862,0,0,0-1.372.553,1.862,1.862,0,0,0-.553,1.371,1.863,1.863,0,0,0,.553,1.372A1.863,1.863,0,0,0,99.25-851.126Zm-1.925-7.7h3.85v-11.55h-3.85ZM99.25-841.5a18.744,18.744,0,0,1-7.507-1.516,19.44,19.44,0,0,1-6.112-4.115,19.438,19.44,0,0,1-4.115-6.112A18.744,18.744,0,0,1,80-860.75a18.744,18.744,0,0,1,1.516-7.507,19.439,19.44,0,0,1,4.115-6.112,19.436,19.44,0,0,1,6.112-4.115A18.742,18.742,0,0,1,99.25-880a18.742,18.742,0,0,1,7.507,1.516,19.436,19.44,0,0,1,6.112,4.115,19.439,19.44,0,0,1,4.115,6.112,18.744,18.744,0,0,1,1.516,7.507,18.744,18.744,0,0,1-1.516,7.507,19.438,19.44,0,0,1-4.115,6.112,19.44,19.44,0,0,1-6.112,4.115A18.744,18.744,0,0,1,99.25-841.5Zm0-3.85a14.862,14.862,0,0,0,10.924-4.476,14.862,14.862,0,0,0,4.476-10.924,14.862,14.862,0,0,0-4.476-10.924A14.863,14.863,0,0,0,99.25-876.15a14.863,14.863,0,0,0-10.924,4.476A14.862,14.862,0,0,0,83.85-860.75a14.862,14.862,0,0,0,4.476,10.924A14.862,14.862,0,0,0,99.25-845.351ZM99.25-860.75Z" transform="translate (-80 880)" fill="#ff6b6b"/>
         </svg>`;
     }
     
     // Возвращаем null если статус не распознан
     return null;
+}
+
+// ===== DROPDOWN MENU ФУНКЦИОНАЛ ДЛЯ JOB SEARCH =====
+
+// Инициализация dropdown menu для job search постов
+function initJobSearchDropdownMenu() {
+    // Ищем все dropdown menu по их ID
+    const menuElements = document.querySelectorAll('[id^="jsf_dropdown_menu_"]');
+    
+    menuElements.forEach((menuElement, index) => {
+        const postId = menuElement.id.replace('jsf_dropdown_menu_', '');
+        const dropdown = document.getElementById(`jsf_dropdown_content_${postId}`);
+        
+        if (!dropdown) return;
+        
+        // Добавляем обработчик клика на кнопку меню
+        menuElement.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Закрываем все открытые dropdown
+            document.querySelectorAll('[id^="jsf_dropdown_content_"]').forEach(d => {
+                d.classList.remove('show');
+            });
+            
+            // Переключаем текущий dropdown
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            } else {
+                dropdown.classList.add('show');
+            }
+        });
+        
+        // Добавляем обработчики на пункты меню
+        const menuItems = dropdown.querySelectorAll('.jsf_dropdown_item');
+        
+        menuItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const action = this.dataset.action;
+                const itemPostId = this.dataset.id;
+                
+                handleJobSearchDropdownAction(action, itemPostId, menuElement.closest('.social_feed2'));
+                
+                // Закрываем dropdown после действия
+                dropdown.classList.remove('show');
+            });
+        });
+    });
+    
+    // Закрытие dropdown при клике вне его
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('[id^="jsf_dropdown_menu_"]') && !e.target.closest('[id^="jsf_dropdown_content_"]')) {
+            document.querySelectorAll('[id^="jsf_dropdown_content_"]').forEach(d => {
+                d.classList.remove('show');
+            });
+        }
+    });
+}
+
+// Обработчик действий dropdown menu для job search
+function handleJobSearchDropdownAction(action, postId, post) {
+    switch (action) {
+        case 'start':
+            handleJobSearchStartAction(postId, post);
+            break;
+        case 'edit':
+            handleJobSearchEditAction(postId, post);
+            break;
+        case 'remove':
+            handleJobSearchRemoveAction(postId, post);
+            break;
+        default:
+            console.warn('Job Search: Unknown action:', action);
+    }
+}
+
+// Обработчик действия Start для job search
+function handleJobSearchStartAction(postId, post) {
+    // Здесь можно добавить логику для запуска job search
+    // Например, установить дату начала
+    if (typeof window.alertify !== 'undefined') {
+        window.alertify.success('Job search started successfully!');
+    } else {
+        alert('Job search started successfully!');
+    }
+}
+
+// Обработчик редактирования для job search
+function handleJobSearchEditAction(postId, post) {
+    // Здесь можно добавить логику редактирования
+    // Например, открыть модальное окно с формой редактирования
+    if (typeof window.alertify !== 'undefined') {
+        window.alertify.info('Edit functionality coming soon...');
+    } else {
+        alert('Edit functionality coming soon...');
+    }
+}
+
+// Обработчик удаления для job search
+function handleJobSearchRemoveAction(postId, post) {
+    // Здесь можно добавить логику удаления
+    // Например, показать подтверждение и удалить пост
+    if (confirm('Are you sure you want to remove this job search post?')) {
+        if (typeof window.alertify !== 'undefined') {
+            window.alertify.success('Job search post removed successfully!');
+        } else {
+            alert('Job search post removed successfully!');
+        }
+        // Здесь можно добавить AJAX запрос для удаления
+    }
 }
 
 

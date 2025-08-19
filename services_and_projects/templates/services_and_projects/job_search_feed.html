@@ -5,7 +5,7 @@
 {% endcomment %}
 
 {% if job_search %}
-<div class="social_feed2">
+<div class="social_feed2" data-post-id="{{ job_search.id }}" data-post-type="job_search">
     <div class="post_info_block">
         <div class="post_info_dates">
             <div class="post_info_start_date_column">
@@ -24,21 +24,21 @@
                 <span class="post_end_date">{{ job_search.last_update|date:'d.m.Y' }}</span>
             </div>
         </div>
-        <div class="social_feed_menu">
-            <div class="social_feed_overflow_menu" id="overflow_menu_{{ job_search.id }}">
-                <div class="social_feed_overflow_menu_item start" data-action="start" data-id="{{ job_search.id }}">
+        <div class="jsf_dropdown_menu" id="jsf_dropdown_menu_{{ job_search.id }}">
+            <div class="jsf_dropdown_content" id="jsf_dropdown_content_{{ job_search.id }}" style="display: none;">
+                <div class="jsf_dropdown_item start" data-action="start" data-id="{{ job_search.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 5v14l11-7z"/>
                     </svg>
                     Start
                 </div>
-                <div class="social_feed_overflow_menu_item edit" data-action="edit" data-id="{{ job_search.id }}">
+                <div class="jsf_dropdown_item edit" data-action="edit" data-id="{{ job_search.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
                     </svg>
                     Edit
                 </div>
-                <div class="social_feed_overflow_menu_item remove" data-action="remove" data-id="{{ job_search.id }}">
+                <div class="jsf_dropdown_item remove" data-action="remove" data-id="{{ job_search.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                     </svg>
@@ -650,5 +650,8 @@ function updateTaskDisplay(activityId, taskData) {
 
 {% endif %}
 
-<!-- Подключаем скрипт для Overflow Menu -->
-<script src="{% static 'js/social_feed_overflow_menu.js' %}"></script>
+<!-- Подключаем CSS для Job Search Feed -->
+<link rel="stylesheet" href="{% static 'css/job_search_feed.css' %}">
+
+<!-- Подключаем скрипт для Job Search Feed -->
+<script src="{% static 'js/job_search_feed.js' %}"></script>

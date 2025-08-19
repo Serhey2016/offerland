@@ -33,3 +33,28 @@
         <button class="social_feed_time_slot_book_now_button">Book now</button>
     </div>
 </div>
+
+<!-- Time Slot Form with Hashtags -->
+<div class="time-slot-form-container">
+    <h3>Add Time Slot</h3>
+    
+    <div class="form-group">
+        <label for="time-slot-hashtags">Hashtags: <a href="#">Don't find hashtag?</a></label>
+        <div id="time-slot-hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='[{"id": 1, "tag": "plumbing"}, {"id": 2, "tag": "electrical"}, {"id": 3, "tag": "cleaning"}, {"id": 4, "tag": "gardening"}, {"id": 5, "tag": "painting"}, {"id": 6, "tag": "carpentry"}, {"id": 7, "tag": "landscaping"}, {"id": 8, "tag": "maintenance"}]'>
+            <input type="text" id="time-slot-hashtags-input" placeholder="Start typing tag..." autocomplete="off" class="hashtags-input-field">
+        </div>
+        <div id="time-slot-hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+    </div>
+    
+    <input type="hidden" name="hashtags" id="time-slot-hashtags-hidden">
+    
+    <div class="form-actions">
+        <button type="button" class="btn btn-secondary save-btn">Save Hashtags</button>
+    </div>
+</div>
+
+<!-- Подключаем CSS для стилизации -->
+<link rel="stylesheet" href="{% static 'css/timeslot_form.css' %}">
+
+<!-- Подключаем JavaScript для работы с хэштегами -->
+<script src="{% static 'js/timeslot_form.js' %}"></script>

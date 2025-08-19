@@ -1,0 +1,356 @@
+/* ============================================================================
+   TIME SLOT FORM STYLES
+   Стили для формы time-slot с хэштегами
+   ============================================================================ */
+
+.time-slot-form-container {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.time-slot-form-container h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #495057;
+}
+
+.form-group label a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.form-group label a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================================
+   HASHTAG STYLES
+   Стили для хэштегов
+   ============================================================================ */
+
+.hashtag-chip-container {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 10px;
+    min-height: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    background: white;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    position: relative;
+    z-index: 9998;
+}
+
+.hashtag-chip-container:focus-within {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    z-index: 10000;
+}
+
+.hashtag-chip {
+    background: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 9997;
+}
+
+.hashtag-chip:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.hashtag-remove {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.hashtag-remove:hover {
+    opacity: 1;
+}
+
+.hashtags-input-field {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+    font-size: 14px;
+    color: #495057;
+    background: transparent;
+}
+
+.hashtags-input-field::placeholder {
+    color: #6c757d;
+    opacity: 0.7;
+}
+
+/* ============================================================================
+   DROPDOWN STYLES
+   Стили для выпадающего списка хэштегов
+   ============================================================================ */
+
+.hashtag-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 2px;
+}
+
+.hashtag-dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f8f9fa;
+    transition: background-color 0.15s ease;
+    font-size: 14px;
+    color: #495057;
+}
+
+.hashtag-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.hashtag-dropdown-item:hover {
+    background: #f8f9fa;
+}
+
+.hashtag-dropdown-item.new-tag {
+    color: #28a745;
+    font-weight: 500;
+    background: #f8fff9;
+}
+
+.hashtag-dropdown-item.new-tag:hover {
+    background: #e8f5e8;
+}
+
+/* ============================================================================
+   BUTTON STYLES
+   Стили для кнопок
+   ============================================================================ */
+
+.form-actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.5;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary:disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ============================================================================
+   RESPONSIVE STYLES
+   Адаптивные стили
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .time-slot-form-container {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .hashtag-chip-container {
+        padding: 8px;
+        min-height: 45px;
+    }
+    
+    .hashtag-chip {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+    
+    .hashtags-input-field {
+        min-width: 100px;
+        font-size: 13px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .time-slot-form-container {
+        padding: 12px;
+        margin: 10px 0;
+    }
+    
+    .hashtag-chip-container {
+        padding: 6px;
+        min-height: 40px;
+    }
+    
+    .hashtag-chip {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+    
+    .hashtags-input-field {
+        min-width: 80px;
+        font-size: 12px;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* ============================================================================
+   SCROLLBAR STYLES
+   Стили для скроллбара в dropdown
+   ============================================================================ */
+
+.hashtag-dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.hashtag-dropdown-menu::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.hashtag-dropdown-menu::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.hashtag-dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* ============================================================================
+   MODAL OVERLAY STYLES
+   Стили для модальных окон
+   ============================================================================ */
+
+.modal-overlay {
+    z-index: 9990;
+}
+
+.modal-form {
+    z-index: 9991;
+}
+
+/* ============================================================================
+   HIGHEST PRIORITY Z-INDEX
+   Максимальный приоритет для dropdown
+   ============================================================================ */
+
+.hashtag-dropdown-menu.show {
+    z-index: 99999 !important;
+}
+
+.hashtag-chip-container.has-dropdown-open {
+    z-index: 100000 !important;
+}
+
+/* ============================================================================
+   ANIMATION STYLES
+   Анимации для плавности
+   ============================================================================ */
+
+.hashtag-chip-container {
+    animation: fadeIn 0.3s ease;
+}
+
+.hashtag-dropdown-menu {
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

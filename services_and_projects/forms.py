@@ -380,19 +380,24 @@ def create_time_slot(request):
             logger.info(f"Request POST data: {dict(request.POST)}")
             
             # Получаем данные из формы для time slot
-            date_start = none_if_empty(request.POST.get('date1'))
-            date_end = none_if_empty(request.POST.get('date2'))
-            time_start = none_if_empty(request.POST.get('time1'))
-            time_end = none_if_empty(request.POST.get('time2'))
+            date_start = none_if_empty(request.POST.get('date_start'))
+            date_end = none_if_empty(request.POST.get('date_end'))
+            time_start = none_if_empty(request.POST.get('time_start'))
+            time_end = none_if_empty(request.POST.get('time_end'))
             reserved_time = none_if_empty(request.POST.get('reserved_time'))
             start_location = none_if_empty(request.POST.get('start_location'))
             cost_hour = none_if_empty(request.POST.get('cost_hour'))
             min_slot = none_if_empty(request.POST.get('min_slot'))
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
             service_id = none_if_empty(request.POST.get('service'))
+            category_id = none_if_empty(request.POST.get('category'))
 
-            # Валидация обязательных полей (service_id не обязателен)
+            # Валидация обязательных полей
             missing_fields = []
+            if not category_id:
+                missing_fields.append('Category')
+            if not service_id:
+                missing_fields.append('Service')
             if not date_start:
                 missing_fields.append('Date start')
             if not date_end:
@@ -401,6 +406,14 @@ def create_time_slot(request):
                 missing_fields.append('Time start')
             if not time_end:
                 missing_fields.append('Time end')
+            if not reserved_time:
+                missing_fields.append('Reserved time')
+            if not start_location:
+                missing_fields.append('Start location')
+            if not cost_hour:
+                missing_fields.append('Cost per hour')
+            if not min_slot:
+                missing_fields.append('Minimum slot')
             if missing_fields:
                 return JsonResponse({
                     'success': False,
@@ -421,10 +434,10 @@ def create_time_slot(request):
                 date_end=date_end,
                 time_start=time_start,
                 time_end=time_end,
-                reserved_time_on_road=int(reserved_time) if reserved_time else 0,
+                reserved_time_on_road=int(reserved_time) if reserved_time and reserved_time.isdigit() else 0,
                 start_location=start_location or '',
                 cost_of_1_hour_of_work=cost_in_cents or Decimal('0'),
-                minimum_time_slot=str(min_slot) if min_slot else '',
+                minimum_time_slot=str(min_slot) if min_slot else '60',
                 type_of_task_id=type_of_task_id,
                 services_id=service_id
             )
@@ -432,7 +445,7 @@ def create_time_slot(request):
             # ЭТАП 2: Добавляем связанные данные
 
             # Хэштеги
-            hashtags_data = request.POST.get('ts-hashtags')
+            hashtags_data = request.POST.get('hashtags')
             if hashtags_data and hashtags_data.strip():
                 try:
                     # Парсим JSON данные о хэштегах

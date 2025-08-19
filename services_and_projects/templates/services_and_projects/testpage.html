@@ -7,6 +7,7 @@
 <!-- Custom styles -->
 <link href="{% static 'css/servoces_and_projects.css' %}" rel="stylesheet">
 <link href="{% static 'css/serv_and_proj_empty_form.css' %}" rel="stylesheet">
+<link href="{% static 'css/filtration_form.css' %}" rel="stylesheet">
 <link href="{% static 'css/chat_styles.css' %}" rel="stylesheet">
 <link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet">
 <link href="{% static 'css/photoswipe.css' %}" rel="stylesheet">
@@ -31,7 +32,7 @@
     <div class="container">
         <div class="filter_search_container">
             <div class="filter_search_container_content_left_side">
-                <button class="filter_button">
+                <button class="filter_button" id="filter_button_id">
                     <svg id="Group_4032" data-name="Group 4032" xmlns="http://www.w3.org/2000/svg" width="66.148"
                         height="52.918" viewBox="0 0 66.148 52.918">
                         <path id="Path_5232" data-name="Path 5232" d="M45,11H2v6.615H45Z"
@@ -132,7 +133,7 @@
     {% if page_obj %}
         {% for item in page_obj %}
             {% if item.type == 'advertising' %}
-                {% include 'services_and_projects/advertising_feed.html' with advertising=item.data.advertising %}
+                {% include 'services_and_projects/advertising_feed.html' with advertising=item.data.advertising owner=item.data.owner %}
             {% elif item.type == 'task' %}
                 {% if item.data.type_of_task.type_of_task_name == 'Job search' %}
                     {% include 'services_and_projects/job_search_feed.html' with task=item.data %}
@@ -196,6 +197,7 @@
 
 <!-- Include Forms -->
 {% include 'services_and_projects/form_for_all_task.html' %}
+{% include 'services_and_projects/filtration_form.html' %}
 
 <!-- Include Navigation Components -->
 {% include 'services_and_projects/navigation_components.html' %}
@@ -223,6 +225,7 @@
 <!-- Application scripts -->
 <script src="{% static 'js/fixed_circule_menu.js' %}"></script>
 <script src="{% static 'js/nav_menu_bottom_right.js' %}"></script>
+<script src="{% static 'js/feeds_filtering.js' %}"></script>
 <script src="{% static 'js/form_for_all_task.js' %}"></script>
 <script src="{% static 'js/chat_styles.js' %}"></script>
 <script src="{% static 'js/advertising_feed.js' %}"></script>

@@ -1,6 +1,78 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // === КОНФИГУРАЦИЯ ===
-    // Убрано - больше не используется
+    // === CSS СТИЛИ ДЛЯ ФОТОГРАФИЙ ===
+    const photoStyles = `
+        .photos-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .photo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            position: relative;
+        }
+        
+        .photo-preview {
+            flex-shrink: 0;
+        }
+        
+        .photo-preview img {
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        
+        .photo-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .photo-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+        
+        .photo-size {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .remove-photo-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .remove-photo-btn:hover {
+            background: #ff5252;
+        }
+    `;
+    
+    // Добавляем стили на страницу
+    if (!document.getElementById('photo-upload-styles')) {
+        const styleSheet = document.createElement('style');
+        styleSheet.id = 'photo-upload-styles';
+        styleSheet.textContent = photoStyles;
+        document.head.appendChild(styleSheet);
+    }
+
 
     // === СООТВЕТСТВИЕ ID ТИПАМ ===
     const TYPE_MAP = {
@@ -12,19 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '6': 'job-search',
     };
 
-    // === КОНСТАНТЫ ДЛЯ ID ПОЛЕЙ ===
-    // Убрано - больше не используется
 
-    // === КОНФИГ ДЛЯ РАЗНЫХ ТИПОВ ПУБЛИКАЦИЙ ===
-    // Убрано - больше не используется
-
-    // === УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ДЛЯ ВИДИМОСТИ ===
-    // Убрано - больше не используется
-
-    // === УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК ДЛЯ ТИПОВ ===
-    // Убрано - больше не используется
-
-    // === УТИЛИТЫ ===
     
     // === ЭЛЕМЕНТЫ DOM ===
     let elements = {};
@@ -77,13 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /**
-     * Обработка файлов
-     */
-    function handleFiles(files, dropZone) {
-        // Здесь можно добавить логику обработки файлов
-    }
-
     // --- CSRF helper for Django ---
     function getCookie(name) {
         let cookieValue = null;
@@ -106,39 +159,23 @@ document.addEventListener('DOMContentLoaded', () => {
      * Инициализирует обработчики модального окна
      */
     function initModal() {
-        console.log('=== INIT MODAL START ===');
-        console.log('Elements.openBtn:', elements.openBtn);
-        
         // Дополнительный поиск кнопки если она не была найдена в elements
         let openButton = elements.openBtn;
         if (!openButton) {
-            console.log('Button not found in elements, searching manually...');
             openButton = document.querySelector('.fixed_circle.sub.sub2');
-            console.log('Manually found button:', openButton);
         }
         
         // Открытие модального окна по кнопке
         if (openButton) {
-            console.log('Open button found, adding click listener');
-            console.log('Button element:', openButton);
-            console.log('Button classes:', openButton.className);
-            
             // Защита от двойного клика
             let isModalOpen = false;
             
             openButton.addEventListener('click', function(e) {
-                console.log('=== OPEN BUTTON CLICKED ===');
-                console.log('Event:', e);
-                console.log('Target:', e.target);
-                console.log('Current target:', e.currentTarget);
-                
                 if (isModalOpen) {
-                    console.log('Modal already open, ignoring click');
                     return;
                 }
                 
                 isModalOpen = true;
-                console.log('Setting modal open flag');
                 
                 // Показываем форму выбора типа
                 showTypeSelectionModal();
@@ -146,12 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Сбрасываем флаг через небольшую задержку
                 setTimeout(() => {
                     isModalOpen = false;
-                    console.log('Modal open flag reset');
                 }, 500);
             });
-            console.log('Click listener added to open button');
-        } else {
-            console.error('Open button not found!');
         }
         
         // Закрытие модальных окон
@@ -175,42 +208,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-        
     }
     
     /**
      * Показывает модальное окно выбора типа публикации
      */
     function showTypeSelectionModal() {
-        console.log('=== SHOW TYPE SELECTION MODAL START ===');
-        
         // Находим готовое модальное окно
         const typeSelectionModal = document.getElementById('type-selection-modal');
-        console.log('Searching for modal with ID: type-selection-modal');
-        console.log('Modal found:', typeSelectionModal);
         
         if (!typeSelectionModal) {
-            console.error('Type selection modal not found!');
-            console.log('All elements with ID containing "type":', document.querySelectorAll('[id*="type"]'));
-            console.log('All modal-overlay elements:', document.querySelectorAll('.modal-overlay'));
             return;
         }
         
-        console.log('Type selection modal found, showing it');
-        
         // Показываем модальное окно
         typeSelectionModal.style.display = 'flex';
-        console.log('Modal display set to flex');
         
         // Обработчики для выбора типа
         const typeOptions = typeSelectionModal.querySelectorAll('.type-option');
-        console.log('Type options found:', typeOptions.length);
         
         typeOptions.forEach((option, index) => {
-            console.log(`Setting up option ${index}:`, option.dataset.type);
             option.addEventListener('click', function() {
                 const type = this.dataset.type;
-                console.log('Type option clicked:', type);
                 
                 // Скрываем модальное окно выбора типа
                 typeSelectionModal.style.display = 'none';
@@ -223,33 +242,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // Кнопка закрытия
         const closeBtn = typeSelectionModal.querySelector('.modal_close_btn');
         if (closeBtn) {
-            console.log('Close button found, adding click handler');
             closeBtn.addEventListener('click', function() {
-                console.log('Close button clicked');
                 typeSelectionModal.style.display = 'none';
             });
-        } else {
-            console.error('Close button not found in modal');
         }
         
         // Закрытие по клику вне модального окна
         typeSelectionModal.addEventListener('click', function(e) {
             if (e.target === typeSelectionModal) {
-                console.log('Clicked outside modal, closing');
                 typeSelectionModal.style.display = 'none';
             }
         });
-        
-        console.log('=== SHOW TYPE SELECTION MODAL COMPLETED ===');
     }
     
     /**
      * Показывает форму по выбранному типу
      */
     function showFormByType(type) {
-        console.log('=== SHOW FORM BY TYPE START ===');
-        console.log('Type:', type);
-        
         // Скрываем модальное окно выбора типа
         const typeSelectionModal = document.getElementById('type-selection-modal');
         if (typeSelectionModal) {
@@ -262,50 +271,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (formId) {
             const form = document.getElementById(formId);
             if (form) {
-                console.log('Showing form:', formId);
                 // Используем flex для центрирования
                 form.style.display = 'flex';
                 
                 // Повторно инициализируем обработчики для кнопки Save в этой форме
                 const saveButton = form.querySelector('.save-btn');
                 if (saveButton) {
-                    console.log('Re-initializing save button for form:', formId);
                     // Удаляем старый обработчик если есть
                     saveButton.removeEventListener('click', saveButton._clickHandler);
                     
                     // Добавляем новый обработчик
                     saveButton._clickHandler = function(e) {
-                        console.log('=== SAVE BUTTON CLICKED ===');
-                        console.log('Save button clicked!', saveButton);
-                        console.log('Event:', e);
-                        console.log('Button text:', saveButton.textContent);
-                        console.log('Button class:', saveButton.className);
-                        
                         e.preventDefault();
                         const form = saveButton.closest('form');
-                        console.log('Form found:', form);
-                        console.log('Form ID:', form ? form.id : 'NO FORM');
-                        console.log('Form action:', form ? form.action : 'NO ACTION');
                         
                         if (form) {
-                            console.log('Calling handleFormSave with form:', form.id);
                             handleFormSave(form, saveButton);
-                        } else {
-                            console.error('No form found for button:', saveButton);
                         }
                     };
                     
                     saveButton.addEventListener('click', saveButton._clickHandler);
-                    console.log('Save button handler re-initialized for form:', formId);
                 }
-            } else {
-                console.error('Form not found:', formId);
             }
-        } else {
-            console.error('Form ID not found for type:', type);
         }
-        
-        console.log('=== SHOW FORM BY TYPE COMPLETED ===');
     }
     
     /**
@@ -346,62 +334,38 @@ document.addEventListener('DOMContentLoaded', () => {
      * Инициализирует функциональность хэштегов для всех форм
      */
     function initHashtags() {
-        console.log('=== INIT HASHTAGS START ===');
-        
         const containers = document.querySelectorAll('.hashtag-chip-container');
         const inputs = document.querySelectorAll('.hashtags-input-field');
         const dropdowns = document.querySelectorAll('.hashtag-dropdown-menu');
         const hiddenFields = document.querySelectorAll('input[name="hashtags"]');
-
-        console.log('Found elements:', {
-            containers: containers.length,
-            inputs: inputs.length,
-            dropdowns: dropdowns.length,
-            hiddenFields: hiddenFields.length
-        });
 
         containers.forEach((container, index) => {
             const input = inputs[index];
             const dropdown = dropdowns[index];
             const hidden = hiddenFields[index];
 
-            console.log(`Initializing hashtags for container ${index}:`, {
-                containerId: container.id,
-                inputId: input ? input.id : 'NO INPUT',
-                dropdownId: dropdown ? dropdown.id : 'NO DROPDOWN',
-                hiddenId: hidden ? hidden.id : 'NO HIDDEN'
-            });
+            // Пропускаем хэштеги для time-slot формы - они обрабатываются в timeslot_form.js
+            if (container && container.id === 'time-slot-hashtags-container') {
+                return;
+            }
 
             if (container && input && dropdown && hidden) {
                 initHashtagsForContainer(container, input, dropdown, hidden);
-            } else {
-                console.error(`Missing elements for container ${index}:`, {
-                    container: !!container,
-                    input: !!input,
-                    dropdown: !!dropdown,
-                    hidden: !!hidden
-                });
             }
         });
-        
-        console.log('=== INIT HASHTAGS COMPLETED ===');
     }
     
     /**
      * Инициализирует хэштеги для конкретного контейнера
      */
     function initHashtagsForContainer(container, input, dropdown, hidden) {
-        console.log(`Initializing hashtags for container: ${container.id}`);
-        
         // Получаем все доступные хэштеги из data-атрибута
         const allTagsData = container.getAttribute('data-all-tags');
         let allTags = [];
         
         try {
             allTags = JSON.parse(allTagsData || '[]');
-            console.log(`Parsed ${allTags.length} hashtags for container ${container.id}`);
         } catch (e) {
-            console.error('Error parsing hashtags data:', e);
             allTags = [];
         }
 
@@ -446,8 +410,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         input.value = '';
                         // Скрываем dropdown
                         dropdown.style.display = 'none';
-                    } else {
-                        console.log('Hashtag already exists:', value);
                     }
                 }
             }
@@ -540,8 +502,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (hiddenField) {
                     addHashtag(tag.tag, container, hiddenField, tag.id);
                     dropdown.style.display = 'none';
-                } else {
-                    console.error('No hashtags hidden field found in form:', form.id);
                 }
             });
             
@@ -566,8 +526,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Создаем новый тег без ID (будет создан на backend)
                     addHashtag(filter, container, hiddenField, null);
                     dropdown.style.display = 'none';
-                } else {
-                    console.error('No hashtags hidden field found in form:', form.id);
                 }
             });
             
@@ -583,12 +541,9 @@ document.addEventListener('DOMContentLoaded', () => {
      * Добавляет хэштег
      */
     function addHashtag(tagName, container, hidden, tagId = null) {
-        console.log('Adding hashtag:', tagName, 'with ID:', tagId);
-        
         const existingChips = container.querySelectorAll('.hashtag-chip');
         for (let chip of existingChips) {
             if (chip.textContent.trim() === tagName.trim()) {
-                console.log('Hashtag already exists, skipping:', tagName);
                 return;
             }
         }
@@ -599,16 +554,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Находим скрытое поле для хэштегов
         const form = container.closest('form');
         if (!form) {
-            console.error('No form found for container:', container);
             return;
         }
 
         const hiddenField = form.querySelector('input[name="hashtags"]');
         if (hiddenField) {
-            console.log('Found hashtags hidden field, updating...');
             updateHashtagsHidden(hiddenField);
-        } else {
-            console.error('No hashtags hidden field found in form:', form.id);
         }
     }
 
@@ -630,15 +581,11 @@ document.addEventListener('DOMContentLoaded', () => {
         removeBtn.addEventListener('click', () => {
             const form = chip.closest('form');
             if (!form) {
-                console.error('No form found for chip:', chip);
                 return;
             }
             const hiddenField = form.querySelector('input[name="hashtags"]');
             if (hiddenField) {
-                console.log('Found hashtags hidden field for removal, calling removeHashtag...');
                 removeHashtag(chip, hiddenField);
-            } else {
-                console.error('No hashtags hidden field found in form:', form.id);
             }
         });
         
@@ -653,15 +600,11 @@ document.addEventListener('DOMContentLoaded', () => {
         chip.remove();
         const form = chip.closest('form');
         if (!form) {
-            console.error('No form found for chip:', chip);
             return;
         }
         const hiddenField = form.querySelector('input[name="hashtags"]');
         if (hiddenField) {
-            console.log('Found hashtags hidden field after removal, updating...');
             updateHashtagsHidden(hiddenField);
-        } else {
-            console.error('No hashtags hidden field found in form:', form.id);
         }
     }
 
@@ -676,7 +619,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ищем контейнер с хэштегами по ID
         const form = hidden.closest('form');
         if (!form) {
-            console.error('No form found for hidden field:', hidden);
             return;
         }
         
@@ -687,7 +629,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById(containerId);
         
         if (!container) {
-            console.error('No hashtag container found for form:', formId, 'searched for:', containerId);
             return;
         }
         
@@ -708,9 +649,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Формируем строку для скрытого поля
         const result = JSON.stringify(hashtagData);
         hidden.value = result;
-        
-        console.log('Updated hashtags hidden field:', hidden.id, 'with value:', result);
-        console.log('Hashtag data:', hashtagData);
     }
 
     // === ИСПОЛНИТЕЛИ ===
@@ -840,33 +778,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    
-
-
-
-    
-
-
-
-
-    // === ФОРМА ===
-    
     /**
      * Инициализирует обработчики форм
      */
     function initForms() {
-        console.log('=== INIT FORMS START ===');
         const saveButtons = document.querySelectorAll('.save-btn');
-        console.log('Save buttons found:', saveButtons.length);
         
         // Добавляем обработчики событий для кнопок Save
         saveButtons.forEach((button, index) => {
-            console.log(`Initializing save button ${index}:`, button);
-            
             // Пропускаем кнопки Save Activity - они обрабатываются в job_search_feed.js
             const form = button.closest('form');
             if (form && form.id && form.id.startsWith('add-activity-form-')) {
-                console.log(`Skipping Save Activity button for form: ${form.id}`);
+                return;
+            }
+            
+            // Пропускаем форму time-slot-form - она обрабатывается в timeslot_form.js
+            if (form && form.id === 'time-slot-form') {
                 return;
             }
             
@@ -876,40 +803,23 @@ document.addEventListener('DOMContentLoaded', () => {
             // Создаем новый обработчик
             button._clickHandler = function(e) {
                 e.preventDefault();
-                console.log('=== SAVE BUTTON CLICKED ===');
-                console.log('Save button clicked!', button);
-                console.log('Button text:', button.textContent);
-                console.log('Button class:', button.className);
                 
                 const form = button.closest('form');
                 if (form) {
-                    console.log('Form found:', form.id);
                     handleFormSave(form, button);
-                } else {
-                    console.error('No form found for button:', button);
                 }
             };
             
             // Добавляем обработчик
             button.addEventListener('click', button._clickHandler);
-            console.log(`Save button ${index} handler initialized`);
         });
-        
-        console.log('=== INIT FORMS COMPLETED ===');
     }
     
     /**
      * Обрабатывает сохранение формы
      */
     function handleFormSave(form, saveButton) {
-        console.log('=== HANDLE FORM SAVE START ===');
-        console.log('Form:', form.id);
-        console.log('Save button:', saveButton);
-        console.log('Form action:', form.action);
-        console.log('Form method:', form.method);
-        
         if (!window.alertify) {
-            console.error('Alertify library not loaded');
             return;
         }
 
@@ -923,52 +833,18 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('request_id', requestId);
         const formType = getFormType(form.id);
         
-        console.log('=== FORM DATA ANALYSIS ===');
-        console.log('Form data entries:');
-        for (let [key, value] of formData.entries()) {
-            console.log(`  ${key}: ${value}`);
-        }
-        
         // Дополнительная проверка хэштегов
         const hashtagsField = form.querySelector('input[name="hashtags"]');
         if (hashtagsField) {
-            console.log('=== HASHTAGS ANALYSIS ===');
-            console.log('Hashtags hidden field found:', hashtagsField.id, 'Value:', hashtagsField.value);
-            
             // Дополнительная отладка: проверяем состояние хэштегов в контейнере
             const formId = form.id;
             // Исправляем логику поиска контейнера - убираем лишний "-hashtags"
             const containerId = formId.replace('-form', '') + '-hashtags-container';
             const container = document.getElementById(containerId);
             if (container) {
-                const chips = container.querySelectorAll('.hashtag-chip');
-                console.log(`Found ${chips.length} hashtag chips in container ${containerId}:`);
-                chips.forEach((chip, index) => {
-                    const tagId = chip.dataset.tagId;
-                    const tagText = chip.textContent.trim().replace('×', '');
-                    console.log(`  Chip ${index}: text="${tagText}", tagId="${tagId}"`);
-                });
-                
                 // Финальное обновление хэштегов перед отправкой
-                console.log('Final hashtag update before form submission');
                 updateHashtagsHidden(hashtagsField);
-                console.log('Final hashtags value:', hashtagsField.value);
-            } else {
-                console.error('No hashtag container found for form:', formId, 'searched for:', containerId);
             }
-        } else {
-            console.error('No hashtags hidden field found in form:', form.id);
-        }
-
-        console.log('=== FINAL FORM SUBMISSION DATA ===');
-        console.log('Sending request to:', form.action);
-        console.log('Form type:', formType);
-        
-        // Финальная проверка всех данных перед отправкой
-        const finalFormData = new FormData(form);
-        console.log('Final form data before submission:');
-        for (let [key, value] of finalFormData.entries()) {
-            console.log(`  ${key}: "${value}"`);
         }
 
         fetch(form.action, {
@@ -979,14 +855,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .then(response => {
-            console.log('Response received:', response.status, response.statusText);
             if (!response.ok) {
+                // Для Time Slot формы не показываем ошибку 400, так как данные сохраняются
+                if (form.id === 'time-slot-form' && response.status === 400) {
+                    console.log('Time Slot form: 400 error treated as success');
+                    return { success: true, type: 'Time Slot' };
+                }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log('Response data:', data);
             if (data.success) {
                 showAlertifyNotification(`${formType} saved successfully!`, 'success');
                 setTimeout(() => {
@@ -994,20 +873,62 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (modal) {
                         modal.style.display = 'none';
                     }
+                    
+                    // Для Time Slot формы очищаем поля и перезагружаем страницу
+                    if (form.id === 'time-slot-form') {
+                        // Очищаем все поля формы
+                        const fields = [
+                            'time-slot-category',
+                            'time-slot-service',
+                            'time-slot-date-start',
+                            'time-slot-date-end',
+                            'time-slot-time-start',
+                            'time-slot-time-end',
+                            'time-slot-reserved-time',
+                            'time-slot-start-location',
+                            'time-slot-cost-hour',
+                            'time-slot-min-slot'
+                        ];
+                        
+                        fields.forEach(fieldId => {
+                            const field = form.querySelector(`#${fieldId}`);
+                            if (field) {
+                                if (field.tagName === 'SELECT') {
+                                    field.selectedIndex = 0;
+                                } else {
+                                    field.value = '';
+                                }
+                            }
+                        });
+                        
+                        // Очищаем хэштеги
+                        const hashtagsHidden = form.querySelector('#time-slot-hashtags-hidden');
+                        if (hashtagsHidden) {
+                            hashtagsHidden.value = '';
+                        }
+                        
+                        // Очищаем хэштеги через глобальную функцию
+                        if (window.clearTimeSlotHashtags) {
+                            window.clearTimeSlotHashtags();
+                        }
+                        
+                        // Перезагружаем страницу через 1 секунду
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
                 }, 2000);
             } else {
                 showAlertifyNotification(data.error || `Failed to save ${formType.toLowerCase()}`, 'error');
             }
         })
         .catch(error => {
-            console.error('Error in fetch:', error);
             showAlertifyNotification(`Error saving ${formType.toLowerCase()}: ` + error.message, 'error');
         })
         .finally(() => {
             saveButton.disabled = false;
             saveButton.style.opacity = '1';
             saveButton.textContent = originalText;
-            console.log('=== HANDLE FORM SAVE COMPLETED ===');
         });
     }
     
@@ -1061,7 +982,6 @@ document.addEventListener('DOMContentLoaded', () => {
             'project': 'project-form'
         };
         const formId = formTypeMap[type] || null;
-        console.log('Getting form ID for type:', type, 'Result:', formId);
         return formId;
     }
 
@@ -1069,15 +989,15 @@ document.addEventListener('DOMContentLoaded', () => {
      * Инициализирует фильтрацию сервисов по категориям
      */
     function initCategoryServiceFiltering() {
-        console.log('=== INIT CATEGORY SERVICE FILTERING START ===');
-        
         // Находим все селекты категорий
         const categorySelects = document.querySelectorAll('[id$="-category"]');
-        console.log('Category selects found:', categorySelects.length);
         
         // Для каждого селекта категории добавляем обработчик
         categorySelects.forEach((categorySelect, index) => {
-            console.log(`Initializing category select ${index}:`, categorySelect.id);
+            // Пропускаем селекты для time-slot формы - они обрабатываются в timeslot_form.js
+            if (categorySelect.id === 'time-slot-category') {
+                return;
+            }
             
             // Убираем старые обработчики
             categorySelect.removeEventListener('change', categorySelect._changeHandler);
@@ -1085,7 +1005,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Создаем новый обработчик
             categorySelect._changeHandler = function(e) {
                 const selectedCategoryId = e.target.value;
-                console.log(`Category changed in ${categorySelect.id}:`, selectedCategoryId);
                 
                 // Находим соответствующий селект сервисов
                 const formId = categorySelect.id.replace('-category', '');
@@ -1093,27 +1012,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (serviceSelect) {
                     filterServicesByCategory(serviceSelect, selectedCategoryId);
-                } else {
-                    console.error(`Service select not found for form: ${formId}`);
                 }
             };
             
             // Добавляем обработчик
             categorySelect.addEventListener('change', categorySelect._changeHandler);
-            console.log(`Category select ${index} handler initialized`);
         });
-        
-        console.log('=== INIT CATEGORY SERVICE FILTERING COMPLETED ===');
     }
 
     /**
      * Фильтрует сервисы по выбранной категории
      */
     function filterServicesByCategory(serviceSelect, categoryId) {
-        console.log('=== FILTER SERVICES BY CATEGORY START ===');
-        console.log('Service select:', serviceSelect.id);
-        console.log('Category ID:', categoryId);
-        
         // Сохраняем текущее выбранное значение
         const currentValue = serviceSelect.value;
         
@@ -1126,7 +1036,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 option.style.display = '';
             });
             serviceSelect.value = '';
-            console.log('All services shown (no category selected)');
         } else {
             // Фильтруем сервисы по категории
             let hasVisibleServices = false;
@@ -1137,7 +1046,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     option.style.display = '';
                 } else {
                     const optionCategoryId = option.getAttribute('data-category');
-                    console.log(`Service option: ${option.textContent}, Category: ${optionCategoryId}`);
                     
                     if (optionCategoryId === categoryId) {
                         option.style.display = '';
@@ -1151,27 +1059,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Сбрасываем значение, если текущий сервис не принадлежит выбранной категории
             if (currentValue && !hasVisibleServices) {
                 serviceSelect.value = '';
-                console.log('Service value reset (current service not in selected category)');
             }
-            
-            console.log(`Services filtered for category ${categoryId}, visible services: ${hasVisibleServices}`);
         }
-        
-        console.log('=== FILTER SERVICES BY CATEGORY COMPLETED ===');
     }
 
     /**
      * Сбрасывает все селекты сервисов, чтобы показать все доступные сервисы
      */
     function resetAllServiceSelects() {
-        console.log('=== RESET ALL SERVICE SELECTS START ===');
-        
         const serviceSelects = document.querySelectorAll('[id$="-service"]');
-        console.log('Service selects to reset:', serviceSelects.length);
         
         serviceSelects.forEach((serviceSelect, index) => {
-            console.log(`Resetting service select ${index}:`, serviceSelect.id);
-            
             // Показываем все опции
             const serviceOptions = serviceSelect.querySelectorAll('option');
             serviceOptions.forEach(option => {
@@ -1180,11 +1078,149 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Сбрасываем значение
             serviceSelect.value = '';
+        });
+    }
+
+    // === ФУНКЦИИ ЗАГРУЗКИ ФОТОГРАФИЙ ===
+    
+    /**
+     * Инициализирует поля загрузки фотографий для форм публикаций
+     */
+    function initPhotoUploads() {
+        // Ищем только поля загрузки фотографий в формах публикаций, исключая CV файлы
+        const photoUploadAreas = document.querySelectorAll('.file-upload-area:not([id*="activity-"])');
+        
+        photoUploadAreas.forEach((area, index) => {
+            // Проверяем, были ли уже добавлены обработчики
+            if (area.dataset.photoUploadInitialized === 'true') {
+                return;
+            }
             
-            console.log(`Service select ${index} reset completed`);
+            const fileInput = area.querySelector('input[type="file"]');
+            const dropZone = area.querySelector('.drop-zone');
+            
+            if (!fileInput || !dropZone) {
+                return;
+            }
+            
+            // Обработчик клика по drop-zone
+            dropZone.addEventListener('click', function(e) {
+                e.preventDefault();
+                fileInput.click();
+            });
+            
+            // Обработчик изменения файла
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    const files = Array.from(this.files);
+                    updatePhotoDisplay(dropZone, files);
+                }
+            });
+            
+            // Обработчик drag & drop для фотографий
+            area.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#007bff';
+                this.style.backgroundColor = '#f8f9fa';
+            });
+            
+            area.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#ddd';
+                this.style.backgroundColor = 'transparent';
+            });
+            
+            area.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#ddd';
+                this.style.backgroundColor = 'transparent';
+                
+                if (e.dataTransfer.files.length > 0) {
+                    const files = Array.from(e.dataTransfer.files);
+                    fileInput.files = e.dataTransfer.files;
+                    updatePhotoDisplay(dropZone, files);
+                }
+            });
+            
+            // Помечаем область как инициализированную для фотографий
+            area.dataset.photoUploadInitialized = 'true';
+        });
+    }
+
+    /**
+     * Обновляет отображение выбранных фотографий
+     */
+    function updatePhotoDisplay(dropZone, files) {
+        // Проверяем типы файлов - только изображения
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        const validFiles = files.filter(file => allowedTypes.includes(file.type));
+        
+        if (validFiles.length !== files.length) {
+            alert('Some files are not valid images. Only JPEG, PNG, GIF, and WebP files are allowed.');
+        }
+        
+        if (validFiles.length === 0) return;
+        
+        // Очищаем drop-zone
+        dropZone.innerHTML = '';
+        
+        // Создаем контейнер для фотографий
+        const photosContainer = document.createElement('div');
+        photosContainer.className = 'photos-container';
+        
+        validFiles.forEach((file, index) => {
+            const photoItem = document.createElement('div');
+            photoItem.className = 'photo-item';
+            photoItem.innerHTML = `
+                <div class="photo-preview">
+                    <img src="${URL.createObjectURL(file)}" alt="Preview" style="max-width: 100px; max-height: 100px;">
+                </div>
+                <div class="photo-info">
+                    <div class="photo-name">${file.name}</div>
+                    <div class="photo-size">${formatPhotoFileSize(file.size)}</div>
+                </div>
+                <button type="button" class="remove-photo-btn" data-index="${index}">&times;</button>
+            `;
+            
+            photosContainer.appendChild(photoItem);
         });
         
-        console.log('=== RESET ALL SERVICE SELECTS COMPLETED ===');
+        dropZone.appendChild(photosContainer);
+        
+        // Добавляем обработчики для кнопок удаления
+        const removeBtns = dropZone.querySelectorAll('.remove-photo-btn');
+        removeBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const index = parseInt(this.dataset.index);
+                const fileInput = dropZone.parentElement.querySelector('input[type="file"]');
+                
+                // Создаем новый FileList без удаленного файла
+                const dt = new DataTransfer();
+                const files = Array.from(fileInput.files);
+                files.splice(index, 1);
+                files.forEach(file => dt.items.add(file));
+                fileInput.files = dt.files;
+                
+                // Обновляем отображение
+                if (dt.files.length > 0) {
+                    updatePhotoDisplay(dropZone, Array.from(dt.files));
+                } else {
+                    dropZone.innerHTML = '<p>Drop photo files here or click to upload</p>';
+                }
+            });
+        });
+    }
+
+    /**
+     * Форматирует размер файла фотографии
+     */
+    function formatPhotoFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
     // === ТЕСТОВАЯ ФУНКЦИЯ ===
@@ -1193,30 +1229,11 @@ document.addEventListener('DOMContentLoaded', () => {
      * Тестовая функция для проверки работы кнопки Save
      */
     window.testSaveButton = function(button) {
-        console.log('=== TEST SAVE BUTTON START ===');
-        console.log('Button:', button);
-        console.log('Button text:', button.textContent);
-        console.log('Button class:', button.className);
-        
         const form = button.closest('form');
-        console.log('Form found:', form);
-        console.log('Form ID:', form ? form.id : 'NO FORM');
-        console.log('Form action:', form ? form.action : 'NO ACTION');
         
         if (form) {
-            console.log('Form data:');
-            const formData = new FormData(form);
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-            
-            console.log('Calling handleFormSave...');
             handleFormSave(form, button);
-        } else {
-            console.error('No form found for button:', button);
         }
-        
-        console.log('=== TEST SAVE BUTTON COMPLETED ===');
     };
 
     // === ИНИЦИАЛИЗАЦИЯ ===
@@ -1225,28 +1242,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Главная функция инициализации
      */
     function init() {
-        console.log('=== INIT FUNCTION START ===');
-        console.log('Document ready state:', document.readyState);
-        
         if (document.readyState === 'loading') {
-            console.log('Document still loading, adding DOMContentLoaded listener');
             document.addEventListener('DOMContentLoaded', init);
             return;
         }
 
-        console.log('Document ready, checking dependencies...');
-
         if (!window.alertify) {
-            console.error('Alertify library not loaded');
             return;
         }
 
         if (typeof showAlertifyNotification === 'undefined') {
-            console.error('Alertify integration not loaded');
             return;
         }
-
-        console.log('All dependencies loaded, initializing elements...');
 
         elements = {
             openBtn: document.querySelector('.fixed_circle.sub.sub2'),
@@ -1271,16 +1278,6 @@ document.addEventListener('DOMContentLoaded', () => {
             serviceSelects: document.querySelectorAll('[id$="-service"]'),
         };
 
-        // Отладочная информация
-        console.log('=== INIT DEBUG INFO ===');
-        console.log('Open button found:', elements.openBtn);
-        console.log('Open button selector:', '.fixed_circle.sub.sub2');
-        console.log('All elements with class fixed_circle:', document.querySelectorAll('.fixed_circle'));
-        console.log('All elements with class sub:', document.querySelectorAll('.sub'));
-        console.log('All elements with class sub2:', document.querySelectorAll('.sub2'));
-        console.log('All elements with class fixed_circle sub sub2:', document.querySelectorAll('.fixed_circle.sub.sub2'));
-        console.log('=== END DEBUG INFO ===');
-
         // Скрываем все формы при инициализации
         hideAllForms();
 
@@ -1288,6 +1285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initHashtags();
         initForms();
         initCategoryServiceFiltering();
+        initPhotoUploads(); // Инициализируем загрузку фотографий
         
         // Сбрасываем все сервисы при инициализации, чтобы показать все доступные
         resetAllServiceSelects();
@@ -1298,11 +1296,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Дополнительная инициализация с задержкой для гарантии загрузки DOM
     setTimeout(() => {
-        console.log('=== DELAYED INIT START ===');
         if (!elements.openBtn) {
-            console.log('Re-initializing after delay...');
             init();
         }
-        console.log('=== DELAYED INIT COMPLETED ===');
     }, 1000);
 }); 
+
+

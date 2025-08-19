@@ -1,0 +1,168 @@
+{% load static %}
+
+<!-- Filtration Form Modal -->
+<div id="filtration-form" class="modal-overlay" style="display: none;">
+    <div class="modal-form filtration-modal">
+        <form id="filtration-form-form" class="filtration-form">
+            <button type="button" class="close-btn" id="close-filtration-modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <!-- Basic Filters Section -->
+            <div class="form-section">
+                <h4>Basic Filters</h4>
+                
+                <div class="form-group">
+                    <label for="type-filter">Type *</label>
+                    <select id="type-filter" name="type" multiple class="form-control">
+                        <option value="project">Project</option>
+                        <option value="task">Task</option>
+                        <option value="tender">Tender</option>
+                        <option value="announcements">Announcements</option>
+                        <option value="time_slot">Time slot</option>
+                        <option value="job_search">Job Search</option>
+                    </select>
+                    <small class="form-text">Hold Ctrl/Cmd to select multiple types</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="location-filter">Location (Post Code)</label>
+                    <input type="text" id="location-filter" name="location" class="form-control" placeholder="Enter post code">
+                </div>
+
+                <div class="form-group">
+                    <label for="last-update-filter">Last Update</label>
+                    <input type="date" id="last-update-filter" name="last_update" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="completed-filter" name="status_completed" value="completed">
+                            <label for="completed-filter">Completed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="in-progress-filter" name="status_in_progress" value="in_progress">
+                            <label for="in-progress-filter">In progress</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="one-time-filter" name="status_one_time" value="one_time">
+                            <label for="one-time-filter">One-time contracts</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="subscriptions-filter" name="status_subscriptions" value="subscriptions">
+                            <label for="subscriptions-filter">Subscriptions</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Filters Section -->
+            <div class="form-section">
+                <h4>Content Filters</h4>
+                
+                <div class="form-group">
+                    <label for="title-filter">Title</label>
+                    <input type="text" id="title-filter" name="title" class="form-control" placeholder="Search by title">
+                </div>
+
+                <div class="form-group">
+                    <label for="hashtags-filter">Hashtags</label>
+                    <div class="hashtag-input-container">
+                        <input type="text" id="hashtags-input" class="form-control hashtags-input-field" placeholder="Type hashtag...">
+                        <div class="hashtag-dropdown-menu" style="display: none;"></div>
+                        <div class="hashtag-chip-container"></div>
+                        <input type="hidden" name="hashtags" id="filtration-hashtags-hidden">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="client-filter">Client</label>
+                    <input type="text" id="client-filter" name="client" class="form-control" placeholder="Search by client">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date-start-filter">Date Start</label>
+                        <input type="date" id="date-start-filter" name="date_start" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="date-end-filter">Date End</label>
+                        <input type="date" id="date-end-filter" name="date_end" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="performers-filter">Performers</label>
+                    <input type="text" id="performers-filter" name="performers" class="form-control" placeholder="Search by performers">
+                </div>
+            </div>
+
+            <!-- Time Slot Specific Filters Section -->
+            <div class="form-section time-slot-section">
+                <h4>Time Slot Filters</h4>
+                
+                <div class="form-group">
+                    <label for="time-slot-date-filter">Date</label>
+                    <input type="date" id="time-slot-date-filter" name="time_slot_date" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Time Range</label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="time" id="time-start-filter" name="time_start" class="form-control" placeholder="Start time">
+                        </div>
+                        <div class="form-group">
+                            <input type="time" id="time-end-filter" name="time_end" class="form-control" placeholder="End time">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="start-location-filter">Start Location</label>
+                    <input type="text" id="start-location-filter" name="start_location" class="form-control" placeholder="Enter start location">
+                </div>
+
+                <div class="form-group">
+                    <label for="minimum-slot-filter">Minimum Slot (hours)</label>
+                    <input type="number" id="minimum-slot-filter" name="minimum_slot" class="form-control" min="0" step="0.5" placeholder="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="category-filter">Category</label>
+                    <select id="category-filter" name="category" class="form-control">
+                        <option value="">Select category</option>
+                        <option value="technology">Technology</option>
+                        <option value="design">Design</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="development">Development</option>
+                        <option value="consulting">Consulting</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="services-filter">Services</label>
+                    <select id="services-filter" name="services" class="form-control">
+                        <option value="">Select service</option>
+                        <option value="web_development">Web Development</option>
+                        <option value="mobile_development">Mobile Development</option>
+                        <option value="ui_ux_design">UI/UX Design</option>
+                        <option value="digital_marketing">Digital Marketing</option>
+                        <option value="consulting">Consulting</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="clear-filters-btn">Clear All</button>
+                <button type="submit" class="btn btn-primary" id="search-filters-btn">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
