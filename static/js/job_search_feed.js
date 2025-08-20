@@ -175,11 +175,31 @@
     const notesCloseButtons = document.querySelectorAll('.notes-close-btn, .notes-cancel-btn');
     notesCloseButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const notesPopup = button.closest('.notes-popup');
+            const notesPopup = button.closest('.notes-popup-overlay');
             if (notesPopup) {
-                notesPopup.style.display = 'none';
+                notesPopup.classList.remove('show');
             }
         });
+    });
+    
+    // Закрытие попапа при клике на оверлей
+    const notesPopups = document.querySelectorAll('.notes-popup-overlay');
+    notesPopups.forEach(popup => {
+        popup.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+            }
+        });
+    });
+    
+    // Закрытие попапа при нажатии Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const openPopups = document.querySelectorAll('.notes-popup-overlay.show');
+            openPopups.forEach(popup => {
+                popup.classList.remove('show');
+            });
+        }
     });
     
     // Обработчик для открытия попапа заметок
@@ -189,7 +209,7 @@
             const jobSearchId = icon.id.replace('note_button_007_post_info_icon_notes_', '');
             const notesPopup = document.getElementById(`note_button_007_notesPopup_${jobSearchId}`);
             if (notesPopup) {
-                notesPopup.style.display = 'block';
+                notesPopup.classList.add('show');
             }
         });
     });
