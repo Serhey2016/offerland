@@ -1,0 +1,679 @@
+/* ===== MY LIST FORM STYLES ===== */
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Дополнительные стили для центрирования */
+.modal-overlay[style*="flex"] {
+    align-items: center;
+    justify-content: center;
+}
+
+/* Разрешаем клики только на саму форму */
+.modal-overlay .modal-form {
+    pointer-events: auto;
+}
+
+/* Modal form */
+.modal-form {
+    background: #FBD551;
+    padding: 30px;
+    border-radius: 15px 0px 0px 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid #282D3B;
+}
+
+/* Header actions container */
+.modal-header-actions {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Close button */
+.modal_close_btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #282D3B;
+    padding: 5px;
+    line-height: 1;
+}
+
+.modal_close_btn:hover {
+    color: #000;
+}
+
+/* Social feed menu styles for modal forms */
+.my_task_social_feed_menu {
+    position: relative;
+}
+
+/* Overflow Menu Icon Trigger */
+.my_task_social_feed_overflow_menu_trigger {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    color: #666;
+    transition: color 0.2s ease;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.my_task_social_feed_overflow_menu_trigger:hover {
+    color: #333;
+}
+
+.my_task_social_feed_overflow_menu_trigger svg {
+    width: 16px;
+    height: 16px;
+}
+
+.my_task_social_feed_menu_trigger {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    color: #666;
+    transition: color 0.2s ease;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.my_task_social_feed_menu_trigger:hover {
+    color: #333;
+}
+
+.my_task_social_feed_menu_trigger svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Overflow Menu styles */
+.my_task_social_feed_overflow_menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    z-index: 1001;
+    display: none;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+/* Specific styles for task feed posts */
+.social_feed2 .my_task_social_feed_menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.social_feed2 .my_task_social_feed_overflow_menu_trigger {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.social_feed2 .my_task_social_feed_overflow_menu_trigger:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.social_feed2 .my_task_social_feed_overflow_menu {
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+}
+
+.my_task_social_feed_overflow_menu.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.my_task_social_feed_overflow_menu_item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.my_task_social_feed_overflow_menu_item:last-child {
+    border-bottom: none;
+}
+
+.my_task_social_feed_overflow_menu_item:hover {
+    background-color: #f8f9fa;
+}
+
+.my_task_social_feed_overflow_menu_item.start {
+    color: #28a745;
+}
+
+.my_task_social_feed_overflow_menu_item.edit {
+    color: #007bff;
+}
+
+.my_task_social_feed_overflow_menu_item.remove {
+    color: #dc3545;
+}
+
+/* Иконки в пунктах меню - пропорциональные размеру текста */
+.my_task_social_feed_overflow_menu_item svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+/* Form elements */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-group.checkbox label {
+    padding-top: 10px;
+}
+
+.form-group.checkbox input {
+    width: 18px;
+    height: 18px;
+}
+
+/* Labels */
+label {
+    display: block;
+    color: #282D3B;
+    font-weight: 500;
+}
+
+/* Form inputs */
+input[type="text"],
+input[type="url"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+input[type="url"] {
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Form actions */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background: #282D3B;
+    color: white;
+}
+
+.btn-secondary {
+    background: #282D3B;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* Hashtag styles */
+.hashtag-chip-container {
+    min-height: 38px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    cursor: text;
+    position: relative;
+    background: #fff;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 4px 8px;
+    gap: 4px;
+}
+
+.hashtag-chip {
+    background: #007bff;
+    color: #fff;
+    border-radius: 12px;
+    padding: 2px 8px 2px 10px;
+    margin-right: 4px;
+    margin-bottom: 2px;
+    font-size: 0.95em;
+    display: inline-flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.hashtag-chip .hashtag-remove {
+    margin-left: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #fff;
+    opacity: 0.8;
+    transition: color 0.2s, opacity 0.2s;
+}
+
+.hashtag-chip .hashtag-remove:hover {
+    color: #ffdddd;
+    opacity: 1;
+}
+
+.hashtag-dropdown-menu {
+    display: none;
+    position: fixed;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(40,45,59,0.15);
+    z-index: 10000;
+    max-height: 200px;
+    overflow-y: auto;
+    min-width: 200px;
+}
+
+.hashtag-dropdown-menu .dropdown-item {
+    padding: 8px 14px;
+    cursor: pointer;
+    color: #282D3B;
+    border-radius: 8px;
+    transition: background 0.2s;
+    font-size: 15px;
+}
+
+.hashtag-dropdown-menu .dropdown-item:hover {
+    background: #f0f0f0;
+}
+
+.hashtag-dropdown-menu .dropdown-item.create-new-tag {
+    background: #f8f9fa;
+    border-left: 3px solid #007bff;
+    font-style: italic;
+}
+
+.hashtag-dropdown-menu .dropdown-item.create-new-tag:hover {
+    background: #e9ecef;
+}
+
+.hashtag-dropdown-menu .dropdown-item.create-new-tag span {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.hashtags-input-field {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+    background: transparent;
+}
+
+/* Save button states */
+.save-spinner {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border: 3px solid #ddd;
+    border-top: 3px solid #282D3B;
+    border-radius: 50%;
+    animation: save-spin 0.8s linear infinite;
+    margin-left: 12px;
+    vertical-align: middle;
+}
+
+@keyframes save-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.save-success-message {
+    color: #1a7f37;
+    font-weight: 600;
+    margin-top: 18px;
+    font-size: 1.1em;
+    text-align: left;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .modal-form {
+        width: 95%;
+        padding: 20px;
+        max-height: 95vh;
+    }
+    
+    .modal-header-actions {
+        top: 8px;
+        right: 12px;
+        gap: 12px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn {
+        width: 100%;
+        padding: 15px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-form {
+        width: 98%;
+        padding: 15px;
+        border-radius: 10px 0px 0px 10px;
+    }
+    
+    .modal-header-actions {
+        top: 5px;
+        right: 10px;
+        gap: 10px;
+    }
+    
+    .my_task_social_feed_overflow_menu {
+        min-width: 100px;
+        right: -10px;
+    }
+    
+    .my_task_social_feed_overflow_menu_item {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .my_task_social_feed_overflow_menu_item svg {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+/* ===== MY TASK NOTES POPUP STYLES ===== */
+
+/* Иконка notes */
+.my_task_notes_icon {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.my_task_notes_icon:hover {
+    transform: scale(1.1);
+}
+
+/* Notes popup overlay */
+.my_task_notes_popup_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+}
+
+.my_task_notes_popup_overlay.show {
+    display: flex;
+}
+
+/* Notes popup content */
+.my_task_notes_popup_content {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: myTaskNotesPopupSlideIn 0.3s ease-out;
+}
+
+@keyframes myTaskNotesPopupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Notes popup header */
+.my_task_notes_popup_header {
+    background: #282d3b;
+    color: white;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 15px 15px 0 0;
+}
+
+.my_task_notes_popup_title {
+    margin: 0;
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #fbd551;
+}
+
+.my_task_notes_popup_close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.my_task_notes_popup_close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Notes popup body */
+.my_task_notes_popup_body {
+    padding: 25px;
+}
+
+.my_task_notes_form .form-group {
+    margin-bottom: 20px;
+}
+
+.my_task_notes_form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.my_task_notes_textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.my_task_notes_textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Notes popup actions */
+.my_task_notes_popup_actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.my_task_notes_popup_actions .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.my_task_notes_save_btn {
+    background: #28a745;
+    color: white;
+}
+
+.my_task_notes_save_btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.my_task_notes_cancel_btn {
+    background: #6c757d;
+    color: white;
+}
+
+.my_task_notes_cancel_btn:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Responsive design for notes popup */
+@media (max-width: 768px) {
+    .my_task_notes_popup_content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .my_task_notes_popup_header {
+        padding: 15px 20px;
+    }
+    
+    .my_task_notes_popup_body {
+        padding: 20px;
+    }
+    
+    .my_task_notes_popup_actions {
+        flex-direction: column;
+    }
+    
+    .my_task_notes_popup_actions .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .my_task_notes_popup_content {
+        width: 98%;
+        border-radius: 10px;
+    }
+    
+    .my_task_notes_popup_header {
+        padding: 12px 15px;
+    }
+    
+    .my_task_notes_popup_body {
+        padding: 15px;
+    }
+    
+    .my_task_notes_textarea {
+        min-height: 150px;
+        padding: 12px;
+    }
+}

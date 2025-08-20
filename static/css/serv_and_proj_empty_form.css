@@ -84,10 +84,17 @@
     border: 3px solid #282D3B;
 }
 
-.modal_close_btn {
+/* Header actions container */
+.modal-header-actions {
     position: absolute;
     top: 10px;
     right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.modal_close_btn {
     background: none;
     border: none;
     font-size: 24px;
@@ -95,6 +102,98 @@
     color: #282D3B;
     padding: 5px;
     line-height: 1;
+}
+
+/* Social feed menu styles for modal forms */
+.social_feed_menu {
+    position: relative;
+}
+
+.social_feed_menu_trigger {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    color: #666;
+    transition: color 0.2s ease;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.social_feed_menu_trigger:hover {
+    color: #333;
+}
+
+.social_feed_menu_trigger svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Overflow Menu styles */
+.social_feed_overflow_menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    z-index: 1001;
+    display: none;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+.social_feed_overflow_menu.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.social_feed_overflow_menu_item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.social_feed_overflow_menu_item:last-child {
+    border-bottom: none;
+}
+
+.social_feed_overflow_menu_item:hover {
+    background-color: #f8f9fa;
+}
+
+.social_feed_overflow_menu_item.start {
+    color: #28a745;
+}
+
+.social_feed_overflow_menu_item.edit {
+    color: #007bff;
+}
+
+.social_feed_overflow_menu_item.remove {
+    color: #dc3545;
 }
 
 .modal_close_btn:hover {

@@ -1,5 +1,7 @@
 {% load static %}
 
+<!-- My Task Feed CSS -->
+<link rel="stylesheet" href="{% static 'css/my_task_feed.css' %}">
 
 <div class="social_feed2">
     <div class="post_info_block">
@@ -14,21 +16,27 @@
                 <span class="post_end_date">{{ task.updated_at|date:'d.m.Y' }}</span>
             </div>
         </div>
-        <div class="social_feed_menu">
-            <div class="social_feed_overflow_menu" id="overflow_menu_{{ task.id }}">
-                <div class="social_feed_overflow_menu_item start" data-action="start" data-id="{{ task.id }}">
+        <div class="my_task_social_feed_menu" id="my_task_social_feed_menu_{{ task.id }}">
+            <!-- Overflow Menu Icon Trigger -->
+            <div class="my_task_social_feed_overflow_menu_trigger" id="overflow_menu_trigger_{{ task.id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+                </svg>
+            </div>
+            <div class="my_task_social_feed_overflow_menu" id="my_task_overflow_menu_{{ task.id }}">
+                <div class="my_task_social_feed_overflow_menu_item start" id="menu_item_start_{{ task.id }}" data-action="start" data-id="{{ task.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 5v14l11-7z"/>
                     </svg>
                     Start
                 </div>
-                <div class="social_feed_overflow_menu_item edit" data-action="edit" data-id="{{ task.id }}">
+                <div class="my_task_social_feed_overflow_menu_item edit" id="menu_item_edit_{{ task.id }}" data-action="edit" data-id="{{ task.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
                     </svg>
                     Edit
                 </div>
-                <div class="social_feed_overflow_menu_item remove" data-action="remove" data-id="{{ task.id }}">
+                <div class="my_task_social_feed_overflow_menu_item remove" id="menu_item_remove_{{ task.id }}" data-action="remove" data-id="{{ task.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                     </svg>
@@ -43,7 +51,7 @@
             <span class="post_info_project_or_task_title_text">{{ task.title }}</span>
         </div>
         <div class="post_info_icons_scroll">
-            <div id="note_button_007_post_info_icon_notes_{{ task.id }}" class="post_info_icon notes-icon">
+            <div id="my_task_notes_icon_{{ task.id }}" class="post_info_icon my_task_notes_icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="76.191" height="50.794" viewBox="0 0 76.191 50.794">
                     <path id="notes_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24" d="M120-669.206v-8.466h50.794v8.466Zm0-21.164v-8.466h76.191v8.466Zm0-21.164V-720h76.191v8.466Z" transform="translate(-120 720)" fill="#dfb30b"/>
                 </svg>   
@@ -197,28 +205,28 @@
 </div>
 
 <!-- Попап для блокнота -->
-<div id="note_button_007_notesPopup_{{ task.id }}" class="notes-popup-overlay notes-popup">
-    <div class="notes-popup-content">
-                        <div class="notes-popup-header">
-                    <h3 class="notes-popup-title">Notes for task #{{ task.id }}</h3>
-                    <button class="notes-popup-close notes-close-btn">&times;</button>
-                </div>
-        <div class="notes-popup-body">
-            <form id="note_button_007_notesForm_{{ task.id }}" method="POST" action="{% url 'services_and_projects:save_task_notes' task.id %}" class="notes-form">
+<div id="my_task_notes_popup_{{ task.id }}" class="my_task_notes_popup_overlay my_task_notes_popup">
+    <div class="my_task_notes_popup_content">
+        <div class="my_task_notes_popup_header">
+            <h3 class="my_task_notes_popup_title">Notes for task #{{ task.id }}</h3>
+            <button class="my_task_notes_popup_close my_task_notes_close_btn" id="my_task_notes_close_{{ task.id }}">&times;</button>
+        </div>
+        <div class="my_task_notes_popup_body">
+            <form id="my_task_notes_form_{{ task.id }}" method="POST" action="{% url 'services_and_projects:save_task_notes' task.id %}" class="my_task_notes_form">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="task_notes_{{ task.id }}">Notes:</label>
-                    <textarea id="note_button_007_task_notes_{{ task.id }}" name="notes" class="form-control notes-textarea">{{ task.note|default:'' }}</textarea>
+                    <label for="my_task_notes_textarea_{{ task.id }}">Notes:</label>
+                    <textarea id="my_task_notes_textarea_{{ task.id }}" name="notes" class="form-control my_task_notes_textarea">{{ task.note|default:'' }}</textarea>
                 </div>
-                <div class="notes-popup-actions">
-                    <button type="submit" class="btn btn-primary notes-save-btn">Save</button>
-                    <button type="button" class="btn btn-secondary notes-cancel-btn">Cancel</button>
+                <div class="my_task_notes_popup_actions">
+                    <button type="submit" class="btn btn-primary my_task_notes_save_btn" id="my_task_notes_save_{{ task.id }}">Save</button>
+                    <button type="button" class="btn btn-secondary my_task_notes_cancel_btn" id="my_task_notes_cancel_{{ task.id }}">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Подключаем скрипт для Overflow Menu -->
-<script src="{% static 'js/social_feed_overflow_menu.js' %}"></script>
+<!-- Подключаем скрипт для My Task Feed Overflow Menu -->
+<script src="{% static 'js/my_task_feed.js' %}"></script>
 

@@ -1289,6 +1289,74 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Сбрасываем все сервисы при инициализации, чтобы показать все доступные
         resetAllServiceSelects();
+        
+        // Инициализируем overflow menu
+        initOverflowMenu();
+    }
+
+    /**
+     * Инициализация overflow menu для форм
+     */
+    function initOverflowMenu() {
+        // Находим все триггеры overflow menu
+        const overflowTriggers = document.querySelectorAll('.social_feed_menu_trigger');
+        
+        overflowTriggers.forEach(trigger => {
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Находим соответствующий dropdown menu
+                const menu = this.closest('.social_feed_menu').querySelector('.social_feed_overflow_menu');
+                
+                // Закрываем все другие открытые меню
+                document.querySelectorAll('.social_feed_overflow_menu.show').forEach(openMenu => {
+                    if (openMenu !== menu) {
+                        openMenu.classList.remove('show');
+                    }
+                });
+                
+                // Переключаем текущее меню
+                menu.classList.toggle('show');
+            });
+        });
+        
+        // Закрываем меню при клике вне его
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.social_feed_menu')) {
+                document.querySelectorAll('.social_feed_overflow_menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+        
+        // Обработка действий в overflow menu
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.social_feed_overflow_menu_item')) {
+                const menuItem = e.target.closest('.social_feed_overflow_menu_item');
+                const action = menuItem.dataset.action;
+                const id = menuItem.dataset.id;
+                
+                // Закрываем меню
+                menuItem.closest('.social_feed_overflow_menu').classList.remove('show');
+                
+                // Обрабатываем действия
+                switch(action) {
+                    case 'start':
+                        console.log('Start action for:', id);
+                        // Здесь можно добавить логику для действия Start
+                        break;
+                    case 'edit':
+                        console.log('Edit action for:', id);
+                        // Здесь можно добавить логику для действия Edit
+                        break;
+                    case 'remove':
+                        console.log('Remove action for:', id);
+                        // Здесь можно добавить логику для действия Remove
+                        break;
+                }
+            }
+        });
     }
 
     // Запуск инициализации

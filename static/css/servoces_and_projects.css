@@ -430,27 +430,35 @@ body {
 .social_feed_menu {
     position: relative;
     right: 10px;
+}
+
+.social_feed_menu_trigger {
+    background: none;
+    border: none;
+    outline: none;
     cursor: pointer;
     width: 24px;
     height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.social_feed_menu::after {
-    content: "\22EE";
-    right: 0;
-    top: 0;
+    padding: 0;
+    margin: 0;
     color: #666;
-    font-size: 1.4em;
-    line-height: 1;
-    display: block;
     transition: color 0.2s ease;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
-.social_feed_menu:hover::after {
+.social_feed_menu_trigger:hover {
     color: #333;
+}
+
+.social_feed_menu_trigger svg {
+    width: 18px;
+    height: 18px;
 }
 
 /* Overflow Menu стили */
@@ -509,6 +517,10 @@ body {
 
 .social_feed_overflow_menu_item.edit {
     color: #007bff;
+}
+
+.social_feed_overflow_menu_item.share {
+    color: #28a745;
 }
 
 .social_feed_overflow_menu_item svg {
