@@ -1,0 +1,16 @@
+[
+  {
+    "model": "joblist.country",
+    "pk": 1,
+    "fields": {
+      "countries": "Ireland"
+    }
+  },
+  {
+    "model": "joblist.country",
+    "pk": 2,
+    "fields": {
+      "countries": "UK"
+    }
+  }
+]

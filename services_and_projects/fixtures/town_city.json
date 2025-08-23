@@ -1,0 +1,30 @@
+[
+  {
+    "model": "joblist.towncity",
+    "pk": 1,
+    "fields": {
+      "town_city": "Swindon"
+    }
+  },
+  {
+    "model": "joblist.towncity",
+    "pk": 2,
+    "fields": {
+      "town_city": "Cambridge"
+    }
+  },
+  {
+    "model": "joblist.towncity",
+    "pk": 3,
+    "fields": {
+      "town_city": "Kings Langley"
+    }
+  },
+  {
+    "model": "joblist.towncity",
+    "pk": 4,
+    "fields": {
+      "town_city": "London"
+    }
+  }
+]
