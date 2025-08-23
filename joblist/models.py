@@ -46,11 +46,7 @@ class TypeNRating(models.Model):
     def __str__(self):
         return self.type_n_rating
 
-class Route(models.Model):
-    route = models.CharField(max_length=50, unique=True)
 
-    def __str__(self):
-        return self.route
 
 class VisasNames(models.Model):
     visa_names = models.CharField(max_length=250, unique=True)
@@ -111,7 +107,6 @@ class Companies(models.Model):
     website = models.URLField(max_length=70, unique=True, null=True, blank=True)
     town_n_city = models.ManyToManyField(TownCity, related_name='companies')
     county = models.ManyToManyField(Country, blank=True, related_name='companies')
-    route = models.ForeignKey(Route, on_delete=models.SET_NULL, null=True, blank=True, related_name='companies')
     contact_email = models.EmailField(null=True, blank=True)
     contact_number = models.CharField(max_length=70, null=True, blank=True)
     description = models.TextField(null=True, blank=True)

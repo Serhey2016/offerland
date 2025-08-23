@@ -7,7 +7,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from .models import (
-    Industry, BusinessArea, Country, TownCity, TypeNRating, Route,
+    Industry, BusinessArea, Country, TownCity, TypeNRating,
     VisasNames, WorkModel, EmploymentType, InterviewStages, AllTags,
     ContractType, Companies, Vacancies
 )
@@ -198,10 +198,7 @@ class TypeNRatingAdmin(admin.ModelAdmin):
     list_display = ('type_n_rating',)
     search_fields = ('type_n_rating',)
 
-@admin.register(Route)
-class RouteAdmin(admin.ModelAdmin):
-    list_display = ('route',)
-    search_fields = ('route',)
+
 
 @admin.register(VisasNames)
 class VisasNamesAdmin(admin.ModelAdmin):
@@ -247,7 +244,7 @@ class CompaniesAdmin(admin.ModelAdmin):
             'fields': ('industry', 'business_area')
         }),
         ('Location', {
-            'fields': ('town_n_city', 'county', 'route', 'address', 'postcode1', 'postcode2')
+            'fields': ('town_n_city', 'county', 'address', 'postcode1', 'postcode2')
         }),
         ('Contact Information', {
             'fields': ('website', 'contact_email', 'contact_number')

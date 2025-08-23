@@ -1,0 +1,156 @@
+[
+  {
+    "model": "joblist.businessarea",
+    "pk": 1,
+    "fields": {
+      "business_area": "Corporate strategy"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 2,
+    "fields": {
+      "business_area": "Engineering"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 3,
+    "fields": {
+      "business_area": "Apple TV+"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 4,
+    "fields": {
+      "business_area": "Regional management"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 5,
+    "fields": {
+      "business_area": "Customer support"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 6,
+    "fields": {
+      "business_area": "GPU development"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 7,
+    "fields": {
+      "business_area": "Chipset research"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 8,
+    "fields": {
+      "business_area": "Partnerships with tech firms"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 9,
+    "fields": {
+      "business_area": "Siri research"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 10,
+    "fields": {
+      "business_area": "AI/ML innovation"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 11,
+    "fields": {
+      "business_area": "Silicon development"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 12,
+    "fields": {
+      "business_area": "Software engineering"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 13,
+    "fields": {
+      "business_area": "hardware/software integration"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 14,
+    "fields": {
+      "business_area": "R&D in emerging technologies"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 15,
+    "fields": {
+      "business_area": "Legal"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 16,
+    "fields": {
+      "business_area": "Finance"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 17,
+    "fields": {
+      "business_area": "Compliance"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 18,
+    "fields": {
+      "business_area": "Administrative functions"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 19,
+    "fields": {
+      "business_area": "Retail operations"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 20,
+    "fields": {
+      "business_area": "Logistics"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 21,
+    "fields": {
+      "business_area": "Supply chain"
+    }
+  },
+  {
+    "model": "joblist.businessarea",
+    "pk": 22,
+    "fields": {
+      "business_area": "In-store customer experience"
+    }
+  }
+]

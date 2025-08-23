@@ -1,0 +1,79 @@
+[
+  {
+    "model": "joblist.industry",
+    "pk": 1,
+    "fields": {
+      "name": "Technology"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 2,
+    "fields": {
+      "name": "Digital Services"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 3,
+    "fields": {
+      "name": "Semiconductors"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 4,
+    "fields": {
+      "name": "Graphics"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 5,
+    "fields": {
+      "name": "AI"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 6,
+    "fields": {
+      "name": "Machine Learning"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 7,
+    "fields": {
+      "name": "Software"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 8,
+    "fields": {
+      "name": "Advanced Engineering"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 9,
+    "fields": {
+      "name": "Retail"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 10,
+    "fields": {
+      "name": "Corporate Services"
+    }
+  },
+  {
+    "model": "joblist.industry",
+    "pk": 11,
+    "fields": {
+      "name": "Customer Experience"
+    }
+  }
+]
