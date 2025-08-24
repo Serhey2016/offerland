@@ -1,60 +1,115 @@
+{% load static %}
+
 <div class="social_feed_time_slot">
     <div class="social_feed_time_slot_body_text">
         <div class="social_feed_time_slot_text_sections">
             <div class="social_feed_time_slot_text_section_1">
-                <div class="sftsts1_company_name">Morisons</div>
-                <div class="sftsts1_use_name">Jack Nikolson</div>
-                <div class="sftsts1_hour_price">1 hour: 35 £</div>
-                <div class="sftsts1_hour_price">min slot 9 hours</div>
-
+                <div class="sftsts1_company_name"> 
+                    <span class="sftsts1_favorites_icon_checked" id="sftsts1_favorites_icon_id">
+                        <svg id="Group_4163" data-name="Group 4163" xmlns="http://www.w3.org/2000/svg" width="27.094" height="24.858" viewBox="0 0 33.867 31.073">
+                            <path id="favorite_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24" d="M96.934-822.927l-2.455-2.2q-4.276-3.852-7.07-6.646a46.843,46.843,0,0,1-4.445-5.016,15.937,15.937,0,0,1-2.307-4.085,11.387,11.387,0,0,1-.656-3.81,9.02,9.02,0,0,1,2.667-6.646A9.02,9.02,0,0,1,89.314-854a9.769,9.769,0,0,1,4.191.931,10.041,10.041,0,0,1,3.429,2.625,10.041,10.041,0,0,1,3.429-2.625,9.769,9.769,0,0,1,4.191-.931,9.02,9.02,0,0,1,6.646,2.667,9.02,9.02,0,0,1,2.667,6.646,11.387,11.387,0,0,1-.656,3.81,15.938,15.938,0,0,1-2.307,4.085,46.846,46.846,0,0,1-4.445,5.016q-2.794,2.794-7.07,6.646Zm0-4.572q4.064-3.641,6.689-6.244a52.757,52.757,0,0,0,4.149-4.53,14.157,14.157,0,0,0,2.117-3.429,8.088,8.088,0,0,0,.593-2.984,5.744,5.744,0,0,0-1.693-4.233,5.744,5.744,0,0,0-4.233-1.693,6.538,6.538,0,0,0-3.683,1.122,5.77,5.77,0,0,0-2.328,2.858H95.325A5.77,5.77,0,0,0,93-849.491a6.538,6.538,0,0,0-3.683-1.122,5.744,5.744,0,0,0-4.233,1.693,5.744,5.744,0,0,0-1.693,4.233,8.088,8.088,0,0,0,.593,2.984,14.157,14.157,0,0,0,2.117,3.429,52.757,52.757,0,0,0,4.149,4.53Q92.87-831.14,96.934-827.5ZM96.934-839.056Z" transform="translate(-80 854)" fill="red"/>
+                            <ellipse id="Ellipse_283" data-name="Ellipse 283" cx="7.872" cy="7.872" rx="7.872" ry="7.872" transform="translate(2.407 2.967)" fill="red"/>
+                            <ellipse id="Ellipse_284" data-name="Ellipse 284" cx="7.872" cy="7.872" rx="7.872" ry="7.872" transform="translate(15.901 2.967)" fill="red"/>
+                            <ellipse id="Ellipse_285" data-name="Ellipse 285" cx="8.996" cy="8.434" rx="8.996" ry="8.434" transform="translate(8.029 10.839)" fill="red"/>
+                          </svg>
+                          
+                    </span> 
+                    <span class="sftsts1_favorites_icon_unchecked" id="sftsts1_favorites_icon_id1">
+                        <svg id="Group_4249" data-name="Group 4249" xmlns="http://www.w3.org/2000/svg" width="27.094" height="24.858" viewBox="0 0 33.867 31.073">
+                            <path id="favorite_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24" d="M96.934-822.927l-2.455-2.2q-4.276-3.852-7.07-6.646a46.843,46.843,0,0,1-4.445-5.016,15.937,15.937,0,0,1-2.307-4.085,11.387,11.387,0,0,1-.656-3.81,9.02,9.02,0,0,1,2.667-6.646A9.02,9.02,0,0,1,89.314-854a9.769,9.769,0,0,1,4.191.931,10.041,10.041,0,0,1,3.429,2.625,10.041,10.041,0,0,1,3.429-2.625,9.769,9.769,0,0,1,4.191-.931,9.02,9.02,0,0,1,6.646,2.667,9.02,9.02,0,0,1,2.667,6.646,11.387,11.387,0,0,1-.656,3.81,15.938,15.938,0,0,1-2.307,4.085,46.846,46.846,0,0,1-4.445,5.016q-2.794,2.794-7.07,6.646Zm0-4.572q4.064-3.641,6.689-6.244a52.757,52.757,0,0,0,4.149-4.53,14.157,14.157,0,0,0,2.117-3.429,8.088,8.088,0,0,0,.593-2.984,5.744,5.744,0,0,0-1.693-4.233,5.744,5.744,0,0,0-4.233-1.693,6.538,6.538,0,0,0-3.683,1.122,5.77,5.77,0,0,0-2.328,2.858H95.325A5.77,5.77,0,0,0,93-849.491a6.538,6.538,0,0,0-3.683-1.122,5.744,5.744,0,0,0-4.233,1.693,5.744,5.744,0,0,0-1.693,4.233,8.088,8.088,0,0,0,.593,2.984,14.157,14.157,0,0,0,2.117,3.429,52.757,52.757,0,0,0,4.149,4.53Q92.87-831.14,96.934-827.5ZM96.934-839.056Z" transform="translate(-80 854)" fill="#282d3b"/>
+                          </svg>
+                          
+                    </span>
+                    {% if owner and owner.company_name %}
+                        <span>{{ owner.company_name }}</span>
+                    {% else %}
+                        <span>No Company</span>
+                    {% endif %}
+                </div>
+                <div class="sftsts1_use_name">
+                    {% if owner %}
+                        {{ owner.get_full_name|default:owner.username }}
+                    {% else %}
+                        Unknown User
+                    {% endif %}
+                </div>
+                <div class="sftsts1_hour_price">1 hour: <span>{{ time_slot.cost_of_1_hour_of_work|floatformat:0 }}</span> £</div> 
+                <div class="sftsts1_hour_price">min slot 
+                    <span>
+                        {% if time_slot.minimum_time_slot %}
+                            {% if time_slot.minimum_time_slot == 60 %}
+                                1 hour
+                            {% elif time_slot.minimum_time_slot < 60 %}
+                                {{ time_slot.minimum_time_slot }} minutes
+                            {% else %}
+                                {% widthratio time_slot.minimum_time_slot 60 1 %} hours
+                            {% endif %}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+                    </span>
+                </div>
             </div>
             <div class="social_feed_time_slot_text_section_2">
-                <div class="sftsts2_aviability">Available at: 07.23 - 08.11</div>
-                <div class="sftsts2_time_slot">Time-slot: 13.00 - 16.00</div>
-                <div class="sftsts2_reserved_road_time">Reserved time on road:1 hour</div>
-                <div class="sftsts2_reserved_start_location">start location: CR03JG</div>
+                <div class="sftsts2_aviability">
+                    Available at: 
+                    <span class="sftsts2_aviability_start_date" id="sftsts2_aviability_start_date_id">
+                        {{ time_slot.date_start|date:"m.d" }}
+                    </span> - 
+                    <span class="sftsts2_aviability_end_date" id="sftsts2_aviability_end_date">
+                        {{ time_slot.date_end|date:"m.d" }}
+                    </span>
+                </div>
+                <div class="sftsts2_time_slot">
+                    Time-slot: 
+                    <span class="sftsts2_time_slot_time">
+                        <span class="sftsts2_time_slot_time_start_time" id="sftsts2_time_slot_time_start_time_id">
+                            {{ time_slot.time_start|time:"H:i" }}
+                        </span> - 
+                        <span class="sftsts2_time_slot_time_end_time" id="sftsts2_time_slot_time_end_time_id">
+                            {{ time_slot.time_end|time:"H:i" }}
+                        </span>
+                    </span>
+                </div>
+                <div class="sftsts2_reserved_road_time">
+                    Reserved time on road: 
+                    <span class="sftsts2_reserved_road_time_time" id="sftsts2_reserved_road_time_time_id">
+                        {% if time_slot.reserved_time_on_road %}
+                            {% if time_slot.reserved_time_on_road == 60 %}
+                                1 hour
+                            {% elif time_slot.reserved_time_on_road < 60 %}
+                                {{ time_slot.reserved_time_on_road }} minutes
+                            {% else %}
+                                {% widthratio time_slot.reserved_time_on_road 60 1 %} hours
+                            {% endif %}
+                        {% else %}
+                            No time reserved
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="sftsts2_reserved_start_location">
+                    start location: 
+                    <span class="sftsts2_reserved_start_location_location" id="sftsts2_reserved_start_location_location_id">
+                        {{ time_slot.start_location|default:"Not specified" }}
+                    </span>
+                </div>
             </div>
         </div>
         <div class="social_feed_time_slot_tag_section">
-            <div class="social_feed_tags">
-                <span>Lorem</span>
-                <span>ipsum</span>
-                <span>dolor</span>
-                <span>sit</span>
-                <span>amet</span>
-                <span>consectetur</span>
-                <span>adipisicing</span>
-                <span>elit</span>
+            <div class="social_feed_tags_scroll_container">
+                <div class="social_feed_tags">
+                    {% if time_slot.hashtags.all %}
+                        {% for hashtag in time_slot.hashtags.all %}
+                            <span>{{ hashtag.tag }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span>No tags</span>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
     <div class="social_feed_time_slot_buttons">
-
         <button class="social_feed_time_slot_book_now_button">Book now</button>
     </div>
 </div>
-
-<!-- Time Slot Form with Hashtags -->
-<div class="time-slot-form-container">
-    <h3>Add Time Slot</h3>
-    
-    <div class="form-group">
-        <label for="time-slot-hashtags">Hashtags: <a href="#">Don't find hashtag?</a></label>
-        <div id="time-slot-hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='[{"id": 1, "tag": "plumbing"}, {"id": 2, "tag": "electrical"}, {"id": 3, "tag": "cleaning"}, {"id": 4, "tag": "gardening"}, {"id": 5, "tag": "painting"}, {"id": 6, "tag": "carpentry"}, {"id": 7, "tag": "landscaping"}, {"id": 8, "tag": "maintenance"}]'>
-            <input type="text" id="time-slot-hashtags-input" placeholder="Start typing tag..." autocomplete="off" class="hashtags-input-field">
-        </div>
-        <div id="time-slot-hashtags-dropdown" class="hashtag-dropdown-menu"></div>
-    </div>
-    
-    <input type="hidden" name="hashtags" id="time-slot-hashtags-hidden">
-    
-    <div class="form-actions">
-        <button type="button" class="btn btn-secondary save-btn">Save Hashtags</button>
-    </div>
-</div>
-
-<!-- Подключаем CSS для стилизации -->
-<link rel="stylesheet" href="{% static 'css/timeslot_form.css' %}">
-
-<!-- Подключаем JavaScript для работы с хэштегами -->
-<script src="{% static 'js/timeslot_form.js' %}"></script>

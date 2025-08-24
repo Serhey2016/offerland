@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.http import urlencode
-from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch
+from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations
 from joblist.models import AllTags, Companies
 from django.utils import timezone
 import json
@@ -51,7 +51,12 @@ def testpage(request):
     # Получаем все записи JobSearch для отображения в потоке
     job_searches_for_feed = JobSearch.objects.select_related('user').order_by('-start_date')
     
-    # Создаем список всех элементов для потока (реклама + задачи + job searches)
+    # Получаем все TimeSlot для отображения в потоке
+    time_slots_for_feed = TimeSlot.objects.select_related('type_of_task', 'services').prefetch_related(
+        'hashtags', 'performers', 'photos'
+    ).order_by('-date_start')
+    
+    # Создаем список всех элементов для потока (реклама + задачи + job searches + time slots)
     feed_items = []
     
     # Добавляем рекламу
@@ -75,8 +80,126 @@ def testpage(request):
             'data': job_search
         })
     
+    # Добавляем TimeSlot записи
+    for time_slot in time_slots_for_feed:
+        # Получаем владельца TimeSlot
+        owner_rel = TimeSlotOwnerRelations.objects.select_related('user').filter(time_slot=time_slot).first()
+        owner = owner_rel.user if owner_rel else None
+        
+        feed_items.append({
+            'type': 'time_slot',
+            'data': {
+                'time_slot': time_slot,
+                'owner': owner
+            }
+        })
+    
     # Сортируем по дате создания (новые сначала)
-    feed_items.sort(key=lambda x: x['data'].created_at if x['type'] == 'task' else x['data'].start_date if x['type'] == 'job_search' else x['data']['advertising'].creation_date, reverse=True)
+    # Приводим все даты к datetime.date для корректного сравнения
+    def get_sort_date(item):
+        try:
+            if item['type'] == 'task':
+                if hasattr(item['data'], 'created_at') and item['data'].created_at:
+                    # Приводим к date
+                    if hasattr(item['data'].created_at, 'date'):
+                        return item['data'].created_at.date()
+                    elif hasattr(item['data'].created_at, 'strftime'):
+                        # Если это date, возвращаем как есть
+                        return item['data'].created_at
+                    else:
+                        print(f"Unexpected type for task created_at: {type(item['data'].created_at)}")
+                        return None
+                return None
+            elif item['type'] == 'job_search':
+                if hasattr(item['data'], 'start_date') and item['data'].start_date:
+                    # Приводим к date
+                    if hasattr(item['data'].start_date, 'date'):
+                        return item['data'].start_date.date()
+                    elif hasattr(item['data'].start_date, 'strftime'):
+                        # Если это date, возвращаем как есть
+                        return item['data'].start_date
+                    else:
+                        print(f"Unexpected type for job_search start_date: {type(item['data'].start_date)}")
+                        return None
+                return None
+            elif item['type'] == 'advertising':
+                if hasattr(item['data']['advertising'], 'creation_date') and item['data']['advertising'].creation_date:
+                    # Приводим к date
+                    if hasattr(item['data']['advertising'].creation_date, 'date'):
+                        return item['data']['advertising'].creation_date.date()
+                    elif hasattr(item['data']['advertising'].creation_date, 'strftime'):
+                        # Если это date, возвращаем как есть
+                        return item['data']['advertising'].creation_date
+                    else:
+                        print(f"Unexpected type for advertising creation_date: {type(item['data']['advertising'].creation_date)}")
+                        return None
+                return None
+            elif item['type'] == 'time_slot':
+                if hasattr(item['data']['time_slot'], 'date_start') and item['data']['time_slot'].date_start:
+                    # Приводим к date
+                    if hasattr(item['data']['time_slot'].date_start, 'date'):
+                        return item['data']['time_slot'].date_start.date()
+                    elif hasattr(item['data']['time_slot'].date_start, 'strftime'):
+                        # Если это date, возвращаем как есть
+                        return item['data']['time_slot'].date_start
+                    else:
+                        print(f"Unexpected type for time_slot date_start: {type(item['data']['time_slot'].date_start)}")
+                        return None
+                return None
+            else:
+                if hasattr(item['data'], 'created_at') and item['data'].created_at:
+                    # Приводим к date
+                    if hasattr(item['data'].created_at, 'date'):
+                        return item['data'].created_at.date()
+                    elif hasattr(item['data'].created_at, 'strftime'):
+                        # Если это date, возвращаем как есть
+                        return item['data'].created_at
+                    else:
+                        print(f"Unexpected type for default created_at: {type(item['data'].created_at)}")
+                        return None
+                return None
+        except Exception as e:
+            print(f"Error getting sort date for item {item['type']}: {e}")
+            return None
+    
+    # Фильтруем элементы с None датами и сортируем остальные
+    valid_items = [item for item in feed_items if get_sort_date(item) is not None]
+    invalid_items = [item for item in feed_items if get_sort_date(item) is None]
+    
+    print(f"Valid items for sorting: {len(valid_items)}")
+    print(f"Invalid items (no date): {len(invalid_items)}")
+    
+    # Дополнительная проверка типов дат
+    for item in valid_items:
+        sort_date = get_sort_date(item)
+        if sort_date is not None:
+            print(f"Item {item['type']} sort date: {sort_date} (type: {type(sort_date)})")
+    
+    # Сортируем валидные элементы
+    try:
+        valid_items.sort(key=get_sort_date, reverse=True)
+        print("Sorting completed successfully")
+    except Exception as e:
+        print(f"Error during sorting: {e}")
+        # Если сортировка не удалась, оставляем элементы в исходном порядке
+        feed_items = valid_items + invalid_items
+        return render(request, 'services_and_projects/testpage.html', {
+            'title': 'Test Page',
+            'types': types,
+            'categories': categories,
+            'services': services,
+            'statuses': statuses,
+            'all_tags': all_tags,
+            'all_companies': all_companies,
+            'tasks': tasks,
+            'page_obj': Paginator(feed_items, 10).page(1),
+            'get_params': {},
+        })
+    
+    # Объединяем: сначала отсортированные валидные, потом невалидные
+    feed_items = valid_items + invalid_items
+    
+    print(f"Total feed items after sorting: {len(feed_items)}")
     
     # Пагинация
     paginator = Paginator(feed_items, 10)  # 10 элементов на страницу

@@ -380,67 +380,113 @@ def create_time_slot(request):
             logger.info(f"Request POST data: {dict(request.POST)}")
             
             # Получаем данные из формы для time slot
+            logger.info("=== EXTRACTING FORM DATA ===")
             date_start = none_if_empty(request.POST.get('date_start'))
+            logger.info(f"date_start: {date_start}")
             date_end = none_if_empty(request.POST.get('date_end'))
+            logger.info(f"date_end: {date_end}")
             time_start = none_if_empty(request.POST.get('time_start'))
+            logger.info(f"time_start: {time_start}")
             time_end = none_if_empty(request.POST.get('time_end'))
-            reserved_time = none_if_empty(request.POST.get('reserved_time'))
+            logger.info(f"time_end: {time_end}")
+            reserved_time_on_road = none_if_empty(request.POST.get('reserved_time_on_road'))
+            logger.info(f"reserved_time_on_road: {reserved_time_on_road}")
             start_location = none_if_empty(request.POST.get('start_location'))
-            cost_hour = none_if_empty(request.POST.get('cost_hour'))
-            min_slot = none_if_empty(request.POST.get('min_slot'))
+            logger.info(f"start_location: {start_location}")
+            cost_of_1_hour_of_work = none_if_empty(request.POST.get('cost_of_1_hour_of_work'))
+            logger.info(f"cost_of_1_hour_of_work: {cost_of_1_hour_of_work}")
+            minimum_time_slot = none_if_empty(request.POST.get('minimum_time_slot'))
+            logger.info(f"minimum_time_slot: {minimum_time_slot}")
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
-            service_id = none_if_empty(request.POST.get('service'))
+            logger.info(f"type_of_task_id: {type_of_task_id}")
+            services_id = none_if_empty(request.POST.get('services'))
+            logger.info(f"services_id: {services_id}")
             category_id = none_if_empty(request.POST.get('category'))
+            logger.info(f"category_id: {category_id}")
+            logger.info("=== END EXTRACTING FORM DATA ===")
 
             # Валидация обязательных полей
+            logger.info("=== VALIDATING FIELDS ===")
             missing_fields = []
             if not category_id:
                 missing_fields.append('Category')
-            if not service_id:
+                logger.warning("Category is missing")
+            if not services_id:
                 missing_fields.append('Service')
+                logger.warning("Service is missing")
             if not date_start:
                 missing_fields.append('Date start')
+                logger.warning("Date start is missing")
             if not date_end:
                 missing_fields.append('Date end')
+                logger.warning("Date end is missing")
             if not time_start:
                 missing_fields.append('Time start')
+                logger.warning("Time start is missing")
             if not time_end:
                 missing_fields.append('Time end')
-            if not reserved_time:
-                missing_fields.append('Reserved time')
+                logger.warning("Time end is missing")
+            if not reserved_time_on_road:
+                missing_fields.append('Reserved time on road')
+                logger.warning("Reserved time on road is missing")
             if not start_location:
                 missing_fields.append('Start location')
-            if not cost_hour:
+                logger.warning("Start location is missing")
+            if not cost_of_1_hour_of_work:
                 missing_fields.append('Cost per hour')
-            if not min_slot:
+                logger.warning("Cost per hour is missing")
+            if not minimum_time_slot:
                 missing_fields.append('Minimum slot')
+                logger.warning("Minimum slot is missing")
+            
+            logger.info(f"Missing fields: {missing_fields}")
+            
             if missing_fields:
+                error_msg = f"Please fill in the following required field(s): {', '.join(missing_fields)}."
+                logger.error(f"Validation failed: {error_msg}")
                 return JsonResponse({
                     'success': False,
-                    'error': f"Please fill in the following required field(s): {', '.join(missing_fields)}."
+                    'error': error_msg
                 }, status=400)
+            
+            logger.info("=== VALIDATION PASSED ===")
 
-            # Преобразуем cost_hour в центы (умножаем на 100)
+            # Преобразуем cost_of_1_hour_of_work в центы (умножаем на 100)
             cost_in_cents = None
-            if cost_hour:
+            if cost_of_1_hour_of_work:
                 try:
-                    cost_in_cents = Decimal(cost_hour) * 100
+                    cost_in_cents = Decimal(cost_of_1_hour_of_work) * 100
                 except (ValueError, TypeError):
                     cost_in_cents = Decimal('0')
 
             # ЭТАП 1: Создаём основную запись TimeSlot
+            logger.info("=== CREATING TIMESLOT ===")
+            logger.info(f"date_start: {date_start}")
+            logger.info(f"date_end: {date_end}")
+            logger.info(f"time_start: {time_start}")
+            logger.info(f"time_end: {time_end}")
+            logger.info(f"reserved_time_on_road: {reserved_time_on_road}")
+            logger.info(f"start_location: {start_location}")
+            logger.info(f"cost_of_1_hour_of_work: {cost_in_cents}")
+            logger.info(f"minimum_time_slot: {minimum_time_slot}")
+            logger.info(f"type_of_task_id: {type_of_task_id}")
+            logger.info(f"services_id: {services_id}")
+            
             time_slot = TimeSlot.objects.create(
                 date_start=date_start,
                 date_end=date_end,
                 time_start=time_start,
                 time_end=time_end,
-                reserved_time_on_road=int(reserved_time) if reserved_time and reserved_time.isdigit() else 0,
+                reserved_time_on_road=int(reserved_time_on_road) if reserved_time_on_road and str(reserved_time_on_road).isdigit() else 0,
                 start_location=start_location or '',
                 cost_of_1_hour_of_work=cost_in_cents or Decimal('0'),
-                minimum_time_slot=str(min_slot) if min_slot else '60',
+                minimum_time_slot=str(minimum_time_slot) if minimum_time_slot else '60',
                 type_of_task_id=type_of_task_id,
-                services_id=service_id
+                services_id=services_id
             )
+            
+            logger.info(f"TimeSlot created successfully with ID: {time_slot.id}")
+            logger.info("=== TIMESLOT CREATED ===")
 
             # ЭТАП 2: Добавляем связанные данные
 
@@ -601,6 +647,7 @@ def handle_form_submission(request):
             
             # Определяем тип публикации
             type_of_task_id = request.POST.get('type_of_task')
+            logger.info(f"Received type_of_task_id: {type_of_task_id}")
             
             if not type_of_task_id:
                 logger.error("Type of task is required but not provided")
@@ -611,6 +658,8 @@ def handle_form_submission(request):
                 type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
                 type_name = type_of_task.type_of_task_name.lower()
                 logger.info(f"Type of task: {type_name} (ID: {type_of_task_id})")
+                logger.info(f"Type name contains 'time slot': {'time slot' in type_name}")
+                logger.info(f"Type name contains 'timeslot': {'timeslot' in type_name}")
             except TypeOfTask.DoesNotExist:
                 logger.error(f"Invalid type of task ID: {type_of_task_id}")
                 return JsonResponse({'success': False, 'error': 'Invalid type of task'}, status=400)
@@ -620,15 +669,18 @@ def handle_form_submission(request):
             if 'advertising' in type_name or 'adversting' in type_name:
                 logger.info("Calling create_advertising")
                 return create_advertising(request)
-            elif 'time slot' in type_name or 'timeslot' in type_name:
+            elif 'time slot' in type_name or 'timeslot' in type_name or 'time' in type_name:
                 logger.info("Calling create_time_slot")
                 return create_time_slot(request)
             elif 'job search' in type_name:
                 logger.info("Calling create_job_search")
                 return create_job_search(request)
+            elif type_of_task_id == '5':  # Принудительно для TimeSlot
+                logger.info(f"Type ID is 5, forcing create_time_slot call")
+                return create_time_slot(request)
             else:
                 # Для остальных типов (My list, Tender, Project) используем create_task
-                logger.info("Calling create_task")
+                logger.info(f"Type '{type_name}' not recognized, calling create_task")
                 return create_task(request)
                 
         except Exception as e:

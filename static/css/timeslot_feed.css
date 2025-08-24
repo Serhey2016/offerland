@@ -1,0 +1,554 @@
+/* ============================================================================
+   TIMESLOT FEED CSS - СТИЛИ ДЛЯ ОТОБРАЖЕНИЯ ПОСТОВ TIME SLOT В ЛЕНТЕ
+   ============================================================================ */
+
+/* ============================================================================
+   1. ОСНОВНЫЕ СТИЛИ ПОСТА
+   ============================================================================ */
+
+.social_feed_time_slot {
+    position: relative;
+    background: #E8E8E8;
+    border-radius: 15px;
+    padding: 24px 0 18px 28px;
+    max-width: 600px;
+    margin: 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    color: #282D3B;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    font-size: 18px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.social_feed_time_slot:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.social_feed_time_slot.hover {
+    background-color: rgba(39, 56, 77, 0.05);
+}
+
+/* Анимации появления постов */
+.social_feed_time_slot:nth-child(1) { animation-delay: 0.1s; }
+.social_feed_time_slot:nth-child(2) { animation-delay: 0.2s; }
+.social_feed_time_slot:nth-child(3) { animation-delay: 0.3s; }
+.social_feed_time_slot:nth-child(4) { animation-delay: 0.4s; }
+.social_feed_time_slot:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================================
+   2. СТИЛИ ДЛЯ ОСНОВНОГО КОНТЕНТА
+   ============================================================================ */
+
+/* Основной текстовый блок */
+.social_feed_time_slot_body_text {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: #282D3B;
+    font-size: 18px;
+    font-weight: 400;
+    min-width: 0;
+    width: 100%;
+}
+
+/* Контейнер для текстовых секций */
+.social_feed_time_slot_text_sections {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+/* ============================================================================
+   3. ЛЕВАЯ СЕКЦИЯ ТЕКСТА (ИНФОРМАЦИЯ О КОМПАНИИ И ПОЛЬЗОВАТЕЛЕ)
+   ============================================================================ */
+
+.social_feed_time_slot_text_section_1 {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0;
+    min-width: 180px;
+    max-width: 200px;
+}
+
+/* Название компании */
+.sftsts1_company_name {
+    font-size: 1.3em;
+    font-weight: 500;
+    color: #282D3B;
+    margin-bottom: 0.1em;
+}
+
+/* Имя пользователя */
+.sftsts1_use_name {
+    font-size: 1.5em;
+    font-weight: 400;
+    color: #282D3B;
+    margin-bottom: 0.5em; /* Увеличиваем с 0.1em на 35% = 0.135em */
+    line-height: 1.1;
+}
+
+/* Цена за час */
+.sftsts1_hour_price {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #282D3B;
+    margin-top: 0.1em; /* Уменьшаем с 0.2em на половину = 0.1em */
+}
+
+/* ============================================================================
+   4. ПРАВАЯ СЕКЦИЯ ТЕКСТА (ДЕТАЛИ ВРЕМЕНИ И МЕСТА)
+   ============================================================================ */
+
+.social_feed_time_slot_text_section_2 {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.1em;
+    min-width: 220px;
+    max-width: 300px;
+    text-align: right;
+    font-size: 1em;
+    font-weight: 400;
+    color: #282D3B;
+    margin-right: 140px; /* Отступ справа, чтобы кнопка не закрывала текст */
+}
+
+/* Стили для всех элементов правой секции */
+.sftsts2_aviability, 
+.sftsts2_time_slot, 
+.sftsts2_reserved_road_time, 
+.sftsts2_reserved_start_location {
+    color: #282D3B;
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+/* ============================================================================
+   5. СЕКЦИЯ ТЕГОВ
+   ============================================================================ */
+
+.social_feed_time_slot_tag_section {
+    margin-top: 10px;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Градиентные эффекты для прокрутки */
+.social_feed_time_slot_tag_section::before,
+.social_feed_time_slot_tag_section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.social_feed_time_slot_tag_section::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.8), transparent);
+}
+
+.social_feed_time_slot_tag_section::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.8), transparent);
+}
+
+.social_feed_time_slot_tag_section:hover::before,
+.social_feed_time_slot_tag_section:hover::after {
+    opacity: 1;
+}
+
+/* Контейнер для прокрутки тегов */
+.social_feed_tags_scroll_container {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 0 20px;
+    margin: 0 -20px;
+    width: 100%;
+    min-width: 0;
+}
+
+.social_feed_tags_scroll_container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+/* Стили для тегов */
+.social_feed_time_slot .social_feed_tags {
+    color: #6b7687 !important;
+    font-size: 1em;
+    margin: 0;
+    font-weight: 400;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    white-space: nowrap;
+    min-width: max-content;
+}
+
+.social_feed_time_slot .social_feed_tags span {
+    color: #6b7687 !important;
+    font-size: 1em;
+    font-weight: 400;
+    padding: 4px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.social_feed_time_slot .social_feed_tags span:hover {
+    background-color: rgba(107, 118, 135, 0.2);
+    color: #282d3b !important;
+}
+
+.social_feed_time_slot .social_feed_tags span::after {
+    content: "";
+}
+
+.social_feed_time_slot .social_feed_tags span:last-child::after {
+    content: "";
+}
+
+/* ============================================================================
+   6. СТИЛИ ДЛЯ КНОПОК
+   ============================================================================ */
+
+.social_feed_time_slot_buttons {
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+    margin-left: 0;
+    margin-top: -20px; /* До края сверху */
+    margin-bottom: -20px; /* До края снизу */
+    margin-right: -20px; /* До края справа */
+}
+
+.social_feed_time_slot_book_now_button {
+    width: 40px; /* Фиксированная ширина */
+    padding: 0 36px; /* Внутренние отступы */
+    margin: 0;
+    border-radius: 0 15px 15px 0; /* Скругление только слева */
+    min-height: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #263247;
+    color: #fff;
+    border: none;
+    font-size: 1.25em;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: none;
+    letter-spacing: 0.01em;
+}
+
+.social_feed_time_slot_book_now_button:hover {
+    background: #1a2230;
+    color: #fff;
+}
+
+/* ============================================================================
+   7. СТИЛИ ДЛЯ ИЗБРАННОГО (ЛАЙКИ)
+   ============================================================================ */
+
+.sftsts1_favorites_icon_checked,
+.sftsts1_favorites_icon_unchecked {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.sftsts1_favorites_icon_checked:hover,
+.sftsts1_favorites_icon_unchecked:hover {
+    transform: scale(1.1);
+}
+
+.sftsts1_favorites_icon_checked.active,
+.sftsts1_favorites_icon_unchecked.active {
+    animation: favoritePulse 0.3s ease-in-out;
+}
+
+.sftsts1_favorites_icon_checked.animating,
+.sftsts1_favorites_icon_unchecked.animating {
+    animation: favoriteBounce 0.6s ease-in-out;
+}
+
+.sftsts1_favorites_icon_checked.favorite-clicked,
+.sftsts1_favorites_icon_unchecked.favorite-clicked {
+    animation: favoriteClick 0.3s ease-in-out;
+}
+
+@keyframes favoritePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes favoriteBounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+@keyframes favoriteClick {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+/* ============================================================================
+   8. СОСТОЯНИЯ И ОШИБКИ
+   ============================================================================ */
+
+/* Состояние загрузки */
+.social_feed_time_slot.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.social_feed_time_slot.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Состояние ошибки */
+.social_feed_time_slot.error {
+    border: 2px solid #e74c3c;
+    background-color: rgba(231, 76, 60, 0.05);
+}
+
+.social_feed_time_slot.error::before {
+    content: '⚠ Error loading post';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #e74c3c;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Пустое состояние */
+.social_feed_time_slot.empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-style: italic;
+}
+
+.social_feed_time_slot.empty::before {
+    content: '📅';
+    font-size: 48px;
+    display: block;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+/* ============================================================================
+   9. АДАПТИВНЫЕ СТИЛИ
+   ============================================================================ */
+
+/* Планшеты и маленькие экраны */
+@media (max-width: 900px) {
+    .social_feed_time_slot {
+        flex-direction: column;
+        padding: 12px 0 8px 8px;
+        min-width: 0;
+    }
+    
+    .social_feed_time_slot_body_text {
+        margin-bottom: 12px;
+    }
+    
+    .social_feed_time_slot_text_sections {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .social_feed_time_slot_text_section_2 {
+        align-items: flex-start;
+        text-align: left;
+        margin-right: 0; /* Убираем отступ справа на мобильных */
+    }
+    
+    .social_feed_time_slot_tag_section {
+        margin: 8px 0;
+        width: 100%;
+    }
+    
+    .social_feed_tags_scroll_container {
+        padding: 0 15px;
+        margin: 0 -15px;
+        width: 100%;
+    }
+    
+    .social_feed_time_slot .social_feed_tags span {
+        font-size: 0.9em;
+        padding: 3px 6px;
+    }
+    
+    .social_feed_time_slot_buttons {
+        margin-left: 0;
+        justify-content: flex-start;
+        min-width: 100px;
+        height: 48px;
+    }
+    
+    .social_feed_time_slot_book_now_button {
+        border-radius: 0 0 15px 15px;
+        width: 100%;
+        min-width: 0;
+        height: 48px;
+        font-size: 1.1em;
+    }
+}
+
+/* Мобильные устройства */
+@media (max-width: 768px) {
+    .social_feed_time_slot:hover {
+        transform: none;
+    }
+    
+    .social_feed_time_slot_buttons {
+        transform: translateY(8px);
+        margin-left: -15px;
+        margin-right: -15px;
+        width: calc(100% + 30px);
+    }
+    
+    .social_feed_time_slot_book_now_button {
+        padding: 8px 16px;
+        font-size: 13px;
+        border-radius: 0 0 6px 6px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .sftsts1_favorites_icon_checked,
+    .sftsts1_favorites_icon_unchecked {
+        transform: scale(0.9);
+    }
+    
+    .sftsts1_favorites_icon_checked:hover,
+    .sftsts1_favorites_icon_unchecked:hover {
+        transform: scale(1);
+    }
+}
+
+/* Маленькие мобильные устройства */
+@media (max-width: 480px) {
+    .social_feed_time_slot_tag_section {
+        margin: 6px 0;
+    }
+    
+    .social_feed_tags_scroll_container {
+        padding: 0 10px;
+        margin: 0 -10px;
+    }
+    
+    .social_feed_time_slot .social_feed_tags span {
+        font-size: 0.8em;
+        padding: 2px 5px;
+    }
+    
+    .social_feed_time_slot_buttons {
+        transform: translateY(6px);
+        margin-left: -10px;
+        margin-right: -10px;
+        width: calc(100% + 20px);
+    }
+    
+    .social_feed_time_slot_book_now_button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* ============================================================================
+   10. ИНТЕГРАЦИЯ С ОСНОВНЫМ ЛЕЙАУТОМ
+   ============================================================================ */
+
+.social_feeds>.social_feed_time_slot {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+/* ============================================================================
+   11. ТЕМНАЯ ТЕМА (ЕСЛИ НУЖНО)
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+    .social_feed_time_slot {
+        background-color: #E8E8E8;
+        color: #282d3b;
+    }
+    
+    .social_feed_time_slot:hover {
+        background-color: #d8d8d8;
+    }
+    
+    .social_feed_time_slot_book_now_button {
+        background-color: #27384D;
+        box-shadow: 0 2px 8px rgba(39, 56, 77, 0.3);
+    }
+    
+    .social_feed_time_slot_book_now_button:hover {
+        background-color: #1e2a3a;
+        box-shadow: 0 4px 12px rgba(39, 56, 77, 0.4);
+    }
+}

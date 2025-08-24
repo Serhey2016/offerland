@@ -120,7 +120,7 @@
             </svg>
         </button>
 
-        <form class="project-form" id="time-slot-form" method="post" action="{% url 'services_and_projects:submit_form' %}">
+        <form class="project-form" id="time-slot-form-element" method="post" action="{% url 'services_and_projects:submit_form' %}">
             {% csrf_token %}
             <input type="hidden" name="type_of_task" value="5"> <!-- Time Slot -->
             
@@ -136,7 +136,7 @@
             
             <div class="form-group">
                 <label for="time-slot-service">Service</label>
-                <select id="time-slot-service" name="service" required>
+                <select id="time-slot-service" name="services" required>
                     <option value="">-- Select service --</option>
                     {% for serv in services %}
                     <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
@@ -159,7 +159,7 @@
             
             <div class="form-group">
                 <label for="time-slot-reserved-time">Reserved time on road (minutes)</label>
-                <input type="text" id="time-slot-reserved-time" name="reserved_time" placeholder="e.g. 30 min" required>
+                <input type="number" id="time-slot-reserved-time" name="reserved_time_on_road" placeholder="e.g. 30" required>
             </div>
             
             <div class="form-group">
@@ -169,12 +169,12 @@
             
             <div class="form-group">
                 <label for="time-slot-cost-hour">Cost of one hour of work in £</label>
-                <input type="number" id="time-slot-cost-hour" name="cost_hour" placeholder="e.g. 100" required>
+                <input type="number" id="time-slot-cost-hour" name="cost_of_1_hour_of_work" placeholder="e.g. 100" step="0.01" required>
             </div>
             
             <div class="form-group">
-                <label for="time-slot-min-slot">Minimum slot (minutes)</label>
-                <input type="number" id="time-slot-min-slot" name="min_slot" placeholder="e.g. 60 minutes" required>
+                <label for="time-slot-min-slot">Minimum slot</label>
+                <input type="text" id="time-slot-min-slot" name="minimum_time_slot" placeholder="e.g. 9 hours" required>
             </div>
             
             <div class="form-group">
@@ -447,6 +447,7 @@
 
 <!-- CSS для time-slot формы -->
 <link rel="stylesheet" href="{% static 'css/timeslot_form.css' %}">
+<link rel="stylesheet" href="{% static 'css/timeslot_feed.css' %}">
 
 <!-- Alertify Library -->
 <script src="{% static 'js/lib_alertify/alertify.min.js' %}"></script>
@@ -454,3 +455,4 @@
 
 <script src="{% static 'js/form_for_all_task.js' %}"></script>
 <script src="{% static 'js/timeslot_form.js' %}"></script>
+<script src="{% static 'js/timeslot_feed.js' %}"></script>

@@ -602,16 +602,16 @@ class FormSubmitter {
             console.log('✅ Category added:', categoryValue);
         } else {
             console.warn('❌ Category field not found');
-            formData.append('service', '');
+            formData.append('category', '');
         }
         
         if (serviceField) {
             const serviceValue = serviceField.value;
-            formData.append('service', serviceValue);
+            formData.append('services', serviceValue);
             console.log('✅ Service added:', serviceValue);
         } else {
             console.warn('❌ Service field not found');
-            formData.append('service', '');
+            formData.append('services', '');
         }
         
         console.log('🔧 addBasicFields completed successfully');
@@ -627,38 +627,38 @@ class FormSubmitter {
 
         if (dateStartField) {
             const dateStartValue = dateStartField.value;
-            formData.append('date1', dateStartValue);
+            formData.append('date_start', dateStartValue);
             console.log('✅ Date start added:', dateStartValue);
         } else {
             console.warn('❌ Date start field not found');
-            formData.append('date1', '');
+            formData.append('date_start', '');
         }
         
         if (dateEndField) {
             const dateEndValue = dateEndField.value;
-            formData.append('date2', dateEndValue);
+            formData.append('date_end', dateEndValue);
             console.log('✅ Date end added:', dateEndValue);
         } else {
             console.warn('❌ Date end field not found');
-            formData.append('date2', '');
+            formData.append('date_end', '');
         }
         
         if (timeStartField) {
             const timeStartValue = timeStartField.value;
-            formData.append('time1', timeStartValue);
+            formData.append('time_start', timeStartValue);
             console.log('✅ Time start added:', timeStartValue);
         } else {
             console.warn('❌ Time start field not found');
-            formData.append('time1', '');
+            formData.append('time_start', '');
         }
         
         if (timeEndField) {
             const timeEndValue = timeEndField.value;
-            formData.append('time2', timeEndValue);
+            formData.append('time_end', timeEndValue);
             console.log('✅ Time end added:', timeEndValue);
         } else {
             console.warn('❌ Time end field not found');
-            formData.append('time2', '');
+            formData.append('time_end', '');
         }
         
         console.log('📅 addDateTimeFields completed successfully');
@@ -667,10 +667,10 @@ class FormSubmitter {
     addOtherFields(formData) {
         console.log('📝 addOtherFields called');
         const fields = [
-            'reserved_time',
+            'reserved_time_on_road',
             'start_location',
-            'cost_hour',
-            'min_slot'
+            'cost_of_1_hour_of_work',
+            'minimum_time_slot'
         ];
 
         fields.forEach(fieldName => {
@@ -694,7 +694,7 @@ class FormSubmitter {
                 console.log(`✅ Field ${fieldName} found:`, value);
                 
                 // Специальная обработка для числовых полей
-                if (fieldName === 'reserved_time' || fieldName === 'cost_hour' || fieldName === 'min_slot') {
+                if (fieldName === 'reserved_time_on_road' || fieldName === 'cost_of_1_hour_of_work') {
                     if (value && !isNaN(value)) {
                         formData.append(fieldName, value);
                         console.log(`✅ Numeric field ${fieldName} added:`, value);
@@ -710,7 +710,7 @@ class FormSubmitter {
             } else {
                 console.warn(`❌ Field ${fieldName} not found by any method`);
                 // Добавляем пустые значения для ненайденных полей
-                if (fieldName === 'reserved_time' || fieldName === 'cost_hour' || fieldName === 'min_slot') {
+                if (fieldName === 'reserved_time_on_road' || fieldName === 'cost_of_1_hour_of_work') {
                     formData.append(fieldName, '0');
                 } else {
                     formData.append(fieldName, '');
@@ -726,11 +726,11 @@ class FormSubmitter {
         const hashtagsHidden = this.form.querySelector('#time-slot-hashtags-hidden');
         if (hashtagsHidden && hashtagsHidden.value) {
             const hashtagsValue = hashtagsHidden.value;
-            formData.append('ts-hashtags', hashtagsValue);
+            formData.append('hashtags', hashtagsValue);
             console.log('✅ Hashtags added:', hashtagsValue);
         } else {
             console.log('ℹ️ No hashtags to add');
-            formData.append('ts-hashtags', '');
+            formData.append('hashtags', '');
         }
     }
 
@@ -763,19 +763,25 @@ class FormSubmitter {
                 console.error('🌐 Status:', response.status);
                 console.error('🌐 Status text:', response.statusText);
                 
-                // Попробуем получить текст ответа для отладки
+                // Для ошибок 400 (Bad Request) получаем детали ошибки
+                if (response.status === 400) {
+                    console.log('🌐 400 error - getting error details');
+                    try {
+                        const errorText = await response.text();
+                        console.error('🌐 400 error details:', errorText);
+                        return { success: false, error: errorText };
+                    } catch (e) {
+                        console.error('🌐 Could not read 400 error details:', e);
+                        return { success: false, error: 'Bad Request - validation error' };
+                    }
+                }
+                
+                // Для других ошибок также получаем детали
                 try {
                     const errorText = await response.text();
                     console.error('🌐 Error response body:', errorText);
                 } catch (e) {
                     console.error('🌐 Could not read error response body:', e);
-                }
-                
-                // Для ошибок 400 (Bad Request) не показываем ошибку пользователю
-                // так как данные все равно сохраняются
-                if (response.status === 400) {
-                    console.log('🌐 400 error - treating as success since data is saved');
-                    return { success: true, type: 'time_slot' };
                 }
                 
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -912,11 +918,20 @@ class FormSubmitter {
 
 class TimeSlotFormManager {
     constructor() {
+        // Проверяем, не инициализирован ли уже менеджер для этой формы
+        if (window.timeSlotFormManagerInstance) {
+            console.warn('TimeSlotFormManager already initialized, skipping...');
+            return;
+        }
+        
         this.form = null;
         this.saveButton = null;
         this.hashtagManager = null;
         this.categoryServiceFilter = null;
         this.validator = null;
+        
+        // Сохраняем экземпляр глобально
+        window.timeSlotFormManagerInstance = this;
         
         this.init();
     }
@@ -971,7 +986,11 @@ class TimeSlotFormManager {
         if (this.saveButton) {
             console.log('Save button found:', this.saveButton);
             
-            this.saveButton.removeEventListener('click', this.saveButton._timeSlotClickHandler);
+            // Удаляем существующий обработчик, если он есть
+            if (this.saveButton._timeSlotClickHandler) {
+                this.saveButton.removeEventListener('click', this.saveButton._timeSlotClickHandler);
+                console.log('Removed existing click handler');
+            }
             
             this.saveButton._timeSlotClickHandler = (e) => {
                 e.preventDefault();
@@ -980,6 +999,7 @@ class TimeSlotFormManager {
             };
             
             this.saveButton.addEventListener('click', this.saveButton._timeSlotClickHandler);
+            console.log('New click handler added');
         } else {
             console.warn('Save button not found in form');
         }
@@ -1076,44 +1096,57 @@ class TimeSlotHashtagManager {
 // ИНИЦИАЛИЗАЦИЯ
 // ============================================================================
 
+// Глобальная переменная для отслеживания инициализации
+let timeSlotFormManagerInitialized = false;
+let timeSlotHashtagManagerInitialized = false;
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('TimeSlotFormManager: DOM loaded, initializing...');
     
     // Инициализируем основную форму time-slot-form если она есть
-    if (Utils.elementExists(TIMESLOT_CONFIG.FORM_ID)) {
+    if (Utils.elementExists(TIMESLOT_CONFIG.FORM_ID) && !timeSlotFormManagerInitialized) {
         console.log('Time slot form container found, initializing TimeSlotFormManager...');
         new TimeSlotFormManager();
+        timeSlotFormManagerInitialized = true;
     } else {
-        console.log('Time slot form container not found on DOMContentLoaded');
+        console.log('Time slot form container not found on DOMContentLoaded or already initialized');
     }
     
     // Инициализируем менеджер хэштегов для дополнительных форм
-    new TimeSlotHashtagManager();
+    if (!timeSlotHashtagManagerInitialized) {
+        new TimeSlotHashtagManager();
+        timeSlotHashtagManagerInitialized = true;
+    }
     
-    // Дополнительная инициализация с задержкой
+    // Дополнительная инициализация с задержкой (только если не инициализирован)
     setTimeout(() => {
         console.log('TimeSlotFormManager: Delayed initialization check...');
         
-        if (Utils.elementExists(TIMESLOT_CONFIG.FORM_ID)) {
+        if (Utils.elementExists(TIMESLOT_CONFIG.FORM_ID) && !timeSlotFormManagerInitialized) {
             console.log('Time slot form container found on delayed check, initializing...');
             new TimeSlotFormManager();
+            timeSlotFormManagerInitialized = true;
         } else {
-            console.log('Time slot form container still not found on delayed check');
+            console.log('Time slot form container still not found on delayed check or already initialized');
         }
         
-        if (!Utils.elementExists(TIMESLOT_CONFIG.HASHTAGS_CONTAINER_ID)) {
+        if (!Utils.elementExists(TIMESLOT_CONFIG.HASHTAGS_CONTAINER_ID) && !timeSlotHashtagManagerInitialized) {
             console.log('Hashtags container not found, initializing TimeSlotHashtagManager...');
             new TimeSlotHashtagManager();
+            timeSlotHashtagManagerInitialized = true;
         }
     }, 1000);
     
-    // Еще одна попытка через 3 секунды
+    // Еще одна попытка через 3 секунды (только если не инициализирован)
     setTimeout(() => {
         console.log('TimeSlotFormManager: Final initialization check...');
         
-        if (Utils.elementExists(TIMESLOT_CONFIG.FORM_ID)) {
+        if (Utils.elementExists(TIMESLOT_CONFIG.FORM_ID) && !timeSlotFormManagerInitialized) {
             console.log('Time slot form container found on final check, initializing...');
             new TimeSlotFormManager();
+            timeSlotFormManagerInitialized = true;
+        } else {
+            console.log('Time slot form container not found on final check or already initialized');
         }
     }, 3000);
 });
@@ -1147,6 +1180,11 @@ window.clearTimeSlotHashtags = function() {
 // Функция для принудительной инициализации формы
 window.forceInitTimeSlotForm = function() {
     console.log('Force initializing TimeSlotFormManager...');
+    
+    // Сбрасываем состояние
+    timeSlotFormManagerInitialized = false;
+    delete window.timeSlotFormManagerInstance;
+    
     if (Utils.elementExists(TIMESLOT_CONFIG.FORM_ID)) {
         new TimeSlotFormManager();
         console.log('TimeSlotFormManager force initialized');

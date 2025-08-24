@@ -13,6 +13,7 @@
 <link href="{% static 'css/photoswipe.css' %}" rel="stylesheet">
 <link href="{% static 'css/photoswipe_fix.css' %}" rel="stylesheet">
 <link href="{% static 'css/job_search_feed.css' %}" rel="stylesheet">
+<link href="{% static 'css/timeslot_feed.css' %}" rel="stylesheet">
 
 <!-- CSS libraries -->
 <link href="{% static 'css/lib_alertify/alertify.css' %}" rel="stylesheet">
@@ -94,41 +95,7 @@
 
 <!-- Social Feeds Section -->
 <section class="social_feeds">
-    <div class="social_feed_time_slot">
-        <div class="social_feed_time_slot_body_text">
-            <div class="social_feed_time_slot_text_sections">
-                <div class="social_feed_time_slot_text_section_1">
-                    <div class="sftsts1_company_name">Morisons</div>
-                    <div class="sftsts1_use_name">Jack Nikolson</div>
-                    <div class="sftsts1_hour_price">1 hour: 35 £</div>
-                    <div class="sftsts1_hour_price">min slot 9 hours</div>
-                </div>
-                <div class="social_feed_time_slot_text_section_2">
-                    <div class="sftsts2_aviability">Available at: 07.23 - 08.11</div>
-                    <div class="sftsts2_time_slot">Time-slot: 13.00 - 16.00</div>
-                    <div class="sftsts2_reserved_road_time">Reserved time on road:1 hour</div>
-                    <div class="sftsts2_reserved_start_location">start location: CR03JG</div>
-                </div>
-            </div>
-            <div class="social_feed_time_slot_tag_section">
-                <div class="social_feed_tags_scroll_container">
-                    <div class="social_feed_tags">
-                        <span>Lorem</span>
-                        <span>ipsum</span>
-                        <span>dolor</span>
-                        <span>sit</span>
-                        <span>amet</span>
-                        <span>consectetur</span>
-                        <span>adipisicing</span>
-                        <span>elit</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="social_feed_time_slot_buttons">
-            <button class="social_feed_time_slot_book_now_button">Book now</button>
-        </div>
-    </div>
+
     
     {% if page_obj %}
         {% for item in page_obj %}
@@ -142,6 +109,8 @@
                 {% endif %}
             {% elif item.type == 'job_search' %}
                 {% include 'services_and_projects/job_search_feed.html' with job_search=item.data all_companies=all_companies %}
+            {% elif item.type == 'time_slot' %}
+                {% include 'services_and_projects/time_slot_feed.html' with time_slot=item.data.time_slot owner=item.data.owner %}
             {% endif %}
         {% endfor %}
     {% else %}
@@ -232,5 +201,6 @@
 <script src="{% static 'js/tasks_projects_tenders.js' %}"></script>
 <script src="{% static 'js/social_feed_hide_icon.js' %}"></script>
 <script src="{% static 'js/job_search_feed.js' %}"></script>
+<script src="{% static 'js/timeslot_feed.js' %}"></script>
 <script src="{% static 'js/testpage.js' %}"></script>
 {% endblock %}
