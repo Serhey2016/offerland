@@ -1,5 +1,8 @@
 // Time Slot Feed Dropdown Menu Functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize heart icons
+    initializeHeartIcons();
+    
     // Handle dropdown menu toggle
     document.addEventListener('click', function(e) {
         const trigger = e.target.closest('.time_slot_dropdown_trigger');
@@ -98,3 +101,76 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, true);
 });
+
+// Heart icon functionality
+function initializeHeartIcons() {
+    const heartIcons = document.querySelectorAll('.sftsts1_favorites_icon');
+    
+    heartIcons.forEach(icon => {
+        // Set initial state (unfilled by default)
+        icon.dataset.favorite = 'false';
+        
+        // Add click event
+        icon.addEventListener('click', function() {
+            toggleHeartIcon(this);
+        });
+        
+        // Add hover effects
+        icon.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+        });
+        
+        icon.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+}
+
+function toggleHeartIcon(icon) {
+    const isFavorite = icon.dataset.favorite === 'true';
+    const svg = icon.querySelector('svg');
+    const path = svg.querySelector('path');
+    
+    if (isFavorite) {
+        // Change to unfilled heart
+        path.setAttribute('fill', '#282d3b');
+        icon.dataset.favorite = 'false';
+        
+        // Add animation
+        icon.style.animation = 'heartUnfavorite 0.3s ease-in-out';
+        setTimeout(() => {
+            icon.style.animation = '';
+        }, 300);
+        
+        console.log('Removed from favorites');
+    } else {
+        // Change to filled heart
+        path.setAttribute('fill', 'red');
+        icon.dataset.favorite = 'true';
+        
+        // Add animation
+        icon.style.animation = 'heartFavorite 0.3s ease-in-out';
+        setTimeout(() => {
+            icon.style.animation = '';
+        }, 300);
+        
+        console.log('Added to favorites');
+    }
+}
+
+// Add CSS animations for heart icons
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes heartFavorite {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1.1); }
+    }
+    
+    @keyframes heartUnfavorite {
+        0% { transform: scale(1.1); }
+        50% { transform: scale(0.8); }
+        100% { transform: scale(1); }
+    }
+`;
+document.head.appendChild(style);
