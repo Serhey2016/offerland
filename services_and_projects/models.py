@@ -280,6 +280,12 @@ class TimeSlot(models.Model):
 
 
 class Advertising(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000)
@@ -289,6 +295,7 @@ class Advertising(models.Model):
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='advertisings')
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Creation date')
     publication_date = models.DateTimeField(auto_now_add=True, verbose_name='Publication date')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft', verbose_name='Status')
     
     # Связи многие ко многим через промежуточные таблицы
     comments = models.ManyToManyField('Comment', through='CommentAdvertisingRelations', blank=True)

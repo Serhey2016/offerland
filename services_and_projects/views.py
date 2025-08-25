@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.http import urlencode
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations
 from joblist.models import AllTags, Companies
 from django.utils import timezone
@@ -9,6 +13,10 @@ import json
 # Create your views here.
 
 def testpage(request):
+    # Get filter parameters from request
+    status_filter = request.GET.get('status', 'all')
+    category_filter = request.GET.get('category', 'all')
+    
     types = TypeOfTask.objects.all()
     categories = ServicesCategory.objects.all()
     services = Services.objects.all()
@@ -18,7 +26,7 @@ def testpage(request):
     companies_queryset = Companies.objects.values('id_company', 'company_name')
     print(f"DEBUG: Found {companies_queryset.count()} companies in database")
     for company in companies_queryset[:5]:  # Показываем первые 5 компаний
-        print(f"DEBUG: Company - ID: {company['id_company']}, Name: {company['company_name']}")
+        print(f"DEBUG: Company - ID: {company['company_name']}")
     
     all_companies = json.dumps(list(companies_queryset))
     print(f"DEBUG: all_companies JSON: {all_companies[:200]}...")  # Показываем первые 200 символов
@@ -27,6 +35,16 @@ def testpage(request):
     # --- Динамический блок social_feed ---
     # Получаем все элементы Advertising с их владельцами
     advertisings = Advertising.objects.select_related('services', 'type_of_task').prefetch_related('photos', 'hashtags').order_by('-creation_date')
+    
+    # Apply status filter for advertising
+    if status_filter == 'draft':
+        advertisings = advertisings.filter(status='draft')
+    elif status_filter == 'published':
+        advertisings = advertisings.filter(status='published')
+    elif status_filter == 'archived':
+        advertisings = advertisings.filter(status='archived')
+    # If status_filter == 'all', show all statuses
+    
     advertising_data = []
     
     for advertising in advertisings:
@@ -440,5 +458,55 @@ def start_job_search(request, job_search_id):
         return JsonResponse({
             'success': False,
             'error': f'Error starting job search: {str(e)}'
+        }, status=500)
+
+
+@login_required
+@require_POST
+def change_advertising_status(request, advertising_id):
+    """Change status of advertising (draft, published, archived)"""
+    try:
+        advertising = Advertising.objects.get(id=advertising_id)
+        
+        # Check if user has permission to change status
+        owner_rel = AdvertisingOwnerRelations.objects.filter(advertising=advertising, user=request.user).first()
+        if not owner_rel:
+            return JsonResponse({
+                'success': False,
+                'error': 'You do not have permission to change this advertising status'
+            }, status=403)
+        
+        # Get new status from request
+        new_status = request.POST.get('status')
+        if new_status not in ['draft', 'published', 'archived']:
+            return JsonResponse({
+                'success': False,
+                'error': 'Invalid status. Must be draft, published, or archived'
+            }, status=400)
+        
+        # Update status
+        advertising.status = new_status
+        
+        # Update publication date if publishing
+        if new_status == 'published':
+            advertising.publication_date = timezone.now()
+        
+        advertising.save()
+        
+        return JsonResponse({
+            'success': True,
+            'status': new_status,
+            'message': f'Advertising status changed to {new_status} successfully'
+        })
+        
+    except Advertising.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Advertising not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error changing advertising status: {str(e)}'
         }, status=500)
 

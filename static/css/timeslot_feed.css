@@ -15,9 +15,9 @@
     margin: 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     color: #282D3B;
-    display: flex;
-    align-items: stretch;
-    justify-content: space-between;
+   
+
+   
     font-size: 18px;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -74,7 +74,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: 32px;
+    gap: 8px;
     margin-bottom: 8px;
     width: 100%;
 }
@@ -134,7 +134,7 @@
     font-size: 1em;
     font-weight: 400;
     color: #282D3B;
-    margin-right: 140px; /* Отступ справа, чтобы кнопка не закрывала текст */
+   
 }
 
 /* Стили для всех элементов правой секции */
@@ -487,6 +487,33 @@
     .sftsts1_favorites_icon_unchecked:hover {
         transform: scale(1);
     }
+    
+    /* Dropdown menu responsive styles */
+    .time_slot_dropdown_menu {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+    
+    .time_slot_dropdown_menu_content {
+        min-width: 140px;
+        right: 0;
+    }
+    
+    /* Post actions responsive styles */
+    .post_actions {
+        align-items: center;
+        margin-top: 20px;
+    }
+    
+    .action_buttons {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .order_now {
+        width: 100%;
+        max-width: 200px;
+    }
 }
 
 /* Маленькие мобильные устройства */
@@ -551,4 +578,131 @@
         background-color: #1e2a3a;
         box-shadow: 0 4px 12px rgba(39, 56, 77, 0.4);
     }
+}
+
+/* ============================================================================
+   12. DROPDOWN MENU И POST ACTIONS СТИЛИ
+   ============================================================================ */
+
+/* Time Slot Dropdown Menu Styles */
+.time_slot_dropdown_menu {
+    position: relative;
+    text-align: right;
+    margin-bottom: 5px;
+}
+
+.time_slot_dropdown_trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.time_slot_dropdown_trigger:hover {
+    background-color: #f0f0f0;
+}
+
+.time_slot_dropdown_trigger svg {
+    width: 20px;
+    height: 20px;
+    color: #666;
+}
+
+.time_slot_dropdown_menu_content {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 150px;
+    z-index: 1000;
+    display: none;
+    overflow: hidden;
+}
+
+.time_slot_dropdown_menu_item {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+    font-size: 14px;
+    color: #333;
+}
+
+.time_slot_dropdown_menu_item:last-child {
+    border-bottom: none;
+}
+
+.time_slot_dropdown_menu_item:hover {
+    background-color: #f5f5f5;
+}
+
+.time_slot_dropdown_menu_item svg {
+    width: 16px;
+    height: 16px;
+    color: #666;
+    flex-shrink: 0;
+}
+
+/* Post actions - same as advertising_feed.html */
+.post_actions {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.action_buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action_btn {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    padding: 8px 16px;
+    border-radius: 36px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.action_btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.order_now {
+    background: #282D38;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 36px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    transition: background-color 0.2s;
+    min-width: 120px;
+}
+
+.order_now:hover {
+    background: #1e2328;
+}
+
+/* Time slot bottom side */
+.time_slot_bottom_side {
+    width: 100%;
 }

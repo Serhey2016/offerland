@@ -1,6 +1,36 @@
 {% load static %}
 
+<!-- Подключаем CSS для Time Slot Feed -->
+<link rel="stylesheet" href="{% static 'css/timeslot_feed.css' %}">
+
 <div class="social_feed_time_slot">
+    <div class="time_slot_dropdown_menu">
+        <button class="time_slot_dropdown_trigger" id="time_slot_menu_trigger_{{ time_slot.id }}" type="button" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 4px; transition: background-color 0.2s;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px; color: #666;">
+                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+            </svg>
+        </button>
+        <div class="time_slot_dropdown_menu_content" id="time_slot_overflow_menu_{{ time_slot.id }}" style="position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 150px; z-index: 1000; display: none;">
+            <div class="time_slot_dropdown_menu_item edit" data-action="edit" data-id="{{ time_slot.id }}" style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; color: #666;">
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                </svg>
+                Edit
+            </div>
+            <div class="time_slot_dropdown_menu_item publish" data-action="publish" data-id="{{ time_slot.id }}" style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; color: #666;">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                Publish
+            </div>
+            <div class="time_slot_dropdown_menu_item archive" data-action="archive" data-id="{{ time_slot.id }}" style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background-color 0.2s;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; color: #666;">
+                    <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5l-4-4h2.5V12h3v1.5H16l-4 4z"/>
+                </svg>
+                Archive
+            </div>
+        </div>
+    </div>
     <div class="social_feed_time_slot_body_text">
         <div class="social_feed_time_slot_text_sections">
             <div class="social_feed_time_slot_text_section_1">
@@ -8,9 +38,9 @@
                     <span class="sftsts1_favorites_icon_checked" id="sftsts1_favorites_icon_id">
                         <svg id="Group_4163" data-name="Group 4163" xmlns="http://www.w3.org/2000/svg" width="27.094" height="24.858" viewBox="0 0 33.867 31.073">
                             <path id="favorite_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24" d="M96.934-822.927l-2.455-2.2q-4.276-3.852-7.07-6.646a46.843,46.843,0,0,1-4.445-5.016,15.937,15.937,0,0,1-2.307-4.085,11.387,11.387,0,0,1-.656-3.81,9.02,9.02,0,0,1,2.667-6.646A9.02,9.02,0,0,1,89.314-854a9.769,9.769,0,0,1,4.191.931,10.041,10.041,0,0,1,3.429,2.625,10.041,10.041,0,0,1,3.429-2.625,9.769,9.769,0,0,1,4.191-.931,9.02,9.02,0,0,1,6.646,2.667,9.02,9.02,0,0,1,2.667,6.646,11.387,11.387,0,0,1-.656,3.81,15.938,15.938,0,0,1-2.307,4.085,46.846,46.846,0,0,1-4.445,5.016q-2.794,2.794-7.07,6.646Zm0-4.572q4.064-3.641,6.689-6.244a52.757,52.757,0,0,0,4.149-4.53,14.157,14.157,0,0,0,2.117-3.429,8.088,8.088,0,0,0,.593-2.984,5.744,5.744,0,0,0-1.693-4.233,5.744,5.744,0,0,0-4.233-1.693,6.538,6.538,0,0,0-3.683,1.122,5.77,5.77,0,0,0-2.328,2.858H95.325A5.77,5.77,0,0,0,93-849.491a6.538,6.538,0,0,0-3.683-1.122,5.744,5.744,0,0,0-4.233,1.693,5.744,5.744,0,0,0-1.693,4.233,8.088,8.088,0,0,0,.593,2.984,14.157,14.157,0,0,0,2.117,3.429,52.757,52.757,0,0,0,4.149,4.53Q92.87-831.14,96.934-827.5ZM96.934-839.056Z" transform="translate(-80 854)" fill="red"/>
-                            <ellipse id="Ellipse_283" data-name="Ellipse 283" cx="7.872" cy="7.872" rx="7.872" ry="7.872" transform="translate(2.407 2.967)" fill="red"/>
+                            <ellipse id="Ellipse_283" data-name="Ellipse_283" cx="7.872" cy="7.872" rx="7.872" ry="7.872" transform="translate(2.407 2.967)" fill="red"/>
                             <ellipse id="Ellipse_284" data-name="Ellipse 284" cx="7.872" cy="7.872" rx="7.872" ry="7.872" transform="translate(15.901 2.967)" fill="red"/>
-                            <ellipse id="Ellipse_285" data-name="Ellipse 285" cx="8.996" cy="8.434" rx="8.996" ry="8.434" transform="translate(8.029 10.839)" fill="red"/>
+                            <ellipse id="Ellipse_285" data-name="Ellipse_285" cx="8.996" cy="8.434" rx="8.996" ry="8.434" transform="translate(8.029 10.839)" fill="red"/>
                           </svg>
                           
                     </span> 
@@ -94,6 +124,7 @@
                     </span>
                 </div>
             </div>
+
         </div>
         <div class="social_feed_time_slot_tag_section">
             <div class="social_feed_tags_scroll_container">
@@ -107,9 +138,26 @@
                     {% endif %}
                 </div>
             </div>
+
         </div>
+ 
     </div>
-    <div class="social_feed_time_slot_buttons">
-        <button class="social_feed_time_slot_book_now_button">Book now</button>
+    
+    <!-- Right side with dropdown menu only -->
+    <div class="time_slot_bottom_side">
+        <div class="post_actions">
+            <div class="action_buttons">
+                <button class="action_btn">Chat</button>
+                <button class="action_btn">Comments</button>
+            </div>
+            <button class="order_now">Book now</button>
+        </div>
+
     </div>
 </div>
+
+<!-- Book now button and action buttons at the bottom after hashtags - same as advertising_feed.html -->
+
+
+<!-- Подключаем скрипт для Time Slot Feed -->
+<script src="{% static 'js/time_slot_feed.js' %}"></script>

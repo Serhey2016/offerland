@@ -185,8 +185,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             case 'edit':
                 handleEditAction(postId);
                 break;
-            case 'remove':
-                handleRemoveAction(postId);
+            case 'archive':
+                handleArchiveAction(postId);
                 break;
             case 'share':
                 handleShareAction(postId);
@@ -205,14 +205,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
         }
     }
     
-    // Обработчик удаления
-    function handleRemoveAction(postId) {
-        // Здесь можно добавить логику удаления
-        // Например, показать подтверждение и удалить пост
-        if (confirm('Are you sure you want to remove this post?')) {
-            if (typeof removePost === 'function') {
-                removePost(postId);
-            }
+    // Обработчик архивирования
+    function handleArchiveAction(postId) {
+        // Показываем подтверждение архивирования
+        if (confirm('Are you sure you want to archive this post?')) {
+            archivePost(postId);
         }
     }
     
@@ -251,6 +248,73 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
                 alert('Link copied to clipboard!');
             }
         }
+    }
+    
+    // Функция архивирования поста
+    function archivePost(postId) {
+        // Получаем CSRF токен
+        const csrfToken = getCookie('csrftoken');
+        
+        // Показываем спиннер на посте
+        const post = getPostById(postId);
+        if (post) {
+            const originalContent = post.innerHTML;
+            post.innerHTML = `
+                <div class="loading" style="min-height: 200px;">
+                    <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid #dee2e6; border-top: 4px solid #FBD551;"></div>
+                    <span style="font-size: 16px;">Archiving post...</span>
+                </div>
+            `;
+            
+            // Отправляем запрос на архивирование
+            fetch(`/services_and_projects/change_advertising_status/${postId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: `status=archived`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Показываем сообщение об успехе
+                    alert('Post archived successfully!');
+                    
+                    // Скрываем пост из ленты
+                    post.style.display = 'none';
+                    
+                    // Закрываем dropdown
+                    closeDropdownById(postId);
+                } else {
+                    // Восстанавливаем оригинальный контент и показываем ошибку
+                    post.innerHTML = originalContent;
+                    alert('Error archiving post: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Восстанавливаем оригинальный контент и показываем ошибку
+                post.innerHTML = originalContent;
+                alert('Error archiving post. Please try again.');
+            });
+        }
+    }
+    
+    // Функция для получения CSRF токена
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
     
     // Дополнительные функции для работы с ID
