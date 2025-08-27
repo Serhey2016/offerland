@@ -3,8 +3,14 @@
  * Обработчик для отображения постов TimeSlot в ленте
  * 
  * @author OfferLand
- * @version 1.0
+ * @version 2.0 - Объединенная версия
  */
+
+// Защита от повторной загрузки
+if (window.TIMESLOT_FEED_CONFIG) {
+    // TimeSlot Feed already loaded, skipping...
+} else {
+    // Loading TimeSlot Feed...
 
 // ============================================================================
 // КОНСТАНТЫ И КОНФИГУРАЦИЯ
@@ -17,10 +23,15 @@ const TIMESLOT_FEED_CONFIG = {
     FAVORITES_ICON_UNCHECKED_ID: 'sftsts1_favorites_icon_id1',
     BOOK_NOW_BUTTON_CLASS: 'social_feed_time_slot_book_now_button',
     
+    // Иконки избранного (простая система)
+    FAVORITES_ICON_CLASS: 'sftsts1_favorites_icon',
+    
     // Настройки
     ANIMATION_DURATION: 300,
     FAVORITE_ANIMATION_DELAY: 150
 };
+
+
 
 // ============================================================================
 // УТИЛИТЫ
@@ -39,9 +50,6 @@ const TimeSlotFeedUtils = {
      */
     getElement(selector) {
         const element = document.querySelector(selector);
-        if (!element) {
-            console.warn(`Element with selector '${selector}' not found`);
-        }
         return element;
     },
 
@@ -87,46 +95,141 @@ const TimeSlotFeedUtils = {
     }
 };
 
+
+
 // ============================================================================
-// КЛАСС УПРАВЛЕНИЯ ИЗБРАННЫМ
+// КЛАСС УПРАВЛЕНИЯ ИЗБРАННЫМ (ПРОСТАЯ СИСТЕМА)
 // ============================================================================
+
+// Global instance tracking
+let globalTimeSlotSimpleFavoritesManagerInstance = null;
+
+class TimeSlotSimpleFavoritesManager {
+    constructor() {
+        // Prevent multiple instances
+        if (globalTimeSlotSimpleFavoritesManagerInstance) {
+            return globalTimeSlotSimpleFavoritesManagerInstance;
+        }
+        
+        this.init();
+        
+        // Store global instance
+        globalTimeSlotSimpleFavoritesManagerInstance = this;
+    }
+
+    init() {
+        this.initializeHeartIcons();
+    }
+
+    initializeHeartIcons() {
+        const heartIcons = document.querySelectorAll(`.${TIMESLOT_FEED_CONFIG.FAVORITES_ICON_CLASS}`);
+        
+        heartIcons.forEach(icon => {
+            // Set initial state (unfilled by default)
+            icon.dataset.favorite = 'false';
+            
+            // Add click event
+            icon.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggleHeartIcon(icon);
+            });
+            
+            // Add hover effects
+            icon.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+            });
+            
+            icon.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    }
+
+    toggleHeartIcon(icon) {
+        const isFavorite = icon.dataset.favorite === 'true';
+        const svg = icon.querySelector('svg');
+        const path = svg.querySelector('path');
+        
+        if (isFavorite) {
+            // Change to unfilled heart
+            path.setAttribute('fill', '#282d3b');
+            icon.dataset.favorite = 'false';
+            
+            // Add animation
+            icon.style.animation = 'heartUnfavorite 0.3s ease-in-out';
+            setTimeout(() => {
+                icon.style.animation = '';
+            }, 300);
+        } else {
+            // Change to filled heart
+            path.setAttribute('fill', 'red');
+            icon.dataset.favorite = 'true';
+            
+            // Add animation
+            icon.style.animation = 'heartFavorite 0.3s ease-in-out';
+            setTimeout(() => {
+                icon.style.animation = '';
+            }, 300);
+        }
+    }
+}
+
+// ============================================================================
+// КЛАСС УПРАВЛЕНИЯ ИЗБРАННЫМ (ПРОДВИНУТАЯ СИСТЕМА)
+// ============================================================================
+
+// Global instance tracking
+let globalTimeSlotFavoritesManagerInstance = null;
 
 class TimeSlotFavoritesManager {
     constructor() {
+        // Prevent multiple instances
+        if (globalTimeSlotFavoritesManagerInstance) {
+            return globalTimeSlotFavoritesManagerInstance;
+        }
+        
         this.favorites = new Set();
         this.init();
+        
+        // Store global instance
+        globalTimeSlotFavoritesManagerInstance = this;
     }
 
     init() {
         this.loadFavorites();
-        this.bindEvents();
-        this.initializeFavoritesUI();
-        console.log('TimeSlotFavoritesManager initialized');
+        this.updateExistingPostsUI();
     }
 
     loadFavorites() {
         try {
-            const savedFavorites = localStorage.getItem('timeslot_favorites');
-            if (savedFavorites) {
-                this.favorites = new Set(JSON.parse(savedFavorites));
-                console.log('Loaded favorites:', Array.from(this.favorites));
+            const stored = localStorage.getItem('timeslot_favorites');
+            if (stored) {
+                const favoritesArray = JSON.parse(stored);
+                this.favorites = new Set(favoritesArray);
             }
         } catch (error) {
-            console.error('Error loading favorites:', error);
+            this.favorites = new Set();
         }
     }
 
     saveFavorites() {
         try {
-            localStorage.setItem('timeslot_favorites', JSON.stringify(Array.from(this.favorites)));
+            const favoritesArray = Array.from(this.favorites);
+            localStorage.setItem('timeslot_favorites', JSON.stringify(favoritesArray));
         } catch (error) {
-            console.error('Error saving favorites:', error);
+            // Handle storage error silently
         }
     }
 
     bindEvents() {
         // Обработчики для иконок избранного
         document.addEventListener('click', (e) => {
+            // Validate event target
+            if (!e.target || typeof e.target.closest !== 'function') {
+                return;
+            }
+            
             if (e.target.closest(`#${TIMESLOT_FEED_CONFIG.FAVORITES_ICON_CHECKED_ID}`)) {
                 this.handleFavoriteClick(e);
             } else if (e.target.closest(`#${TIMESLOT_FEED_CONFIG.FAVORITES_ICON_UNCHECKED_ID}`)) {
@@ -136,6 +239,11 @@ class TimeSlotFavoritesManager {
 
         // Обработчики для кнопок "Book now"
         document.addEventListener('click', (e) => {
+            // Validate event target
+            if (!e.target || typeof e.target.classList !== 'object') {
+                return;
+            }
+            
             if (e.target.classList.contains(TIMESLOT_FEED_CONFIG.BOOK_NOW_BUTTON_CLASS)) {
                 this.handleBookNowClick(e);
             }
@@ -182,27 +290,23 @@ class TimeSlotFavoritesManager {
 
     toggleFavorite(timeSlotId, container) {
         if (this.favorites.has(timeSlotId)) {
-            this.removeFavorite(timeSlotId, container);
+            this.removeFavorite(timeSlotId);
         } else {
-            this.addFavorite(timeSlotId, container);
+            this.addFavorite(timeSlotId);
         }
         
         // Добавляем анимацию при клике
         this.animateFavoriteClick(container);
     }
 
-    addFavorite(timeSlotId, container) {
+    addFavorite(timeSlotId) {
         this.favorites.add(timeSlotId);
         this.saveFavorites();
-        this.updateFavoriteUI(container, true);
-        console.log('Added to favorites:', timeSlotId);
     }
 
-    removeFavorite(timeSlotId, container) {
+    removeFavorite(timeSlotId) {
         this.favorites.delete(timeSlotId);
         this.saveFavorites();
-        this.updateFavoriteUI(container, false);
-        console.log('Removed from favorites:', timeSlotId);
     }
 
     updateFavoriteUI(container, isFavorite) {
@@ -237,21 +341,18 @@ class TimeSlotFavoritesManager {
     clearFavorites() {
         this.favorites.clear();
         this.saveFavorites();
-        console.log('All favorites cleared');
+        this.updateExistingPostsUI();
     }
 
-    initializeFavoritesUI() {
-        // Инициализируем UI для всех постов TimeSlot
-        const timeSlotPosts = document.querySelectorAll(`.${TIMESLOT_FEED_CONFIG.FEED_CONTAINER_CLASS}`);
+    updateExistingPostsUI() {
+        const posts = TimeSlotFeedUtils.getElementsByClass(TIMESLOT_FEED_CONFIG.FEED_CONTAINER_CLASS);
         
-        timeSlotPosts.forEach(post => {
+        posts.forEach(post => {
             const timeSlotId = this.getTimeSlotId(post);
-            if (timeSlotId) {
-                this.updateFavoriteUI(post, this.isFavorite(timeSlotId));
+            if (timeSlotId && this.isFavorite(timeSlotId)) {
+                this.updateFavoriteUI(post, true);
             }
         });
-        
-        console.log('Favorites UI initialized for', timeSlotPosts.length, 'posts');
     }
 
     animateFavoriteClick(container) {
@@ -272,19 +373,34 @@ class TimeSlotFavoritesManager {
 // КЛАСС УПРАВЛЕНИЯ КНОПКАМИ ДЕЙСТВИЙ
 // ============================================================================
 
+// Global instance tracking
+let globalTimeSlotActionsManagerInstance = null;
+
 class TimeSlotActionsManager {
     constructor() {
+        // Prevent multiple instances
+        if (globalTimeSlotActionsManagerInstance) {
+            return globalTimeSlotActionsManagerInstance;
+        }
+        
         this.init();
+        
+        // Store global instance
+        globalTimeSlotActionsManagerInstance = this;
     }
 
     init() {
         this.bindEvents();
-        console.log('TimeSlotActionsManager initialized');
     }
 
     bindEvents() {
         // Обработчики для кнопок действий
         document.addEventListener('click', (e) => {
+            // Validate event target
+            if (!e.target || typeof e.target.classList !== 'object') {
+                return;
+            }
+            
             if (e.target.classList.contains(TIMESLOT_FEED_CONFIG.BOOK_NOW_BUTTON_CLASS)) {
                 this.handleBookNowClick(e);
             }
@@ -317,13 +433,11 @@ class TimeSlotActionsManager {
             startLocation: container.querySelector('.sftsts2_reserved_start_location_location')?.textContent?.trim() || ''
         };
 
-        console.log('Extracted TimeSlot data:', data);
         return data;
     }
 
     showBookingModal(timeSlotData) {
         // Показываем модальное окно для бронирования
-        console.log('Showing booking modal for:', timeSlotData);
         
         // Здесь можно добавить логику показа модального окна
         // Например, вызвать функцию showAlertifyNotification или создать модал
@@ -339,7 +453,8 @@ class TimeSlotActionsManager {
                 `Location: ${timeSlotData.startLocation}`
             );
         } else {
-            alert('Booking functionality not available');
+            // Fallback для случаев, когда alertify недоступен
+            // Можно заменить на собственную модальную реализацию
         }
     }
 }
@@ -348,32 +463,66 @@ class TimeSlotActionsManager {
 // КЛАСС АНИМАЦИЙ И ВИЗУАЛЬНЫХ ЭФФЕКТОВ
 // ============================================================================
 
+// Global instance tracking
+let globalTimeSlotFeedAnimationsInstance = null;
+
 class TimeSlotFeedAnimations {
     constructor() {
+        // Prevent multiple instances
+        if (globalTimeSlotFeedAnimationsInstance) {
+            return globalTimeSlotFeedAnimationsInstance;
+        }
+        
+        this.instanceId = Date.now() + Math.random();
+        this.eventsBound = false;
+        
+        // Store global instance
+        globalTimeSlotFeedAnimationsInstance = this;
+        
         this.init();
     }
 
     init() {
         this.bindEvents();
-        console.log('TimeSlotFeedAnimations initialized');
     }
 
     bindEvents() {
+        if (this.eventsBound) {
+            return;
+        }
+        
         // Анимации при наведении на посты
         document.addEventListener('mouseenter', (e) => {
+            // Validate event target
+            if (!e.target || typeof e.target.closest !== 'function') {
+                return;
+            }
+            
             if (e.target.closest(`.${TIMESLOT_FEED_CONFIG.FEED_CONTAINER_CLASS}`)) {
                 this.handlePostHover(e);
             }
         }, true);
 
         document.addEventListener('mouseleave', (e) => {
+            // Validate event target
+            if (!e.target || typeof e.target.closest !== 'function') {
+                return;
+            }
+            
             if (e.target.closest(`.${TIMESLOT_FEED_CONFIG.FEED_CONTAINER_CLASS}`)) {
                 this.handlePostLeave(e);
             }
         }, true);
+        
+        this.eventsBound = true;
     }
 
     handlePostHover(event) {
+        // Additional validation in handler methods
+        if (!event.target || typeof event.target.closest !== 'function') {
+            return;
+        }
+        
         const container = event.target.closest(`.${TIMESLOT_FEED_CONFIG.FEED_CONTAINER_CLASS}`);
         if (container) {
             TimeSlotFeedUtils.addClass(container, 'hover');
@@ -381,6 +530,11 @@ class TimeSlotFeedAnimations {
     }
 
     handlePostLeave(event) {
+        // Additional validation in handler methods
+        if (!event.target || typeof event.target.closest !== 'function') {
+            return;
+        }
+        
         const container = event.target.closest(`.${TIMESLOT_FEED_CONFIG.FEED_CONTAINER_CLASS}`);
         if (container) {
             TimeSlotFeedUtils.removeClass(container, 'hover');
@@ -416,7 +570,13 @@ class TimeSlotFeedAnimations {
 
 class TimeSlotFeedManager {
     constructor() {
+        // Prevent multiple instances
+        if (globalTimeSlotFeedManager) {
+            return globalTimeSlotFeedManager;
+        }
+        
         this.favoritesManager = null;
+        this.simpleFavoritesManager = null;
         this.actionsManager = null;
         this.animations = null;
         
@@ -424,22 +584,21 @@ class TimeSlotFeedManager {
     }
 
     init() {
-        console.log('TimeSlotFeedManager: Initializing...');
-        
-        // Инициализируем компоненты
-        this.favoritesManager = new TimeSlotFavoritesManager();
-        this.actionsManager = new TimeSlotActionsManager();
-        this.animations = new TimeSlotFeedAnimations();
+        // Инициализируем компоненты (use existing instances if available)
+        this.favoritesManager = globalTimeSlotFavoritesManagerInstance || new TimeSlotFavoritesManager();
+        this.simpleFavoritesManager = globalTimeSlotSimpleFavoritesManagerInstance || new TimeSlotSimpleFavoritesManager();
+        this.actionsManager = globalTimeSlotActionsManagerInstance || new TimeSlotActionsManager();
+        this.animations = globalTimeSlotFeedAnimationsInstance || new TimeSlotFeedAnimations();
         
         // Обновляем UI для существующих постов
         this.updateExistingPosts();
         
-        console.log('TimeSlotFeedManager: Initialization completed');
+        // Добавляем CSS анимации для иконок избранного
+        this.addHeartAnimations();
     }
 
     updateExistingPosts() {
         const posts = TimeSlotFeedUtils.getElementsByClass(TIMESLOT_FEED_CONFIG.FEED_CONTAINER_CLASS);
-        console.log(`Found ${posts.length} TimeSlot posts`);
         
         posts.forEach((post, index) => {
             this.initializePost(post, index);
@@ -457,22 +616,40 @@ class TimeSlotFeedManager {
         if (this.favoritesManager.isFavorite(timeSlotId)) {
             this.favoritesManager.updateFavoriteUI(post, true);
         }
-
-        console.log(`Initialized post ${index}:`, timeSlotId);
     }
 
     // Метод для добавления новых постов (если они добавляются динамически)
     addPost(postElement) {
         if (postElement && postElement.classList.contains(TIMESLOT_FEED_CONFIG.FEED_CONTAINER_CLASS)) {
             this.initializePost(postElement, Date.now());
-            console.log('New post added and initialized');
         }
     }
 
     // Метод для обновления всех постов
     refreshPosts() {
         this.updateExistingPosts();
-        console.log('Posts refreshed');
+    }
+    
+    addHeartAnimations() {
+        // Добавляем CSS анимации для иконок избранного
+        if (!document.getElementById('timeslot-heart-animations')) {
+            const style = document.createElement('style');
+            style.id = 'timeslot-heart-animations';
+            style.textContent = `
+                @keyframes heartFavorite {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.3); }
+                    100% { transform: scale(1.1); }
+                }
+                
+                @keyframes heartUnfavorite {
+                    0% { transform: scale(1.1); }
+                    50% { transform: scale(0.8); }
+                    100% { transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
 }
 
@@ -482,90 +659,26 @@ class TimeSlotFeedManager {
 
 // Глобальная переменная для отслеживания инициализации
 let timeSlotFeedManagerInitialized = false;
+let globalTimeSlotFeedManager = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('TimeSlotFeedManager: DOM loaded, initializing...');
-    
-    if (!timeSlotFeedManagerInitialized) {
-        new TimeSlotFeedManager();
+    if (!timeSlotFeedManagerInitialized && !globalTimeSlotFeedManager) {
+        // Создаем основной менеджер
+        globalTimeSlotFeedManager = new TimeSlotFeedManager();
         timeSlotFeedManagerInitialized = true;
     }
 });
 
 // ============================================================================
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ ТЕСТИРОВАНИЯ
+// ЭКСПОРТ КЛАССОВ
 // ============================================================================
-
-// Функция для проверки состояния ленты
-window.checkTimeSlotFeedStatus = function() {
-    console.log('=== TimeSlot Feed Status Check ===');
-    
-    const posts = TimeSlotFeedUtils.getElementsByClass(TIMESLOT_FEED_CONFIG.FEED_CONTAINER_CLASS);
-    console.log(`Found ${posts.length} TimeSlot posts`);
-    
-    posts.forEach((post, index) => {
-        const timeSlotId = post.dataset.timeslotId || 'NO_ID';
-        console.log(`Post ${index + 1}: ID=${timeSlotId}`);
-        
-        // Проверяем элементы внутри поста
-        const companyName = post.querySelector('.sftsts1_company_name span:last-child')?.textContent?.trim();
-        const userName = post.querySelector('.sftsts1_use_name')?.textContent?.trim();
-        const bookButton = post.querySelector(`.${TIMESLOT_FEED_CONFIG.BOOK_NOW_BUTTON_CLASS}`);
-        
-        console.log(`  - Company: ${companyName || 'NOT_FOUND'}`);
-        console.log(`  - User: ${userName || 'NOT_FOUND'}`);
-        console.log(`  - Book button: ${bookButton ? 'FOUND' : 'NOT_FOUND'}`);
-    });
-    
-    console.log('=== End Status Check ===');
-};
-
-// Функция для тестирования избранного
-window.testTimeSlotFavorites = function() {
-    console.log('=== Testing TimeSlot Favorites ===');
-    
-    if (window.timeSlotFeedManager && window.timeSlotFeedManager.favoritesManager) {
-        const favorites = window.timeSlotFeedManager.favoritesManager.getFavorites();
-        console.log('Current favorites:', favorites);
-        
-        // Показываем все посты и их состояние
-        const posts = document.querySelectorAll('.social_feed_time_slot');
-        posts.forEach((post, index) => {
-            const timeSlotId = post.dataset.timeslotId || `post_${index}`;
-            const isFavorite = window.timeSlotFeedManager.favoritesManager.isFavorite(timeSlotId);
-            console.log(`Post ${index + 1} (${timeSlotId}): ${isFavorite ? '❤️ FAVORITE' : '🤍 NOT FAVORITE'}`);
-        });
-    } else {
-        console.log('Favorites manager not found');
-    }
-};
-
-// Функция для очистки всех избранных
-window.clearTimeSlotFavorites = function() {
-    if (window.timeSlotFeedManager && window.timeSlotFeedManager.favoritesManager) {
-        window.timeSlotFeedManager.favoritesManager.clearFavorites();
-        console.log('All favorites cleared');
-    } else {
-        console.log('Favorites manager not found');
-    }
-};
-
-// Функция для принудительной инициализации
-window.forceInitTimeSlotFeed = function() {
-    console.log('Force initializing TimeSlotFeedManager...');
-    
-    timeSlotFeedManagerInitialized = false;
-    
-    if (window.timeSlotFeedManager) {
-        delete window.timeSlotFeedManager;
-    }
-    
-    new TimeSlotFeedManager();
-    console.log('TimeSlotFeedManager force initialized');
-};
 
 // Экспортируем классы для использования в других модулях
 window.TimeSlotFeedManager = TimeSlotFeedManager;
 window.TimeSlotFavoritesManager = TimeSlotFavoritesManager;
+window.TimeSlotSimpleFavoritesManager = TimeSlotSimpleFavoritesManager;
 window.TimeSlotActionsManager = TimeSlotActionsManager;
 window.TimeSlotFeedAnimations = TimeSlotFeedAnimations;
+
+// Закрывающая скобка для защиты от повторной загрузки
+}

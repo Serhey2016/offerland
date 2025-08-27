@@ -3,34 +3,39 @@
 <!-- Подключаем CSS для Time Slot Feed -->
 <link rel="stylesheet" href="{% static 'css/timeslot_feed.css' %}">
 
-<div class="social_feed_time_slot">
-    <div class="time_slot_dropdown_menu">
-        <button class="time_slot_dropdown_trigger" id="time_slot_menu_trigger_{{ time_slot.id }}" type="button" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 4px; transition: background-color 0.2s;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px; color: #666;">
+<!-- Подключаем CSS для Advertising Feed (для dropdown menu) -->
+<link rel="stylesheet" href="{% static 'css/advertising_feed.css' %}">
+
+<div class="social_feed_time_slot" data-timeslot-id="{{ time_slot.id }}" data-post-id="{{ time_slot.id }}" data-post-type="timeslot">
+    <!-- Dropdown menu - аналогично advertising_feed.html -->
+    <div class="advertising_social_feed_menu">
+        <button class="advertising_social_feed_menu_trigger" id="menu_trigger_{{ time_slot.id }}" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
             </svg>
         </button>
-        <div class="time_slot_dropdown_menu_content" id="time_slot_overflow_menu_{{ time_slot.id }}" style="position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 150px; z-index: 1000; display: none;">
-            <div class="time_slot_dropdown_menu_item edit" data-action="edit" data-id="{{ time_slot.id }}" style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; color: #666;">
+        <div class="advertising_social_feed_overflow_menu" id="overflow_menu_{{ time_slot.id }}">
+            <div class="advertising_social_feed_overflow_menu_item edit" data-action="edit" data-id="{{ time_slot.id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
                 </svg>
                 Edit
             </div>
-            <div class="time_slot_dropdown_menu_item publish" data-action="publish" data-id="{{ time_slot.id }}" style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; color: #666;">
+            <div class="advertising_social_feed_overflow_menu_item publish" data-action="publish" data-id="{{ time_slot.id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
                 Publish
             </div>
-            <div class="time_slot_dropdown_menu_item archive" data-action="archive" data-id="{{ time_slot.id }}" style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background-color 0.2s;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; color: #666;">
+            <div class="advertising_social_feed_overflow_menu_item archive" data-action="archive" data-id="{{ time_slot.id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5l-4-4h2.5V12h3v1.5H16l-4 4z"/>
                 </svg>
                 Archive
             </div>
         </div>
     </div>
+    
     <div class="social_feed_time_slot_body_text">
         <div class="social_feed_time_slot_text_sections">
             <div class="social_feed_time_slot_text_section_1">
@@ -151,3 +156,84 @@
 
 <!-- Подключаем скрипт для Time Slot Feed -->
 <script src="{% static 'js/time_slot_feed.js' %}"></script>
+
+<!-- Подключаем скрипт для Advertising Feed (для dropdown menu) -->
+<script src="{% static 'js/advertising_feed.js' %}"></script>
+
+<script>
+    // Инициализация dropdown menu для time slot feed
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ждем, пока AdvertisingFeed загрузится
+        setTimeout(() => {
+            if (window.AdvertisingFeed) {
+                // Инициализируем dropdown menu для этого поста
+                const postId = '{{ time_slot.id }}';
+                console.log('Initializing dropdown for time slot:', postId);
+                
+                // Проверяем, что элементы существуют
+                const menuTrigger = document.getElementById(`menu_trigger_${postId}`);
+                const dropdown = document.getElementById(`overflow_menu_${postId}`);
+                
+                if (menuTrigger && dropdown) {
+                    console.log('Dropdown elements found for time slot:', postId);
+                    
+                    // Добавляем обработчик для пунктов меню
+                    const menuItems = dropdown.querySelectorAll('.advertising_social_feed_overflow_menu_item');
+                    menuItems.forEach(item => {
+                        item.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            const action = this.dataset.action;
+                            const id = this.dataset.id;
+                            
+                            console.log('Time slot action:', action, 'ID:', id);
+                            
+                            // Обрабатываем действия
+                            switch(action) {
+                                case 'edit':
+                                    console.log('Editing time slot:', id);
+                                    // Добавить логику редактирования
+                                    break;
+                                case 'publish':
+                                    console.log('Publishing time slot:', id);
+                                    // Добавить логику публикации
+                                    break;
+                                case 'archive':
+                                    console.log('Archiving time slot:', id);
+                                    // Добавить логику архивирования
+                                    break;
+                            }
+                            
+                            // Закрываем dropdown
+                            dropdown.classList.remove('show');
+                        });
+                    });
+                    
+                    // Добавляем обработчик для кнопки меню
+                    menuTrigger.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Закрываем все другие dropdown
+                        document.querySelectorAll('.advertising_social_feed_overflow_menu.show').forEach(menu => {
+                            if (menu !== dropdown) {
+                                menu.classList.remove('show');
+                            }
+                        });
+                        
+                        // Переключаем текущий dropdown
+                        dropdown.classList.toggle('show');
+                    });
+                    
+                    // Добавляем обработчик для закрытия dropdown при клике вне его
+                    document.addEventListener('click', function(e) {
+                        if (!menuTrigger.contains(e.target) && !dropdown.contains(e.target)) {
+                            dropdown.classList.remove('show');
+                        }
+                    });
+                }
+            }
+        }, 1000); // Ждем 1 секунду для загрузки всех скриптов
+    });
+</script>

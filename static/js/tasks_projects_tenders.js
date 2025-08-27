@@ -57,6 +57,11 @@ function initGlobalEventHandlers() {
     
     // Обработчик для кнопки Save
     document.addEventListener('click', function(e) {
+        // Validate event target
+        if (!e.target || typeof e.target.classList !== 'object' || typeof e.target.closest !== 'function') {
+            return;
+        }
+        
         if (e.target.classList.contains('save-btn')) {
             const form = e.target.closest('form');
             if (form) {
@@ -68,6 +73,11 @@ function initGlobalEventHandlers() {
     
     // Обработчик для кнопки Cancel
     document.addEventListener('click', function(e) {
+        // Validate event target
+        if (!e.target || typeof e.target.classList !== 'object' || typeof e.target.closest !== 'function') {
+            return;
+        }
+        
         if (e.target.classList.contains('cancel-btn')) {
             const form = e.target.closest('form');
             if (form) {
@@ -79,6 +89,11 @@ function initGlobalEventHandlers() {
     
     // Обработчик для кнопки Close
     document.addEventListener('click', function(e) {
+        // Validate event target
+        if (!e.target || typeof e.target.classList !== 'object' || typeof e.target.closest !== 'function') {
+            return;
+        }
+        
         if (e.target.classList.contains('close-btn')) {
             const form = e.target.closest('form');
             if (form) {

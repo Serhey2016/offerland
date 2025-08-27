@@ -29,12 +29,59 @@ class ServicesRelationsInline(admin.TabularInline):
     extra = 1
 
 class TaskAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'type_of_task', 'task_mode', 'status', 'created_at', 'is_published')
+    list_filter = ('task_mode', 'status', 'type_of_task', 'is_published', 'created_at')
+    search_fields = ('title', 'description')
+    readonly_fields = ('created_at', 'updated_at')
+    date_hierarchy = 'created_at'
+    
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('title', 'description', 'type_of_task', 'task_mode', 'status')
+        }),
+        ('Дополнительная информация', {
+            'fields': ('photo_link', 'documents', 'note', 'finance'),
+            'classes': ('collapse',)
+        }),
+        ('Настройки', {
+            'fields': ('is_private', 'disclose_name', 'hidden', 'is_published'),
+            'classes': ('collapse',)
+        }),
+        ('Даты и время', {
+            'fields': ('date_start', 'date_end', 'time_start', 'time_end'),
+            'classes': ('collapse',)
+        }),
+        ('Связи', {
+            'fields': ('parent',),
+            'classes': ('collapse',)
+        }),
+    )
+    
     inlines = [TaskHashtagRelationsInline, PerformersRelationsInline, ServicesRelationsInline]
 
 class AdvertisingAdmin(admin.ModelAdmin):
     inlines = [AdvertisingHashtagRelationsInline]
 
 class TimeSlotAdmin(admin.ModelAdmin):
+    list_display = ('id', 'date_start', 'date_end', 'time_start', 'time_end', 'ts_mode', 'type_of_task', 'services', 'cost_of_1_hour_of_work')
+    list_filter = ('ts_mode', 'type_of_task', 'services', 'date_start', 'date_end')
+    search_fields = ('start_location', 'minimum_time_slot')
+    readonly_fields = ('id',)
+    date_hierarchy = 'date_start'
+    
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('ts_mode', 'type_of_task', 'services')
+        }),
+        ('Даты и время', {
+            'fields': ('date_start', 'date_end', 'time_start', 'time_end')
+        }),
+        ('Детали', {
+            'fields': ('reserved_time_on_road', 'start_location', 'cost_of_1_hour_of_work', 'minimum_time_slot'),
+            'classes': ('collapse',)
+        }),
+    )
+    
     inlines = [TimeSlotHashtagRelationsInline]
 
 class ActivitiesAdmin(admin.ModelAdmin):
@@ -93,7 +140,28 @@ admin.site.register(TimeSlot, TimeSlotAdmin)
 admin.site.register(Advertising, AdvertisingAdmin)
 admin.site.register(TaskClientRelations)
 admin.site.register(AdvertisingOwnerRelations)
-admin.site.register(JobSearch)
+class JobSearchAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'user', 'post_type', 'js_mode', 'result_of_task', 'start_date', 'last_update')
+    list_filter = ('post_type', 'js_mode', 'result_of_task', 'start_date', 'user')
+    search_fields = ('title', 'notes', 'user__username')
+    readonly_fields = ('last_update',)
+    date_hierarchy = 'start_date'
+    
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('title', 'user', 'post_type', 'js_mode', 'result_of_task')
+        }),
+        ('Дополнительная информация', {
+            'fields': ('notes',),
+            'classes': ('collapse',)
+        }),
+        ('Даты', {
+            'fields': ('start_date', 'last_update'),
+            'classes': ('collapse',)
+        }),
+    )
+
+admin.site.register(JobSearch, JobSearchAdmin)
 
 @admin.register(TimeSlotHashtagRelations)
 class TimeSlotHashtagRelationsAdmin(admin.ModelAdmin):

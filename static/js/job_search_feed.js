@@ -659,6 +659,11 @@ function initJobSearchDropdownMenu() {
     
     // Закрытие dropdown при клике вне его
     document.addEventListener('click', function(e) {
+        // Validate event target
+        if (!e.target || typeof e.target.closest !== 'function') {
+            return;
+        }
+        
         if (!e.target.closest('[id^="jsf_dropdown_menu_"]') && !e.target.closest('[id^="jsf_dropdown_content_"]')) {
             document.querySelectorAll('[id^="jsf_dropdown_content_"]').forEach(d => {
                 d.classList.remove('show');
@@ -686,13 +691,63 @@ function handleJobSearchDropdownAction(action, postId, post) {
 
 // Обработчик действия Start для job search
 function handleJobSearchStartAction(postId, post) {
-    // Здесь можно добавить логику для запуска job search
-    // Например, установить дату начала
-    if (typeof window.alertify !== 'undefined') {
-        window.alertify.success('Job search started successfully!');
-    } else {
-        alert('Job search started successfully!');
+    // Получаем CSRF токен
+    const csrftoken = getCookie('csrftoken');
+    
+    if (!csrftoken) {
+        alert('CSRF token not found. Please refresh the page and try again.');
+        return;
     }
+    
+    // Отправляем AJAX запрос для установки даты начала
+    fetch(`/services_and_projects/start_job_search/${postId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Обновляем отображение даты на странице
+            const startDateElement = document.getElementById(`post_start_date_${postId}`);
+            if (startDateElement) {
+                startDateElement.textContent = data.start_date;
+            }
+            
+            // Показываем уведомление об успехе
+            if (typeof window.alertify !== 'undefined') {
+                window.alertify.success('Job search started successfully!');
+            } else {
+                alert('Job search started successfully!');
+            }
+        } else if (data.warning) {
+            // Показываем предупреждение
+            if (typeof window.alertify !== 'undefined') {
+                window.alertify.warning(data.message);
+            } else {
+                alert(data.message);
+            }
+        } else {
+            // Показываем ошибку
+            if (typeof window.alertify !== 'undefined') {
+                window.alertify.error('Error starting job search: ' + data.error);
+            } else {
+                alert('Error starting job search: ' + data.error);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        
+        // Показываем ошибку
+        if (typeof window.alertify !== 'undefined') {
+            window.alertify.error('Network error occurred while starting job search');
+        } else {
+            alert('Network error occurred while starting job search');
+        }
+    });
 }
 
 // Обработчик редактирования для job search
@@ -718,6 +773,22 @@ function handleJobSearchRemoveAction(postId, post) {
         }
         // Здесь можно добавить AJAX запрос для удаления
     }
+}
+
+// Вспомогательная функция для получения CSRF токена
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 

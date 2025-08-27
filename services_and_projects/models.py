@@ -118,6 +118,12 @@ class Finance(models.Model):
 
 
 class Task(models.Model):
+    TASK_MODE_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
@@ -131,6 +137,7 @@ class Task(models.Model):
     time_end = models.TimeField(null=True, blank=True)
     documents = models.CharField(max_length=2000, blank=True, null=True)
     status = models.ForeignKey('TaskStatus', on_delete=models.SET_NULL, null=True)
+    task_mode = models.CharField(max_length=10, choices=TASK_MODE_CHOICES, default='draft', verbose_name='Task mode')
     is_private = models.BooleanField(default=False)
     disclose_name = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
@@ -246,6 +253,12 @@ class TaskOwnerRelations(models.Model):
 
 
 class TimeSlot(models.Model):
+    TS_MODE_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     date_start = models.DateField()
     date_end = models.DateField()
@@ -258,6 +271,7 @@ class TimeSlot(models.Model):
     minimum_time_slot = models.CharField(max_length=50)  # Изменено на CharField
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)  # Добавлена связь с TypeOfTask
     services = models.ForeignKey('Services', on_delete=models.CASCADE)
+    ts_mode = models.CharField(max_length=10, choices=TS_MODE_CHOICES, default='draft', verbose_name='Time slot mode')
     
     # Добавляем связи многие ко многим через промежуточные таблицы
     performers = models.ManyToManyField(User, through='TimeSlotPerformersRelations', blank=True)
@@ -280,7 +294,7 @@ class TimeSlot(models.Model):
 
 
 class Advertising(models.Model):
-    STATUS_CHOICES = [
+    ADV_MODE_CHOICES = [
         ('draft', 'Draft'),
         ('published', 'Published'),
         ('archived', 'Archived'),
@@ -295,7 +309,7 @@ class Advertising(models.Model):
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='advertisings')
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Creation date')
     publication_date = models.DateTimeField(auto_now_add=True, verbose_name='Publication date')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft', verbose_name='Status')
+    adv_mode = models.CharField(max_length=10, choices=ADV_MODE_CHOICES, default='draft', verbose_name='Advertising mode')
     
     # Связи многие ко многим через промежуточные таблицы
     comments = models.ManyToManyField('Comment', through='CommentAdvertisingRelations', blank=True)
@@ -392,6 +406,12 @@ class TaskClientRelations(models.Model):
 
 
 class JobSearch(models.Model):
+    JS_MODE_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_searches')
     title = models.CharField(max_length=60)
@@ -399,11 +419,25 @@ class JobSearch(models.Model):
     last_update = models.DateTimeField(auto_now=True)
     notes = models.TextField(blank=True, null=True)
     
+    POST_TYPE_CHOICES = [
+        ('job_search', 'Job Search'),
+        ('vacancy_post', 'Vacancy Post'),
+        ('resume_post', 'Resume Post'),
+        ('networking', 'Networking'),
+        ('skill_share', 'Skill Share'),
+        ('project_showcase', 'Project Showcase'),
+        ('industry_news', 'Industry News'),
+        ('career_advice', 'Career Advice'),
+        ('other', 'Other'),
+    ]
+    
     RESULT_CHOICES = [
         ('find_job', 'Find job'),
         ('not_find', 'Not find'),
     ]
     result_of_task = models.CharField(max_length=10, choices=RESULT_CHOICES, default='not_find')
+    js_mode = models.CharField(max_length=10, choices=JS_MODE_CHOICES, default='draft', verbose_name='Job search mode')
+    post_type = models.CharField(max_length=20, choices=POST_TYPE_CHOICES, default='job_search', verbose_name='Post type')
     
     # Связь многие ко многим с Activities через промежуточную таблицу
     activities = models.ManyToManyField('Activities', through='JobSearchActivitiesRelations', blank=True)

@@ -1323,6 +1323,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Закрываем меню при клике вне его
         document.addEventListener('click', function(e) {
+            // Validate event target
+            if (!e.target || typeof e.target.closest !== 'function') {
+                return;
+            }
+            
             if (!e.target.closest('.social_feed_menu')) {
                 document.querySelectorAll('.social_feed_overflow_menu.show').forEach(menu => {
                     menu.classList.remove('show');
@@ -1332,6 +1337,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Обработка действий в overflow menu
         document.addEventListener('click', function(e) {
+            // Validate event target
+            if (!e.target || typeof e.target.closest !== 'function') {
+                return;
+            }
+            
             if (e.target.closest('.social_feed_overflow_menu_item')) {
                 const menuItem = e.target.closest('.social_feed_overflow_menu_item');
                 const action = menuItem.dataset.action;

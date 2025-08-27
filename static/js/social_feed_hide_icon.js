@@ -105,6 +105,11 @@ function initGlobalEventHandlers() {
     
     // Глобальный обработчик для динамически добавленных иконок
     document.addEventListener('click', function(e) {
+        // Validate event target
+        if (!e.target || typeof e.target.closest !== 'function') {
+            return;
+        }
+        
         const hideIcon = e.target.closest('[id^="socialFeedHideIcon_"]');
         if (!hideIcon) {
             return;

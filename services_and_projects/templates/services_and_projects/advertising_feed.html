@@ -3,6 +3,10 @@
 <!-- Подключаем CSS для Advertising Feed -->
 <link rel="stylesheet" href="{% static 'css/advertising_feed.css' %}">
 
+<!-- Подключаем CSS для Alertify -->
+<link rel="stylesheet" href="{% static 'css/lib_alertify/alertify.css' %}">
+<link rel="stylesheet" href="{% static 'css/lib_alertify/themes/default.css' %}">
+
 <div class="social_feed" data-post-id="{{ advertising.id }}" data-post-type="advertising">
     <div class="social_feed_user_name">
         <div class="social_feed_user_name_image">
@@ -34,18 +38,36 @@
                     </svg>
                     Edit
                 </div>
-                <div class="advertising_social_feed_overflow_menu_item publish" data-action="publish" data-id="{{ advertising.id }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    </svg>
-                    Publish
-                </div>
-                <div class="advertising_social_feed_overflow_menu_item archive" data-action="archive" data-id="{{ advertising.id }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5l-4-4h2.5V12h3v1.5H16l-4 4z"/>
-                    </svg>
-                    Archive
-                </div>
+                
+                {% if advertising.adv_mode == 'archived' %}
+                    <!-- Show Unarchive and Remove for archived posts -->
+                    <div class="advertising_social_feed_overflow_menu_item unarchive" data-action="unarchive" data-id="{{ advertising.id }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5l-4-4h2.5V12h3v1.5H16l-4 4z"/>
+                        </svg>
+                        Unarchive
+                    </div>
+                    <div class="advertising_social_feed_overflow_menu_item remove" data-action="remove" data-id="{{ advertising.id }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                        Remove
+                    </div>
+                {% else %}
+                    <!-- Show Publish and Archive for non-archived posts -->
+                    <div class="advertising_social_feed_overflow_menu_item publish" data-action="publish" data-id="{{ advertising.id }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                        Publish
+                    </div>
+                    <div class="advertising_social_feed_overflow_menu_item archive" data-action="archive" data-id="{{ advertising.id }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5l-4-4h2.5V12h3v1.5H16l-4 4z"/>
+                        </svg>
+                        Archive
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -91,4 +113,73 @@
 </div>
 
 <!-- Подключаем скрипт для Advertising Feed -->
-<script src="{% static 'js/advertising_feed.js' %}"></script> 
+<script src="{% static 'js/advertising_feed.js' %}"></script>
+
+<!-- Подключаем скрипт для Alertify -->
+<script src="{% static 'js/lib_alertify/alertify.js' %}"></script>
+
+<script>
+    // Дополнительная отладка для advertising_feed.html
+    console.log('advertising_feed.html loaded');
+    console.log('Post ID:', '{{ advertising.id }}');
+    console.log('Post mode:', '{{ advertising.adv_mode }}');
+    console.log('Menu trigger elements:', document.querySelectorAll('.advertising_social_feed_menu_trigger'));
+    console.log('Dropdown elements:', document.querySelectorAll('.advertising_social_feed_overflow_menu'));
+    
+    // Проверяем конкретные элементы для этого поста
+    const postId = '{{ advertising.id }}';
+    const menuTrigger = document.getElementById(`menu_trigger_${postId}`);
+    const dropdown = document.getElementById(`overflow_menu_${postId}`);
+    
+    console.log('Menu trigger for this post:', menuTrigger);
+    console.log('Dropdown for this post:', dropdown);
+    console.log('Menu trigger classes:', menuTrigger ? menuTrigger.className : 'N/A');
+    console.log('Dropdown classes:', dropdown ? dropdown.className : 'N/A');
+    
+    // Проверяем, что AdvertisingFeed инициализирован
+    setTimeout(() => {
+        console.log('AdvertisingFeed object:', window.AdvertisingFeed);
+        console.log('AdvertisingFeedUtils object:', window.AdvertisingFeedUtils);
+        console.log('Active dropdown:', window.activeDropdown);
+        
+        // Тестируем функции
+        if (window.AdvertisingFeedUtils) {
+            console.log('Testing getOverflowMenuById:', window.AdvertisingFeedUtils.getOverflowMenuById(postId));
+            console.log('Testing getMenuTriggerById:', window.AdvertisingFeedUtils.getMenuTriggerById(postId));
+            
+            // Добавляем кнопки для тестирования в режиме разработки
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                addTestButtons();
+            }
+        }
+    }, 1000);
+    
+    // Функция для добавления тестовых кнопок
+    function addTestButtons() {
+        const testContainer = document.createElement('div');
+        testContainer.style.cssText = 'position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; z-index: 10000; font-size: 12px;';
+        testContainer.innerHTML = `
+            <div style="margin-bottom: 10px;"><strong>Test Controls</strong></div>
+            <button onclick="testThisDropdown()" style="display: block; width: 100%; margin-bottom: 5px; padding: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">Test Dropdown</button>
+            <button onclick="diagnoseThisPost()" style="display: block; width: 100%; padding: 5px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer;">Diagnose Post</button>
+        `;
+        document.body.appendChild(testContainer);
+        
+        // Добавляем глобальные функции для тестирования
+        window.testThisDropdown = function() {
+            if (window.AdvertisingFeedUtils) {
+                window.AdvertisingFeedUtils.testDropdown(postId);
+            }
+        };
+        
+        window.diagnoseThisPost = function() {
+            if (window.AdvertisingFeedUtils) {
+                console.log('=== DIAGNOSING THIS POST ===');
+                console.log('Post ID:', postId);
+                console.log('Menu trigger:', menuTrigger);
+                console.log('Dropdown:', dropdown);
+                console.log('Post element:', document.querySelector(`.social_feed[data-post-id="${postId}"]`));
+            }
+        };
+    }
+</script> 

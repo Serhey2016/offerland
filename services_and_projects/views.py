@@ -38,12 +38,14 @@ def testpage(request):
     
     # Apply status filter for advertising
     if status_filter == 'draft':
-        advertisings = advertisings.filter(status='draft')
+        advertisings = advertisings.filter(adv_mode='draft')
     elif status_filter == 'published':
-        advertisings = advertisings.filter(status='published')
+        advertisings = advertisings.filter(adv_mode='published')
     elif status_filter == 'archived':
-        advertisings = advertisings.filter(status='archived')
-    # If status_filter == 'all', show all statuses
+        advertisings = advertisings.filter(adv_mode='archived')
+    elif status_filter == 'all':
+        # Show only draft items in "All" category
+        advertisings = advertisings.filter(adv_mode='draft')
     
     advertising_data = []
     
@@ -66,13 +68,46 @@ def testpage(request):
         'photos', 'hashtags', 'performers', 'services'
     ).order_by('-created_at')
     
+    # Apply status filter for tasks
+    if status_filter == 'draft':
+        tasks_for_feed = tasks_for_feed.filter(task_mode='draft')
+    elif status_filter == 'published':
+        tasks_for_feed = tasks_for_feed.filter(task_mode='published')
+    elif status_filter == 'archived':
+        tasks_for_feed = tasks_for_feed.filter(task_mode='archived')
+    elif status_filter == 'all':
+        # Show only draft items in "All" category
+        tasks_for_feed = tasks_for_feed.filter(task_mode='draft')
+    
     # Получаем все записи JobSearch для отображения в потоке
     job_searches_for_feed = JobSearch.objects.select_related('user').order_by('-start_date')
+    
+    # Apply status filter for job searches
+    if status_filter == 'draft':
+        job_searches_for_feed = job_searches_for_feed.filter(js_mode='draft')
+    elif status_filter == 'published':
+        job_searches_for_feed = job_searches_for_feed.filter(js_mode='published')
+    elif status_filter == 'archived':
+        job_searches_for_feed = job_searches_for_feed.filter(js_mode='archived')
+    elif status_filter == 'all':
+        # Show only draft items in "All" category
+        job_searches_for_feed = job_searches_for_feed.filter(js_mode='draft')
     
     # Получаем все TimeSlot для отображения в потоке
     time_slots_for_feed = TimeSlot.objects.select_related('type_of_task', 'services').prefetch_related(
         'hashtags', 'performers', 'photos'
     ).order_by('-date_start')
+    
+    # Apply status filter for time slots
+    if status_filter == 'draft':
+        time_slots_for_feed = time_slots_for_feed.filter(ts_mode='draft')
+    elif status_filter == 'published':
+        time_slots_for_feed = time_slots_for_feed.filter(ts_mode='published')
+    elif status_filter == 'archived':
+        time_slots_for_feed = time_slots_for_feed.filter(ts_mode='archived')
+    elif status_filter == 'all':
+        # Show only draft items in "All" category
+        time_slots_for_feed = time_slots_for_feed.filter(ts_mode='draft')
     
     # Создаем список всех элементов для потока (реклама + задачи + job searches + time slots)
     feed_items = []
@@ -111,6 +146,14 @@ def testpage(request):
                 'owner': owner
             }
         })
+    
+    # Отладочная информация о количестве записей каждого типа после фильтрации
+    print(f"DEBUG: After filtering with status='{status_filter}':")
+    print(f"  - Advertising: {len(advertising_data)} items")
+    print(f"  - Tasks: {len(tasks_for_feed)} items")
+    print(f"  - JobSearches: {len(job_searches_for_feed)} items")
+    print(f"  - TimeSlots: {len(time_slots_for_feed)} items")
+    print(f"  - Total feed items: {len(feed_items)} items")
     
     # Сортируем по дате создания (новые сначала)
     # Приводим все даты к datetime.date для корректного сравнения
@@ -464,28 +507,28 @@ def start_job_search(request, job_search_id):
 @login_required
 @require_POST
 def change_advertising_status(request, advertising_id):
-    """Change status of advertising (draft, published, archived)"""
+    """Change advertising mode (draft, published, archived)"""
     try:
         advertising = Advertising.objects.get(id=advertising_id)
         
-        # Check if user has permission to change status
+        # Check if user has permission to change advertising mode
         owner_rel = AdvertisingOwnerRelations.objects.filter(advertising=advertising, user=request.user).first()
         if not owner_rel:
             return JsonResponse({
                 'success': False,
-                'error': 'You do not have permission to change this advertising status'
+                'error': 'You do not have permission to change this advertising mode'
             }, status=403)
         
-        # Get new status from request
-        new_status = request.POST.get('status')
+        # Get new advertising mode from request
+        new_status = request.POST.get('adv_mode')
         if new_status not in ['draft', 'published', 'archived']:
             return JsonResponse({
                 'success': False,
-                'error': 'Invalid status. Must be draft, published, or archived'
+                'error': 'Invalid advertising mode. Must be draft, published, or archived'
             }, status=400)
         
-        # Update status
-        advertising.status = new_status
+        # Update advertising mode
+        advertising.adv_mode = new_status
         
         # Update publication date if publishing
         if new_status == 'published':
@@ -496,7 +539,7 @@ def change_advertising_status(request, advertising_id):
         return JsonResponse({
             'success': True,
             'status': new_status,
-            'message': f'Advertising status changed to {new_status} successfully'
+            'message': f'Advertising mode changed to {new_status} successfully'
         })
         
     except Advertising.DoesNotExist:
@@ -508,5 +551,52 @@ def change_advertising_status(request, advertising_id):
         return JsonResponse({
             'success': False,
             'error': f'Error changing advertising status: {str(e)}'
+        }, status=500)
+
+
+@login_required
+@require_POST
+def start_task(request, task_id):
+    """Set start date for Task (Project, Tender, My List, etc.)"""
+    try:
+        from .models import Task
+        
+        task = Task.objects.get(id=task_id)
+        
+        # Check if user has permission to start this task
+        # For now, we'll allow any authenticated user to start any task
+        # You can add more specific permission checks here if needed
+        
+        # Check if start date is already set
+        if task.date_start:
+            return JsonResponse({
+                'success': False,
+                'warning': True,
+                'message': 'Task has already been started'
+            })
+        
+        # Set current date as start date
+        from django.utils import timezone
+        task.date_start = timezone.now().date()
+        task.save()
+        
+        # Format date for display
+        formatted_date = task.date_start.strftime('%d.%m.%Y')
+        
+        return JsonResponse({
+            'success': True,
+            'start_date': formatted_date,
+            'message': 'Task started successfully'
+        })
+        
+    except Task.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Task not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error starting task: {str(e)}'
         }, status=500)
 

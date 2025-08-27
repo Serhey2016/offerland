@@ -48,6 +48,7 @@
 .advertising_social_feed_menu {
     position: relative;
     right: 10px;
+    z-index: 9999;
 }
 
 .advertising_social_feed_menu_trigger {
@@ -83,21 +84,26 @@
 
 .advertising_social_feed_overflow_menu {
     position: absolute;
-    top: calc(100% - 35px);
-    right: 15px;
+    top: calc(100% - 20px);
+    right: 0;
     background: white;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     min-width: 120px;
-    z-index: 1001;
+    z-index: 9999;
     display: none;
     overflow: hidden;
     transition: all 0.2s ease;
+    margin-top: 0;
+    opacity: 0;
+    transform: translateY(-10px);
 }
 
 .advertising_social_feed_overflow_menu.show {
     display: block;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .advertising_social_feed_overflow_menu_item {
@@ -110,6 +116,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
 }
 
 .advertising_social_feed_overflow_menu_item:last-child {
@@ -132,9 +139,22 @@
     color: #28a745;
 }
 
+.advertising_social_feed_overflow_menu_item.unarchive {
+    color: #17a2b8;
+}
+
+.advertising_social_feed_overflow_menu_item.publish {
+    color: #28a745;
+}
+
+.advertising_social_feed_overflow_menu_item.archive {
+    color: #6c757d;
+}
+
 .advertising_social_feed_overflow_menu_item svg {
     width: 16px;
     height: 16px;
+    flex-shrink: 0;
 }
 
 /* ===== СТИЛИ ДЛЯ ТЕКСТА ===== */
@@ -786,4 +806,148 @@
 
 .social_feeds.empty {
     min-height: 950px; /* Минимальная высота при отсутствии постов */
+}
+
+/* ===== СТИЛИ ДЛЯ ALERTIFY УВЕДОМЛЕНИЙ ===== */
+
+/* Кастомизация уведомлений alertify */
+.alertify-notifier {
+    z-index: 9999;
+}
+
+.alertify-notifier .ajs-message {
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    padding: 12px 20px;
+    margin: 8px;
+    min-width: 280px;
+    max-width: 400px;
+}
+
+/* Стили для успешных уведомлений */
+.alertify-notifier .ajs-message.ajs-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-left: 4px solid #1e7e34;
+}
+
+/* Стили для уведомлений об ошибках */
+.alertify-notifier .ajs-message.ajs-error {
+    background: linear-gradient(135deg, #dc3545, #e74c3c);
+    color: white;
+    border-left: 4px solid #c82333;
+}
+
+/* Стили для предупреждающих уведомлений */
+.alertify-notifier .ajs-message.ajs-warning {
+    background: linear-gradient(135deg, #ffc107, #ffb300);
+    color: #212529;
+    border-left: 4px solid #e0a800;
+}
+
+/* Стили для информационных уведомлений */
+.alertify-notifier .ajs-message.ajs-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    border-left: 4px solid #117a8b;
+}
+
+/* Анимация появления уведомлений */
+.alertify-notifier .ajs-message.ajs-visible {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Анимация исчезновения уведомлений */
+.alertify-notifier .ajs-message.ajs-hidden {
+    animation: slideOutRight 0.3s ease-in;
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* ===== СТИЛИ ДЛЯ ALERTIFY CONFIRM ДИАЛОГОВ ===== */
+
+/* Кастомизация confirm диалогов */
+.alertify .ajs-dialog {
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: none;
+}
+
+.alertify .ajs-header {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 20px 24px 16px 24px;
+}
+
+.alertify .ajs-header .ajs-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.alertify .ajs-body {
+    padding: 20px 24px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.alertify .ajs-footer {
+    padding: 16px 24px 20px 24px;
+    background: #f8f9fa;
+    border-radius: 0 0 12px 12px;
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button {
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 10px;
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button.ajs-ok {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button.ajs-ok:hover {
+    background: linear-gradient(135deg, #218838, #1ea085);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button.ajs-cancel {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button.ajs-cancel:hover {
+    background: linear-gradient(135deg, #5a6268, #343a40);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
 }

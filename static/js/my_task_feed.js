@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Отправляем AJAX запрос для установки даты начала
-        fetch(`/services_and_projects/start_job_search/${taskId}/`, {
+        fetch(`/services_and_projects/start_task/${taskId}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrftoken,
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 // Обновляем отображение даты на странице
-                const startDateElement = document.getElementById(`post_start_date_${taskId}`);
+                const startDateElement = document.querySelector(`#my_task_overflow_menu_${taskId}`).closest('.social_feed2').querySelector('.post_start_date');
                 if (startDateElement) {
                     startDateElement.textContent = data.start_date;
                 }

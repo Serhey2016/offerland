@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handler for menu icon click
     document.addEventListener('click', function(e) {
+        // Validate event target
+        if (!e.target || typeof e.target.closest !== 'function') {
+            return;
+        }
+        
         if (e.target.closest('.social_feed_menu')) {
             e.preventDefault();
             e.stopPropagation();
@@ -47,6 +52,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handler for menu item clicks
     document.addEventListener('click', function(e) {
+        // Validate event target
+        if (!e.target || typeof e.target.closest !== 'function') {
+            return;
+        }
+        
         if (e.target.closest('.social_feed_overflow_menu_item')) {
             e.preventDefault();
             e.stopPropagation();
@@ -75,6 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handler for clicks outside menu to close it
     document.addEventListener('click', function(e) {
+        // Validate event target
+        if (!e.target || typeof e.target.closest !== 'function') {
+            return;
+        }
+        
         if (!e.target.closest('.social_feed_menu')) {
             closeAllOverflowMenus();
         }

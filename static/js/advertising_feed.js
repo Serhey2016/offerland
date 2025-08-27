@@ -19,6 +19,17 @@
 // - AdvertisingFeedUtils.getPostById(123) - получить пост по ID
 // - AdvertisingFeedUtils.getAllPostIds() - получить все ID постов
 
+// Защита от повторной загрузки
+if (window.__AdvertisingFeedBootstrapped__) {
+    // Advertising Feed already loaded, skipping...
+} else {
+    // Loading Advertising Feed...
+
+console.log('=== ADVERTISING_FEED.JS LOADED ===');
+// File loaded at:', new Date().toISOString());
+// Window object:', typeof window);
+// Document object:', typeof document);
+
 // Проверяем доступность window и document
 if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     // Основные переменные
@@ -26,28 +37,53 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     let currentPostId = null;
     let activeDropdown = null;
     
+    // Настройка Alertify для уведомлений сверху справа
+    if (typeof alertify !== 'undefined' && alertify && alertify.notifier && typeof alertify.notifier.set === 'function') {
+        try {
+            alertify.notifier.set('position', 'top-right');
+            alertify.notifier.set('delay', 3);
+        } catch (error) {
+            console.log('Alertify configuration failed:', error);
+        }
+    } else {
+        console.log('Alertify not available, using fallback notifications');
+    }
+    
     // Функции для работы с рекламой
     const AdvertisingFeed = {
         // Инициализация
         init: function() {
-            console.log('AdvertisingFeed.init called');
+            // === AdvertisingFeed.init called ===
+            // isInitialized:', isInitialized);
             if (isInitialized) {
-                console.log('Already initialized, returning');
+                // Already initialized, returning
                 return;
             }
             
-            console.log('Initializing AdvertisingFeed...');
+            // Initializing AdvertisingFeed...
+            // Document ready state:', document.readyState);
+            // Document body:', document.body);
+            
             this.initEventListeners();
             this.initGallery();
             this.initDropdownMenu();
+            
             isInitialized = true;
-            console.log('AdvertisingFeed initialized successfully');
+            // === AdvertisingFeed initialized successfully ===
         },
         
         // Инициализация обработчиков событий
         initEventListeners: function() {
+            // === initEventListeners called ===
+            // Adding click event listeners...
+            
             // Обработчик для кнопки чата
             document.addEventListener('click', function(e) {
+                // Validate event target
+                if (!e.target || typeof e.target.closest !== 'function') {
+                    return;
+                }
+                
                 if (e.target.closest('.action_btn') && e.target.textContent === 'Chat') {
                     const post = e.target.closest('.social_feed');
                     const postId = post.dataset.postId;
@@ -57,6 +93,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             
             // Обработчик для кнопки комментариев
             document.addEventListener('click', function(e) {
+                // Validate event target
+                if (!e.target || typeof e.target.closest !== 'function') {
+                    return;
+                }
+                
                 if (e.target.closest('.action_btn') && e.target.textContent === 'Comments') {
                     const post = e.target.closest('.social_feed');
                     const postId = post.dataset.postId;
@@ -66,24 +107,71 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             
             // Обработчик для кнопки "Заказать сейчас"
             document.addEventListener('click', function(e) {
+                // Validate event target
+                if (!e.target || typeof e.target.closest !== 'function') {
+                    return;
+                }
+                
                 if (e.target.closest('.order_now')) {
                     const post = e.target.closest('.social_feed');
                     const postId = post.dataset.postId;
                     handleOrderNowClick(postId);
                 }
             });
+            
+            // Обработчики для dropdown menu
+            document.addEventListener('click', function(e) {
+                // Validate event target
+                if (!e.target || typeof e.target.closest !== 'function') {
+                    return;
+                }
+                
+                const menuItem = e.target.closest('.advertising_social_feed_overflow_menu_item');
+                if (menuItem) {
+                    const action = menuItem.dataset.action;
+                    const postId = menuItem.dataset.id;
+                    
+                    // Dropdown menu item clicked:', action, postId);
+                    
+                    if (action === 'edit') {
+                        handleEditClick(postId);
+                    } else if (action === 'publish') {
+                        handlePublishClick(postId);
+                    } else if (action === 'archive') {
+                        handleArchiveClick(postId);
+                    } else if (action === 'unarchive') {
+                        handleUnarchiveClick(postId);
+                    } else if (action === 'remove') {
+                        handleRemoveClick(postId);
+                    }
+                    
+                    // Закрываем dropdown после действия
+                    closeDropdownById(postId);
+                }
+            });
+            
+            // === Event listeners added successfully ===
         },
         
         // Инициализация dropdown menu
         initDropdownMenu: function() {
-            console.log('initDropdownMenu called');
+            // === initDropdownMenu called ===
+            // Document ready state:', document.readyState);
+            // Active dropdown before:', activeDropdown);
             
             // Обработчик для открытия/закрытия dropdown menu
             document.addEventListener('click', function(e) {
-                console.log('Click event detected:', e.target);
+                // Validate event target
+                if (!e.target || typeof e.target.closest !== 'function') {
+                    return;
+                }
                 
-                const menuButton = e.target.closest('.social_feed .advertising_social_feed_menu_trigger');
-                console.log('Menu button found:', menuButton);
+                // Click event detected:', e.target);
+                // Click target classes:', e.target.className);
+                // Click target tag:', e.target.tagName);
+                
+                const menuButton = e.target.closest('.advertising_social_feed_menu_trigger');
+                // Menu button found:', menuButton);
                 
                 if (menuButton) {
                     e.preventDefault();
@@ -91,16 +179,19 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
                     
                     const post = menuButton.closest('.social_feed');
                     const postId = post.dataset.postId;
-                    console.log('Post ID:', postId);
+                    // Post ID:', postId);
+                    // Post element:', post);
                     
                     // Используем ID для поиска dropdown
                     const dropdown = getOverflowMenuById(postId);
-                    console.log('Dropdown found by ID:', dropdown);
+                    // Dropdown found by ID:', dropdown);
+                    // Looking for ID:', `overflow_menu_${postId}`);
                     
                     if (dropdown) {
-                        console.log('Menu button clicked for post:', postId);
-                        console.log('Dropdown found by ID:', dropdown);
-                        console.log('Current dropdown classes:', dropdown.className);
+                        // Menu button clicked for post:', postId);
+                        // Dropdown found by ID:', dropdown);
+                        // Current dropdown classes:', dropdown.className);
+                        // Current dropdown display style:', window.getComputedStyle(dropdown).display);
                         
                         // Закрываем предыдущий открытый dropdown
                         if (activeDropdown && activeDropdown !== dropdown) {
@@ -110,42 +201,36 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
                         // Переключаем текущий dropdown
                         if (dropdown.classList.contains('show')) {
                             closeDropdownById(postId);
-                            console.log('Dropdown closed for post:', postId);
+                            // Dropdown closed for post:', postId);
                         } else {
                             openDropdownById(postId);
-                            console.log('Dropdown opened for post:', postId);
+                            // Dropdown opened for post:', postId);
                         }
                     } else {
                         console.error('Dropdown not found for post:', postId);
                         console.error('Looking for ID:', `overflow_menu_${postId}`);
                         console.error('All elements with overflow_menu_ prefix:', document.querySelectorAll('[id^="overflow_menu_"]'));
+                        console.error('All social_feed elements:', document.querySelectorAll('.social_feed'));
+                        console.error('All menu trigger elements:', document.querySelectorAll('.advertising_social_feed_menu_trigger'));
                     }
                 }
             });
             
-            // Обработчик для действий в dropdown menu
-            document.addEventListener('click', function(e) {
-                const menuItem = e.target.closest('.social_feed .advertising_social_feed_overflow_menu_item');
-                if (menuItem) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const action = menuItem.dataset.action;
-                    const postId = menuItem.dataset.id;
-                    
-                    handleDropdownAction(action, postId);
-                    
-                    // Закрываем dropdown после действия используя ID
-                    closeDropdownById(postId);
-                }
-            });
+            // === Dropdown click handler added ===
             
             // Закрытие dropdown при клике вне его
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('.social_feed .advertising_social_feed_menu_trigger') && !e.target.closest('.social_feed .advertising_social_feed_overflow_menu')) {
+                // Validate event target
+                if (!e.target || typeof e.target.closest !== 'function') {
+                    return;
+                }
+                
+                if (!e.target.closest('.advertising_social_feed_menu_trigger') && !e.target.closest('.advertising_social_feed_overflow_menu')) {
                     closeAllDropdowns();
                 }
             });
+            
+            // === initDropdownMenu completed ===
         },
         
         // Инициализация галереи
@@ -251,7 +336,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     }
     
     // Функция архивирования поста
-    function archivePost(postId) {
+    function handleArchiveClick(postId) {
         // Получаем CSRF токен
         const csrfToken = getCookie('csrftoken');
         
@@ -273,13 +358,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-CSRFToken': csrfToken,
                 },
-                body: `status=archived`
+                body: `adv_mode=archived`
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Показываем сообщение об успехе
-                    alert('Post archived successfully!');
+                    // Показываем красивое уведомление об успехе
+                    if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                        alertify.notify('Post archived successfully!', 'success');
+                    } else {
+                        alert('Post archived successfully!');
+                    }
                     
                     // Скрываем пост из ленты
                     post.style.display = 'none';
@@ -289,17 +378,246 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
                 } else {
                     // Восстанавливаем оригинальный контент и показываем ошибку
                     post.innerHTML = originalContent;
-                    alert('Error archiving post: ' + data.error);
+                    if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                        alertify.notify('Error archiving post: ' + data.error, 'error');
+                    } else {
+                        alert('Error archiving post: ' + data.error);
+                    }
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 // Восстанавливаем оригинальный контент и показываем ошибку
                 post.innerHTML = originalContent;
-                alert('Error archiving post. Please try again.');
+                if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                    alertify.notify('Error archiving post. Please try again.', 'error');
+                } else {
+                    alert('Error archiving post. Please try again.');
+                }
             });
         }
     }
+    
+    // Функция разархивирования поста
+    function handleUnarchiveClick(postId) {
+        // Получаем CSRF токен
+        const csrfToken = getCookie('csrftoken');
+        
+        // Показываем спиннер на посте
+        const post = getPostById(postId);
+        if (post) {
+            const originalContent = post.innerHTML;
+            post.innerHTML = `
+                <div class="loading" style="min-height: 200px;">
+                    <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid #dee2e6; border-top: 4px solid #FBD551;"></div>
+                    <span style="font-size: 16px;">Unarchiving post...</span>
+                </div>
+            `;
+            
+            // Отправляем запрос на разархивирование (возвращаем в draft)
+            fetch(`/services_and_projects/change_advertising_status/${postId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: `adv_mode=draft`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Показываем красивое уведомление об успехе
+                    if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                        alertify.notify('Post unarchived successfully!', 'success');
+                    } else {
+                        alert('Post unarchived successfully!');
+                    }
+                    
+                    // Скрываем пост из ленты (он вернется в draft)
+                    post.style.display = 'none';
+                    
+                    // Закрываем dropdown
+                    closeDropdownById(postId);
+                } else {
+                    // Восстанавливаем оригинальный контент и показываем ошибку
+                    post.innerHTML = originalContent;
+                    if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                        alertify.notify('Error unarchiving post: ' + data.error, 'error');
+                    } else {
+                        alert('Error unarchiving post: ' + data.error);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Восстанавливаем оригинальный контент и показываем ошибку
+                post.innerHTML = originalContent;
+                if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                    alertify.notify('Error unarchiving post. Please try again.', 'error');
+                } else {
+                    alert('Error unarchiving post. Please try again.');
+                }
+            });
+        }
+    }
+    
+    // Функция публикации поста
+    function handlePublishClick(postId) {
+        // Получаем CSRF токен
+        const csrfToken = getCookie('csrftoken');
+        
+        // Показываем спиннер на посте
+        const post = getPostById(postId);
+        if (post) {
+            const originalContent = post.innerHTML;
+            post.innerHTML = `
+                <div class="loading" style="min-height: 200px;">
+                    <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid #dee2e6; border-top: 4px solid #FBD551;"></div>
+                    <span style="font-size: 16px;">Publishing post...</span>
+                </div>
+            `;
+            
+            // Отправляем запрос на публикацию
+            fetch(`/services_and_projects/change_advertising_status/${postId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: `adv_mode=published`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Показываем красивое уведомление об успехе
+                    if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                        alertify.notify('Post published successfully!', 'success');
+                    } else {
+                        alert('Post published successfully!');
+                    }
+                    
+                    // Скрываем пост из ленты (он перейдет в published)
+                    post.style.display = 'none';
+                    
+                    // Закрываем dropdown
+                    closeDropdownById(postId);
+                } else {
+                    // Восстанавливаем оригинальный контент и показываем ошибку
+                    post.innerHTML = originalContent;
+                    if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                        alertify.notify('Error publishing post: ' + data.error, 'error');
+                    } else {
+                        alert('Error publishing post: ' + data.error);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Восстанавливаем оригинальный контент и показываем ошибку
+                post.innerHTML = originalContent;
+                alert('Error publishing post. Please try again.');
+            });
+        }
+    }
+    
+    // Функция редактирования поста
+    function handleEditClick(postId) {
+        // Показываем красивое уведомление о том, что редактирование пока не реализовано
+        if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+            alertify.notify('Edit functionality is not implemented yet.', 'warning');
+        } else {
+            alert('Edit functionality is not implemented yet.');
+        }
+    }
+    
+    // Функция удаления поста
+    function handleRemoveClick(postId) {
+        const confirmMessage = 'Are you sure you want to remove this post? This action cannot be undone.';
+        
+        if (typeof alertify !== 'undefined' && alertify && alertify.confirm) {
+            // Используем красивый confirm диалог alertify
+            alertify.confirm(confirmMessage, 
+                function() {
+                    // Пользователь подтвердил удаление
+                    executeRemovePost(postId);
+                },
+                function() {
+                    // Пользователь отменил удаление
+                    if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                        alertify.notify('Post removal cancelled.', 'info');
+                    }
+                }
+            ).set('title', 'Confirm Removal');
+        } else {
+            // Fallback на стандартный confirm
+            if (confirm(confirmMessage)) {
+                executeRemovePost(postId);
+            }
+        }
+    }
+    
+    // Вспомогательная функция для выполнения удаления поста
+    function executeRemovePost(postId) {
+            // Получаем CSRF токен
+            const csrfToken = getCookie('csrftoken');
+            
+            // Показываем спиннер на посте
+            const post = getPostById(postId);
+            if (post) {
+                const originalContent = post.innerHTML;
+                post.innerHTML = `
+                    <div class="loading" style="min-height: 200px;">
+                        <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid #dee2e6; border-top: 4px solid #FBD551;"></div>
+                        <span style="font-size: 16px;">Removing post...</span>
+                    </div>
+                `;
+                
+                // Отправляем запрос на удаление (переводим в archived)
+                fetch(`/services_and_projects/change_advertising_status/${postId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: `adv_mode=archived`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Показываем красивое уведомление об успехе
+                        if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                            alertify.notify('Post removed successfully!', 'success');
+                        } else {
+                            alert('Post removed successfully!');
+                        }
+                        
+                        // Скрываем пост из ленты
+                        post.style.display = 'none';
+                        
+                        // Закрываем dropdown
+                        closeDropdownById(postId);
+                    } else {
+                        // Восстанавливаем оригинальный контент и показываем ошибку
+                        post.innerHTML = originalContent;
+                        if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                            alertify.notify('Error removing post: ' + data.error, 'error');
+                        } else {
+                            alert('Error removing post: ' + data.error);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Восстанавливаем оригинальный контент и показываем ошибку
+                    post.innerHTML = originalContent;
+                    if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
+                        alertify.notify('Error removing post. Please try again.', 'error');
+                    } else {
+                        alert('Error removing post. Please try again.');
+                    }
+                });
+            }
+        }
     
     // Функция для получения CSRF токена
     function getCookie(name) {
@@ -324,9 +642,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     
     function getOverflowMenuById(postId) {
         const id = `overflow_menu_${postId}`;
-        console.log(`Looking for element with ID: ${id}`);
+        // Looking for element with ID:', id);
         const element = document.getElementById(id);
-        console.log(`Element found:`, element);
+        // Element found:', element);
         return element;
     }
     
@@ -340,9 +658,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     }
     
     function openDropdownById(postId) {
-        console.log(`openDropdownById called with postId: ${postId}`);
+        // openDropdownById called with postId:', postId);
         const dropdown = getOverflowMenuById(postId);
-        console.log(`getOverflowMenuById returned:`, dropdown);
+        // getOverflowMenuById returned:', dropdown);
         
         if (dropdown) {
             // Закрываем предыдущий открытый dropdown
@@ -352,9 +670,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             
             dropdown.classList.add('show');
             activeDropdown = dropdown;
-            console.log(`Dropdown opened for post ${postId}`);
-            console.log(`Dropdown classes after adding show:`, dropdown.className);
-            console.log(`Dropdown display style:`, window.getComputedStyle(dropdown).display);
+            // Dropdown opened for post ${postId}`);
+            // Dropdown classes after adding show:', dropdown.className);
+            // Dropdown display style:', window.getComputedStyle(dropdown).display);
         } else {
             console.error(`Dropdown not found for post ${postId}`);
         }
@@ -367,7 +685,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             if (activeDropdown === dropdown) {
                 activeDropdown = null;
             }
-            console.log(`Dropdown closed for post ${postId}`);
+            // Dropdown closed for post ${postId}`);
         }
     }
     
@@ -378,16 +696,23 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             closeDropdownById(postId);
         });
         activeDropdown = null;
-        console.log('All dropdowns closed');
+        // All dropdowns closed');
     }
     
     // Инициализация при загрузке DOM
     function initOnDOMReady() {
+        // === initOnDOMReady called ===
+        // Document ready state:', document.readyState);
+        // Document ready state === loading:', document.readyState === 'loading');
+        
         if (document.readyState === 'loading') {
+            // Adding DOMContentLoaded listener...');
             document.addEventListener('DOMContentLoaded', function() {
+                // === DOMContentLoaded event fired ===
                 AdvertisingFeed.init();
             });
         } else {
+            // Document already loaded, calling init directly...');
             AdvertisingFeed.init();
         }
     }
@@ -408,7 +733,50 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             getAllPostIds,
             openDropdownById,
             closeDropdownById,
-            closeAllDropdowns
+            closeAllDropdowns,
+            // Добавляем функцию для тестирования
+            testDropdown: function(postId) {
+                // === Testing dropdown for post ${postId} ===
+                // Menu trigger:', getMenuTriggerById(postId));
+                // Dropdown:', getOverflowMenuById(postId));
+                // Post:', getPostById(postId));
+                
+                // Тестируем открытие
+                // Opening dropdown...');
+                openDropdownById(postId);
+                
+                // Проверяем состояние через 1 секунду
+                setTimeout(() => {
+                    const dropdown = getOverflowMenuById(postId);
+                    if (dropdown) {
+                        // Dropdown state after opening:');
+                        // - Classes:', dropdown.className);
+                        // - Display style:', window.getComputedStyle(dropdown).display);
+                        // - Active dropdown:', activeDropdown);
+                    }
+                }, 1000);
+            },
+            // Добавляем функцию для диагностики
+            diagnosePage: function() {
+                console.log('=== PAGE DIAGNOSIS ===');
+                console.log('All social_feed elements:', document.querySelectorAll('.social_feed'));
+                console.log('All menu trigger elements:', document.querySelectorAll('.advertising_social_feed_menu_trigger'));
+                console.log('All dropdown elements:', document.querySelectorAll('.advertising_social_feed_overflow_menu'));
+                
+                // Проверяем каждый пост
+                const posts = document.querySelectorAll('.social_feed[data-post-id]');
+                posts.forEach((post, index) => {
+                    const postId = post.dataset.postId;
+                    console.log(`\n--- Post ${index + 1} (ID: ${postId}) ---`);
+                    console.log('Post element:', post);
+                    console.log('Menu trigger:', getMenuTriggerById(postId));
+                    console.log('Dropdown:', getOverflowMenuById(postId));
+                    console.log('Post data attributes:', post.dataset);
+                });
+            }
         };
     }
+}
+
+// Закрывающая скобка для защиты от повторной загрузки
 }

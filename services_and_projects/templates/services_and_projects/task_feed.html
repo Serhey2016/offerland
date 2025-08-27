@@ -6,10 +6,16 @@
 <div class="social_feed2">
     <div class="post_info_block">
         <div class="post_info_dates">
-            <div class="post_info_start_date_column">
-                <span class="post_info_start_date">start date:</span>
-                <span class="post_start_date">{{ task.created_at|date:'d.m.Y' }}</span>
-            </div>
+                    <div class="post_info_start_date_column">
+            <span class="post_info_start_date">start date:</span>
+            <span class="post_start_date">
+                {% if task.date_start %}
+                    {{ task.date_start|date:'d.m.Y' }}
+                {% else %}
+                    Not started
+                {% endif %}
+            </span>
+        </div>
             <div class="post_info_dates_type_of_task">{{ task.type_of_task.type_of_task_name }}</div>
             <div class="post_info_end_date_column">
                 <span class="post_info_end_date">last update:</span>
@@ -36,11 +42,11 @@
                     </svg>
                     Edit
                 </div>
-                <div class="my_task_social_feed_overflow_menu_item remove" id="menu_item_remove_{{ task.id }}" data-action="remove" data-id="{{ task.id }}">
+                <div class="my_task_social_feed_overflow_menu_item archive" id="menu_item_archive_{{ task.id }}" data-action="archive" data-id="{{ task.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5l-4-4h2.5V12h3v1.5H16l-4 4z"/>
                     </svg>
-                    Remove
+                    Archive
                 </div>
             </div>
         </div>
