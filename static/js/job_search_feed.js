@@ -681,6 +681,9 @@ function handleJobSearchDropdownAction(action, postId, post) {
         case 'edit':
             handleJobSearchEditAction(postId, post);
             break;
+        case 'publish':
+            handleJobSearchPublishAction(postId, post);
+            break;
         case 'remove':
             handleJobSearchRemoveAction(postId, post);
             break;
@@ -752,12 +755,29 @@ function handleJobSearchStartAction(postId, post) {
 
 // Обработчик редактирования для job search
 function handleJobSearchEditAction(postId, post) {
-    // Здесь можно добавить логику редактирования
-    // Например, открыть модальное окно с формой редактирования
-    if (typeof window.alertify !== 'undefined') {
-        window.alertify.info('Edit functionality coming soon...');
+    // Открываем форму редактирования для Job Search
+    if (typeof openEditForm === 'function') {
+        openEditForm('job-search', postId);
     } else {
-        alert('Edit functionality coming soon...');
+        console.error('openEditForm function not found');
+        if (typeof window.alertify !== 'undefined') {
+            window.alertify.error('Edit functionality not available');
+        } else {
+            alert('Edit functionality not available');
+        }
+    }
+}
+
+// Обработчик публикации для job search
+function handleJobSearchPublishAction(postId, post) {
+    // Здесь можно добавить логику публикации
+    // Например, показать подтверждение и опубликовать пост
+    if (confirm('Are you sure you want to publish this job search post?')) {
+        if (typeof window.alertify !== 'undefined') {
+            window.alertify.success('Publish functionality coming soon...');
+        } else {
+            alert('Publish functionality coming soon...');
+        }
     }
 }
 
@@ -773,6 +793,255 @@ function handleJobSearchRemoveAction(postId, post) {
         }
         // Здесь можно добавить AJAX запрос для удаления
     }
+}
+
+// ===== EDIT FORM FUNCTIONALITY =====
+
+// Функция для открытия формы редактирования
+function openEditForm(formType, itemId) {
+    console.log('Opening edit form for:', formType, 'ID:', itemId);
+    
+    // Определяем ID формы на основе типа
+    let formId;
+    let formTitle;
+    
+    switch(formType) {
+        case 'my-list':
+            formId = 'my-list-form';
+            formTitle = 'Edit Task';
+            break;
+        case 'tender':
+            formId = 'tender-form';
+            formTitle = 'Edit Tender';
+            break;
+        case 'project':
+            formId = 'project-form';
+            formTitle = 'Edit Project';
+            break;
+        case 'advertising':
+            formId = 'advertising-form';
+            formTitle = 'Edit Advertising';
+            break;
+        case 'job-search':
+            formId = 'job-search-form';
+            formTitle = 'Edit Job Search';
+            break;
+        default:
+            console.error('Unknown form type:', formType);
+            return;
+    }
+    
+    // Находим форму
+    const form = document.getElementById(formId);
+    if (!form) {
+        console.error('Form not found:', formId);
+        return;
+    }
+    
+    // Загружаем данные для редактирования
+    loadEditData(formType, itemId, form);
+    
+            // Показываем форму
+        form.style.display = 'flex';
+        
+        // Добавляем класс для анимации
+        setTimeout(() => {
+            form.classList.add('show');
+        }, 10);
+    
+    // Обновляем заголовок формы
+    const titleElement = form.querySelector('h2, .modal-header-actions h2');
+    if (titleElement) {
+        titleElement.textContent = formTitle;
+    }
+    
+    // Добавляем скрытое поле для ID редактируемого элемента
+    let hiddenIdField = form.querySelector('input[name="edit_item_id"]');
+    if (!hiddenIdField) {
+        hiddenIdField = document.createElement('input');
+        hiddenIdField.type = 'hidden';
+        hiddenIdField.name = 'edit_item_id';
+        form.querySelector('form').appendChild(hiddenIdField);
+    }
+    hiddenIdField.value = itemId;
+    
+    // Изменяем действие формы на update
+    const formElement = form.querySelector('form');
+    if (formElement) {
+        formElement.action = formElement.action.replace('submit_form', 'update_form');
+    }
+}
+
+// Функция для загрузки данных для редактирования
+function loadEditData(formType, itemId, form) {
+    console.log('Loading edit data for:', formType, 'ID:', itemId);
+    
+    // Получаем CSRF токен
+    const csrftoken = getCookie('csrftoken');
+    
+    if (!csrftoken) {
+        alert('CSRF token not found. Please refresh the page and try again.');
+        return;
+    }
+    
+    // Отправляем AJAX запрос для получения данных
+    fetch(`/services_and_projects/get_edit_data/${formType}/${itemId}/`, {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Заполняем форму данными
+            populateEditForm(formType, form, data.data);
+        } else {
+            console.error('Error loading edit data:', data.error);
+            if (typeof window.alertify !== 'undefined') {
+                window.alertify.error('Error loading data for editing: ' + data.error);
+            } else {
+                alert('Error loading data for editing: ' + data.error);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error loading edit data:', error);
+        if (typeof window.alertify !== 'undefined') {
+            window.alertify.error('Network error occurred while loading data');
+        } else {
+            alert('Network error occurred while loading data');
+        }
+    });
+}
+
+// Функция для заполнения формы данными
+function populateEditForm(formType, form, data) {
+    console.log('Populating form with data:', data);
+    
+    // Заполняем основные поля
+    const titleField = form.querySelector(`#${formType}-title`);
+    if (titleField && data.title) {
+        titleField.value = data.title;
+    }
+    
+    const descriptionField = form.querySelector(`#${formType}-description`);
+    if (descriptionField && data.description) {
+        descriptionField.value = data.description;
+    }
+    
+    // Заполняем категорию
+    const categoryField = form.querySelector(`#${formType}-category`);
+    if (categoryField && data.category) {
+        categoryField.value = data.category;
+    }
+    
+    // Заполняем сервис
+    const serviceField = form.querySelector(`#${formType}-service`);
+    if (serviceField && data.service) {
+        serviceField.value = data.service;
+    }
+    
+    // Заполняем статус
+    const statusField = form.querySelector(`#${formType}-status`);
+    if (statusField && data.status) {
+        statusField.value = data.status;
+    }
+    
+    // Заполняем документы
+    const documentsField = form.querySelector(`#${formType}-documents`);
+    if (documentsField && data.documents) {
+        documentsField.value = data.documents;
+    }
+    
+    // Заполняем хештеги
+    if (data.hashtags && data.hashtags.length > 0) {
+        const hashtagsContainer = form.querySelector(`#${formType}-hashtags-container`);
+        const hashtagsHidden = form.querySelector(`#${formType}-hashtags-hidden`);
+        
+        if (hashtagsContainer && hashtagsHidden) {
+            // Очищаем существующие хештеги
+            hashtagsContainer.innerHTML = '';
+            
+            // Добавляем input для новых хештегов
+            const hashtagsInput = document.createElement('input');
+            hashtagsInput.type = 'text';
+            hashtagsInput.id = `${formType}-hashtags-input`;
+            hashtagsInput.placeholder = 'Start typing tag...';
+            hashtagsInput.autocomplete = 'off';
+            hashtagsInput.className = 'hashtags-input-field';
+            hashtagsContainer.appendChild(hashtagsInput);
+            
+            // Добавляем существующие хештеги как чипы
+            data.hashtags.forEach(tag => {
+                const tagChip = document.createElement('span');
+                tagChip.className = 'hashtag-chip';
+                tagChip.textContent = tag.tag;
+                tagChip.dataset.tag = tag.tag;
+                
+                const removeBtn = document.createElement('span');
+                removeBtn.className = 'hashtag-remove';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.onclick = function() {
+                    tagChip.remove();
+                    updateHashtagsHidden(hashtagsContainer, hashtagsHidden);
+                };
+                
+                tagChip.appendChild(removeBtn);
+                hashtagsContainer.appendChild(tagChip);
+            });
+            
+            // Обновляем скрытое поле
+            updateHashtagsHidden(hashtagsContainer, hashtagsHidden);
+        }
+    }
+    
+    // Заполняем исполнителей
+    if (data.performers && data.performers.length > 0) {
+        const performersList = form.querySelector(`#${formType}-performers-list`);
+        if (performersList) {
+            performersList.innerHTML = '';
+            data.performers.forEach(performer => {
+                const performerItem = document.createElement('div');
+                performerItem.className = 'performer-item';
+                performerItem.textContent = performer.get_full_name || performer.username;
+                performerItem.dataset.performerId = performer.id;
+                
+                const removeBtn = document.createElement('span');
+                removeBtn.className = 'performer-remove';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.onclick = function() {
+                    performerItem.remove();
+                };
+                
+                performerItem.appendChild(removeBtn);
+                performersList.appendChild(performerItem);
+            });
+        }
+    }
+    
+    // Заполняем включенный проект
+    const projectIncludedField = form.querySelector(`#${formType}-project-included`);
+    if (projectIncludedField && data.project_included) {
+        projectIncludedField.value = data.project_included;
+    }
+    
+    // Заполняем фото (для форм с фото)
+    if (data.photos && data.photos.length > 0) {
+        const photosField = form.querySelector(`#${formType}-photos`);
+        if (photosField && photosField.type === 'text') {
+            // Для текстового поля (ссылка на фото)
+            photosField.value = data.photos[0] || '';
+        }
+        // Для файловых полей можно добавить предварительный просмотр
+    }
+}
+
+// Вспомогательная функция для обновления скрытого поля хештегов
+function updateHashtagsHidden(container, hiddenField) {
+    const tags = Array.from(container.querySelectorAll('.hashtag-chip')).map(chip => chip.dataset.tag);
+    hiddenField.value = JSON.stringify(tags);
 }
 
 // Вспомогательная функция для получения CSRF токена

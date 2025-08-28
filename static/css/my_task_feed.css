@@ -59,6 +59,10 @@
     color: #282D3B;
     padding: 5px;
     line-height: 1;
+    position: relative;
+    top: -15px;
+
+
 }
 
 .modal_close_btn:hover {

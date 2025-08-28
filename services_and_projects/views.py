@@ -600,3 +600,186 @@ def start_task(request, task_id):
             'error': f'Error starting task: {str(e)}'
         }, status=500)
 
+
+@login_required
+def get_edit_data(request, form_type, item_id):
+    """
+    Получает данные для редактирования различных типов форм
+    """
+    print("=" * 50)
+    print("DEBUG: get_edit_data function called!")
+    print(f"DEBUG: form_type={form_type}, item_id={item_id}")
+    print(f"DEBUG: User: {request.user}")
+    print(f"DEBUG: Request method: {request.method}")
+    print(f"DEBUG: Request path: {request.path}")
+    print(f"DEBUG: Request URL: {request.build_absolute_uri()}")
+    print("=" * 50)
+    
+    try:
+        if form_type == 'my-list':
+            print(f"DEBUG: Processing my-list form type for item {item_id}")
+            # Получаем данные задачи
+            task = Task.objects.select_related(
+                'type_of_task', 'status'
+            ).prefetch_related(
+                'hashtags', 'performers', 'photos', 'services'
+            ).get(id=item_id)
+            
+            print(f"DEBUG: Found task: {task.title}, type: {task.type_of_task.type_of_task_name}")
+            
+            # Проверяем права доступа (только владелец может редактировать)
+            if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
+                print(f"DEBUG: Access denied for user {request.user} on task {item_id}")
+                return JsonResponse({'success': False, 'error': 'Access denied'})
+            
+            print(f"DEBUG: Access granted, building data for task {item_id}")
+            
+            # Get the first service and its category if it exists
+            print(f"DEBUG: Task services count: {task.services.count()}")
+            first_service = task.services.first()
+            print(f"DEBUG: First service: {first_service}")
+            category_id = first_service.category_name.id if first_service else None
+            service_id = first_service.id if first_service else None
+            print(f"DEBUG: Category ID: {category_id}, Service ID: {service_id}")
+            
+            data = {
+                'title': task.title,
+                'description': task.description,
+                'category': category_id,
+                'service': service_id,
+                'status': task.status.id if task.status else None,
+                'documents': task.documents,
+                'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
+                'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
+                'project_included': None,  # Для задач это поле не используется
+                'photos': [photo.photo.url if photo.photo else None for photo in task.photos.all() if photo.photo]
+            }
+            
+            print(f"DEBUG: Built data: {data}")
+            
+        elif form_type == 'tender':
+            # Получаем данные тендера (используем модель Task с типом 'tender')
+            task = Task.objects.select_related(
+                'type_of_task', 'status'
+            ).prefetch_related(
+                'hashtags', 'performers', 'photos', 'services'
+            ).get(id=item_id, type_of_task__type_of_task_name='tender')
+            
+            # Проверяем права доступа
+            if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
+                return JsonResponse({'success': False, 'error': 'Access denied'})
+            
+            # Get the first service and its category if it exists
+            first_service = task.services.first()
+            category_id = first_service.category_name.id if first_service else None
+            service_id = first_service.id if first_service else None
+            
+            data = {
+                'title': task.title,
+                'description': task.description,
+                'category': category_id,
+                'service': service_id,
+                'status': task.status.id if task.status else None,
+                'documents': task.documents,
+                'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
+                'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
+                'project_included': None,
+                'photos': [task.photo_link] if task.photo_link else []
+            }
+            
+        elif form_type == 'project':
+            # Получаем данные проекта (используем модель Task с типом 'project')
+            task = Task.objects.select_related(
+                'type_of_task', 'status'
+            ).prefetch_related(
+                'hashtags', 'performers', 'photos', 'services'
+            ).get(id=item_id, type_of_task__type_of_task_name='project')
+            
+            # Проверяем права доступа
+            if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
+                return JsonResponse({'success': False, 'error': 'Access denied'})
+            
+            # Get the first service and its category if it exists
+            first_service = task.services.first()
+            category_id = first_service.category_name.id if first_service else None
+            service_id = first_service.id if first_service else None
+            
+            data = {
+                'title': task.title,
+                'description': task.description,
+                'category': category_id,
+                'service': service_id,
+                'status': task.status.id if task.status else None,
+                'documents': task.documents,
+                'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
+                'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
+                'project_included': None,
+                'photos': [photo.photo.url if photo.photo else None for photo in task.photos.all() if photo.photo]
+            }
+            
+        elif form_type == 'advertising':
+            # Получаем данные рекламы
+            advertising = Advertising.objects.select_related(
+                'type_of_task'
+            ).prefetch_related(
+                'hashtags', 'photos', 'services'
+            ).get(id=item_id)
+            
+            # Проверяем права доступа
+            if not AdvertisingOwnerRelations.objects.filter(advertising=advertising, user=request.user).exists():
+                return JsonResponse({'success': False, 'error': 'Access denied'})
+            
+            # Get the first service and its category if it exists
+            first_service = advertising.services.first()
+            category_id = first_service.category_name.id if first_service else None
+            service_id = first_service.id if first_service else None
+            
+            data = {
+                'title': advertising.title,
+                'description': advertising.description,
+                'category': category_id,
+                'service': service_id,
+                'hashtags': [{'tag': tag.tag} for tag in advertising.hashtags.all()],
+                'photos': [photo.photo.url if photo.photo else None for photo in advertising.photos.all() if photo.photo]
+            }
+            
+        elif form_type == 'job-search':
+            # Получаем данные поиска работы
+            job_search = JobSearch.objects.select_related('user').get(id=item_id)
+            
+            # Проверяем права доступа
+            if job_search.user != request.user:
+                return JsonResponse({'success': False, 'error': 'Access denied'})
+            
+            data = {
+                'title': job_search.title,
+                'description': job_search.notes or '',
+                'hashtags': [],  # JobSearch не имеет хештегов
+                'photos': [],
+                'category': None,
+                'service': None,
+                'status': None,
+                'documents': None,
+                'performers': [],
+                'project_included': None
+            }
+            
+        else:
+            return JsonResponse({'success': False, 'error': f'Unknown form type: {form_type}'})
+        
+        print(f"DEBUG: Returning success response with data for {form_type} {item_id}")
+        return JsonResponse({'success': True, 'data': data})
+        
+    except Task.DoesNotExist:
+        print(f"DEBUG: Task {item_id} not found")
+        return JsonResponse({'success': False, 'error': 'Task not found'})
+    except Advertising.DoesNotExist:
+        print(f"DEBUG: Advertising {item_id} not found")
+        return JsonResponse({'success': False, 'error': 'Advertising not found'})
+    except JobSearch.DoesNotExist:
+        print(f"DEBUG: JobSearch {item_id} not found")
+        return JsonResponse({'success': False, 'error': 'Job search not found'})
+    except Exception as e:
+        print(f"DEBUG: Exception occurred: {str(e)}")
+        return JsonResponse({'success': False, 'error': str(e)})
+
