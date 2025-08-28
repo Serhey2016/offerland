@@ -8,7 +8,7 @@ from .models import (
     PerformersRelations, CommentTaskRelations, ServicesRelations,
     TimeSlotPerformersRelations, CommentTimeSlotRelations,
     CommentAdvertisingRelations,
-    PhotoRelations, Comment
+    PhotoRelations, Comment, AdvertisingOwnerRelations
 )
 from decimal import Decimal
 import json
@@ -352,7 +352,6 @@ def create_advertising(request):
 
             # Добавляем owner relation
             if request.user.is_authenticated:
-                from .models import AdvertisingOwnerRelations
                 AdvertisingOwnerRelations.objects.get_or_create(advertising=advertising, user=request.user)
 
             logger.info(f"Advertising {advertising.id} completed successfully")
@@ -811,3 +810,309 @@ def create_activity_task(request, activity_id):
             }, status=500)
     
     return JsonResponse({'error': 'Only POST allowed'}, status=405)
+
+def update_form(request):
+    """Универсальная функция для обновления всех типов форм"""
+    if request.method == 'POST':
+        try:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info("=== UPDATE FORM START ===")
+            logger.info(f"Request method: {request.method}")
+            logger.info(f"Request user: {request.user}")
+            logger.info(f"Request POST data: {dict(request.POST)}")
+            logger.info(f"Request FILES: {dict(request.FILES)}")
+            
+            # Получаем ID редактируемого элемента
+            edit_item_id = request.POST.get('edit_item_id')
+            type_of_task_id = request.POST.get('type_of_task')
+            
+            logger.info(f"Edit item ID: {edit_item_id}")
+            logger.info(f"Type of task ID: {type_of_task_id}")
+            
+            if not edit_item_id:
+                logger.error("Edit item ID is missing")
+                return JsonResponse({'success': False, 'error': 'Edit item ID is required'}, status=400)
+            
+            if not type_of_task_id:
+                logger.error("Type of task ID is missing")
+                return JsonResponse({'success': False, 'error': 'Type of task is required'}, status=400)
+            
+            # Определяем тип публикации
+            try:
+                type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
+                type_name = type_of_task.type_of_task_name.lower()
+                logger.info(f"Found type of task: {type_of_task.type_of_task_name} (ID: {type_of_task_id})")
+                logger.info(f"Updating {type_name} with ID: {edit_item_id}")
+            except TypeOfTask.DoesNotExist:
+                logger.error(f"TypeOfTask with ID {type_of_task_id} not found")
+                return JsonResponse({'success': False, 'error': 'Invalid type of task'}, status=400)
+            
+            # Направляем на соответствующую функцию обновления
+            logger.info(f"Routing to update function for type: {type_name}")
+            if 'advertising' in type_name:
+                logger.info("Routing to update_advertising")
+                return update_advertising(request, edit_item_id)
+            elif 'time slot' in type_name or 'timeslot' in type_name:
+                logger.info("Routing to update_time_slot")
+                return update_time_slot(request, edit_item_id)
+            elif 'job search' in type_name:
+                logger.info("Routing to update_job_search")
+                return update_job_search(request, edit_item_id)
+            else:
+                logger.info("Routing to update_task")
+                return update_task(request, edit_item_id)
+                
+        except Exception as e:
+            import traceback
+            logger.error(f"Error in update_form: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Only POST allowed'}, status=405)
+
+def update_advertising(request, advertising_id):
+    """Обновление рекламы"""
+    try:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"=== UPDATE ADVERTISING START ===")
+        logger.info(f"Request method: {request.method}")
+        logger.info(f"Request user: {request.user}")
+        logger.info(f"Request POST data: {dict(request.POST)}")
+        logger.info(f"Advertising ID: {advertising_id}")
+        
+        # Получаем объект рекламы
+        advertising = Advertising.objects.get(id=advertising_id)
+        logger.info(f"Found advertising: {advertising.title}")
+        
+        # Проверяем права доступа через AdvertisingOwnerRelations
+        logger.info(f"Checking permissions for user {request.user} on advertising {advertising_id}")
+        
+        try:
+            owner_relation = AdvertisingOwnerRelations.objects.filter(advertising=advertising, user=request.user).first()
+            if not owner_relation:
+                logger.warning(f"User {request.user} does not have permission to edit advertising {advertising_id}")
+                return JsonResponse({'success': False, 'error': 'You do not have permission to edit this advertising'}, status=403)
+            logger.info(f"Permission granted for user {request.user}")
+        except Exception as e:
+            logger.error(f"Error checking permissions: {e}")
+            return JsonResponse({'success': False, 'error': f'Error checking permissions: {str(e)}'}, status=500)
+        
+        # Получаем данные из формы
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        category_id = request.POST.get('category')
+        service_id = request.POST.get('service')
+        
+        # Валидация обязательных полей
+        if not title:
+            return JsonResponse({'success': False, 'error': 'Title is required'}, status=400)
+        if not description:
+            return JsonResponse({'success': False, 'error': 'Description is required'}, status=400)
+        
+        # Обновляем основные поля
+        advertising.title = title
+        advertising.description = description
+        
+        # Обновляем сервис (у Advertising есть поле services как ForeignKey)
+        if service_id:
+            try:
+                logger.info(f"Updating service to ID: {service_id}")
+                service = Services.objects.get(id=service_id)
+                advertising.services = service
+                logger.info(f"Service updated to: {service.service_name}")
+            except Services.DoesNotExist:
+                logger.warning(f"Service with ID {service_id} not found")
+                pass
+            except Exception as e:
+                logger.error(f"Error updating service: {e}")
+                pass
+        
+        # Сохраняем изменения
+        logger.info("Saving advertising changes...")
+        try:
+            advertising.save()
+            logger.info("Advertising saved successfully")
+        except Exception as e:
+            logger.error(f"Error saving advertising: {e}")
+            return JsonResponse({'success': False, 'error': f'Error saving changes: {str(e)}'}, status=500)
+        
+        # Обновляем хештеги
+        hashtags_data = request.POST.get('hashtags')
+        logger.info(f"Hashtags data received: {hashtags_data}")
+        
+        if hashtags_data:
+            try:
+                hashtags = json.loads(hashtags_data)
+                logger.info(f"Parsed hashtags: {hashtags}")
+                
+                # Удаляем старые связи
+                AdvertisingHashtagRelations.objects.filter(advertising=advertising).delete()
+                logger.info("Old hashtag relations deleted")
+                
+                # Создаем новые связи
+                for tag_name in hashtags:
+                    tag, created = AllTags.objects.get_or_create(tag=tag_name.strip())
+                    AdvertisingHashtagRelations.objects.create(
+                        advertising=advertising,
+                        hashtag=tag
+                    )
+                    logger.info(f"Created hashtag relation: {tag.tag}")
+            except json.JSONDecodeError as e:
+                logger.error(f"JSON decode error for hashtags: {e}")
+                logger.error(f"Raw hashtags data: {hashtags_data}")
+            except Exception as e:
+                logger.error(f"Error processing hashtags: {e}")
+        else:
+            logger.info("No hashtags data received")
+        
+        # Обрабатываем новые фото
+        new_photos = request.FILES.getlist('photos')
+        if new_photos:
+            logger.info(f"Processing {len(new_photos)} new photos")
+            
+            try:
+                # Сначала удаляем все существующие фото
+                existing_photos = advertising.photos.all()
+                logger.info(f"Removing {existing_photos.count()} existing photos")
+                advertising.photos.clear()
+                
+                # Удаляем старые PhotoRelations (опционально, если хотите полностью очистить)
+                # PhotoRelations.objects.filter(id__in=[p.id for p in existing_photos]).delete()
+                
+                # Добавляем новые фото
+                for photo_file in new_photos:
+                    logger.info(f"Processing photo: {photo_file.name}, size: {photo_file.size} bytes")
+                    
+                    # Создаем новую запись PhotoRelations
+                    photo_relation = PhotoRelations.objects.create(photo=photo_file)
+                    logger.info(f"Created photo relation: {photo_relation.id}")
+                    
+                    # Добавляем связь с рекламным постом
+                    advertising.photos.add(photo_relation)
+                    logger.info(f"Added photo {photo_relation.id} to advertising {advertising_id}")
+                
+                logger.info(f"Successfully processed {len(new_photos)} new photos")
+            except Exception as e:
+                logger.error(f"Error processing new photos: {e}")
+                return JsonResponse({'success': False, 'error': f'Error processing photos: {str(e)}'}, status=500)
+        else:
+            logger.info("No new photos uploaded - keeping existing photos")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Advertising updated successfully',
+            'advertising_id': advertising.id
+        })
+        
+    except Advertising.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Advertising not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error updating advertising: {e}")
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+def update_task(request, task_id):
+    """Обновление задачи"""
+    try:
+        task = Task.objects.get(id=task_id)
+        
+        # Проверяем права доступа
+        if task.user != request.user:
+            return JsonResponse({'success': False, 'error': 'You do not have permission to edit this task'}, status=403)
+        
+        # Получаем данные из формы
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        
+        # Валидация
+        if not title:
+            return JsonResponse({'success': False, 'error': 'Title is required'}, status=400)
+        
+        # Обновляем поля
+        task.title = title
+        if description:
+            task.description = description
+        task.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Task updated successfully',
+            'task_id': task.id
+        })
+        
+    except Task.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Task not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error updating task: {e}")
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+def update_time_slot(request, time_slot_id):
+    """Обновление временного слота"""
+    try:
+        time_slot = TimeSlot.objects.get(id=time_slot_id)
+        
+        # Проверяем права доступа
+        if time_slot.user != request.user:
+            return JsonResponse({'success': False, 'error': 'You do not have permission to edit this time slot'}, status=403)
+        
+        # Получаем данные из формы
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        
+        # Валидация
+        if not title:
+            return JsonResponse({'success': False, 'error': 'Title is required'}, status=400)
+        
+        # Обновляем поля
+        time_slot.title = title
+        if description:
+            time_slot.description = description
+        time_slot.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Time slot updated successfully',
+            'time_slot_id': time_slot.id
+        })
+        
+    except TimeSlot.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Time slot not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error updating time slot: {e}")
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+def update_job_search(request, job_search_id):
+    """Обновление поиска работы"""
+    try:
+        job_search = JobSearch.objects.get(id=job_search_id)
+        
+        # Проверяем права доступа
+        if job_search.user != request.user:
+            return JsonResponse({'success': False, 'error': 'You do not have permission to edit this job search'}, status=403)
+        
+        # Получаем данные из формы
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        
+        # Валидация
+        if not title:
+            return JsonResponse({'success': False, 'error': 'Title is required'}, status=400)
+        
+        # Обновляем поля
+        job_search.title = title
+        if description:
+            job_search.description = description
+        job_search.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Job search updated successfully',
+            'job_search_id': job_search.id
+        })
+        
+    except JobSearch.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Job search not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error updating job search: {e}")
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)

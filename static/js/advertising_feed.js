@@ -26,9 +26,25 @@ if (window.__AdvertisingFeedBootstrapped__) {
     // Loading Advertising Feed...
 
 console.log('=== ADVERTISING_FEED.JS LOADED ===');
-// File loaded at:', new Date().toISOString());
-// Window object:', typeof window);
-// Document object:', typeof document);
+console.log('File loaded at:', new Date().toISOString());
+console.log('Window object:', typeof window);
+console.log('Document object:', typeof document);
+console.log('=== CHECKING FUNCTIONS ===');
+    console.log('openAdvertisingEditForm before definition:', typeof openAdvertisingEditForm);
+    console.log('window.openAdvertisingEditForm before definition:', typeof window.openAdvertisingEditForm);
+
+// Сразу определяем простую тестовую функцию
+window.testEditFunction = function() {
+    console.log('Test edit function called!');
+    return 'Edit function is working!';
+};
+console.log('Test function defined:', typeof window.testEditFunction);
+
+// Проверяем, что основные функции доступны
+console.log('=== INITIAL FUNCTION CHECK ===');
+console.log('window.handleDropdownAction:', typeof window.handleDropdownAction);
+console.log('window.handleEditAction:', typeof window.handleEditAction);
+console.log('window.openEditForm:', typeof window.openEditForm);
 
 // Проверяем доступность window и document
 if (typeof window !== 'undefined' && typeof document !== 'undefined') {
@@ -36,6 +52,74 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     let isInitialized = false;
     let currentPostId = null;
     let activeDropdown = null;
+    
+    // Определяем глобальные функции сразу
+    window.handleDropdownAction = function(action, postId) {
+        console.log('=== handleDropdownAction called ===');
+        console.log('action:', action);
+        console.log('postId:', postId);
+        
+        switch (action) {
+            case 'edit':
+                console.log('Calling handleEditAction for edit...');
+                if (typeof window.handleEditAction === 'function') {
+                    window.handleEditAction(postId);
+                } else {
+                            console.error('handleEditAction not found, calling window.openAdvertisingEditForm directly');
+        if (typeof window.openAdvertisingEditForm === 'function') {
+            window.openAdvertisingEditForm('advertising', postId);
+        } else {
+            console.error('window.openAdvertisingEditForm also not found');
+        }
+                }
+                break;
+            case 'publish':
+                if (typeof window.handlePublishAction === 'function') {
+                    window.handlePublishAction(postId);
+                }
+                break;
+            case 'archive':
+                if (typeof window.handleArchiveAction === 'function') {
+                    window.handleArchiveAction(postId);
+                }
+                break;
+            case 'share':
+                if (typeof window.handleShareAction === 'function') {
+                    window.handleShareAction(postId);
+                }
+                break;
+            default:
+                console.warn('Unknown action:', action);
+        }
+    };
+    
+    window.handleEditAction = function(postId) {
+        console.log('=== handleEditAction called ===');
+        console.log('postId:', postId);
+        console.log('typeof window.openEditForm:', typeof window.openEditForm);
+        
+        // Открываем форму редактирования для Advertising
+        if (typeof window.openAdvertisingEditForm === 'function') {
+            console.log('Calling window.openAdvertisingEditForm...');
+            try {
+                window.openAdvertisingEditForm('advertising', postId);
+                console.log('window.openAdvertisingEditForm called successfully');
+            } catch (error) {
+                console.error('Error calling window.openAdvertisingEditForm:', error);
+            }
+        } else {
+            console.error('window.openAdvertisingEditForm function not found');
+            if (typeof window.alertify !== 'undefined') {
+                window.alertify.error('Edit functionality not available');
+            } else {
+                alert('Edit functionality not available');
+            }
+        }
+    };
+    
+    console.log('=== GLOBAL FUNCTIONS DEFINED ===');
+    console.log('window.handleDropdownAction:', typeof window.handleDropdownAction);
+    console.log('window.handleEditAction:', typeof window.handleEditAction);
     
     // Настройка Alertify для уведомлений сверху справа
     if (typeof alertify !== 'undefined' && alertify && alertify.notifier && typeof alertify.notifier.set === 'function') {
@@ -119,36 +203,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
                 }
             });
             
-            // Обработчики для dropdown menu
-            document.addEventListener('click', function(e) {
-                // Validate event target
-                if (!e.target || typeof e.target.closest !== 'function') {
-                    return;
-                }
-                
-                const menuItem = e.target.closest('.advertising_social_feed_overflow_menu_item');
-                if (menuItem) {
-                    const action = menuItem.dataset.action;
-                    const postId = menuItem.dataset.id;
-                    
-                    // Dropdown menu item clicked:', action, postId);
-                    
-                    if (action === 'edit') {
-                        handleEditClick(postId);
-                    } else if (action === 'publish') {
-                        handlePublishClick(postId);
-                    } else if (action === 'archive') {
-                        handleArchiveClick(postId);
-                    } else if (action === 'unarchive') {
-                        handleUnarchiveClick(postId);
-                    } else if (action === 'remove') {
-                        handleRemoveClick(postId);
-                    }
-                    
-                    // Закрываем dropdown после действия
-                    closeDropdownById(postId);
-                }
-            });
+            // Обработчики для dropdown menu (заменены новым обработчиком в initDropdownMenu)
             
             // === Event listeners added successfully ===
         },
@@ -218,6 +273,45 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             
             // === Dropdown click handler added ===
             
+            // Обработчик для кликов по элементам dropdown menu
+            document.addEventListener('click', function(e) {
+                // Validate event target
+                if (!e.target || typeof e.target.closest !== 'function') {
+                    return;
+                }
+                
+                const menuItem = e.target.closest('.advertising_social_feed_overflow_menu_item');
+                if (menuItem) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const action = menuItem.dataset.action;
+                    const postId = menuItem.dataset.id;
+                    
+                    console.log('=== Dropdown menu item clicked ===');
+                    console.log('action:', action);
+                    console.log('postId:', postId);
+                    console.log('menuItem:', menuItem);
+                    
+                    if (action && postId) {
+                        // Закрываем dropdown
+                        closeAllDropdowns();
+                        
+                        // Вызываем соответствующую функцию
+                        if (typeof window.handleDropdownAction === 'function') {
+                            console.log('Calling window.handleDropdownAction...');
+                            window.handleDropdownAction(action, postId);
+                        } else {
+                            console.error('window.handleDropdownAction not found');
+                            // Fallback: прямая обработка
+                            if (action === 'edit' && typeof window.openAdvertisingEditForm === 'function') {
+                                window.openAdvertisingEditForm('advertising', postId);
+                            }
+                        }
+                    }
+                }
+            });
+            
             // Закрытие dropdown при клике вне его
             document.addEventListener('click', function(e) {
                 // Validate event target
@@ -264,40 +358,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
         }
     }
     
-    // Обработчик действий dropdown menu
-    function handleDropdownAction(action, postId) {
-        switch (action) {
-            case 'edit':
-                handleEditAction(postId);
-                break;
-            case 'publish':
-                handlePublishAction(postId);
-                break;
-            case 'archive':
-                handleArchiveAction(postId);
-                break;
-            case 'share':
-                handleShareAction(postId);
-                break;
-            default:
-                console.warn('Unknown action:', action);
-        }
-    }
+    // Обработчик действий dropdown menu (уже определен выше)
     
-    // Обработчик редактирования
-    function handleEditAction(postId) {
-        // Открываем форму редактирования для Advertising
-        if (typeof openEditForm === 'function') {
-            openEditForm('advertising', postId);
-        } else {
-            console.error('openEditForm function not found');
-            if (typeof window.alertify !== 'undefined') {
-                window.alertify.error('Edit functionality not available');
-            } else {
-                alert('Edit functionality not available');
-            }
-        }
-    }
+    // Обработчик редактирования (уже определен выше)
     
     // Обработчик публикации
     function handlePublishAction(postId) {
@@ -803,7 +866,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 // ===== EDIT FORM FUNCTIONALITY =====
 
 // Функция для открытия формы редактирования
-function openEditForm(formType, itemId) {
+window.openAdvertisingEditForm = function(formType, itemId) {
+    console.log('=== openEditForm called ===');
+    console.log('formType:', formType);
+    console.log('itemId:', itemId);
     console.log('Opening edit form for:', formType, 'ID:', itemId);
     
     // Определяем ID формы на основе типа
@@ -824,7 +890,7 @@ function openEditForm(formType, itemId) {
             formTitle = 'Edit Project';
             break;
         case 'advertising':
-            formId = 'advertising-form';
+            formId = 'advertising-edit-form';
             formTitle = 'Edit Advertising';
             break;
         case 'job-search':
@@ -843,17 +909,22 @@ function openEditForm(formType, itemId) {
         return;
     }
     
-    // Загружаем данные для редактирования
-    loadEditData(formType, itemId, form);
+            // Загружаем данные для редактирования
+        if (typeof window.loadAdvertisingEditData === 'function') {
+            window.loadAdvertisingEditData(formType, itemId, form);
+        } else {
+            console.error('loadAdvertisingEditData function not found');
+            return;
+        }
     
-            // Показываем форму
-        form.style.display = 'flex';
-        
-        // Добавляем класс для анимации
-        setTimeout(() => {
-            form.classList.add('show');
-        }, 10);
+    // Показываем форму
+    form.style.display = 'flex';
     
+    // Добавляем класс для анимации
+    setTimeout(() => {
+        form.classList.add('show');
+    }, 10);
+
     // Обновляем заголовок формы
     const titleElement = form.querySelector('h2, .modal-header-actions h2');
     if (titleElement) {
@@ -878,7 +949,7 @@ function openEditForm(formType, itemId) {
 }
 
 // Функция для загрузки данных для редактирования
-function loadEditData(formType, itemId, form) {
+window.loadAdvertisingEditData = function(formType, itemId, form) {
     console.log('Loading edit data for:', formType, 'ID:', itemId);
     
     // Получаем CSRF токен
@@ -901,7 +972,7 @@ function loadEditData(formType, itemId, form) {
     .then(data => {
         if (data.success) {
             // Заполняем форму данными
-            populateEditForm(formType, form, data.data);
+            populateAdvertisingEditForm(formType, form, data.data);
         } else {
             console.error('Error loading edit data:', data.error);
             if (typeof window.alertify !== 'undefined') {
@@ -922,28 +993,28 @@ function loadEditData(formType, itemId, form) {
 }
 
 // Функция для заполнения формы данными
-function populateEditForm(formType, form, data) {
+window.populateAdvertisingEditForm = function(formType, form, data) {
     console.log('Populating form with data:', data);
     
     // Заполняем основные поля
-    const titleField = form.querySelector(`#${formType}-title`);
+    const titleField = form.querySelector(`#${formType}-edit-title`);
     if (titleField && data.title) {
         titleField.value = data.title;
     }
     
-    const descriptionField = form.querySelector(`#${formType}-description`);
+    const descriptionField = form.querySelector(`#${formType}-edit-description`);
     if (descriptionField && data.description) {
         descriptionField.value = data.description;
     }
     
     // Заполняем категорию
-    const categoryField = form.querySelector(`#${formType}-category`);
+    const categoryField = form.querySelector(`#${formType}-edit-category`);
     if (categoryField && data.category) {
         categoryField.value = data.category;
     }
     
     // Заполняем сервис
-    const serviceField = form.querySelector(`#${formType}-service`);
+    const serviceField = form.querySelector(`#${formType}-edit-service`);
     if (serviceField && data.service) {
         serviceField.value = data.service;
     }
@@ -962,8 +1033,8 @@ function populateEditForm(formType, form, data) {
     
     // Заполняем хештеги
     if (data.hashtags && data.hashtags.length > 0) {
-        const hashtagsContainer = form.querySelector(`#${formType}-hashtags-container`);
-        const hashtagsHidden = form.querySelector(`#${formType}-hashtags-hidden`);
+        const hashtagsContainer = form.querySelector(`#${formType}-edit-hashtags-container`);
+        const hashtagsHidden = form.querySelector(`#${formType}-edit-hashtags-hidden`);
         
         if (hashtagsContainer && hashtagsHidden) {
             // Очищаем существующие хештеги
@@ -972,7 +1043,7 @@ function populateEditForm(formType, form, data) {
             // Добавляем input для новых хештегов
             const hashtagsInput = document.createElement('input');
             hashtagsInput.type = 'text';
-            hashtagsInput.id = `${formType}-hashtags-input`;
+            hashtagsInput.id = `${formType}-edit-hashtags-input`;
             hashtagsInput.placeholder = 'Start typing tag...';
             hashtagsInput.autocomplete = 'off';
             hashtagsInput.className = 'hashtags-input-field';
@@ -1034,23 +1105,75 @@ function populateEditForm(formType, form, data) {
     
     // Заполняем фото (для форм с фото)
     if (data.photos && data.photos.length > 0) {
-        const photosField = form.querySelector(`#${formType}-photos`);
+        console.log('Processing photos:', data.photos);
+        const photosField = form.querySelector(`#${formType}-edit-photos`);
+        const existingPhotosContainer = form.querySelector(`#${formType}-edit-existing-photos`);
+        
+        if (existingPhotosContainer) {
+            // Показываем существующие фото
+            existingPhotosContainer.innerHTML = '';
+            data.photos.forEach((photoData, index) => {
+                if (!photoData || !photoData.url) return; // Пропускаем пустые данные
+                
+                console.log(`Creating photo element for: ${photoData.url}, ID: ${photoData.id}`);
+                const photoDiv = document.createElement('div');
+                photoDiv.className = 'existing-photo';
+                photoDiv.style.cssText = 'display: inline-block; margin: 5px; position: relative;';
+                photoDiv.dataset.photoId = photoData.id; // Сохраняем ID для удаления
+                photoDiv.dataset.photoUrl = photoData.url; // Сохраняем URL для отображения
+                
+                const img = document.createElement('img');
+                img.src = photoData.url;
+                img.style.cssText = 'width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;';
+                img.alt = `Photo ${index + 1}`;
+                img.onerror = function() {
+                    console.error('Failed to load image:', photoData.url);
+                    this.style.display = 'none';
+                };
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.innerHTML = '×';
+                removeBtn.className = 'photo-remove-btn';
+                removeBtn.style.cssText = 'position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);';
+                removeBtn.title = 'Remove photo';
+                removeBtn.onclick = function() {
+                    console.log('Removing photo:', photoData.url, 'ID:', photoData.id);
+                    removePhotoFromServer(photoData.id, photoDiv);
+                };
+                
+                photoDiv.appendChild(img);
+                photoDiv.appendChild(removeBtn);
+                existingPhotosContainer.appendChild(photoDiv);
+            });
+            
+            console.log(`Added ${data.photos.length} photos to existing photos container`);
+        } else {
+            console.warn('Existing photos container not found:', `#${formType}-edit-existing-photos`);
+        }
+        
         if (photosField && photosField.type === 'text') {
             // Для текстового поля (ссылка на фото)
             photosField.value = data.photos[0] || '';
         }
-        // Для файловых полей можно добавить предварительный просмотр
+    } else {
+        console.log('No photos to display or photos array is empty');
+        // Очищаем контейнер существующих фото
+        const existingPhotosContainer = form.querySelector(`#${formType}-edit-existing-photos`);
+        if (existingPhotosContainer) {
+            existingPhotosContainer.innerHTML = '';
+        }
     }
 }
 
 // Вспомогательная функция для обновления скрытого поля хештегов
-function updateHashtagsHidden(container, hiddenField) {
+window.updateHashtagsHidden = function(container, hiddenField) {
     const tags = Array.from(container.querySelectorAll('.hashtag-chip')).map(chip => chip.dataset.tag);
     hiddenField.value = JSON.stringify(tags);
 }
 
 // Вспомогательная функция для получения CSRF токена
-function getCookie(name) {
+window.getCookie = function(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
@@ -1064,6 +1187,279 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+// Функция для удаления фотографии с сервера
+window.removePhotoFromServer = function(photoId, photoElement) {
+    console.log('Removing photo from server, ID:', photoId);
+    
+    // Получаем ID рекламного поста из формы
+    const form = document.getElementById('advertising-edit-form');
+    const editItemIdField = form.querySelector('input[name="edit_item_id"]');
+    const advertisingId = editItemIdField ? editItemIdField.value : null;
+    
+    if (!advertisingId) {
+        console.error('Advertising ID not found');
+        return;
+    }
+    
+    // Получаем CSRF токен
+    const csrftoken = getCookie('csrftoken');
+    if (!csrftoken) {
+        console.error('CSRF token not found');
+        return;
+    }
+    
+    // Отправляем AJAX запрос для удаления фотографии
+    fetch(`/services_and_projects/remove_advertising_photo/${advertisingId}/${photoId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // Проверяем, что ответ содержит JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Response is not JSON');
+        }
+        
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        
+        if (data.success) {
+            console.log('Photo removed successfully:', data.message);
+            // Удаляем элемент фотографии из DOM
+            photoElement.remove();
+            
+            // Показываем уведомление об успехе
+            if (typeof window.alertify !== 'undefined') {
+                window.alertify.success('Photo removed successfully');
+            } else {
+                alert('Photo removed successfully');
+            }
+        } else {
+            console.error('Error removing photo:', data.error);
+            // Показываем уведомление об ошибке
+            if (typeof window.alertify !== 'undefined') {
+                window.alertify.error('Error removing photo: ' + data.error);
+            } else {
+                alert('Error removing photo: ' + data.error);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Network error removing photo:', error);
+        
+        // Показываем более информативное уведомление об ошибке
+        let errorMessage = 'Network error occurred while removing photo';
+        if (error.message.includes('HTTP error')) {
+            errorMessage = `Server error: ${error.message}`;
+        } else if (error.message.includes('not JSON')) {
+            errorMessage = 'Server returned invalid response format';
+        }
+        
+        if (typeof window.alertify !== 'undefined') {
+            window.alertify.error(errorMessage);
+        } else {
+            alert(errorMessage);
+        }
+    });
+};
+
+// Функция для закрытия формы редактирования
+window.closeEditForm = function() {
+    const form = document.getElementById('advertising-edit-form');
+    if (form) {
+        form.style.display = 'none';
+        form.classList.remove('show');
+    }
+};
+
+// Обработчик для кнопки Update в форме редактирования
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== DOMContentLoaded fired ===');
+    console.log('Checking functions availability:');
+    console.log('window.openAdvertisingEditForm:', typeof window.openAdvertisingEditForm);
+    console.log('window.loadEditData:', typeof window.loadEditData);
+    console.log('window.populateEditForm:', typeof window.populateEditForm);
+    
+    // Обработчик для закрытия формы по клику на overlay
+    const editForm = document.getElementById('advertising-edit-form');
+    console.log('Edit form found:', editForm);
+    if (editForm) {
+        editForm.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditForm();
+            }
+        });
+    }
+    
+    // Обработчик для кнопки Update в форме редактирования advertising
+    const updateBtn = document.querySelector('#advertising-edit-form .save-btn');
+    console.log('Update button found:', updateBtn);
+    if (updateBtn) {
+        updateBtn.addEventListener('click', function() {
+            console.log('=== Update button clicked ===');
+            const modalOverlay = document.getElementById('advertising-edit-form');
+            const form = modalOverlay.querySelector('form');
+            
+            if (!form) {
+                console.error('Form not found inside modal overlay');
+                return;
+            }
+            
+            const formData = new FormData(form);
+            
+            // Логируем данные формы
+            console.log('Modal overlay:', modalOverlay);
+            console.log('Form element:', form);
+            console.log('Form action:', form.action);
+            
+            // Проверяем файлы фотографий
+            const photoInput = form.querySelector('input[name="photos"]');
+            if (photoInput && photoInput.files) {
+                console.log(`Photos input found with ${photoInput.files.length} files:`);
+                for (let i = 0; i < photoInput.files.length; i++) {
+                    const file = photoInput.files[i];
+                    console.log(`  File ${i}: ${file.name}, Type: ${file.type}, Size: ${file.size} bytes`);
+                }
+            } else {
+                console.log('No photos input found or no files selected');
+            }
+            
+            console.log('Form data entries:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+            
+            // Отправляем данные на сервер
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Проверяем, что ответ содержит JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Response is not JSON');
+                }
+                
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    if (typeof window.alertify !== 'undefined') {
+                        window.alertify.success('Advertising updated successfully!');
+                    } else {
+                        alert('Advertising updated successfully!');
+                    }
+                    
+                    // Закрываем форму
+                    form.style.display = 'none';
+                    form.classList.remove('show');
+                    
+                    // Обновляем страницу для отображения изменений
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    if (typeof window.alertify !== 'undefined') {
+                        window.alertify.error('Error updating advertising: ' + data.error);
+                    } else {
+                        alert('Error updating advertising: ' + data.error);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error updating advertising:', error);
+                
+                // Показываем более информативное уведомление об ошибке
+                let errorMessage = 'Network error occurred while updating';
+                if (error.message.includes('HTTP error')) {
+                    errorMessage = `Server error: ${error.message}`;
+                } else if (error.message.includes('not JSON')) {
+                    errorMessage = 'Server returned invalid response format';
+                }
+                
+                if (typeof window.alertify !== 'undefined') {
+                    window.alertify.error(errorMessage);
+                } else {
+                    alert(errorMessage);
+                }
+            });
+        });
+    }
+});
+
+// Проверяем, что функции определены
+console.log('=== AFTER FUNCTION DEFINITIONS ===');
+console.log('window.openEditForm:', typeof window.openEditForm);
+console.log('window.loadEditData:', typeof window.loadEditData);
+console.log('window.populateEditForm:', typeof window.populateEditForm);
+console.log('window.updateHashtagsHidden:', typeof window.updateHashtagsHidden);
+console.log('window.getCookie:', typeof window.getCookie);
+console.log('window.closeEditForm:', typeof window.closeEditForm);
+
+// Альтернативный способ определения функций (если основной не работает)
+if (!window.openAdvertisingEditForm) {
+    console.log('Defining openAdvertisingEditForm as fallback...');
+    window.openAdvertisingEditForm = function(formType, itemId) {
+        console.log('Fallback openAdvertisingEditForm called for:', formType, itemId);
+        // Простая реализация для тестирования
+        const form = document.getElementById('advertising-edit-form');
+        if (form) {
+            form.style.display = 'flex';
+            console.log('Form opened successfully');
+        } else {
+            console.error('Form not found');
+        }
+    };
+}
+
+if (!window.loadAdvertisingEditData) {
+    console.log('Defining loadAdvertisingEditData as fallback...');
+    window.loadAdvertisingEditData = function(formType, itemId, form) {
+        console.log('Fallback loadAdvertisingEditData called');
+    };
+}
+
+if (!window.populateAdvertisingEditForm) {
+    console.log('Defining populateAdvertisingEditForm as fallback...');
+    window.populateAdvertisingEditForm = function(formType, form, data) {
+        console.log('Fallback populateAdvertisingEditForm called');
+    };
+}
+
+// Проверяем, что функции определены
+console.log('=== AFTER FUNCTION DEFINITIONS ===');
+console.log('window.openAdvertisingEditForm:', typeof window.openAdvertisingEditForm);
+console.log('window.loadAdvertisingEditData:', typeof window.loadAdvertisingEditData);
+console.log('window.populateAdvertisingEditForm:', typeof window.populateAdvertisingEditForm);
+console.log('window.updateHashtagsHidden:', typeof window.updateHashtagsHidden);
+console.log('window.getCookie:', typeof window.getCookie);
+console.log('window.closeEditForm:', typeof window.closeEditForm);
 
 // Закрывающая скобка для защиты от повторной загрузки
 }

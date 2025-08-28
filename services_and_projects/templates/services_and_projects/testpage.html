@@ -168,6 +168,84 @@
 {% include 'services_and_projects/form_for_all_task.html' %}
 {% include 'services_and_projects/filtration_form.html' %}
 
+<!-- Advertising Edit Form -->
+<div id="advertising-edit-form" class="modal-overlay" style="display: none;">
+    <div class="modal-form">
+        <div class="modal-header-actions">
+            <h2>Edit Advertising</h2>
+            <button class="modal_close_btn" onclick="closeEditForm()">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                </svg>
+            </button>
+        </div>
+
+        <form class="project-form" id="advertising-edit-form" method="post" enctype="multipart/form-data" action="{% url 'services_and_projects:update_form' %}">
+            {% csrf_token %}
+            <input type="hidden" name="type_of_task" value="4"> <!-- Advertising -->
+            <input type="hidden" name="edit_item_id" value="">
+            
+            <div class="form-group">
+                <label for="advertising-edit-title">Title</label>
+                <input type="text" id="advertising-edit-title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="advertising-edit-description">Description</label>
+                <textarea id="advertising-edit-description" name="description" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="advertising-edit-photos">Photos</label>
+                <div class="file-upload-area" id="advertising-photo-upload-area">
+                    <input type="file" id="advertising-edit-photos" name="photos" multiple accept="image/*,.avif">
+                    <div class="drop-zone">
+                        <p>Drop photo files here or click to upload</p>
+                    </div>
+                </div>
+                <!-- Показ существующих фото -->
+                <div id="advertising-edit-existing-photos" class="existing-photos">
+                    <!-- Существующие фото будут загружены сюда -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="advertising-edit-category">Category</label>
+                <select id="advertising-edit-category" name="category" required>
+                    <option value="">-- Select category --</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="advertising-edit-service">Service</label>
+                <select id="advertising-edit-service" name="service" required>
+                    <option value="">-- Select service --</option>
+                    {% for serv in services %}
+                    <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="advertising-edit-hashtags">Hashtags: <a href="#">Don't find hashtag?</a></label>
+                <div id="advertising-edit-hashtags-container" class="form-control hashtag-chip-container" tabindex="0" data-all-tags='{{ all_tags|safe }}'>
+                    <input type="text" id="advertising-edit-hashtags-input" placeholder="Start typing tag..." autocomplete="off" class="hashtags-input-field">
+                </div>
+                <div id="advertising-edit-hashtags-dropdown" class="hashtag-dropdown-menu"></div>
+            </div>
+            
+            <input type="hidden" name="hashtags" id="advertising-edit-hashtags-hidden">
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary save-btn">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Include Navigation Components -->
 {% include 'services_and_projects/navigation_components.html' %}
 
@@ -197,10 +275,10 @@
 <script src="{% static 'js/feeds_filtering.js' %}"></script>
 <script src="{% static 'js/form_for_all_task.js' %}"></script>
 <script src="{% static 'js/chat_styles.js' %}"></script>
-<script src="{% static 'js/advertising_feed.js' %}"></script>
 <script src="{% static 'js/tasks_projects_tenders.js' %}"></script>
 <script src="{% static 'js/social_feed_hide_icon.js' %}"></script>
 <script src="{% static 'js/job_search_feed.js' %}"></script>
 <script src="{% static 'js/timeslot_feed.js' %}"></script>
 <script src="{% static 'js/testpage.js' %}"></script>
+<script src="{% static 'js/advertising_feed.js' %}"></script>
 {% endblock %}

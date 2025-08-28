@@ -1103,6 +1103,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
+            // Проверяем, что это поле действительно предназначено для фотографий
+            // Ищем подсказку в тексте drop-zone или в атрибутах
+            const dropZoneText = dropZone.textContent.toLowerCase();
+            const isPhotoField = dropZoneText.includes('photo') || 
+                                dropZoneText.includes('image') || 
+                                dropZoneText.includes('фото') || 
+                                dropZoneText.includes('изображение') ||
+                                area.id.includes('photo') ||
+                                area.id.includes('image') ||
+                                area.id.includes('advertising-photo');
+            
+            if (!isPhotoField) {
+                console.log('Skipping non-photo field:', area.id || area.className, 'Text:', dropZoneText);
+                return;
+            }
+            
+            console.log('Initializing photo upload for:', area.id || area.className, 'Text:', dropZoneText);
+            
             // Обработчик клика по drop-zone
             dropZone.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1152,14 +1170,51 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function updatePhotoDisplay(dropZone, files) {
         // Проверяем типы файлов - только изображения
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-        const validFiles = files.filter(file => allowedTypes.includes(file.type));
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
+        const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif'];
         
-        if (validFiles.length !== files.length) {
-            alert('Some files are not valid images. Only JPEG, PNG, GIF, and WebP files are allowed.');
+        // Функция для проверки файла
+        function isValidImageFile(file) {
+            // Проверяем MIME-тип
+            if (allowedTypes.includes(file.type)) {
+                return true;
+            }
+            
+            // Проверяем расширение файла
+            const fileName = file.name.toLowerCase();
+            return allowedExtensions.some(ext => fileName.endsWith(ext));
         }
         
-        if (validFiles.length === 0) return;
+        const validFiles = files.filter(file => isValidImageFile(file));
+        const invalidFiles = files.filter(file => !isValidImageFile(file));
+        
+        // Показываем предупреждение только если есть невалидные файлы
+        if (invalidFiles.length > 0) {
+            const invalidFileNames = invalidFiles.map(f => f.name).join(', ');
+            console.warn(`Invalid file types detected: ${invalidFileNames}`);
+            
+            // Логируем детали невалидных файлов для отладки
+            invalidFiles.forEach(file => {
+                console.warn(`Invalid file: ${file.name}, Type: ${file.type}, Size: ${file.size} bytes`);
+            });
+            
+            // Показываем alert только если есть невалидные файлы
+            if (invalidFiles.length > 0) {
+                alert(`Some files are not valid images: ${invalidFileNames}\n\nOnly JPEG, PNG, GIF, WebP, and AVIF files are allowed.`);
+            }
+        }
+        
+        if (validFiles.length === 0) {
+            console.log('No valid image files found');
+            return;
+        }
+        
+        console.log(`Processing ${validFiles.length} valid image files`);
+        
+        // Логируем детали валидных файлов для отладки
+        validFiles.forEach(file => {
+            console.log(`Valid file: ${file.name}, Type: ${file.type}, Size: ${file.size} bytes`);
+        });
         
         // Очищаем drop-zone
         dropZone.innerHTML = '';

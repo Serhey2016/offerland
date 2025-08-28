@@ -191,7 +191,7 @@ class PhotoRelations(models.Model):
     <div class="social_feed_image_gallery_1">
         <!-- Галерея изображений -->
     </div>
-    
+    Network error occurred while updating
     <!-- Действия -->
     <div class="post_actions">
         <button class="action_btn">Chat</button>

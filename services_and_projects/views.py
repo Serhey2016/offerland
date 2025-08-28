@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
-from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations
+from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations
 from joblist.models import AllTags, Companies
 from django.utils import timezone
 import json
@@ -718,21 +718,33 @@ def get_edit_data(request, form_type, item_id):
             }
             
         elif form_type == 'advertising':
+            print(f"DEBUG: Processing advertising form type for item {item_id}")
             # Получаем данные рекламы
             advertising = Advertising.objects.select_related(
-                'type_of_task'
+                'type_of_task', 'services', 'services__category_name'
             ).prefetch_related(
-                'hashtags', 'photos', 'services'
+                'hashtags', 'photos'
             ).get(id=item_id)
+            
+            print(f"DEBUG: Found advertising: {advertising.title}")
+            print(f"DEBUG: Advertising services: {advertising.services}")
+            print(f"DEBUG: Advertising hashtags count: {advertising.hashtags.count()}")
+            print(f"DEBUG: Advertising photos count: {advertising.photos.count()}")
             
             # Проверяем права доступа
             if not AdvertisingOwnerRelations.objects.filter(advertising=advertising, user=request.user).exists():
+                print(f"DEBUG: Access denied for user {request.user} on advertising {item_id}")
                 return JsonResponse({'success': False, 'error': 'Access denied'})
             
-            # Get the first service and its category if it exists
-            first_service = advertising.services.first()
-            category_id = first_service.category_name.id if first_service else None
-            service_id = first_service.id if first_service else None
+            print(f"DEBUG: Access granted, building data for advertising {item_id}")
+            
+            # Get the service and its category if it exists
+            service = advertising.services
+            category_id = service.category_name.id if service else None
+            service_id = service.id if service else None
+            
+            print(f"DEBUG: Service: {service}")
+            print(f"DEBUG: Category ID: {category_id}, Service ID: {service_id}")
             
             data = {
                 'title': advertising.title,
@@ -740,8 +752,10 @@ def get_edit_data(request, form_type, item_id):
                 'category': category_id,
                 'service': service_id,
                 'hashtags': [{'tag': tag.tag} for tag in advertising.hashtags.all()],
-                'photos': [photo.photo.url if photo.photo else None for photo in advertising.photos.all() if photo.photo]
+                'photos': [{'id': photo.id, 'url': photo.photo.url} if photo.photo else None for photo in advertising.photos.all() if photo.photo]
             }
+            
+            print(f"DEBUG: Built data: {data}")
             
         elif form_type == 'job-search':
             # Получаем данные поиска работы
@@ -779,6 +793,71 @@ def get_edit_data(request, form_type, item_id):
     except JobSearch.DoesNotExist:
         print(f"DEBUG: JobSearch {item_id} not found")
         return JsonResponse({'success': False, 'error': 'Job search not found'})
+    except Exception as e:
+        print(f"DEBUG: Exception occurred: {str(e)}")
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@login_required
+def remove_advertising_photo(request, advertising_id, photo_id):
+    """
+    Удаляет фотографию из рекламного поста
+    """
+    print(f"DEBUG: remove_advertising_photo called with advertising_id={advertising_id}, photo_id={photo_id}")
+    print(f"DEBUG: Request method: {request.method}")
+    print(f"DEBUG: User: {request.user}")
+    
+    try:
+        # Проверяем права доступа
+        advertising = Advertising.objects.get(id=advertising_id)
+        print(f"DEBUG: Found advertising: {advertising.title}")
+        
+        if not AdvertisingOwnerRelations.objects.filter(advertising=advertising, user=request.user).exists():
+            print(f"DEBUG: Access denied for user {request.user} on advertising {advertising_id}")
+            return JsonResponse({'success': False, 'error': 'Access denied'})
+        
+        print(f"DEBUG: Access granted for user {request.user}")
+        
+        # Находим фотографию
+        photo_relation = PhotoRelations.objects.get(id=photo_id)
+        print(f"DEBUG: Found photo relation: {photo_relation.id}")
+        
+        # Проверяем, что фотография принадлежит данному рекламному посту
+        if photo_relation in advertising.photos.all():
+            print(f"DEBUG: Photo {photo_id} found in advertising {advertising_id}")
+            
+            # Удаляем связь с рекламным постом
+            advertising.photos.remove(photo_relation)
+            print(f"DEBUG: Removed photo {photo_id} from advertising {advertising_id}")
+            
+            # Проверяем, есть ли еще связи с этой фотографией
+            # Используем прямой запрос к базе данных
+            from django.db import connection
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT COUNT(*) FROM advertising_photos 
+                    WHERE photorelations_id = %s
+                """, [photo_id])
+                remaining_relations = cursor.fetchone()[0]
+            
+            print(f"DEBUG: Remaining relations for photo {photo_id}: {remaining_relations}")
+            
+            # Если это единственная связь с фотографией, удаляем саму фотографию
+            if remaining_relations == 0:
+                photo_relation.delete()
+                print(f"DEBUG: Deleted photo relation {photo_id} as it had no more references")
+            
+            return JsonResponse({'success': True, 'message': 'Photo removed successfully'})
+        else:
+            print(f"DEBUG: Photo {photo_id} not found in advertising {advertising_id}")
+            return JsonResponse({'success': False, 'error': 'Photo not found in this advertising post'})
+            
+    except Advertising.DoesNotExist:
+        print(f"DEBUG: Advertising {advertising_id} not found")
+        return JsonResponse({'success': False, 'error': 'Advertising post not found'})
+    except PhotoRelations.DoesNotExist:
+        print(f"DEBUG: Photo relation {photo_id} not found")
+        return JsonResponse({'success': False, 'error': 'Photo not found'})
     except Exception as e:
         print(f"DEBUG: Exception occurred: {str(e)}")
         return JsonResponse({'success': False, 'error': str(e)})

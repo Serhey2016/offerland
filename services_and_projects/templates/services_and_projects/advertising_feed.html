@@ -112,6 +112,8 @@
     </div>
 </div>
 
+<!-- Форма редактирования теперь находится в testpage.html -->
+
 <!-- Подключаем скрипт для Advertising Feed -->
 <script src="{% static 'js/advertising_feed.js' %}"></script>
 
@@ -150,6 +152,14 @@
             // Добавляем кнопки для тестирования в режиме разработки
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 addTestButtons();
+            }
+            
+            // Тестируем функции редактирования
+            console.log('=== TESTING EDIT FUNCTIONS ===');
+            console.log('window.testEditFunction:', typeof window.testEditFunction);
+            console.log('window.openEditForm:', typeof window.openEditForm);
+            if (typeof window.testEditFunction === 'function') {
+                console.log('Test function result:', window.testEditFunction());
             }
         }
     }, 1000);
