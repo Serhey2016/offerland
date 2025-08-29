@@ -157,6 +157,39 @@
     position: relative;
     display: flex;
     align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Heart icon styles for task feed */
+.social_feed2 .sftsts1_favorites_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 12px;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Состояние "не в избранном" - контур */
+.social_feed2 .sftsts1_favorites_icon.favorite-unchecked {
+    color: #282d3b;
+}
+
+.social_feed2 .sftsts1_favorites_icon.favorite-unchecked:hover {
+    transform: scale(1.1);
+}
+
+/* Состояние "в избранном" - залитое красное */
+.social_feed2 .sftsts1_favorites_icon.favorite-checked {
+    color: #e74c3c;
+}
+
+.social_feed2 .sftsts1_favorites_icon.favorite-checked:hover {
+    transform: scale(1.1);
 }
 
 .social_feed2 .my_task_social_feed_overflow_menu_trigger {

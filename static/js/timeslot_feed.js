@@ -98,7 +98,7 @@ const TimeSlotFeedUtils = {
 
 
 // ============================================================================
-// КЛАСС УПРАВЛЕНИЯ ИЗБРАННЫМ (ПРОСТАЯ СИСТЕМА)
+// КЛАСС УПРАВЛЕНИЯ ИЗБРАННЫМ (НОВАЯ СИСТЕМА С CSS КЛАССАМИ)
 // ============================================================================
 
 // Global instance tracking
@@ -125,7 +125,7 @@ class TimeSlotSimpleFavoritesManager {
         const heartIcons = document.querySelectorAll(`.${TIMESLOT_FEED_CONFIG.FAVORITES_ICON_CLASS}`);
         
         heartIcons.forEach(icon => {
-            // Set initial state (unfilled by default)
+            // Set initial state (unchecked by default)
             icon.dataset.favorite = 'false';
             
             // Add click event
@@ -134,44 +134,27 @@ class TimeSlotSimpleFavoritesManager {
                 e.stopPropagation();
                 this.toggleHeartIcon(icon);
             });
-            
-            // Add hover effects
-            icon.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.1)';
-            });
-            
-            icon.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-            });
         });
     }
 
     toggleHeartIcon(icon) {
         const isFavorite = icon.dataset.favorite === 'true';
-        const svg = icon.querySelector('svg');
-        const path = svg.querySelector('path');
         
         if (isFavorite) {
-            // Change to unfilled heart
-            path.setAttribute('fill', '#282d3b');
+            // Remove from favorites
+            icon.classList.remove('favorite-checked');
+            icon.classList.add('favorite-unchecked');
             icon.dataset.favorite = 'false';
-            
-            // Add animation
-            icon.style.animation = 'heartUnfavorite 0.3s ease-in-out';
-            setTimeout(() => {
-                icon.style.animation = '';
-            }, 300);
+            console.log('Removed from favorites');
         } else {
-            // Change to filled heart
-            path.setAttribute('fill', 'red');
+            // Add to favorites
+            icon.classList.remove('favorite-unchecked');
+            icon.classList.add('favorite-checked');
             icon.dataset.favorite = 'true';
-            
-            // Add animation
-            icon.style.animation = 'heartFavorite 0.3s ease-in-out';
-            setTimeout(() => {
-                icon.style.animation = '';
-            }, 300);
+            console.log('Added to favorites');
         }
+        
+        // Here you can add AJAX request to save state in database
     }
 }
 
@@ -586,15 +569,13 @@ class TimeSlotFeedManager {
     init() {
         // Инициализируем компоненты (use existing instances if available)
         this.favoritesManager = globalTimeSlotFavoritesManagerInstance || new TimeSlotFavoritesManager();
-        this.simpleFavoritesManager = globalTimeSlotSimpleFavoritesManagerInstance || new TimeSlotSimpleFavoritesManager();
+        // Отключаем старый менеджер сердечек
+        // this.simpleFavoritesManager = globalTimeSlotSimpleFavoritesManagerInstance || new TimeSlotSimpleFavoritesManager();
         this.actionsManager = globalTimeSlotActionsManagerInstance || new TimeSlotActionsManager();
         this.animations = globalTimeSlotFeedAnimationsInstance || new TimeSlotFeedAnimations();
         
         // Обновляем UI для существующих постов
         this.updateExistingPosts();
-        
-        // Добавляем CSS анимации для иконок избранного
-        this.addHeartAnimations();
     }
 
     updateExistingPosts() {
@@ -630,27 +611,7 @@ class TimeSlotFeedManager {
         this.updateExistingPosts();
     }
     
-    addHeartAnimations() {
-        // Добавляем CSS анимации для иконок избранного
-        if (!document.getElementById('timeslot-heart-animations')) {
-            const style = document.createElement('style');
-            style.id = 'timeslot-heart-animations';
-            style.textContent = `
-                @keyframes heartFavorite {
-                    0% { transform: scale(1); }
-                    50% { transform: scale(1.3); }
-                    100% { transform: scale(1.1); }
-                }
-                
-                @keyframes heartUnfavorite {
-                    0% { transform: scale(1.1); }
-                    50% { transform: scale(0.8); }
-                    100% { transform: scale(1); }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-    }
+
 }
 
 // ============================================================================
@@ -667,6 +628,48 @@ document.addEventListener('DOMContentLoaded', () => {
         globalTimeSlotFeedManager = new TimeSlotFeedManager();
         timeSlotFeedManagerInitialized = true;
     }
+    
+    // Инициализация сердечек
+    setTimeout(() => {
+        const heartIcons = document.querySelectorAll('.sftsts1_favorites_icon');
+        console.log('🖤 Initializing heart icons, found:', heartIcons.length);
+        
+        heartIcons.forEach(icon => {
+            // Устанавливаем начальное состояние
+            if (!icon.dataset.favorite) {
+                icon.dataset.favorite = 'false';
+            }
+            
+            // Убираем все старые обработчики
+            const newIcon = icon.cloneNode(true);
+            icon.parentNode.replaceChild(newIcon, icon);
+            
+            // Добавляем обработчик клика
+            newIcon.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const isFavorite = newIcon.dataset.favorite === 'true';
+                console.log('💖 Heart clicked! Current state:', isFavorite);
+                
+                if (isFavorite) {
+                    // Убираем из избранного
+                    newIcon.classList.remove('favorite-checked');
+                    newIcon.classList.add('favorite-unchecked');
+                    newIcon.dataset.favorite = 'false';
+                    console.log('💔 Removed from favorites');
+                } else {
+                    // Добавляем в избранное
+                    newIcon.classList.remove('favorite-unchecked');
+                    newIcon.classList.add('favorite-checked');
+                    newIcon.dataset.favorite = 'true';
+                    console.log('❤️ Added to favorites');
+                }
+            });
+            
+            console.log('💖 Heart icon initialized:', newIcon.id);
+        });
+    }, 100);
 });
 
 // ============================================================================

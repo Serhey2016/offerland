@@ -18,7 +18,50 @@ function initNotesPopup() {
     }
     
     initEventHandlers();
+    initHeartIcons(); // Добавляем инициализацию сердечек
     isInitialized = true;
+}
+
+// Инициализация сердечек для избранного
+function initHeartIcons() {
+    const heartIcons = document.querySelectorAll('.sftsts1_favorites_icon');
+    console.log('💖 Initializing heart icons for tasks/projects/tenders, found:', heartIcons.length);
+    
+    heartIcons.forEach(icon => {
+        // Устанавливаем начальное состояние
+        if (!icon.dataset.favorite) {
+            icon.dataset.favorite = 'false';
+        }
+        
+        // Убираем все старые обработчики
+        const newIcon = icon.cloneNode(true);
+        icon.parentNode.replaceChild(newIcon, icon);
+        
+        // Добавляем обработчик клика
+        newIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isFavorite = newIcon.dataset.favorite === 'true';
+            console.log('💖 Heart clicked in task/project/tender! Current state:', isFavorite);
+            
+            if (isFavorite) {
+                // Убираем из избранного
+                newIcon.classList.remove('favorite-checked');
+                newIcon.classList.add('favorite-unchecked');
+                newIcon.dataset.favorite = 'false';
+                console.log('💔 Removed from favorites');
+            } else {
+                // Добавляем в избранное
+                newIcon.classList.remove('favorite-unchecked');
+                newIcon.classList.add('favorite-checked');
+                newIcon.dataset.favorite = 'true';
+                console.log('❤️ Added to favorites');
+            }
+        });
+        
+        console.log('💖 Heart icon initialized for task/project/tender:', newIcon.id);
+    });
 }
 
 // Инициализация обработчиков событий
@@ -263,6 +306,10 @@ window.NotesPopup = {
     open: openNotesPopup,
     close: closeNotesPopup,
     save: saveNotes
+};
+
+window.HeartIcons = {
+    init: initHeartIcons
 };
 
 

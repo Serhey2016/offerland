@@ -8,7 +8,8 @@ from .models import (
     PerformersRelations, CommentTaskRelations, ServicesRelations,
     TimeSlotPerformersRelations, CommentTimeSlotRelations,
     CommentAdvertisingRelations,
-    PhotoRelations, Comment, AdvertisingOwnerRelations
+    PhotoRelations, Comment, AdvertisingOwnerRelations,
+    TaskOwnerRelations, TimeSlotOwnerRelations
 )
 from decimal import Decimal
 import json
@@ -853,7 +854,7 @@ def update_form(request):
             if 'advertising' in type_name:
                 logger.info("Routing to update_advertising")
                 return update_advertising(request, edit_item_id)
-            elif 'time slot' in type_name or 'timeslot' in type_name:
+            elif 'time slot' in type_name or 'timeslot' in type_name or 'orders' in type_name or type_of_task_id == '5':
                 logger.info("Routing to update_time_slot")
                 return update_time_slot(request, edit_item_id)
             elif 'job search' in type_name:
@@ -1015,10 +1016,13 @@ def update_advertising(request, advertising_id):
 def update_task(request, task_id):
     """Обновление задачи"""
     try:
+        import logging
+        logger = logging.getLogger(__name__)
+        
         task = Task.objects.get(id=task_id)
         
         # Проверяем права доступа
-        if task.user != request.user:
+        if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
             return JsonResponse({'success': False, 'error': 'You do not have permission to edit this task'}, status=403)
         
         # Получаем данные из формы
@@ -1050,41 +1054,135 @@ def update_task(request, task_id):
 def update_time_slot(request, time_slot_id):
     """Обновление временного слота"""
     try:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"=== UPDATE TIME SLOT START ===")
+        logger.info(f"Time slot ID: {time_slot_id}")
+        logger.info(f"Request POST data: {dict(request.POST)}")
+        
         time_slot = TimeSlot.objects.get(id=time_slot_id)
         
         # Проверяем права доступа
-        if time_slot.user != request.user:
+        if not TimeSlotOwnerRelations.objects.filter(time_slot=time_slot, user=request.user).exists():
+            logger.warning(f"User {request.user} does not have permission to edit time slot {time_slot_id}")
             return JsonResponse({'success': False, 'error': 'You do not have permission to edit this time slot'}, status=403)
         
-        # Получаем данные из формы
-        title = request.POST.get('title', '').strip()
-        description = request.POST.get('description', '').strip()
+        logger.info(f"Permission granted for user {request.user}")
         
-        # Валидация
-        if not title:
-            return JsonResponse({'success': False, 'error': 'Title is required'}, status=400)
+        # Получаем данные из формы
+        category_id = request.POST.get('category')
+        service_id = request.POST.get('services')
+        date_start = request.POST.get('date_start')
+        time_start = request.POST.get('time_start')
+        date_end = request.POST.get('date_end')
+        time_end = request.POST.get('time_end')
+        reserved_time_on_road = request.POST.get('reserved_time_on_road')
+        start_location = request.POST.get('start_location')
+        cost_of_1_hour_of_work = request.POST.get('cost_of_1_hour_of_work')
+        minimum_time_slot = request.POST.get('minimum_time_slot')
+        hashtags = request.POST.get('hashtags')
+        
+        logger.info(f"Received data: category={category_id}, service={service_id}, date_start={date_start}, time_start={time_start}")
+        logger.info(f"Additional data: date_end={date_end}, time_end={time_end}, reserved_time={reserved_time_on_road}, start_location={start_location}")
+        logger.info(f"Cost data: cost={cost_of_1_hour_of_work}, min_slot={minimum_time_slot}, hashtags={hashtags}")
+        
+        # Валидация обязательных полей
+        # Note: category_id is not stored in TimeSlot model, only service_id is used
+        if not service_id:
+            return JsonResponse({'success': False, 'error': 'Service is required'}, status=400)
+        if not date_start:
+            return JsonResponse({'success': False, 'error': 'Start date is required'}, status=400)
+        if not time_start:
+            return JsonResponse({'success': False, 'error': 'Start time is required'}, status=400)
+        if not date_end:
+            return JsonResponse({'success': False, 'error': 'End date is required'}, status=400)
+        if not time_end:
+            return JsonResponse({'success': False, 'error': 'End time is required'}, status=400)
         
         # Обновляем поля
-        time_slot.title = title
-        if description:
-            time_slot.description = description
-        time_slot.save()
+        if service_id:
+            try:
+                service = Services.objects.get(id=service_id)
+                time_slot.services = service
+            except Services.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Invalid service'}, status=400)
         
-        return JsonResponse({
-            'success': True,
-            'message': 'Time slot updated successfully',
-            'time_slot_id': time_slot.id
-        })
+        if date_start:
+            time_slot.date_start = date_start
+        
+        if time_start:
+            time_slot.time_start = time_start
+        
+        if date_end:
+            time_slot.date_end = date_end
+        
+        if time_end:
+            time_slot.time_end = time_end
+        
+        if reserved_time_on_road:
+            try:
+                time_slot.reserved_time_on_road = int(reserved_time_on_road)
+            except (ValueError, TypeError) as e:
+                logger.warning(f"Invalid reserved_time_on_road value: {reserved_time_on_road}, error: {e}")
+                return JsonResponse({'success': False, 'error': 'Invalid reserved time value'}, status=400)
+        
+        if start_location:
+            time_slot.start_location = start_location
+        
+        if cost_of_1_hour_of_work:
+            try:
+                time_slot.cost_of_1_hour_of_work = float(cost_of_1_hour_of_work)
+            except (ValueError, TypeError) as e:
+                logger.warning(f"Invalid cost_of_1_hour_of_work value: {cost_of_1_hour_of_work}, error: {e}")
+                return JsonResponse({'success': False, 'error': 'Invalid cost value'}, status=400)
+        
+        if minimum_time_slot:
+            time_slot.minimum_time_slot = minimum_time_slot
+        
+        # Обновляем hashtags
+        if hashtags:
+            try:
+                hashtags_list = json.loads(hashtags)
+                # Очищаем существующие hashtags
+                time_slot.hashtags.clear()
+                # Добавляем новые hashtags
+                for tag_name in hashtags_list:
+                    if tag_name.strip():
+                        hashtag, created = AllTags.objects.get_or_create(tag=tag_name.strip())
+                        time_slot.hashtags.add(hashtag)
+            except (json.JSONDecodeError, ValueError) as e:
+                logger.warning(f"Error parsing hashtags: {e}")
+        
+        try:
+            time_slot.save()
+            logger.info(f"Time slot {time_slot_id} updated successfully")
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Time slot updated successfully',
+                'time_slot_id': time_slot.id
+            })
+        except Exception as e:
+            logger.error(f"Error saving time slot: {e}")
+            import traceback
+            logger.error(f"Save error traceback: {traceback.format_exc()}")
+            return JsonResponse({'success': False, 'error': f'Error saving time slot: {str(e)}'}, status=500)
         
     except TimeSlot.DoesNotExist:
+        logger.error(f"Time slot {time_slot_id} not found")
         return JsonResponse({'success': False, 'error': 'Time slot not found'}, status=404)
     except Exception as e:
         logger.error(f"Error updating time slot: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 def update_job_search(request, job_search_id):
     """Обновление поиска работы"""
     try:
+        import logging
+        logger = logging.getLogger(__name__)
+        
         job_search = JobSearch.objects.get(id=job_search_id)
         
         # Проверяем права доступа

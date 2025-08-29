@@ -83,6 +83,9 @@
     initCompanies();
     initJobSearchDropdownMenu();
     
+    // Инициализация сердечек для избранного
+    initHeartIcons();
+    
     // Обработчик для кнопки добавления новой активности (+)
     const addActivityButtons = document.querySelectorAll('[id="social_feed_button_container_button2_id"]');
     addActivityButtons.forEach(button => {
@@ -293,9 +296,52 @@
     // Экспортируем часть API, если нужно в будущем
     window.JobSearchFeed = {
         initCompanies: initCompanies,
-        initStatusIcons: initStatusIcons
+        initStatusIcons: initStatusIcons,
+        initHeartIcons: initHeartIcons
     };
 })();
+
+// Инициализация сердечек для избранного
+function initHeartIcons() {
+    const heartIcons = document.querySelectorAll('.sftsts1_favorites_icon');
+    console.log('💖 Initializing heart icons for job search, found:', heartIcons.length);
+    
+    heartIcons.forEach(icon => {
+        // Устанавливаем начальное состояние
+        if (!icon.dataset.favorite) {
+            icon.dataset.favorite = 'false';
+        }
+        
+        // Убираем все старые обработчики
+        const newIcon = icon.cloneNode(true);
+        icon.parentNode.replaceChild(newIcon, icon);
+        
+        // Добавляем обработчик клика
+        newIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isFavorite = newIcon.dataset.favorite === 'true';
+            console.log('💖 Heart clicked in job search! Current state:', isFavorite);
+            
+            if (isFavorite) {
+                // Убираем из избранного
+                newIcon.classList.remove('favorite-checked');
+                newIcon.classList.add('favorite-unchecked');
+                newIcon.dataset.favorite = 'false';
+                console.log('💔 Removed from favorites');
+            } else {
+                // Добавляем в избранное
+                newIcon.classList.remove('favorite-unchecked');
+                newIcon.classList.add('favorite-checked');
+                newIcon.dataset.favorite = 'true';
+                console.log('❤️ Added to favorites');
+            }
+        });
+        
+        console.log('💖 Heart icon initialized for job search:', newIcon.id);
+    });
+}
 
 // Функция инициализации компаний
 function initCompanies() {

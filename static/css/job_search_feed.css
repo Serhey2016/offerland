@@ -43,10 +43,50 @@
     margin-top: 12px;
 }
 
+/* Контейнер для сердечка и dropdown menu */
+.social_feed2 .jsf_actions_container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Стили для сердечка в job search feed */
+.social_feed2 .sftsts1_favorites_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 12px;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+}
+
+/* Состояние "не в избранном" - контур */
+.social_feed2 .sftsts1_favorites_icon.favorite-unchecked {
+    color: #282d3b;
+}
+
+.social_feed2 .sftsts1_favorites_icon.favorite-unchecked:hover {
+    transform: scale(1.1);
+}
+
+/* Состояние "в избранном" - залитое красное */
+.social_feed2 .sftsts1_favorites_icon.favorite-checked {
+    color: #e74c3c;
+}
+
+.social_feed2 .sftsts1_favorites_icon.favorite-checked:hover {
+    transform: scale(1.1);
+}
+
 /* Специфичные стили для jsf_dropdown_menu */
 .social_feed2 .jsf_dropdown_menu {
     position: relative !important;
-    right: 10px !important;
     cursor: pointer !important;
     width: 24px !important;
     height: 24px !important;
