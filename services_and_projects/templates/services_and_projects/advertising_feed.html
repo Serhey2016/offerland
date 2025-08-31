@@ -117,53 +117,23 @@
 
 <!-- Форма редактирования теперь находится в testpage.html -->
 
-<!-- Подключаем скрипт для Advertising Feed -->
-<script src="{% static 'js/advertising_feed.js' %}"></script>
+<!-- Подключаем скрипт для hover эффектов -->
+<script src="{% static 'js/advertising_feed_hover.js' %}"></script>
 
 <!-- Подключаем скрипт для Alertify -->
 <script src="{% static 'js/lib_alertify/alertify.js' %}"></script>
 
 <script>
-    // Дополнительная отладка для advertising_feed.html
-    console.log('advertising_feed.html loaded');
-    console.log('Post ID:', '{{ advertising.id }}');
-    console.log('Post mode:', '{{ advertising.adv_mode }}');
-    console.log('Menu trigger elements:', document.querySelectorAll('.advertising_social_feed_menu_trigger'));
-    console.log('Dropdown elements:', document.querySelectorAll('.advertising_social_feed_overflow_menu'));
-    
-    // Проверяем конкретные элементы для этого поста
+    // Инициализация для advertising_feed.html
     const postId = '{{ advertising.id }}';
     const menuTrigger = document.getElementById(`menu_trigger_${postId}`);
     const dropdown = document.getElementById(`overflow_menu_${postId}`);
     
-    console.log('Menu trigger for this post:', menuTrigger);
-    console.log('Dropdown for this post:', dropdown);
-    console.log('Menu trigger classes:', menuTrigger ? menuTrigger.className : 'N/A');
-    console.log('Dropdown classes:', dropdown ? dropdown.className : 'N/A');
-    
     // Проверяем, что AdvertisingFeed инициализирован
     setTimeout(() => {
-        console.log('AdvertisingFeed object:', window.AdvertisingFeed);
-        console.log('AdvertisingFeedUtils object:', window.AdvertisingFeedUtils);
-        console.log('Active dropdown:', window.activeDropdown);
-        
-        // Тестируем функции
-        if (window.AdvertisingFeedUtils) {
-            console.log('Testing getOverflowMenuById:', window.AdvertisingFeedUtils.getOverflowMenuById(postId));
-            console.log('Testing getMenuTriggerById:', window.AdvertisingFeedUtils.getMenuTriggerById(postId));
-            
-            // Добавляем кнопки для тестирования в режиме разработки
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                addTestButtons();
-            }
-            
-            // Тестируем функции редактирования
-            console.log('=== TESTING EDIT FUNCTIONS ===');
-            console.log('window.testEditFunction:', typeof window.testEditFunction);
-            console.log('window.openEditForm:', typeof window.openEditForm);
-            if (typeof window.testEditFunction === 'function') {
-                console.log('Test function result:', window.testEditFunction());
-            }
+        // Добавляем кнопки для тестирования в режиме разработки
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            addTestButtons();
         }
     }, 1000);
     
@@ -187,11 +157,7 @@
         
         window.diagnoseThisPost = function() {
             if (window.AdvertisingFeedUtils) {
-                console.log('=== DIAGNOSING THIS POST ===');
-                console.log('Post ID:', postId);
-                console.log('Menu trigger:', menuTrigger);
-                console.log('Dropdown:', dropdown);
-                console.log('Post element:', document.querySelector(`.social_feed[data-post-id="${postId}"]`));
+                // Diagnosing this post
             }
         };
     }

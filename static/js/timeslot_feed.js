@@ -145,13 +145,13 @@ class TimeSlotSimpleFavoritesManager {
             icon.classList.remove('favorite-checked');
             icon.classList.add('favorite-unchecked');
             icon.dataset.favorite = 'false';
-            console.log('Removed from favorites');
+            // Removed from favorites
         } else {
             // Add to favorites
             icon.classList.remove('favorite-unchecked');
             icon.classList.add('favorite-checked');
             icon.dataset.favorite = 'true';
-            console.log('Added to favorites');
+            // Added to favorites
         }
         
         // Here you can add AJAX request to save state in database
@@ -632,7 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Инициализация сердечек
     setTimeout(() => {
         const heartIcons = document.querySelectorAll('.sftsts1_favorites_icon');
-        console.log('🖤 Initializing heart icons, found:', heartIcons.length);
+        // Initializing heart icons
         
         heartIcons.forEach(icon => {
             // Устанавливаем начальное состояние
@@ -650,24 +650,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.stopPropagation();
                 
                 const isFavorite = newIcon.dataset.favorite === 'true';
-                console.log('💖 Heart clicked! Current state:', isFavorite);
+                // Heart clicked
                 
                 if (isFavorite) {
                     // Убираем из избранного
                     newIcon.classList.remove('favorite-checked');
                     newIcon.classList.add('favorite-unchecked');
                     newIcon.dataset.favorite = 'false';
-                    console.log('💔 Removed from favorites');
+                    // Removed from favorites
                 } else {
                     // Добавляем в избранное
                     newIcon.classList.remove('favorite-unchecked');
                     newIcon.classList.add('favorite-checked');
                     newIcon.dataset.favorite = 'true';
-                    console.log('❤️ Added to favorites');
+                    // Added to favorites
                 }
             });
             
-            console.log('💖 Heart icon initialized:', newIcon.id);
+            // Heart icon initialized
         });
     }, 100);
 });

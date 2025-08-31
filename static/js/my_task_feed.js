@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для обработки действия Start
     function handleMyTaskStart(taskId) {
-        console.log('Start action for task ID:', taskId);
+        // Start action for task ID
         
         // Получаем CSRF токен
         const csrftoken = getCookie('csrftoken');
@@ -150,9 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            
-            // Показываем ошибку
+            // Network error occurred while starting task
             if (typeof window.alertify !== 'undefined') {
                 window.alertify.error('Network error occurred while starting task');
             } else {
@@ -163,19 +161,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для обработки действия Edit
     function handleMyTaskEdit(taskId) {
-        console.log('Edit action for task ID:', taskId);
+        // Edit action for task ID
         
         // Определяем тип задачи по данным в DOM
-        console.log('Looking for task element with ID:', taskId);
+        // Looking for task element with ID
         const taskElement = document.querySelector(`.social_feed2[data-id="${taskId}"]`);
         if (!taskElement) {
-            console.error('Task element not found for ID:', taskId);
-            console.log('Available social_feed2 elements:', document.querySelectorAll('.social_feed2'));
-            console.log('Available data-id attributes:', Array.from(document.querySelectorAll('[data-id]')).map(el => ({element: el, id: el.getAttribute('data-id')})));
+            // Task element not found for ID
             return;
         }
         
-        console.log('Found task element:', taskElement);
+        // Found task element
         
         // Получаем тип задачи из DOM или по умолчанию используем 'my-list'
         const taskTypeElement = taskElement.querySelector('.post_info_dates_type_of_task');
@@ -183,12 +179,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (taskTypeElement) {
             const taskTypeText = taskTypeElement.textContent.trim();
-            console.log('Found task type element:', taskTypeElement);
-            console.log('Task type text (original):', taskTypeText);
+                    // Found task type element
             
             // Convert to lowercase for comparison
             const taskTypeLower = taskTypeText.toLowerCase();
-            console.log('Task type text (lowercase):', taskTypeLower);
+            // Task type text (lowercase)
             
             // More flexible matching
             if (taskTypeLower.includes('tender')) {
@@ -204,12 +199,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 formType = 'my-list';
             }
             
-            console.log('Determined form type:', formType);
+            // Determined form type
         } else {
-            console.warn('Task type element not found, using default form type:', formType);
+            // Task type element not found, using default form type
         }
         
-        console.log('Opening edit form for type:', formType, 'ID:', taskId);
+        // Opening edit form for type
         
         // Открываем соответствующую форму редактирования
         openEditForm(formType, taskId);
@@ -217,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для обработки действия Publish
     function handleMyTaskPublish(taskId) {
-        console.log('Publish action for task ID:', taskId);
+        // Publish action for task ID
         
         // Показываем подтверждение публикации
         if (confirm('Are you sure you want to publish this task?')) {
@@ -247,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                // An error occurred while publishing
                 alert('An error occurred while publishing');
             });
             */
@@ -263,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для обработки действия Remove
     function handleMyTaskRemove(taskId) {
-        console.log('Remove action for task ID:', taskId);
+        // Remove action for task ID
         
         // Показываем подтверждение удаления
         if (confirm('Are you sure you want to delete this task?')) {
@@ -292,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                // An error occurred while deleting
                 alert('An error occurred while deleting');
             });
             */
@@ -476,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error saving notes:', error);
+            // Error saving notes
             
             // Показываем ошибку
             if (typeof window.alertify !== 'undefined') {
@@ -494,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для открытия формы редактирования
     function openEditForm(formType, itemId) {
-        console.log('Opening edit form for:', formType, 'ID:', itemId);
+        // Opening edit form
         
         // Определяем ID формы на основе типа
         let formId;
@@ -521,21 +516,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 formId = 'job-search-form';
                 formTitle = 'Edit Job Search';
                 break;
-            default:
-                console.error('Unknown form type:', formType);
-                return;
+                    default:
+            // Unknown form type
+            return;
         }
         
-        console.log('Form ID:', formId, 'Form Title:', formTitle);
+        // Form ID and title
         
         // Находим форму
         const form = document.getElementById(formId);
         if (!form) {
-            console.error('Form not found:', formId);
+            // Form not found
             return;
         }
         
-        console.log('Form found:', form);
+        // Form found
         
         // Загружаем данные для редактирования
         loadEditData(formType, itemId, form);
@@ -552,9 +547,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const titleElement = form.querySelector('h2, .modal-header-actions h2');
         if (titleElement) {
             titleElement.textContent = formTitle;
-            console.log('Updated form title to:', formTitle);
+            // Updated form title
         } else {
-            console.warn('Title element not found in form');
+            // Title element not found in form
         }
         
         // Добавляем скрытое поле для ID редактируемого элемента
@@ -576,11 +571,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для загрузки данных для редактирования
     function loadEditData(formType, itemId, form) {
-        console.log('Loading edit data for:', formType, 'ID:', itemId);
+        // Loading edit data
         
         // Получаем CSRF токен
         const csrftoken = getCookie('csrftoken');
-        console.log('CSRF token found:', csrftoken ? 'Yes' : 'No');
+        // CSRF token check
         
         if (!csrftoken) {
             alert('CSRF token not found. Please refresh the page and try again.');
@@ -588,10 +583,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const url = `/services_and_projects/get_edit_data/${formType}/${itemId}/`;
-        console.log('Making request to:', url);
-        console.log('Form type:', formType);
-        console.log('Item ID:', itemId);
-        console.log('Full URL:', window.location.origin + url);
+        // Making request
         
         // Отправляем AJAX запрос для получения данных
         fetch(url, {
@@ -602,17 +594,16 @@ document.addEventListener('DOMContentLoaded', function() {
             },
         })
         .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
+                    // Response received
             return response.json();
         })
         .then(data => {
-            console.log('Response data:', data);
+            // Response data received
             if (data.success) {
                 // Заполняем форму данными
                 populateEditForm(formType, form, data.data);
             } else {
-                console.error('Error loading edit data:', data.error);
+                // Error loading edit data
                 if (typeof window.alertify !== 'undefined') {
                     window.alertify.error('Error loading data for editing: ' + data.error);
                 } else {
@@ -621,7 +612,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error loading edit data:', error);
+            // Network error occurred while loading data
             if (typeof window.alertify !== 'undefined') {
                 window.alertify.error('Network error occurred while loading data');
             } else {
@@ -632,7 +623,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для заполнения формы данными
     function populateEditForm(formType, form, data) {
-        console.log('Populating form with data:', data);
+        // Populating form with data
         
         // Заполняем основные поля
         const titleField = form.querySelector(`#${formType}-title`);
@@ -788,5 +779,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    console.log('My Task Feed JavaScript loaded successfully!');
+            // My Task Feed JavaScript loaded successfully
 });

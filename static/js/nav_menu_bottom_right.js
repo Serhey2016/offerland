@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .catch(error => {
-                console.error('Error loading content:', error);
+                // Error loading content
                 
                 // Показываем ошибку с минимальным временем
                 const elapsedTime = Date.now() - startTime;

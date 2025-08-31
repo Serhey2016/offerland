@@ -44,9 +44,6 @@ const Utils = {
      */
     getElement(selector) {
         const element = document.getElementById(selector);
-        if (!element) {
-            console.warn(`Element with ID '${selector}' not found`);
-        }
         return element;
     },
 
@@ -82,7 +79,6 @@ class HashtagManager {
 
     init() {
         if (!this.container || !this.input || !this.dropdown || !this.hidden) {
-            console.error('HashtagManager: Required elements not found');
             return;
         }
 
@@ -95,7 +91,6 @@ class HashtagManager {
             const tagsData = this.container.getAttribute('data-all-tags');
             this.allTags = JSON.parse(tagsData || '[]');
         } catch (error) {
-            console.error('Error parsing hashtags data:', error);
             this.allTags = [];
         }
     }
@@ -406,7 +401,6 @@ class FormValidator {
         const timeEndField = this.form.querySelector('#time-slot-time-end');
 
         if (!dateStartField || !dateEndField || !timeStartField || !timeEndField) {
-            console.warn('Date/time fields not found for validation');
             return { isValid: true };
         }
 
@@ -462,7 +456,6 @@ class FormSubmitter {
             this.handleResponse(response);
             
         } catch (error) {
-            console.error('❌ FormSubmitter: Error during submission:', error);
             this.handleError(error);
         } finally {
             this.setLoadingState(false);
@@ -471,7 +464,6 @@ class FormSubmitter {
 
     validateDependencies() {
         if (!window.alertify) {
-            console.error('❌ Alertify not found');
             return false;
         }
         return true;
@@ -488,20 +480,12 @@ class FormSubmitter {
         
         // Проверяем, что форма существует
         if (!this.form) {
-            console.error('❌ Form not found in prepareFormData');
             throw new Error('Form not found');
         }
         
         // Проверяем action формы
         if (!this.form.action) {
-            console.error('❌ Form action is undefined');
-            console.error('❌ Form element:', this.form);
-            console.error('❌ Form attributes:', {
-                id: this.form.id,
-                className: this.form.className,
-                method: this.form.method,
-                action: this.form.action,
-                enctype: this.form.enctype
+            throw new Error('Form action is undefined');
             });
             throw new Error('Form action is not set');
         }
@@ -546,7 +530,6 @@ class FormSubmitter {
             const categoryValue = categoryField.value;
             formData.append('category', categoryValue);
         } else {
-            console.warn('❌ Category field not found');
             formData.append('category', '');
         }
         
@@ -554,7 +537,6 @@ class FormSubmitter {
             const serviceValue = serviceField.value;
             formData.append('services', serviceValue);
         } else {
-            console.warn('❌ Service field not found');
             formData.append('services', '');
         }
         
@@ -571,7 +553,6 @@ class FormSubmitter {
             const dateStartValue = dateStartField.value;
             formData.append('date_start', dateStartValue);
         } else {
-            console.warn('❌ Date start field not found');
             formData.append('date_start', '');
         }
         
@@ -579,7 +560,6 @@ class FormSubmitter {
             const dateEndValue = dateEndField.value;
             formData.append('date_end', dateEndValue);
         } else {
-            console.warn('❌ Date end field not found');
             formData.append('date_end', '');
         }
         
@@ -587,7 +567,6 @@ class FormSubmitter {
             const timeStartValue = timeStartField.value;
             formData.append('time_start', timeStartValue);
         } else {
-            console.warn('❌ Time start field not found');
             formData.append('time_start', '');
         }
         
@@ -595,7 +574,6 @@ class FormSubmitter {
             const timeEndValue = timeEndField.value;
             formData.append('time_end', timeEndValue);
         } else {
-            console.warn('❌ Time end field not found');
             formData.append('time_end', '');
         }
     }
@@ -630,7 +608,6 @@ class FormSubmitter {
                     if (value && !isNaN(value)) {
                         formData.append(fieldName, value);
                     } else {
-                        console.warn(`⚠️ Invalid numeric value for ${fieldName}:`, value);
                         formData.append(fieldName, '0');
                     }
                 } else {
@@ -670,28 +647,14 @@ class FormSubmitter {
             });
 
             if (!response.ok) {
-                console.error('🌐 HTTP error response:');
-                console.error('🌐 Status:', response.status);
-                console.error('🌐 Status text:', response.statusText);
-                
                 // Для ошибок 400 (Bad Request) получаем детали ошибки
                 if (response.status === 400) {
                     try {
                         const errorText = await response.text();
-                        console.error('🌐 400 error details:', errorText);
                         return { success: false, error: errorText };
                     } catch (e) {
-                        console.error('🌐 Could not read 400 error details:', e);
                         return { success: false, error: 'Bad Request - validation error' };
                     }
-                }
-                
-                // Для других ошибок также получаем детали
-                try {
-                    const errorText = await response.text();
-                    console.error('🌐 Error response body:', errorText);
-                } catch (e) {
-                    console.error('🌐 Could not read error response body:', e);
                 }
                 
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -701,7 +664,6 @@ class FormSubmitter {
             return jsonResponse;
             
         } catch (error) {
-            console.error('🌐 Network or parsing error:', error);
             throw error;
         }
     }
@@ -733,16 +695,6 @@ class FormSubmitter {
     }
 
     handleError(error) {
-        console.error('💥 Error message:', error.message);
-        console.error('💥 Error stack:', error.stack);
-        
-        // Дополнительная отладочная информация
-        if (this.form) {
-            // Form information available
-        } else {
-            console.error('💥 Form is null or undefined');
-        }
-        
         const message = `Error saving Time Slot: ${error.message}`;
         showAlertifyNotification(message, 'error');
     }

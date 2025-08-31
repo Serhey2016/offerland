@@ -25,7 +25,7 @@ function initNotesPopup() {
 // Инициализация сердечек для избранного
 function initHeartIcons() {
     const heartIcons = document.querySelectorAll('.sftsts1_favorites_icon');
-    console.log('💖 Initializing heart icons for tasks/projects/tenders, found:', heartIcons.length);
+            // Initializing heart icons for tasks/projects/tenders
     
     heartIcons.forEach(icon => {
         // Устанавливаем начальное состояние
@@ -43,24 +43,24 @@ function initHeartIcons() {
             e.stopPropagation();
             
             const isFavorite = newIcon.dataset.favorite === 'true';
-            console.log('💖 Heart clicked in task/project/tender! Current state:', isFavorite);
+            // Heart clicked in task/project/tender
             
             if (isFavorite) {
                 // Убираем из избранного
                 newIcon.classList.remove('favorite-checked');
                 newIcon.classList.add('favorite-unchecked');
                 newIcon.dataset.favorite = 'false';
-                console.log('💔 Removed from favorites');
+                // Removed from favorites
             } else {
                 // Добавляем в избранное
                 newIcon.classList.remove('favorite-unchecked');
                 newIcon.classList.add('favorite-checked');
                 newIcon.dataset.favorite = 'true';
-                console.log('❤️ Added to favorites');
+                // Added to favorites
             }
         });
         
-        console.log('💖 Heart icon initialized for task/project/tender:', newIcon.id);
+                    // Heart icon initialized for task/project/tender
     });
 }
 
@@ -209,7 +209,7 @@ function initCKEditor(taskId) {
                 textarea.dataset.ckeditorInstance = editor;
             })
             .catch(error => {
-                console.error('CKEditor initialization error:', error);
+                // CKEditor initialization error
             });
     }
 }

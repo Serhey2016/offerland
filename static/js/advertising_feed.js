@@ -95,7 +95,7 @@ if (typeof alertify !== 'undefined' && alertify && alertify.notifier && typeof a
 // Инициализация сердечек для избранного
 function initHeartIcons() {
     const heartIcons = document.querySelectorAll('.sftsts1_favorites_icon');
-    console.log('💖 Initializing heart icons for advertising, found:', heartIcons.length);
+            // Initializing heart icons for advertising
     
     heartIcons.forEach(icon => {
         // Устанавливаем начальное состояние
@@ -113,24 +113,24 @@ function initHeartIcons() {
             e.stopPropagation();
             
             const isFavorite = newIcon.dataset.favorite === 'true';
-            console.log('💖 Heart clicked in advertising! Current state:', isFavorite);
+            // Heart clicked in advertising
             
             if (isFavorite) {
                 // Убираем из избранного
                 newIcon.classList.remove('favorite-checked');
                 newIcon.classList.add('favorite-unchecked');
                 newIcon.dataset.favorite = 'false';
-                console.log('💔 Removed from favorites');
+                // Removed from favorites
             } else {
                 // Добавляем в избранное
                 newIcon.classList.remove('favorite-unchecked');
                 newIcon.classList.add('favorite-checked');
                 newIcon.dataset.favorite = 'true';
-                console.log('❤️ Added to favorites');
+                // Added to favorites
             }
         });
         
-        console.log('💖 Heart icon initialized for advertising:', newIcon.id);
+                    // Heart icon initialized for advertising
     });
 }
 
@@ -161,7 +161,7 @@ const AdvertisingFeed = {
             if (e.target.closest('.action_btn') && e.target.textContent === 'Chat') {
                 const post = e.target.closest('.social_feed');
                 if (!post) {
-                    console.warn('Parent .social_feed element not found for chat button');
+                    // Parent .social_feed element not found for chat button
                     return;
                 }
                 const postId = post.dataset.postId;
@@ -180,7 +180,7 @@ const AdvertisingFeed = {
             if (e.target.closest('.action_btn') && e.target.textContent === 'Comments') {
                 const post = e.target.closest('.social_feed');
                 if (!post) {
-                    console.warn('Parent .social_feed element not found for comments button');
+                    // Parent .social_feed element not found for comments button
                     return;
                 }
                 const postId = post.dataset.postId;
@@ -199,7 +199,7 @@ const AdvertisingFeed = {
             if (e.target.closest('.order_now')) {
                 const post = e.target.closest('.social_feed');
                 if (!post) {
-                    console.warn('Parent .social_feed element not found for order now button');
+                    // Parent .social_feed element not found for order now button
                     return;
                 }
                 const postId = post.dataset.postId;
@@ -226,13 +226,13 @@ const AdvertisingFeed = {
                 
                 const post = menuButton.closest('.social_feed');
                 if (!post) {
-                    console.warn('Parent .social_feed element not found for menu button:', menuButton);
+                    // Parent .social_feed element not found for menu button
                     return;
                 }
                 
                 const postId = post.dataset.postId;
                 if (!postId) {
-                    console.warn('Post ID not found in dataset for element:', post);
+                    // Post ID not found in dataset for element
                     return;
                 }
                 
@@ -251,7 +251,7 @@ const AdvertisingFeed = {
                         openDropdownById(postId);
                     }
                 } else {
-                    console.warn('Dropdown not found for post ID:', postId);
+                    // Dropdown not found for post ID
                 }
             }
         });

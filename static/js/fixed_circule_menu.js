@@ -36,19 +36,19 @@ document.addEventListener('DOMContentLoaded', function () {
     if (sub2Btn) {
         sub2Btn.addEventListener('click', function (e) {
             e.stopPropagation();
-            console.log('Sub2 button clicked!');
+            // Sub2 button clicked
             
             // Показываем модальное окно выбора типа
             const typeSelectionModal = document.getElementById('type-selection-modal');
             if (typeSelectionModal) {
                 typeSelectionModal.style.display = 'flex';
-                console.log('Type selection modal shown');
+                // Type selection modal shown
                 
                 // Добавляем обработчики для модального окна
                 setupTypeSelectionModal(typeSelectionModal);
-            } else {
-                console.error('Type selection modal not found!');
-            }
+                    } else {
+            // Type selection modal not found
+        }
         });
     }
     
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.querySelectorAll('.type-option').forEach(option => {
             option.addEventListener('click', function() {
                 const type = this.dataset.type;
-                console.log('Type option clicked:', type);
+                // Type option clicked
                 
                 // Скрываем модальное окно выбора типа
                 modal.style.display = 'none';
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const closeBtn = modal.querySelector('.modal_close_btn');
         if (closeBtn) {
             closeBtn.addEventListener('click', function() {
-                console.log('Close button clicked');
+                // Close button clicked
                 modal.style.display = 'none';
             });
         }
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Закрытие по клику вне модального окна
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
-                console.log('Clicked outside modal, closing');
+                // Clicked outside modal, closing
                 modal.style.display = 'none';
             }
         });
@@ -88,8 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Функция показа формы по типу
     function showFormByType(type) {
-        console.log('=== SHOW FORM BY TYPE START ===');
-        console.log('Type:', type);
+        // Show form by type start
         
         // Скрываем модальное окно выбора типа
         const typeSelectionModal = document.getElementById('type-selection-modal');
@@ -105,16 +104,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (formId) {
             const form = document.getElementById(formId);
             if (form) {
-                console.log('Showing form:', formId);
+                // Showing form
                 form.style.display = 'flex';
-            } else {
-                console.error('Form not found:', formId);
-            }
+                    } else {
+            // Form not found
+        }
         } else {
-            console.error('Form ID not found for type:', type);
+            // Form ID not found for type
         }
         
-        console.log('=== SHOW FORM BY TYPE COMPLETED ===');
+        // Show form by type completed
     }
     
     // Функция скрытия всех форм

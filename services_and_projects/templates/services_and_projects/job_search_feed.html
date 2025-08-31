@@ -482,19 +482,15 @@ function closeCreateTaskModal(jobSearchId) {
 // Обработчик отправки формы создания таски
 document.addEventListener('DOMContentLoaded', function() {
     const jobSearchId = {{ job_search.id }};
-    console.log('DOM loaded, job search ID:', jobSearchId);
     
     // Привязываем обработчики к кнопкам "next"
     const nextButtons = document.querySelectorAll('.job_feed_next_action');
-    console.log('Found next buttons:', nextButtons.length);
     
     nextButtons.forEach(button => {
         const activityId = button.getAttribute('data-activity-id');
-        console.log('Button activity ID:', activityId);
         
         button.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Next button clicked for activity:', activityId);
             openCreateTaskModal(parseInt(activityId));
         });
     });
@@ -506,8 +502,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error(`Form create-task-form-${jobSearchId} not found!`);
         return;
     }
-    
-    console.log('Form found:', form);
     
     // Создаем глобальную функцию для обработки отправки формы
     window.handleTaskFormSubmit = function(formElement, event) {
@@ -546,19 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return false; // Предотвращаем стандартную отправку
         }
         
-        // Отладочная информация
-        console.log('=== TASK CREATION DEBUG ===');
-        console.log('Activity ID:', activityId);
-        console.log('Job Search ID:', jobSearchId);
-        console.log('Sending request to:', `/services_and_projects/create_activity_task/${activityId}/`);
-        console.log('Form data:', Object.fromEntries(formData));
-        console.log('CSRF token:', csrftoken);
-        console.log('Form element:', formElement);
-        console.log('==========================');
-        
         // Отправляем AJAX запрос
-        console.log('Starting fetch request...');
-        
         fetch(`/services_and_projects/create_activity_task/${activityId}/`, {
             method: 'POST',
             body: formData,
@@ -567,27 +549,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(response => {
-            console.log('Response received:', response);
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
-            
             // Проверяем, что ответ не HTML
             const contentType = response.headers.get('content-type');
-            console.log('Content-Type:', contentType);
             
             if (contentType && contentType.includes('application/json')) {
                 return response.json();
             } else {
-                // Если сервер вернул HTML, читаем его для отладки
-                return response.text().then(text => {
-                    console.error('Server returned HTML instead of JSON:');
-                    console.error(text.substring(0, 500)); // Показываем первые 500 символов
-                    throw new Error('Server returned HTML instead of JSON. Check server logs for errors.');
-                });
+                            // Если сервер вернул HTML, читаем его для отладки
+            return response.text().then(text => {
+                throw new Error('Server returned HTML instead of JSON. Check server logs for errors.');
+            });
             }
         })
         .then(data => {
-            console.log('JSON data received:', data);
             
             if (data.success) {
                 // Обновляем отображение таски
@@ -635,7 +609,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.classList.contains('task-creation-form')) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Task creation form submit intercepted by global handler');
             return window.handleTaskFormSubmit(e.target, e);
         }
     }, true); // Используем capture phase для раннего перехвата

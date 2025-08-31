@@ -1,5 +1,7 @@
 /* Advertising Feed CSS Styles */
 
+
+
 /* ===== ОСНОВНЫЕ СТИЛИ ДЛЯ SOCIAL FEED ===== */
 
 .social_feed {
@@ -994,4 +996,33 @@
     background: linear-gradient(135deg, #5a6268, #343a40);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ===== HOVER EFFECTS FOR ADVERTISING FEED ===== */
+
+/* Hover эффекты для постов advertising feed */
+.social_feed {
+    transition: all 0.3s ease;
+}
+
+.social_feed:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.social_feed.hover {
+    background-color: rgba(39, 56, 77, 0.05);
+}
+
+.social_feed2 {
+    transition: all 0.3s ease;
+}
+
+.social_feed2:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.social_feed2.hover {
+    background-color: rgba(39, 56, 77, 0.05);
 }

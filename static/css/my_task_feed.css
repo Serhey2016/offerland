@@ -741,3 +741,19 @@ textarea {
         padding: 12px;
     }
 }
+
+/* ===== HOVER EFFECTS FOR TASK FEED ===== */
+
+/* Hover эффекты для постов task feed */
+.social_feed2 {
+    transition: all 0.3s ease;
+}
+
+.social_feed2:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.social_feed2.hover {
+    background-color: rgba(39, 56, 77, 0.05);
+}

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Check if all required elements exist before proceeding
     if (!shareBtn || !modal || !closeModal || !copyBtn || !copyMessage || !shareLink) {
-        console.log("Popup elements not found, skipping initialization");
+        // Popup elements not found, skipping initialization
         return;
     }
 

@@ -134,7 +134,7 @@ class FeedsFiltering {
                 'analytics', 'seo', 'content', 'social', 'email', 'automation'
             ];
         } catch (error) {
-            console.error('Error loading hashtags:', error);
+            // Error loading hashtags
         }
     }
 
@@ -273,7 +273,7 @@ class FeedsFiltering {
             this.closeModal();
             this.showSuccessMessage('Filters applied successfully');
         } catch (error) {
-            console.error('Error applying filters:', error);
+            // Error applying filters
             this.showErrorMessage('Error applying filters. Please try again.');
         }
     }
@@ -323,7 +323,7 @@ class FeedsFiltering {
         // Here you would typically send the filter data to your backend
         // and update the page content accordingly
         
-        console.log('Applying filters:', filterData);
+        // Applying filters
         
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -337,7 +337,7 @@ class FeedsFiltering {
         // Implementation depends on your backend and content structure
         
         // For now, just log the action
-        console.log('Updating page content with filters:', filterData);
+        // Updating page content with filters
         
         // You could trigger a page reload or AJAX request here
         // window.location.reload();
@@ -347,7 +347,7 @@ class FeedsFiltering {
         try {
             localStorage.setItem('offerland_filters', JSON.stringify(filterData));
         } catch (error) {
-            console.error('Error storing filters:', error);
+            // Error storing filters
         }
     }
 
@@ -359,7 +359,7 @@ class FeedsFiltering {
                 this.populateFormWithFilters(filters);
             }
         } catch (error) {
-            console.error('Error loading stored filters:', error);
+            // Error loading stored filters
         }
     }
 

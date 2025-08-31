@@ -858,7 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 // Для Time Slot формы не показываем ошибку 400, так как данные сохраняются
                 if (form.id === 'time-slot-form' && response.status === 400) {
-                    console.log('Time Slot form: 400 error treated as success');
+                    // Time Slot form: 400 error treated as success
                     return { success: true, type: 'Time Slot' };
                 }
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -1115,11 +1115,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                 area.id.includes('advertising-photo');
             
             if (!isPhotoField) {
-                console.log('Skipping non-photo field:', area.id || area.className, 'Text:', dropZoneText);
+                // Skipping non-photo field
                 return;
             }
             
-            console.log('Initializing photo upload for:', area.id || area.className, 'Text:', dropZoneText);
+            // Initializing photo upload
             
             // Обработчик клика по drop-zone
             dropZone.addEventListener('click', function(e) {
@@ -1191,12 +1191,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Показываем предупреждение только если есть невалидные файлы
         if (invalidFiles.length > 0) {
             const invalidFileNames = invalidFiles.map(f => f.name).join(', ');
-            console.warn(`Invalid file types detected: ${invalidFileNames}`);
-            
-            // Логируем детали невалидных файлов для отладки
-            invalidFiles.forEach(file => {
-                console.warn(`Invalid file: ${file.name}, Type: ${file.type}, Size: ${file.size} bytes`);
-            });
             
             // Показываем alert только если есть невалидные файлы
             if (invalidFiles.length > 0) {
@@ -1205,16 +1199,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (validFiles.length === 0) {
-            console.log('No valid image files found');
+            // No valid image files found
             return;
         }
         
-        console.log(`Processing ${validFiles.length} valid image files`);
-        
-        // Логируем детали валидных файлов для отладки
-        validFiles.forEach(file => {
-            console.log(`Valid file: ${file.name}, Type: ${file.type}, Size: ${file.size} bytes`);
-        });
+        // Processing valid image files
         
         // Очищаем drop-zone
         dropZone.innerHTML = '';
@@ -1408,15 +1397,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Обрабатываем действия
                 switch(action) {
                     case 'start':
-                        console.log('Start action for:', id);
                         // Здесь можно добавить логику для действия Start
                         break;
                     case 'edit':
-                        console.log('Edit action for:', id);
                         // Здесь можно добавить логику для действия Edit
                         break;
                     case 'remove':
-                        console.log('Remove action for:', id);
                         // Здесь можно добавить логику для действия Remove
                         break;
                 }
