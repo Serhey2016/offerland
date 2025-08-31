@@ -1,5 +1,85 @@
 /* Publish Form Popup Styles */
 
+/* Toggle Switch Styles */
+.toggle_switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 24px;
+    margin: 0 4px;
+}
+
+.form_group label {
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Hidden checkbox input */
+.toggle_input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.toggle_label {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #4a5568;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle_label::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: #f7fafc;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Toggle switch checked state */
+.toggle_input:checked + .toggle_label {
+    background: #48bb78;
+}
+
+.toggle_input:checked + .toggle_label::before {
+    transform: translateX(36px);
+}
+
+.toggle_text_left,
+.toggle_text_right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 500;
+    color: #2d3748;
+    white-space: nowrap;
+    pointer-events: none;
+    min-width: 50px;
+    text-align: center;
+}
+
+.toggle_text_left {
+    right: 100%;
+    margin-right: 8px;
+}
+
+.toggle_text_right {
+    left: 100%;
+    margin-left: 8px;
+}
+
 /* Overlay */
 .publish_form_popup {
     position: fixed;
@@ -7,8 +87,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 10000;
-    display: none;
+    z-index: 89;
+    display: none !important;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -18,6 +98,13 @@
     display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
+}
+
+/* Ensure forms are hidden by default - override any other CSS */
+.publish_form_popup:not(.show) {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
 }
 
 .publish_form_overlay {
@@ -176,6 +263,619 @@
 .form_group label:has(+ textarea[required])::after {
     content: " *";
     color: #ef4444;
+}
+
+/* Category and Service relationship styling */
+.form_group select[name="category"]:focus,
+.form_group select[name="service"]:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form_group select[name="service"]:disabled {
+    background-color: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Service options styling */
+.form_group select[name="service"] option {
+    padding: 8px;
+}
+
+.form_group select[name="service"] option[data-category] {
+    font-weight: 500;
+}
+
+/* ===== HASHTAGS STYLES ===== */
+
+.publish_form_hashtag_container {
+    position: relative;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px;
+    min-height: 44px;
+    background: white;
+    cursor: text;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    overflow: visible;
+}
+
+.publish_form_hashtag_container:focus-within {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background-color: white;
+}
+
+.publish_form_hashtag_container:focus-within::before {
+    display: none;
+}
+
+.publish_form_hashtag_container.error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.publish_form_hashtag_container.error:focus-within {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.publish_form_hashtag_container.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.publish_form_hashtag_container.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.publish_form_hashtag_container:hover:not(:focus-within) {
+    border-color: #d1d5db;
+    background-color: #fafafa;
+}
+
+.publish_form_hashtags_input {
+    border: none;
+    outline: none;
+    background: transparent;
+    flex: 1;
+    min-width: 120px;
+    font-size: 14px;
+    color: #111827;
+    padding: 0;
+    margin: 0;
+}
+
+.publish_form_hashtags_input::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+    transition: color 0.2s ease;
+}
+
+.publish_form_hashtags_input:focus::placeholder {
+    color: #d1d5db;
+}
+
+/* Empty state styling */
+.publish_form_hashtag_container:empty::before {
+    content: attr(data-placeholder, 'Start typing to add hashtags...');
+    color: #9ca3af;
+    font-style: italic;
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    z-index: -1;
+}
+
+.publish_form_hashtag_container:not(:empty)::before {
+    display: none;
+}
+
+/* Focus state improvements */
+.publish_form_hashtag_container:focus-within {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background-color: white;
+}
+
+.publish_form_hashtag_container:focus-within::before {
+    display: none;
+}
+
+.publish_form_hashtag_container:focus-within .publish_form_hashtags_input {
+    color: #111827;
+}
+
+.publish_form_hashtag_container:hover:not(:focus-within) {
+    border-color: #d1d5db;
+    background-color: #fafafa;
+}
+
+/* Hover state improvements */
+.publish_form_hashtag_container:hover:not(:focus-within) .publish_form_hashtags_input::placeholder {
+    color: #6b7280;
+}
+
+.publish_form_hashtag_container:hover:not(:focus-within)::before {
+    color: #6b7280;
+}
+
+/* Active state improvements */
+.publish_form_hashtag_container:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+}
+
+.publish_form_hashtag_container:active .publish_form_hashtags_input {
+    color: #111827;
+}
+
+/* Validation state improvements */
+.publish_form_hashtag_container.validating {
+    border-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+.publish_form_hashtag_container.validating:focus-within {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.publish_form_hashtag_container.validating::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f59e0b;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Success state improvements */
+.publish_form_hashtag_container.success {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+.publish_form_hashtag_container.success:focus-within {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.publish_form_hashtag_container.success::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    animation: scaleIn 0.2s ease;
+}
+
+/* Error state improvements */
+.publish_form_hashtag_container.error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.publish_form_hashtag_container.error:focus-within {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.publish_form_hashtag_container.error::after {
+    content: '✕';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    animation: scaleIn 0.2s ease;
+}
+
+/* Warning state improvements */
+.publish_form_hashtag_container.warning {
+    border-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+.publish_form_hashtag_container.warning:focus-within {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.publish_form_hashtag_container.warning::after {
+    content: '⚠';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: #f59e0b;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    animation: scaleIn 0.2s ease;
+}
+
+/* Info state improvements */
+.publish_form_hashtag_container.info {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+.publish_form_hashtag_container.info:focus-within {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.publish_form_hashtag_container.info::after {
+    content: 'ℹ';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    animation: scaleIn 0.2s ease;
+}
+
+/* Loading state improvements */
+.publish_form_hashtag_container.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.publish_form_hashtag_container.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    animation: loading 1.5s infinite;
+}
+
+.publish_form_hashtag_container.loading .publish_form_hashtags_input {
+    color: #9ca3af;
+}
+
+.publish_form_hashtag_container.loading .publish_form_hashtags_input::placeholder {
+    color: #d1d5db;
+}
+
+/* Maximum hashtag limit improvements */
+.publish_form_hashtag_container.limit-reached {
+    border-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+.publish_form_hashtag_container.limit-reached:focus-within {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.publish_form_hashtag_container.limit-reached .publish_form_hashtags_input::placeholder {
+    color: #f59e0b;
+}
+
+.publish_form_hashtag_container.limit-reached .publish_form_hashtags_input {
+    color: #f59e0b;
+}
+
+.publish_form_hashtag_container.limit-reached::after {
+    content: '🔒';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: #f59e0b;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: bold;
+    animation: scaleIn 0.2s ease;
+}
+
+/* Hashtag help link styling */
+.form_group label a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+}
+
+.form_group label a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.form_group label a:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Hashtag counter */
+.publish_form_hashtag_counter {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #3b82f6;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    animation: scaleIn 0.2s ease;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.publish_form_hashtags_dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    width: 100%;
+    min-width: 200px;
+    margin: 0;
+    transform: translateY(4px);
+}
+
+.publish_form_hashtags_dropdown.show {
+    display: block;
+    animation: slideDown 0.2s ease;
+}
+
+.publish_form_hashtags_dropdown_item {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.publish_form_hashtags_dropdown_item:last-child {
+    border-bottom: none;
+}
+
+.publish_form_hashtags_dropdown_item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(2px);
+}
+
+.publish_form_hashtags_dropdown_item.selected {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    font-weight: 500;
+}
+
+.publish_form_hashtags_dropdown_item::before {
+    content: '#';
+    color: #9ca3af;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.publish_form_hashtags_dropdown_item.no-results {
+    color: #9ca3af;
+    font-style: italic;
+    cursor: default;
+    padding: 12px 14px;
+    text-align: center;
+    justify-content: center;
+}
+
+.publish_form_hashtags_dropdown_item.no-results::before {
+    display: none;
+}
+
+.publish_form_hashtags_dropdown_item.no-results:hover {
+    background-color: transparent;
+    transform: none;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom scrollbar for hashtag dropdown */
+.publish_form_hashtags_dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.publish_form_hashtags_dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.publish_form_hashtags_dropdown::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.publish_form_hashtags_dropdown::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Hashtag chips */
+.publish_form_hashtag_chip {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1565c0;
+    padding: 6px 10px;
+    margin: 2px 4px 2px 0;
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: default;
+    animation: fadeIn 0.2s ease;
+    border: 1px solid #90caf9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.publish_form_hashtag_chip::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.publish_form_hashtag_chip.added::before {
+    left: 100%;
+}
+
+.publish_form_hashtag_chip.removing {
+    animation: fadeOut 0.2s ease forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+.publish_form_hashtag_chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.publish_form_hashtag_chip .remove_chip {
+    background: none;
+    border: none;
+    color: #1565c0;
+    cursor: pointer;
+    margin-left: 6px;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    font-weight: bold;
+}
+
+.publish_form_hashtag_chip .remove_chip:hover {
+    background: #1565c0;
+    color: white;
+    transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* Actions */
@@ -341,4 +1041,54 @@
     to {
         transform: translate(-50%, -50%) rotate(360deg);
     }
+}
+
+.publish_form_hashtag_validation svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+/* Hashtag suggestions styling */
+.publish_form_hashtag_suggestions {
+    margin-top: 8px;
+    padding: 8px;
+    background: #f8fafc;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.publish_form_hashtag_suggestions strong {
+    color: #334155;
+    font-weight: 600;
+}
+
+/* Empty state improvements */
+.publish_form_hashtag_container:empty {
+    min-height: 44px;
+    align-items: center;
+}
+
+.publish_form_hashtag_container:empty::before {
+    content: attr(data-placeholder, 'Start typing to add hashtags...');
+    color: #9ca3af;
+    font-style: italic;
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    z-index: -1;
+    font-size: 14px;
+}
+
+.publish_form_hashtag_container:not(:empty)::before {
+    display: none;
+}
+
+.publish_form_hashtag_container:hover:not(:focus-within) {
+    border-color: #d1d5db;
+    background-color: #fafafa;
 }

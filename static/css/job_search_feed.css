@@ -127,7 +127,7 @@
     border-radius: 8px !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     min-width: 120px !important;
-    z-index: 1004 !important;
+    z-index: 86 !important;
     display: none !important;
     overflow: hidden !important;
     opacity: 0 !important;
@@ -554,7 +554,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
-    z-index: 10000;
+    z-index: 87;
     /* Центрирование с помощью flexbox */
     align-items: center;
     justify-content: center;
@@ -770,7 +770,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
-    z-index: 10000;
+    z-index: 87;
     /* Добавляем flexbox для центрирования */
     justify-content: center;
     align-items: center;
@@ -817,7 +817,7 @@
     padding: 5px;
     border-radius: 50%;
     transition: all 0.2s ease;
-    z-index: 1001;
+    z-index: 88;
 }
 
 .modal_close_btn:hover {

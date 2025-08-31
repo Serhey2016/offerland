@@ -9,7 +9,7 @@
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 90;
 }
 
 .modal-overlay.show {
@@ -94,6 +94,7 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     border: 3px solid #282D3B;
     margin: 20px;
+    z-index: 91;
 }
 
 /* Header actions container - только для форм редактирования */
@@ -296,7 +297,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     min-width: 120px;
-    z-index: 1001;
+    z-index: 93;
     display: none;
     overflow: hidden;
     opacity: 0;
@@ -729,10 +730,29 @@ textarea {
     border: 1px solid #eee;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(40,45,59,0.15);
-    z-index: 10000;
+    z-index: 95;
     max-height: 200px;
     overflow-y: auto;
     min-width: 200px;
+    /* Дополнительные стили для видимости */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+
+
+
+
+/* Принудительное отображение dropdown */
+.hashtag-dropdown-menu[style*="display: block"],
+.hashtag-dropdown-menu[style*="visibility: visible"],
+.hashtag-dropdown-menu.show,
+.hashtag-dropdown-menu.visible {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
 }
 .hashtag-dropdown-menu .dropdown-item {
     padding: 8px 14px;
@@ -943,7 +963,7 @@ textarea {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     min-width: 120px;
-    z-index: 1002;
+    z-index: 94;
     display: none;
     overflow: hidden;
     opacity: 0;

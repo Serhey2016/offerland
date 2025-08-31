@@ -19,26 +19,43 @@
     font-weight: 600;
 }
 
-.form-group {
+.timeslot-form-group {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.timeslot-form-group label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
     color: #495057;
 }
 
-.form-group label a {
+.timeslot-form-group label a {
     color: #007bff;
     text-decoration: none;
     font-size: 12px;
     margin-left: 10px;
 }
 
-.form-group label a:hover {
+.timeslot-form-group label a:hover {
     text-decoration: underline;
+}
+
+.timeslot-form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.timeslot-form-group.half {
+    flex: 1;
+}
+
+.timeslot-form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
 }
 
 /* ============================================================================
@@ -58,14 +75,14 @@
     background: white;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     position: relative;
-    z-index: 9998;
+    z-index: 85;
 }
 
 .hashtag-chip-container:focus-within {
     border-color: #80bdff;
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    z-index: 10000;
+    z-index: 86;
 }
 
 .hashtag-chip {
@@ -81,7 +98,7 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
     position: relative;
-    z-index: 9997;
+    z-index: 84;
 }
 
 .hashtag-chip:hover {
@@ -134,7 +151,7 @@
     max-height: 200px;
     overflow-y: auto;
     display: none;
-    z-index: 9999;
+    z-index: 87;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     margin-top: 2px;
 }
@@ -171,12 +188,12 @@
    Стили для кнопок
    ============================================================================ */
 
-.form-actions {
+.timeslot-form-actions {
     margin-top: 20px;
     text-align: right;
 }
 
-.btn {
+.timeslot-btn {
     padding: 10px 20px;
     border: none;
     border-radius: 6px;
@@ -189,24 +206,47 @@
     line-height: 1.5;
 }
 
-.btn-secondary {
+.timeslot-btn-secondary {
     background-color: #6c757d;
     color: white;
 }
 
-.btn-secondary:hover {
+.timeslot-btn-secondary:hover {
     background-color: #5a6268;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.btn-secondary:active {
+.timeslot-btn-secondary:active {
     transform: translateY(0);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.btn-secondary:disabled {
+.timeslot-btn-secondary:disabled {
     background-color: #adb5bd;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.timeslot-btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.timeslot-btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.timeslot-btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 123, 255, 0.2);
+}
+
+.timeslot-btn-primary:disabled {
+    background-color: #6c757d;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -299,12 +339,12 @@
    Стили для модальных окон
    ============================================================================ */
 
-.modal-overlay {
-    z-index: 9990;
+.timeslot-modal-overlay {
+    z-index: 88;
 }
 
-.modal-form {
-    z-index: 9991;
+.timeslot-modal-form {
+    z-index: 89;
 }
 
 /* ============================================================================
@@ -313,11 +353,11 @@
    ============================================================================ */
 
 .hashtag-dropdown-menu.show {
-    z-index: 99999 !important;
+    z-index: 90 !important;
 }
 
 .hashtag-chip-container.has-dropdown-open {
-    z-index: 100000 !important;
+    z-index: 91 !important;
 }
 
 /* ============================================================================

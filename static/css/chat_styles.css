@@ -11,13 +11,15 @@
     min-height: 340px;
     max-height: 90vh;
     position: relative;
-    display: flex;
+    display: none; /* Скрыт по умолчанию */
     flex-direction: column;
     align-items: stretch;
     margin: 24px auto;
     box-sizing: border-box;
     font-family: 'Montserrat', Arial, sans-serif;
     gap: 0;
+    opacity: 0; /* Начинаем с прозрачности 0 */
+    transition: opacity 0.3s ease; /* Плавный переход */
 }
 .cmc_search_container {
     margin-bottom: 18px;
@@ -137,7 +139,7 @@
     height: 100vh;
     background: rgba(0,0,0,0.25);
     backdrop-filter: blur(6px);
-    z-index: 2000;
+    z-index: 92;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,14 +151,46 @@
     display: none;
 }
 
+/* Скрытие контейнера чата когда overlay скрыт */
+.chat_modal_overlay.hidden .chat_messages_container {
+    display: none !important;
+    opacity: 0; /* Скрываем с прозрачностью 0 */
+    animation: fadeOut 0.2s ease-in; /* Плавное скрытие */
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
 /* Центрирование popup чата */
 .chat_modal_overlay .chat_messages_container {
     position: relative;
     margin: 0;
     top: 0;
     left: 0;
-    z-index: 2100;
+    z-index: 93;
     box-shadow: 0 8px 32px rgba(40,45,59,0.18);
+    display: flex !important; /* Принудительно показываем в overlay */
+    opacity: 1; /* Показываем с полной прозрачностью */
+    animation: fadeIn 0.3s ease-out; /* Плавное появление */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* Крестик закрытия */
@@ -171,7 +205,7 @@
     color: #282d3b;
     font-size: 24px;
     cursor: pointer;
-    z-index: 2200;
+    z-index: 94;
     display: flex;
     align-items: center;
     justify-content: center;

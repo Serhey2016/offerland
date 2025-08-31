@@ -426,6 +426,11 @@
     </div>
 </div>
 
+<!-- Попап для публикации -->
+{% include 'services_and_projects/publish_form.html' with post_type='job_search' post_id=job_search.id %}
+            
+
+
 <!-- JavaScript для работы с попапом создания таски -->
 <script>
 function openCreateTaskModal(activityId) {
@@ -479,6 +484,8 @@ function closeCreateTaskModal(jobSearchId) {
     form.reset();
 }
 
+
+
 // Обработчик отправки формы создания таски
 document.addEventListener('DOMContentLoaded', function() {
     const jobSearchId = {{ job_search.id }};
@@ -494,6 +501,8 @@ document.addEventListener('DOMContentLoaded', function() {
             openCreateTaskModal(parseInt(activityId));
         });
     });
+    
+
     
     const form = document.getElementById(`create-task-form-${jobSearchId}`);
     

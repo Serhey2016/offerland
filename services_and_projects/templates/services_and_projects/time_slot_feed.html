@@ -40,6 +40,20 @@
         right: 0;
         margin-top: 4px;
     }
+    
+    /* Дополнительная защита - скрываем форму publish_form по умолчанию */
+    .publish_form_popup {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+    
+    /* Показываем только при наличии класса .show */
+    .publish_form_popup.show {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
 </style>
 
 <div class="social_feed_time_slot" data-timeslot-id="{{ time_slot.id }}" data-post-id="{{ time_slot.id }}" data-post-type="timeslot" 
@@ -200,65 +214,71 @@
     </div>
 </div>
 
+<!-- Подключаем CSS для Publish Form -->
+<link rel="stylesheet" href="{% static 'css/publish_form.css' %}">
+
 <!-- Подключаем скрипт для My Task Feed (для dropdown menu) -->
 <script src="{% static 'js/my_task_feed.js' %}"></script>
 
 <script>
     // Инициализация dropdown menu для time slot feed
     document.addEventListener('DOMContentLoaded', function() {
-        // Обработчик для пунктов меню time slot
+        // Обработчик только для редактирования и архивирования
+        // Publish обрабатывается глобально в publish_form.js
         document.addEventListener('click', function(e) {
             const menuItem = e.target.closest('[id^="menu_item_"][data-id="{{ time_slot.id }}"]');
             if (menuItem) {
-                e.preventDefault();
-                e.stopPropagation();
-                
                 const action = menuItem.dataset.action;
-                const id = menuItem.dataset.id;
                 
-
-                
-                // Обрабатываем действия
-                switch(action) {
-                    case 'edit':
-
-                        // Открываем форму редактирования
-                        if (window.EditTimeSlotForm) {
-                            // Получаем данные time slot для редактирования из data-атрибутов
-                            const timeSlotElement = document.querySelector(`[data-timeslot-id="${id}"]`);
-                            if (timeSlotElement) {
-                                const hashtagsString = timeSlotElement.dataset.hashtags || '';
-                                const hashtags = hashtagsString ? hashtagsString.split(',').filter(tag => tag.trim()) : [];
-                                
-                                const timeSlotData = {
-                                    category: timeSlotElement.dataset.category || '',
-                                    services: timeSlotElement.dataset.services || '',
-                                    date_start: timeSlotElement.dataset.dateStart || '',
-                                    time_start: timeSlotElement.dataset.timeStart || '',
-                                    date_end: timeSlotElement.dataset.dateEnd || '',
-                                    time_end: timeSlotElement.dataset.timeEnd || '',
-                                    reserved_time_on_road: timeSlotElement.dataset.reservedTime || '',
-                                    start_location: timeSlotElement.dataset.startLocation || '',
-                                    cost_of_1_hour_of_work: timeSlotElement.dataset.costHour || '',
-                                    minimum_time_slot: timeSlotElement.dataset.minSlot || '',
-                                    hashtags: hashtags
-                                };
-                                window.EditTimeSlotForm.openModal(id, timeSlotData);
-                            }
-                        } else {
-                            console.error('EditTimeSlotForm not found');
+                // Обрабатываем только edit и archive, publish обрабатывается глобально
+                if (action === 'edit') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const id = menuItem.dataset.id;
+                    console.log('🔄 Edit action for time slot:', id);
+                    
+                    // Открываем форму редактирования
+                    if (window.EditTimeSlotForm) {
+                        // Получаем данные time slot для редактирования из data-атрибутов
+                        const timeSlotElement = document.querySelector(`[data-timeslot-id="${id}"]`);
+                        if (timeSlotElement) {
+                            const hashtagsString = timeSlotElement.dataset.hashtags || '';
+                            const hashtags = hashtagsString ? hashtagsString.split(',').filter(tag => tag.trim()) : [];
+                            
+                            const timeSlotData = {
+                                category: timeSlotElement.dataset.category || '',
+                                services: timeSlotElement.dataset.services || '',
+                                date_start: timeSlotElement.dataset.dateStart || '',
+                                time_start: timeSlotElement.dataset.timeStart || '',
+                                date_end: timeSlotElement.dataset.dateEnd || '',
+                                time_end: timeSlotElement.dataset.timeEnd || '',
+                                reserved_time_on_road: timeSlotElement.dataset.reservedTime || '',
+                                start_location: timeSlotElement.dataset.startLocation || '',
+                                cost_of_1_hour_of_work: timeSlotElement.dataset.costHour || '',
+                                minimum_time_slot: timeSlotElement.dataset.minSlot || '',
+                                hashtags: hashtags
+                            };
+                            window.EditTimeSlotForm.openModal(id, timeSlotData);
                         }
-                        break;
-                    case 'publish':
-
-                        // Добавить логику публикации
-                        break;
-                    case 'archive':
-
-                        // Добавить логику архивирования
-                        break;
+                    } else {
+                        console.error('EditTimeSlotForm not found');
+                    }
+                } else if (action === 'archive') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const id = menuItem.dataset.id;
+                    console.log('🗄️ Archive action for time slot:', id);
+                    
+                    // Добавить логику архивирования
+                    // TODO: Implement archive functionality
                 }
+                // publish action обрабатывается глобально в publish_form.js
             }
         });
     });
 </script>
+
+<!-- Popup форма для публикации Time Slot -->
+{% include 'services_and_projects/publish_form.html' with post_type='time_slot' post_id=time_slot.id %}

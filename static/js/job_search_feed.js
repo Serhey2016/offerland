@@ -816,14 +816,49 @@ function handleJobSearchEditAction(postId, post) {
 
 // Обработчик публикации для job search
 function handleJobSearchPublishAction(postId, post) {
-    // Здесь можно добавить логику публикации
-    // Например, показать подтверждение и опубликовать пост
-    if (confirm('Are you sure you want to publish this job search post?')) {
+    // Открываем форму публикации с уникальным ID для job search
+    const publishForm = document.getElementById(`publish_form_popup_job_search_${postId}`);
+    if (publishForm) {
+        publishForm.classList.add('show');
+        
+        // Добавляем обработчики для закрытия формы
+        setupPublishFormEventHandlers(postId, 'job_search');
+    } else {
+        console.error('Publish form not found for job search ID:', postId);
         if (typeof window.alertify !== 'undefined') {
-            window.alertify.success('Publish functionality coming soon...');
+            window.alertify.error('Publish form not found. Please refresh the page and try again.');
         } else {
-            alert('Publish functionality coming soon...');
+            alert('Publish form not found. Please refresh the page and try again.');
         }
+    }
+}
+
+// Настройка обработчиков событий для формы публикации
+function setupPublishFormEventHandlers(postId, postType) {
+    // Обработчик для кнопки закрытия
+    const closeButton = document.getElementById(`publish_form_close_${postType}_${postId}`);
+    if (closeButton) {
+        closeButton.onclick = function(e) {
+            e.preventDefault();
+            closePublishForm(postId, postType);
+        };
+    }
+    
+    // Обработчик для overlay (закрытие по клику вне формы)
+    const overlay = document.querySelector(`#publish_form_popup_${postType}_${postId} .publish_form_overlay`);
+    if (overlay) {
+        overlay.onclick = function(e) {
+            e.preventDefault();
+            closePublishForm(postId, postType);
+        };
+    }
+}
+
+// Функция закрытия формы публикации
+function closePublishForm(postId, postType) {
+    const publishForm = document.getElementById(`publish_form_popup_${postType}_${postId}`);
+    if (publishForm) {
+        publishForm.classList.remove('show');
     }
 }
 
@@ -1104,6 +1139,14 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+// Функция закрытия формы публикации job search
+function closeJobSearchPublishForm(postId, postType) {
+    const publishForm = document.getElementById(`publish_form_popup_${postType}_${postId}`);
+    if (publishForm) {
+        publishForm.classList.remove('show');
+    }
 }
 
 

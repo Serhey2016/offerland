@@ -268,7 +268,7 @@
 .modal_stngs {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 85;
     left: 0;
     top: 0;
     width: 100%;

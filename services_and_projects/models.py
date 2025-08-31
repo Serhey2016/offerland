@@ -4,6 +4,10 @@ from django.conf import settings
 from joblist.models import AllTags, Companies
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+import uuid
+
+def generate_uuid():
+    return uuid.uuid4()
 
 User = get_user_model()
 
@@ -260,6 +264,8 @@ class TimeSlot(models.Model):
     ]
     
     id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(default=generate_uuid, unique=True, editable=False)
+    slug = models.SlugField(max_length=255, blank=True, null=True)  # Removed unique=True initially
     date_start = models.DateField()
     date_end = models.DateField()
     time_start = models.TimeField()
@@ -281,6 +287,22 @@ class TimeSlot(models.Model):
     def __str__(self):
         return f"TimeSlot {self.date_start} - {self.date_end}"
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # Генерируем slug на основе даты и времени
+            from django.utils.text import slugify
+            from datetime import datetime
+            date_str = self.date_start.strftime('%Y-%m-%d')
+            time_str = self.time_start.strftime('%H-%M')
+            self.slug = slugify(f"timeslot-{date_str}-{time_str}-{self.uuid.hex[:8]}")
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return f"/post/timeslot/{self.slug}/"
+
+    def get_uuid_short(self):
+        return str(self.uuid)[:8]
+
     class Meta:
         db_table = 'time_slots'
         verbose_name = "time slot"
@@ -301,6 +323,8 @@ class Advertising(models.Model):
     ]
     
     id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(default=lambda: uuid.uuid4(), unique=True, editable=False)
+    slug = models.SlugField(max_length=255, blank=True, null=True)  # Removed unique=True initially
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000)
     hashtags = models.ManyToManyField('joblist.AllTags', through='AdvertisingHashtagRelations', blank=True)
@@ -316,6 +340,19 @@ class Advertising(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # Генерируем slug на основе заголовка
+            from django.utils.text import slugify
+            self.slug = slugify(f"advertising-{self.title}-{self.uuid.hex[:8]}")
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return f"/post/advertising/{self.slug}/"
+
+    def get_uuid_short(self):
+        return str(self.uuid)[:8]
 
     class Meta:
         db_table = 'advertising'

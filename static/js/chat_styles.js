@@ -4,13 +4,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // Создаём popup и overlay, если их нет
     let chatOverlay = document.querySelector('.chat_modal_overlay');
     let chatPopup = document.querySelector('.chat_messages_container');
+    
+    // Скрываем контейнер чата до инициализации
+    if (chatPopup) {
+        chatPopup.style.display = 'none';
+        chatPopup.style.opacity = '0';
+    }
+    
     if (!chatOverlay) {
         chatOverlay = document.createElement('div');
         chatOverlay.className = 'chat_modal_overlay hidden';
         document.body.appendChild(chatOverlay);
     }
+    
     if (chatPopup && !chatOverlay.contains(chatPopup)) {
         chatOverlay.appendChild(chatPopup);
+        // Показываем контейнер только после перемещения в overlay
+        chatPopup.style.display = 'flex';
     }
 
     // Добавляем крестик, если его нет
@@ -28,18 +38,40 @@ document.addEventListener('DOMContentLoaded', function () {
         sub3.addEventListener('click', function (e) {
             e.stopPropagation();
             chatOverlay.classList.remove('hidden');
+            // Показываем контейнер чата
+            if (chatPopup) {
+                chatPopup.style.display = 'flex';
+                // Устанавливаем полную прозрачность
+                chatPopup.style.opacity = '1';
+            }
         });
     }
 
     // Закрытие по крестику
     closeBtn.addEventListener('click', function () {
         chatOverlay.classList.add('hidden');
+        // Скрываем контейнер чата
+        if (chatPopup) {
+            chatPopup.style.opacity = '0';
+            // Небольшая задержка перед скрытием для плавности
+            setTimeout(() => {
+                chatPopup.style.display = 'none';
+            }, 200);
+        }
     });
 
     // Закрытие по клику вне окна
     chatOverlay.addEventListener('mousedown', function (e) {
         if (e.target === chatOverlay) {
             chatOverlay.classList.add('hidden');
+            // Скрываем контейнер чата
+            if (chatPopup) {
+                chatPopup.style.opacity = '0';
+                // Небольшая задержка перед скрытием для плавности
+                setTimeout(() => {
+                    chatPopup.style.display = 'none';
+                }, 200);
+            }
         }
     });
 
@@ -82,6 +114,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 overlayCmc.classList.remove('active');
                 // Возвращаемся к списку чатов
                 chatOverlay.classList.remove('hidden');
+                // Показываем контейнер чата
+                if (chatPopup) {
+                    chatPopup.style.opacity = '1';
+                    chatPopup.style.display = 'flex';
+                }
             });
         }
         
@@ -93,6 +130,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 overlayCmc.classList.remove('active');
                 // Возвращаемся к списку чатов
                 chatOverlay.classList.remove('hidden');
+                // Показываем контейнер чата
+                if (chatPopup) {
+                    chatPopup.style.opacity = '1';
+                    chatPopup.style.display = 'flex';
+                }
             });
         }
     }
@@ -119,6 +161,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 chatOverlay.classList.remove('hidden');
             } else if (chatOverlay && !chatOverlay.classList.contains('hidden')) {
                 chatOverlay.classList.add('hidden');
+                // Скрываем контейнер чата
+                if (chatPopup) {
+                    chatPopup.style.display = 'none';
+                }
             }
         }
     });

@@ -256,8 +256,8 @@
 <link rel="stylesheet" href="{% static 'css/publish_form.css' %}">
 
 <!-- Popup форма для публикации -->
-{% include 'services_and_projects/publish_form.html' %}
+{% include 'services_and_projects/publish_form.html' with post_type='task' post_id=task.id %}
 
 <!-- Подключаем скрипт для Publish Form -->
-<script src="{% static 'js/publish_form.js' %}"></script>
+<!-- publish_form.js подключается глобально в testpage.html -->
 

@@ -673,6 +673,63 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================================================
+// PUBLISH FORM FUNCTIONALITY FOR TIMESLOT
+// ============================================================================
+
+// Обработчик публикации для time slot
+function handleTimeSlotPublishAction(postId, post) {
+    // Открываем форму публикации с уникальным ID для time slot
+    const publishForm = document.getElementById(`publish_form_popup_time_slot_${postId}`);
+    if (publishForm) {
+        publishForm.classList.add('show');
+        
+        // Добавляем обработчики для закрытия формы
+        setupTimeSlotPublishFormEventHandlers(postId);
+    } else {
+        console.error('Publish form not found for time slot ID:', postId);
+        if (typeof window.alertify !== 'undefined') {
+            window.alertify.error('Publish form not found. Please refresh the page and try again.');
+        } else {
+            alert('Publish form not found. Please refresh the page and try again.');
+        }
+    }
+}
+
+// Настройка обработчиков событий для формы публикации time slot
+function setupTimeSlotPublishFormEventHandlers(postId) {
+    // Обработчик для кнопки закрытия
+    const closeButton = document.getElementById(`publish_form_close_time_slot_${postId}`);
+    if (closeButton) {
+        closeButton.onclick = function(e) {
+            e.preventDefault();
+            closeTimeSlotPublishForm(postId);
+        };
+    }
+    
+    // Обработчик для overlay (закрытие по клику вне формы)
+    const overlay = document.querySelector(`#publish_form_popup_time_slot_${postId} .publish_form_overlay`);
+    if (overlay) {
+        overlay.onclick = function(e) {
+            e.preventDefault();
+            closeTimeSlotPublishForm(postId);
+        };
+    }
+}
+
+// Функция закрытия формы публикации time slot
+function closeTimeSlotPublishForm(postId) {
+    const publishForm = document.getElementById(`publish_form_popup_time_slot_${postId}`);
+    if (publishForm) {
+        publishForm.classList.remove('show');
+    }
+}
+
+// Экспортируем функции для использования в других модулях
+window.handleTimeSlotPublishAction = handleTimeSlotPublishAction;
+window.setupTimeSlotPublishFormEventHandlers = setupTimeSlotPublishFormEventHandlers;
+window.closeTimeSlotPublishForm = closeTimeSlotPublishForm;
+
+// ============================================================================
 // ЭКСПОРТ КЛАССОВ
 // ============================================================================
 

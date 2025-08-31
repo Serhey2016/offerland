@@ -14,6 +14,7 @@
 <link href="{% static 'css/photoswipe_fix.css' %}" rel="stylesheet">
 <link href="{% static 'css/job_search_feed.css' %}" rel="stylesheet">
 <link href="{% static 'css/timeslot_feed.css' %}" rel="stylesheet">
+<link href="{% static 'css/publish_form.css' %}" rel="stylesheet">
 
 <!-- CSS libraries -->
 <link href="{% static 'css/lib_alertify/alertify.css' %}" rel="stylesheet">
@@ -100,17 +101,17 @@
     {% if page_obj %}
         {% for item in page_obj %}
             {% if item.type == 'advertising' %}
-                {% include 'services_and_projects/advertising_feed.html' with advertising=item.data.advertising owner=item.data.owner %}
+                {% include 'services_and_projects/advertising_feed.html' with advertising=item.data.advertising owner=item.data.owner categories=categories services=services all_tags=all_tags %}
             {% elif item.type == 'task' %}
                 {% if item.data.type_of_task.type_of_task_name == 'Job search' %}
-                    {% include 'services_and_projects/job_search_feed.html' with task=item.data %}
+                    {% include 'services_and_projects/job_search_feed.html' with task=item.data categories=categories services=services all_tags=all_tags %}
                 {% else %}
-                    {% include 'services_and_projects/task_feed.html' with task=item.data %}
+                    {% include 'services_and_projects/task_feed.html' with task=item.data categories=categories services=services all_tags=all_tags %}
                 {% endif %}
             {% elif item.type == 'job_search' %}
-                {% include 'services_and_projects/job_search_feed.html' with job_search=item.data all_companies=all_companies %}
+                {% include 'services_and_projects/job_search_feed.html' with job_search=item.data all_companies=all_companies categories=categories services=services all_tags=all_tags %}
             {% elif item.type == 'time_slot' %}
-                {% include 'services_and_projects/time_slot_feed.html' with time_slot=item.data.time_slot owner=item.data.owner %}
+                {% include 'services_and_projects/time_slot_feed.html' with time_slot=item.data.time_slot owner=item.data.owner categories=categories services=services all_tags=all_tags %}
             {% endif %}
         {% endfor %}
     {% else %}
@@ -165,9 +166,9 @@
 {% endif %}
 
 <!-- Include Forms -->
-{% include 'services_and_projects/form_for_all_task.html' %}
+{% include 'services_and_projects/form_for_all_task.html' with categories=categories services=services statuses=statuses all_tags=all_tags tasks=tasks %}
 {% include 'services_and_projects/filtration_form.html' %}
-{% include 'services_and_projects/edit_timeslot.html' %}
+{% include 'services_and_projects/edit_timeslot.html' with categories=categories services=services all_tags=all_tags %}
 
 <!-- Advertising Edit Form -->
 <div id="advertising-edit-form" class="modal-overlay" style="display: none;">
@@ -282,4 +283,7 @@
 <script src="{% static 'js/timeslot_feed.js' %}"></script>
 <script src="{% static 'js/testpage.js' %}"></script>
 <script src="{% static 'js/advertising_feed.js' %}"></script>
+
+<!-- Publish Form Manager - глобальный обработчик для всех форм публикации -->
+<script src="{% static 'js/publish_form.js' %}"></script>
 {% endblock %}

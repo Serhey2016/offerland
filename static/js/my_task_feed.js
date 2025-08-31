@@ -242,15 +242,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Извлекаем только ID задачи из полного ID (type_id)
         const actualTaskId = taskId.split('_').pop();
         
-        // Открываем форму публикации вместо confirm
-        if (window.publishFormManager) {
-            window.publishFormManager.openPublishForm(actualTaskId, 'task');
+        // Открываем форму публикации для task
+        const publishForm = document.getElementById(`publish_form_popup_task_${actualTaskId}`);
+        if (publishForm) {
+            publishForm.classList.add('show');
+            setupTaskPublishFormEventHandlers(actualTaskId);
         } else {
-            // Fallback если publishFormManager не загружен
+            console.error('Publish form not found for task ID:', actualTaskId);
             if (typeof window.alertify !== 'undefined') {
-                window.alertify.error('Publish form not loaded. Please refresh the page.');
+                window.alertify.error('Publish form not found. Please refresh the page and try again.');
             } else {
-                alert('Publish form not loaded. Please refresh the page.');
+                alert('Publish form not found. Please refresh the page and try again.');
             }
         }
     }
@@ -314,6 +316,35 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         return cookieValue;
+    }
+    
+    // Настройка обработчиков событий для формы публикации task
+    function setupTaskPublishFormEventHandlers(taskId) {
+        // Обработчик для кнопки закрытия
+        const closeButton = document.getElementById(`publish_form_close_task_${taskId}`);
+        if (closeButton) {
+            closeButton.onclick = function(e) {
+                e.preventDefault();
+                closeTaskPublishForm(taskId);
+            };
+        }
+        
+        // Обработчик для overlay (закрытие по клику вне формы)
+        const overlay = document.querySelector(`#publish_form_popup_task_${taskId} .publish_form_overlay`);
+        if (overlay) {
+            overlay.onclick = function(e) {
+                e.preventDefault();
+                closeTaskPublishForm(taskId);
+            };
+        }
+    }
+    
+    // Функция закрытия формы публикации task
+    function closeTaskPublishForm(taskId) {
+        const publishForm = document.getElementById(`publish_form_popup_task_${taskId}`);
+        if (publishForm) {
+            publishForm.classList.remove('show');
+        }
     }
     
     // Скрываем все меню при загрузке страницы

@@ -193,7 +193,7 @@ body {
     position: fixed;
     bottom: 20px;
     right: 70px;
-    z-index: 1000;
+    z-index: 85;
     min-width: 250px;
     height: 50px;
     border-radius: 15px;
@@ -737,7 +737,7 @@ body {
     position: fixed;
     bottom: 20px;
     left: 20px;
-    z-index: 1000;
+    z-index: 85;
     width: 60px;
     height: 60px;
 }
@@ -1250,7 +1250,7 @@ body {
     width: 35px;
     height: 35px;
     margin-left: -17.5px;
-    z-index: 1000;
+    z-index: 85;
     cursor: pointer;
     /* Фиксируем позицию чтобы не смещалась при разворачивании */
     transform: translateZ(0);

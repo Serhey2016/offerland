@@ -106,9 +106,25 @@ document.addEventListener('DOMContentLoaded', function () {
             if (form) {
                 // Showing form
                 form.style.display = 'flex';
-                    } else {
-            // Form not found
-        }
+                
+                // Re-initialize hashtags for this form
+                // Wait for the function to be available if it's not yet loaded
+                let attempts = 0;
+                const maxAttempts = 50; // 5 seconds max wait
+                
+                const waitForHashtagsFunction = () => {
+                    if (typeof initHashtagsForForm === 'function') {
+                        initHashtagsForForm(form);
+                    } else if (attempts < maxAttempts) {
+                        attempts++;
+                        setTimeout(waitForHashtagsFunction, 100);
+                    }
+                };
+                
+                waitForHashtagsFunction();
+            } else {
+                // Form not found
+            }
         } else {
             // Form ID not found for type
         }

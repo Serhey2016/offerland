@@ -1,227 +1,141 @@
 {% load static %}
 
-<!-- Popup форма для публикации -->
-{% if advertising %}
-<!-- Форма для Advertising -->
-<div class="publish_form_popup" id="publish_form_popup_{{ advertising.id }}">
+<!-- Универсальная Popup форма для публикации -->
+<div class="publish_form_popup" id="publish_form_popup_{{ post_type }}_{{ post_id }}">
     <div class="publish_form_overlay"></div>
     <div class="publish_form_container">
         <div class="publish_form_header">
-            <h3>Publish #{{ advertising.id }}</h3>
-            <button class="publish_form_close" id="publish_form_close_{{ advertising.id }}" type="button">
+            <h3>Publish {{ post_type|title }} #{{ post_id }}</h3>
+            <button class="publish_form_close" id="publish_form_close_{{ post_type }}_{{ post_id }}" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                 </svg>
             </button>
         </div>
         
-        <form class="publish_form" id="publish_form_{{ advertising.id }}">
+        <form class="publish_form" id="publish_form_{{ post_type }}_{{ post_id }}">
             {% csrf_token %}
-            <input type="hidden" name="advertising_id" value="{{ advertising.id }}">
+            <input type="hidden" name="post_type" value="{{ post_type }}">
+            <input type="hidden" name="{{ post_type }}_id" value="{{ post_id }}">
             
             <div class="form_group">
-                <label for="publish_title_{{ advertising.id }}">Title *</label>
-                <input type="text" 
-                       id="publish_title_{{ advertising.id }}" 
-                       name="title" 
-                       value="{{ advertising.title|default:'' }}" 
-                       required 
-                       placeholder="Enter advertising title">
-            </div>
-            
-            <div class="form_group">
-                <label for="publish_description_{{ advertising.id }}">Description *</label>
-                <textarea id="publish_description_{{ advertising.id }}" 
-                          name="description" 
-                          required 
-                          placeholder="Enter advertising description"
-                          rows="4">{{ advertising.description|default:'' }}</textarea>
-            </div>
-            
-            <div class="form_row">
-                <div class="form_group">
-                    <label for="publish_category_{{ advertising.id }}">Category *</label>
-                    <select id="publish_category_{{ advertising.id }}" name="category" required>
-                        <option value="">Select category</option>
-                        <option value="services" {% if advertising.category == 'services' %}selected{% endif %}>Services</option>
-                        <option value="products" {% if advertising.category == 'products' %}selected{% endif %}>Products</option>
-                        <option value="events" {% if advertising.category == 'events' %}selected{% endif %}>Events</option>
-                        <option value="other" {% if advertising.category == 'other' %}selected{% endif %}>Other</option>
-                    </select>
-                </div>
-                
-                <div class="form_group">
-                    <label for="publish_priority_{{ advertising.id }}">Priority</label>
-                    <select id="publish_priority_{{ advertising.id }}" name="priority">
-                        <option value="normal" {% if advertising.priority == 'normal' %}selected{% endif %}>Normal</option>
-                        <option value="high" {% if advertising.priority == 'high' %}selected{% endif %}>High</option>
-                        <option value="urgent" {% if advertising.priority == 'urgent' %}selected{% endif %}>Urgent</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form_row">
-                <div class="form_group">
-                    <label for="publish_budget_{{ advertising.id }}">Budget</label>
-                    <input type="number" 
-                           id="publish_budget_{{ advertising.id }}" 
-                           name="budget" 
-                           value="{{ advertising.budget|default:'' }}" 
-                           placeholder="Enter budget amount"
-                           min="0" 
-                           step="0.01">
-                </div>
-                
-                <div class="form_group">
-                    <label for="publish_deadline_{{ advertising.id }}">Deadline</label>
-                    <input type="date" 
-                           id="publish_deadline_{{ advertising.id }}" 
-                           name="deadline" 
-                           value="{{ advertising.deadline|date:'Y-m-d'|default:'' }}">
-                </div>
+                <label for="publish_category_{{ post_type }}_{{ post_id }}">Category</label>
+                <select id="publish_category_{{ post_type }}_{{ post_id }}" name="category" required>
+                    <option value="">-- Select category --</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                    {% endfor %}
+                </select>
             </div>
             
             <div class="form_group">
-                <label for="publish_tags_{{ advertising.id }}">Tags</label>
-                <input type="text" 
-                       id="publish_tags_{{ advertising.id }}" 
-                       name="tags" 
-                       value="{% for tag in advertising.hashtags.all %}{{ tag.tag }}{% if not forloop.last %}, {% endif %}{% endfor %}" 
-                       placeholder="Enter tags separated by commas">
+                <label for="publish_service_{{ post_type }}_{{ post_id }}">Service</label>
+                <select id="publish_service_{{ post_type }}_{{ post_id }}" name="service" required>
+                    <option value="">-- Select service --</option>
+                    {% for serv in services %}
+                    <option value="{{ serv.id }}" data-category="{{ serv.category_name.id }}">{{ serv.service_name }}</option>
+                    {% endfor %}
+                </select>
             </div>
             
             <div class="form_group">
-                <label for="publish_notes_{{ advertising.id }}">Additional Notes</label>
-                <textarea id="publish_notes_{{ advertising.id }}" 
-                          name="notes" 
-                          placeholder="Any additional information or requirements"
-                          rows="3">{{ advertising.notes|default:'' }}</textarea>
+                <label for="publish_hashtags_{{ post_type }}_{{ post_id }}">Hashtags: <a href="#">Don't find hashtag?</a></label>
+                <div id="publish_hashtags_container_{{ post_type }}_{{ post_id }}" class="publish_form_hashtag_container" tabindex="0" data-all-tags='{{ all_tags|safe }}' data-placeholder="Start typing to add hashtags...">
+                    <input type="text" 
+                           id="publish_hashtags_input_{{ post_type }}_{{ post_id }}" 
+                           placeholder="Start typing tag..." 
+                           autocomplete="off" 
+                           class="publish_form_hashtags_input">
+                </div>
+                <div id="publish_hashtags_dropdown_{{ post_type }}_{{ post_id }}" class="publish_form_hashtags_dropdown"></div>
+            </div>
+            
+            <input type="hidden" name="hashtags" id="publish_hashtags_hidden_{{ post_type }}_{{ post_id }}">
+            
+            <div class="form_section">
+                <h4>Payment Options</h4>
+                <div class="checkbox_group">
+                    <label class="checkbox_label">
+                        <input type="checkbox" name="payment_online" value="online">
+                        <span class="checkmark"></span>
+                        Online payments
+                    </label>
+                    <label class="checkbox_label">
+                        <input type="checkbox" name="payment_cash" value="cash">
+                        <span class="checkmark"></span>
+                        Cash payments
+                    </label>
+                    <label class="checkbox_label">
+                        <input type="checkbox" name="payment_crypto" value="crypto">
+                        <span class="checkmark"></span>
+                        Crypto
+                    </label>
+                    <label class="checkbox_label">
+                        <input type="checkbox" name="payment_free" value="free">
+                        <span class="checkmark"></span>
+                        Free
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form_section">
+                <h4>Task Type Options</h4>
+                <div class="checkbox_group">
+                    <label class="checkbox_label">
+                        <input type="checkbox" name="task_subscription" value="subscription">
+                        <span class="checkmark"></span>
+                        Subscription
+                    </label>
+                    <label class="checkbox_label">
+                        <input type="checkbox" name="task_contract" value="contract">
+                        <span class="checkmark"></span>
+                        Contract
+                    </label>
+                    <label class="checkbox_label">
+                        <input type="checkbox" name="task_project" value="project">
+                        <span class="checkmark"></span>
+                        Project
+                    </label>
+                    <label class="checkbox_label">
+                        <input type="checkbox" name="task_one_time" value="one_time">
+                        <span class="checkmark"></span>
+                        One time task
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form_section">
+                <h4>Type of services</h4>
+                <div class="toggle_switch"> <span class="toggle_text_left">Online</span>
+                    <input type="checkbox" id="publish_service_type_{{ post_type }}_{{ post_id }}" name="service_type" class="toggle_input">
+                    <label for="publish_service_type_{{ post_type }}_{{ post_id }}" class="toggle_label">
+                       
+                        
+                    </label><span class="toggle_text_right">Offline</span>
+                </div>
+            </div>
+            
+            <div class="form_group">
+                <label>Type of publishing</label>
+                <div class="radio_group">
+                    <label class="radio_label">
+                        <input type="radio" name="publishing_type" value="business" checked>
+                        <span class="radio_mark"></span>
+                        Business services
+                    </label>
+                    <label class="radio_label">
+                        <input type="radio" name="publishing_type" value="personal">
+                        <span class="radio_mark"></span>
+                        Personal support
+                    </label>
+                </div>
             </div>
             
             <div class="form_actions">
-                <button type="button" class="btn_secondary" id="publish_form_cancel_{{ advertising.id }}">
-                    Cancel
-                </button>
                 <button type="submit" class="btn_primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    </svg>
                     Publish
                 </button>
             </div>
         </form>
     </div>
 </div>
-{% elif task %}
-<!-- Форма для Task -->
-<div class="publish_form_popup" id="publish_form_popup_{{ task.id }}">
-    <div class="publish_form_overlay"></div>
-    <div class="publish_form_container">
-        <div class="publish_form_header">
-            <h3>Publish #{{ task.id }}</h3>
-            <button class="publish_form_close" id="publish_form_close_{{ task.id }}" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
-            </button>
-        </div>
-        
-        <form class="publish_form" id="publish_form_{{ task.id }}">
-            {% csrf_token %}
-            <input type="hidden" name="task_id" value="{{ task.id }}">
-            
-            <div class="form_group">
-                <label for="publish_title_{{ task.id }}">Title *</label>
-                <input type="text" 
-                       id="publish_title_{{ task.id }}" 
-                       name="title" 
-                       value="{{ task.title|default:'' }}" 
-                       required 
-                       placeholder="Enter task title">
-            </div>
-            
-            <div class="form_group">
-                <label for="publish_description_{{ task.id }}">Description *</label>
-                <textarea id="publish_description_{{ task.id }}" 
-                          name="description" 
-                          required 
-                          placeholder="Enter task description"
-                          rows="4">{{ task.description|default:'' }}</textarea>
-            </div>
-            
-            <div class="form_row">
-                <div class="form_group">
-                    <label for="publish_category_{{ task.id }}">Category *</label>
-                    <select id="publish_category_{{ task.id }}" name="category" required>
-                        <option value="">Select category</option>
-                        <option value="development" {% if task.type_of_task.type_of_task_name == 'development' %}selected{% endif %}>Development</option>
-                        <option value="design" {% if task.type_of_task.type_of_task_name == 'design' %}selected{% endif %}>Design</option>
-                        <option value="marketing" {% if task.type_of_task.type_of_task_name == 'marketing' %}selected{% endif %}>Marketing</option>
-                        <option value="consulting" {% if task.type_of_task.type_of_task_name == 'consulting' %}selected{% endif %}>Consulting</option>
-                        <option value="other" selected>Other</option>
-                    </select>
-                </div>
-                
-                <div class="form_group">
-                    <label for="publish_priority_{{ task.id }}">Priority</label>
-                    <select id="publish_priority_{{ task.id }}" name="priority">
-                        <option value="normal" {% if task.priority == 'normal' %}selected{% endif %}>Normal</option>
-                        <option value="high" {% if task.priority == 'high' %}selected{% endif %}>High</option>
-                        <option value="urgent" {% if task.priority == 'urgent' %}selected{% endif %}>Urgent</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form_row">
-                <div class="form_group">
-                    <label for="publish_budget_{{ task.id }}">Budget</label>
-                    <input type="number" 
-                           id="publish_budget_{{ task.id }}" 
-                           name="budget" 
-                           value="{{ task.budget|default:'' }}" 
-                           placeholder="Enter budget amount"
-                           min="0" 
-                           step="0.01">
-                </div>
-                
-                <div class="form_group">
-                    <label for="publish_deadline_{{ task.id }}">Deadline</label>
-                    <input type="date" 
-                           id="publish_deadline_{{ task.id }}" 
-                           name="deadline" 
-                           value="{{ task.date_end|date:'Y-m-d'|default:'' }}">
-                </div>
-            </div>
-            
-            <div class="form_group">
-                <label for="publish_tags_{{ task.id }}">Tags</label>
-                <input type="text" 
-                       id="publish_tags_{{ task.id }}" 
-                       name="tags" 
-                       value="{% for tag in task.hashtags.all %}{{ tag.tag }}{% if not forloop.last %}, {% endif %}{% endfor %}" 
-                       placeholder="Enter tags separated by commas">
-            </div>
-            
-            <div class="form_group">
-                <label for="publish_notes_{{ task.id }}">Additional Notes</label>
-                <textarea id="publish_notes_{{ task.id }}" 
-                          name="notes" 
-                          placeholder="Any additional information or requirements"
-                          rows="3">{{ task.note|default:'' }}</textarea>
-            </div>
-            
-            <div class="form_actions">
-                <button type="button" class="btn_secondary" id="publish_form_cancel_{{ task.id }}">
-                    Cancel
-                </button>
-                <button type="submit" class="btn_primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    </svg>
-                    Publish
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-{% endif %}

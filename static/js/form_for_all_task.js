@@ -292,6 +292,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     saveButton.addEventListener('click', saveButton._clickHandler);
                 }
+                
+                // Повторно инициализируем хэштеги для этой формы
+                initHashtagsForForm(form);
+                
+                // Повторно инициализируем фото загрузку для этой формы
+                if (form.id === 'advertising-form') {
+            
+                    initPhotoUploads(form);
+                }
             }
         }
     }
@@ -356,6 +365,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     /**
+     * Инициализирует хэштеги для конкретной формы
+     */
+    function initHashtagsForForm(form) {
+        const container = form.querySelector('.hashtag-chip-container');
+        const input = form.querySelector('.hashtags-input-field');
+        const dropdown = form.querySelector('.hashtag-dropdown-menu');
+        const hidden = form.querySelector('input[name="hashtags"]');
+
+        // Пропускаем хэштеги для time-slot формы - они обрабатываются в timeslot_form.js
+        if (container && container.id === 'time-slot-hashtags-container') {
+            return;
+        }
+
+        if (container && input && dropdown && hidden) {
+            // Инициализируем хэштеги для контейнера
+            initHashtagsForContainer(container, input, dropdown, hidden);
+        }
+    }
+    
+    // Make function globally available for other scripts
+    window.initHashtagsForForm = initHashtagsForForm;
+    
+    /**
      * Инициализирует хэштеги для конкретного контейнера
      */
     function initHashtagsForContainer(container, input, dropdown, hidden) {
@@ -371,26 +403,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Показ/скрытие dropdown
         const showDropdown = () => {
-            if (allTags.length > 0) {
-                dropdown.style.display = 'block';
-                populateDropdown(input.value, dropdown, allTags);
-                positionDropdown(container, dropdown);
+            if (!dropdown || !container) {
+                return;
             }
+            
+            // Принудительно показываем dropdown
+            dropdown.style.setProperty('display', 'block', 'important');
+            dropdown.style.setProperty('visibility', 'visible', 'important');
+            dropdown.style.setProperty('opacity', '1', 'important');
+            
+            // Добавляем класс для дополнительной защиты
+            dropdown.classList.add('show');
+            
+            populateDropdown(input.value, dropdown, allTags);
+            positionDropdown(container, dropdown);
         };
         
         const hideDropdown = () => {
             setTimeout(() => {
-                dropdown.style.display = 'none';
+                dropdown.style.setProperty('display', 'none', 'important');
+                dropdown.style.setProperty('visibility', 'hidden', 'important');
+                dropdown.style.setProperty('opacity', '0', 'important');
+                
+                // Убираем класс
+                dropdown.classList.remove('show');
             }, 150);
         };
 
+        // Удаляем старые обработчики событий если они есть
+        if (input._hashtagEventListeners) {
+            input.removeEventListener('focus', input._hashtagEventListeners.focus);
+            input.removeEventListener('input', input._hashtagEventListeners.input);
+            input.removeEventListener('click', input._hashtagEventListeners.click);
+            input.removeEventListener('blur', input._hashtagEventListeners.blur);
+        }
+        
+        // Сохраняем ссылки на обработчики для последующего удаления
+        input._hashtagEventListeners = {
+            focus: showDropdown,
+            input: showDropdown,
+            click: showDropdown,
+            blur: hideDropdown
+        };
+        
         // События для показа dropdown
-        input.addEventListener('focus', showDropdown);
-        input.addEventListener('input', showDropdown);
-        input.addEventListener('click', showDropdown);
+        input.addEventListener('focus', input._hashtagEventListeners.focus);
+        input.addEventListener('input', input._hashtagEventListeners.input);
+        input.addEventListener('click', input._hashtagEventListeners.click);
         
         // Скрываем dropdown при потере фокуса
-        input.addEventListener('blur', hideDropdown);
+        input.addEventListener('blur', input._hashtagEventListeners.blur);
 
         // Обработка клавиш
         input.addEventListener('keydown', (e) => {
@@ -439,35 +501,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const containerRect = container.getBoundingClientRect();
         const modalForm = container.closest('.modal-form');
         
-        if (!modalForm) return;
+        if (!modalForm) {
+            return;
+        }
         
         const modalRect = modalForm.getBoundingClientRect();
         const availableSpaceBelow = modalRect.bottom - containerRect.bottom;
         const availableSpaceAbove = containerRect.top - modalRect.top;
         const dropdownHeight = Math.min(200, 200); // Примерная высота dropdown
         
-        // Сбрасываем стили позиционирования
-        dropdown.style.position = 'fixed';
-        dropdown.style.top = '';
-        dropdown.style.bottom = '';
-        dropdown.style.left = '';
-        dropdown.style.right = '';
+        // Сбрасываем стили позиционирования, но сохраняем видимость
+        dropdown.style.setProperty('position', 'fixed', 'important');
+        dropdown.style.setProperty('top', '', 'important');
+        dropdown.style.setProperty('bottom', '', 'important');
+        dropdown.style.setProperty('left', '', 'important');
+        dropdown.style.setProperty('right', '', 'important');
         
         // Определяем, где больше места - сверху или снизу
         if (availableSpaceBelow >= dropdownHeight || availableSpaceBelow > availableSpaceAbove) {
             // Показываем снизу
-            dropdown.style.top = (containerRect.bottom + 2) + 'px';
-            dropdown.style.left = containerRect.left + 'px';
-            dropdown.style.right = (window.innerWidth - containerRect.right) + 'px';
+            dropdown.style.setProperty('top', (containerRect.bottom + 2) + 'px', 'important');
+            dropdown.style.setProperty('left', containerRect.left + 'px', 'important');
+            dropdown.style.setProperty('right', (window.innerWidth - containerRect.right) + 'px', 'important');
         } else {
             // Показываем сверху
-            dropdown.style.bottom = (window.innerHeight - containerRect.top + 2) + 'px';
-            dropdown.style.left = containerRect.left + 'px';
-            dropdown.style.right = (window.innerWidth - containerRect.right) + 'px';
+            dropdown.style.setProperty('bottom', (window.innerHeight - containerRect.top + 2) + 'px', 'important');
+            dropdown.style.setProperty('left', containerRect.left + 'px', 'important');
+            dropdown.style.setProperty('right', (window.innerWidth - containerRect.right) + 'px', 'important');
         }
         
         // Ограничиваем ширину
-        dropdown.style.maxWidth = containerRect.width + 'px';
+        dropdown.style.setProperty('maxWidth', containerRect.width + 'px', 'important');
     }
 
     /**
@@ -475,6 +539,8 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function populateDropdown(filter, dropdown, allTags) {
         if (!dropdown) return;
+        
+
         
         dropdown.innerHTML = '';
         const container = dropdown.previousElementSibling;
@@ -487,6 +553,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const matchesFilter = tag.tag.toLowerCase().includes(filter.toLowerCase());
             return !isSelected && matchesFilter;
         });
+        
+
         
         // Добавляем существующие теги
         filteredTags.forEach(tag => {
@@ -1086,20 +1154,33 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Инициализирует поля загрузки фотографий для форм публикаций
      */
-    function initPhotoUploads() {
-        // Ищем только поля загрузки фотографий в формах публикаций, исключая CV файлы
-        const photoUploadAreas = document.querySelectorAll('.file-upload-area:not([id*="activity-"])');
+    function initPhotoUploads(targetForm = null) {
+        // Если указана конкретная форма, ищем только в ней
+        let photoUploadAreas;
+        if (targetForm) {
+            photoUploadAreas = targetForm.querySelectorAll('.file-upload-area');
+    
+        } else {
+            photoUploadAreas = document.querySelectorAll('.file-upload-area');
+    
+        }
+        
+
         
         photoUploadAreas.forEach((area, index) => {
             // Проверяем, были ли уже добавлены обработчики
             if (area.dataset.photoUploadInitialized === 'true') {
+
                 return;
             }
             
             const fileInput = area.querySelector('input[type="file"]');
             const dropZone = area.querySelector('.drop-zone');
             
+
+            
             if (!fileInput || !dropZone) {
+
                 return;
             }
             
@@ -1112,23 +1193,29 @@ document.addEventListener('DOMContentLoaded', () => {
                                 dropZoneText.includes('изображение') ||
                                 area.id.includes('photo') ||
                                 area.id.includes('image') ||
-                                area.id.includes('advertising-photo');
+                                area.id.includes('advertising-photo') ||
+                                fileInput.id.includes('photo') ||
+                                fileInput.id.includes('image');
+            
+
             
             if (!isPhotoField) {
-                // Skipping non-photo field
+
                 return;
             }
             
-            // Initializing photo upload
+
             
             // Обработчик клика по drop-zone
             dropZone.addEventListener('click', function(e) {
+
                 e.preventDefault();
                 fileInput.click();
             });
             
             // Обработчик изменения файла
             fileInput.addEventListener('change', function() {
+
                 if (this.files.length > 0) {
                     const files = Array.from(this.files);
                     updatePhotoDisplay(dropZone, files);
@@ -1137,18 +1224,21 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Обработчик drag & drop для фотографий
             area.addEventListener('dragover', function(e) {
+
                 e.preventDefault();
                 this.style.borderColor = '#007bff';
                 this.style.backgroundColor = '#f8f9fa';
             });
             
             area.addEventListener('dragleave', function(e) {
+
                 e.preventDefault();
                 this.style.borderColor = '#ddd';
                 this.style.backgroundColor = 'transparent';
             });
             
             area.addEventListener('drop', function(e) {
+
                 e.preventDefault();
                 this.style.borderColor = '#ddd';
                 this.style.backgroundColor = 'transparent';
@@ -1162,13 +1252,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Помечаем область как инициализированную для фотографий
             area.dataset.photoUploadInitialized = 'true';
+
         });
+        
+
     }
 
     /**
      * Обновляет отображение выбранных фотографий
      */
     function updatePhotoDisplay(dropZone, files) {
+
+        
         // Проверяем типы файлов - только изображения
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
         const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif'];
@@ -1188,6 +1283,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const validFiles = files.filter(file => isValidImageFile(file));
         const invalidFiles = files.filter(file => !isValidImageFile(file));
         
+
+        
         // Показываем предупреждение только если есть невалидные файлы
         if (invalidFiles.length > 0) {
             const invalidFileNames = invalidFiles.map(f => f.name).join(', ');
@@ -1199,11 +1296,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (validFiles.length === 0) {
-            // No valid image files found
+    
             return;
         }
         
-        // Processing valid image files
+
         
         // Очищаем drop-zone
         dropZone.innerHTML = '';
@@ -1329,6 +1426,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initHashtags();
         initForms();
         initCategoryServiceFiltering();
+
         initPhotoUploads(); // Инициализируем загрузку фотографий
         
         // Сбрасываем все сервисы при инициализации, чтобы показать все доступные
@@ -1417,6 +1515,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         if (!elements.openBtn) {
             init();
+        }
+        
+        // Дополнительная инициализация фото загрузки
+
+        initPhotoUploads();
+        
+        // Принудительная инициализация для формы рекламы если она видима
+        const advertisingForm = document.getElementById('advertising-form');
+        if (advertisingForm && advertisingForm.style.display !== 'none') {
+
+            initPhotoUploads(advertisingForm);
         }
     }, 1000);
 }); 

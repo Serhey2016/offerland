@@ -51,7 +51,7 @@
     background: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
-    z-index: 1050;
+    z-index: 90;
 }
 
 .modal-content {
@@ -75,7 +75,7 @@
     color: #282d3b;
     font-size: 24px;
     cursor: pointer;
-    z-index: 2200;
+    z-index: 91;
     display: flex;
     align-items: center;
     justify-content: center;
