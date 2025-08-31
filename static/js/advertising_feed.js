@@ -92,6 +92,48 @@ if (typeof alertify !== 'undefined' && alertify && alertify.notifier && typeof a
     }
 }
 
+// Инициализация сердечек для избранного
+function initHeartIcons() {
+    const heartIcons = document.querySelectorAll('.sftsts1_favorites_icon');
+    console.log('💖 Initializing heart icons for advertising, found:', heartIcons.length);
+    
+    heartIcons.forEach(icon => {
+        // Устанавливаем начальное состояние
+        if (!icon.dataset.favorite) {
+            icon.dataset.favorite = 'false';
+        }
+        
+        // Убираем все старые обработчики
+        const newIcon = icon.cloneNode(true);
+        icon.parentNode.replaceChild(newIcon, icon);
+        
+        // Добавляем обработчик клика
+        newIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isFavorite = newIcon.dataset.favorite === 'true';
+            console.log('💖 Heart clicked in advertising! Current state:', isFavorite);
+            
+            if (isFavorite) {
+                // Убираем из избранного
+                newIcon.classList.remove('favorite-checked');
+                newIcon.classList.add('favorite-unchecked');
+                newIcon.dataset.favorite = 'false';
+                console.log('💔 Removed from favorites');
+            } else {
+                // Добавляем в избранное
+                newIcon.classList.remove('favorite-unchecked');
+                newIcon.classList.add('favorite-checked');
+                newIcon.dataset.favorite = 'true';
+                console.log('❤️ Added to favorites');
+            }
+        });
+        
+        console.log('💖 Heart icon initialized for advertising:', newIcon.id);
+    });
+}
+
 // Функции для работы с рекламой
 const AdvertisingFeed = {
     // Инициализация
@@ -103,6 +145,7 @@ const AdvertisingFeed = {
         this.initEventListeners();
         this.initGallery();
         this.initDropdownMenu();
+        initHeartIcons();
         
         isInitialized = true;
     },
@@ -117,8 +160,14 @@ const AdvertisingFeed = {
             
             if (e.target.closest('.action_btn') && e.target.textContent === 'Chat') {
                 const post = e.target.closest('.social_feed');
+                if (!post) {
+                    console.warn('Parent .social_feed element not found for chat button');
+                    return;
+                }
                 const postId = post.dataset.postId;
-                handleChatClick(postId);
+                if (postId) {
+                    handleChatClick(postId);
+                }
             }
         });
         
@@ -130,8 +179,14 @@ const AdvertisingFeed = {
             
             if (e.target.closest('.action_btn') && e.target.textContent === 'Comments') {
                 const post = e.target.closest('.social_feed');
+                if (!post) {
+                    console.warn('Parent .social_feed element not found for comments button');
+                    return;
+                }
                 const postId = post.dataset.postId;
-                handleCommentsClick(postId);
+                if (postId) {
+                    handleCommentsClick(postId);
+                }
             }
         });
         
@@ -143,8 +198,14 @@ const AdvertisingFeed = {
             
             if (e.target.closest('.order_now')) {
                 const post = e.target.closest('.social_feed');
+                if (!post) {
+                    console.warn('Parent .social_feed element not found for order now button');
+                    return;
+                }
                 const postId = post.dataset.postId;
-                handleOrderNowClick(postId);
+                if (postId) {
+                    handleOrderNowClick(postId);
+                }
             }
         });
     },
@@ -164,7 +225,16 @@ const AdvertisingFeed = {
                 e.stopPropagation();
                 
                 const post = menuButton.closest('.social_feed');
+                if (!post) {
+                    console.warn('Parent .social_feed element not found for menu button:', menuButton);
+                    return;
+                }
+                
                 const postId = post.dataset.postId;
+                if (!postId) {
+                    console.warn('Post ID not found in dataset for element:', post);
+                    return;
+                }
                 
                 const dropdown = getOverflowMenuById(postId);
                 
@@ -180,6 +250,8 @@ const AdvertisingFeed = {
                     } else {
                         openDropdownById(postId);
                     }
+                } else {
+                    console.warn('Dropdown not found for post ID:', postId);
                 }
             }
         });

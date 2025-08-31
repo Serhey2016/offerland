@@ -3,8 +3,44 @@
 <!-- Подключаем CSS для Time Slot Feed -->
 <link rel="stylesheet" href="{% static 'css/timeslot_feed.css' %}">
 
-<!-- Подключаем CSS для Advertising Feed (для dropdown menu) -->
-<link rel="stylesheet" href="{% static 'css/advertising_feed.css' %}">
+<!-- Подключаем CSS для My Task Feed (для dropdown menu) -->
+<link rel="stylesheet" href="{% static 'css/my_task_feed.css' %}">
+
+<!-- Дополнительные стили для time slot feed dropdown menu -->
+<style>
+    /* Стили для time slot feed dropdown menu */
+    .social_feed_time_slot .my_task_social_feed_menu {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+    
+    /* Иконка трех точек для time slot feed */
+    .social_feed_time_slot .my_task_social_feed_overflow_menu_trigger::after {
+        content: "\22EE";
+        right: 0;
+        top: 0;
+        color: #666;
+        font-size: 1.4em;
+        line-height: 1;
+        display: block;
+        transition: color 0.2s ease;
+        pointer-events: none;
+    }
+    
+    .social_feed_time_slot .my_task_social_feed_overflow_menu_trigger:hover::after {
+        color: #333;
+    }
+    
+    /* Позиционирование dropdown menu для time slot */
+    .social_feed_time_slot .my_task_social_feed_overflow_menu {
+        top: 100%;
+        right: 0;
+        margin-top: 4px;
+    }
+</style>
 
 <div class="social_feed_time_slot" data-timeslot-id="{{ time_slot.id }}" data-post-id="{{ time_slot.id }}" data-post-type="timeslot" 
      data-category="{{ time_slot.category.id|default:'' }}" 
@@ -18,32 +54,33 @@
      data-cost-hour="{{ time_slot.cost_of_1_hour_of_work|default:'' }}"
      data-min-slot="{{ time_slot.minimum_time_slot|default:'' }}"
      data-hashtags="{% for hashtag in time_slot.hashtags.all %}{{ hashtag.tag }}{% if not forloop.last %},{% endif %}{% endfor %}">
-    <!-- Dropdown menu - аналогично advertising_feed.html -->
-    <div class="advertising_social_feed_menu">
+    
+    <!-- Dropdown menu - используем структуру как в task_feed.html -->
+    <div class="my_task_social_feed_menu" id="my_task_social_feed_menu_{{ time_slot.id }}">
+        <!-- Heart icon for favorites -->
         <span class="sftsts1_favorites_icon favorite-unchecked" id="favorites_icon_{{ time_slot.id }}" data-favorite="false">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
         </span>
-        <button class="advertising_social_feed_menu_trigger" id="menu_trigger_{{ time_slot.id }}" type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </svg>
-        </button>
-        <div class="advertising_social_feed_overflow_menu" id="overflow_menu_{{ time_slot.id }}">
-            <div class="advertising_social_feed_overflow_menu_item edit" data-action="edit" data-id="{{ time_slot.id }}">
+        
+        <!-- Overflow Menu Icon Trigger -->
+        <div class="my_task_social_feed_overflow_menu_trigger" id="overflow_menu_trigger_{{ time_slot.id }}">
+        </div>
+        <div class="my_task_social_feed_overflow_menu" id="my_task_overflow_menu_{{ time_slot.id }}">
+            <div class="my_task_social_feed_overflow_menu_item edit" id="menu_item_edit_{{ time_slot.id }}" data-action="edit" data-id="{{ time_slot.id }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
                 </svg>
                 Edit
             </div>
-            <div class="advertising_social_feed_overflow_menu_item publish" data-action="publish" data-id="{{ time_slot.id }}">
+            <div class="my_task_social_feed_overflow_menu_item publish" id="menu_item_publish_{{ time_slot.id }}" data-action="publish" data-id="{{ time_slot.id }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
                 Publish
             </div>
-            <div class="advertising_social_feed_overflow_menu_item archive" data-action="archive" data-id="{{ time_slot.id }}">
+            <div class="my_task_social_feed_overflow_menu_item archive" id="menu_item_archive_{{ time_slot.id }}" data-action="archive" data-id="{{ time_slot.id }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5l-4-4h2.5V12h3v1.5H16l-4 4z"/>
                 </svg>
@@ -163,114 +200,65 @@
     </div>
 </div>
 
-<!-- Book now button and action buttons at the bottom after hashtags - same as advertising_feed.html -->
-
-
-<!-- Подключаем скрипт для Time Slot Feed -->
-<script src="{% static 'js/time_slot_feed.js' %}"></script>
-
-<!-- Подключаем скрипт для Advertising Feed (для dropdown menu) -->
-<script src="{% static 'js/advertising_feed.js' %}"></script>
+<!-- Подключаем скрипт для My Task Feed (для dropdown menu) -->
+<script src="{% static 'js/my_task_feed.js' %}"></script>
 
 <script>
     // Инициализация dropdown menu для time slot feed
     document.addEventListener('DOMContentLoaded', function() {
-        // Ждем, пока AdvertisingFeed загрузится
-        setTimeout(() => {
-            if (window.AdvertisingFeed) {
-                // Инициализируем dropdown menu для этого поста
-                const postId = '{{ time_slot.id }}';
-                console.log('Initializing dropdown for time slot:', postId);
+        // Обработчик для пунктов меню time slot
+        document.addEventListener('click', function(e) {
+            const menuItem = e.target.closest('[id^="menu_item_"][data-id="{{ time_slot.id }}"]');
+            if (menuItem) {
+                e.preventDefault();
+                e.stopPropagation();
                 
-                // Проверяем, что элементы существуют
-                const menuTrigger = document.getElementById(`menu_trigger_${postId}`);
-                const dropdown = document.getElementById(`overflow_menu_${postId}`);
+                const action = menuItem.dataset.action;
+                const id = menuItem.dataset.id;
                 
-                if (menuTrigger && dropdown) {
-                    console.log('Dropdown elements found for time slot:', postId);
-                    
-                    // Добавляем обработчик для пунктов меню
-                    const menuItems = dropdown.querySelectorAll('.advertising_social_feed_overflow_menu_item');
-                    menuItems.forEach(item => {
-                        item.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            
-                            const action = this.dataset.action;
-                            const id = this.dataset.id;
-                            
-                            console.log('Time slot action:', action, 'ID:', id);
-                            
-                            // Обрабатываем действия
-                            switch(action) {
-                                case 'edit':
-                                    console.log('Editing time slot:', id);
-                                    // Открываем форму редактирования
-                                    if (window.EditTimeSlotForm) {
-                                        // Получаем данные time slot для редактирования из data-атрибутов
-                                        const timeSlotElement = document.querySelector(`[data-timeslot-id="${id}"]`);
-                                        if (timeSlotElement) {
-                                            const hashtagsString = timeSlotElement.dataset.hashtags || '';
-                                            const hashtags = hashtagsString ? hashtagsString.split(',').filter(tag => tag.trim()) : [];
-                                            
-                                            const timeSlotData = {
-                                                category: timeSlotElement.dataset.category || '',
-                                                services: timeSlotElement.dataset.services || '',
-                                                date_start: timeSlotElement.dataset.dateStart || '',
-                                                time_start: timeSlotElement.dataset.timeStart || '',
-                                                date_end: timeSlotElement.dataset.dateEnd || '',
-                                                time_end: timeSlotElement.dataset.timeEnd || '',
-                                                reserved_time_on_road: timeSlotElement.dataset.reservedTime || '',
-                                                start_location: timeSlotElement.dataset.startLocation || '',
-                                                cost_of_1_hour_of_work: timeSlotElement.dataset.costHour || '',
-                                                minimum_time_slot: timeSlotElement.dataset.minSlot || '',
-                                                hashtags: hashtags
-                                            };
-                                            window.EditTimeSlotForm.openModal(id, timeSlotData);
-                                        }
-                                    } else {
-                                        console.error('EditTimeSlotForm not found');
-                                    }
-                                    break;
-                                case 'publish':
-                                    console.log('Publishing time slot:', id);
-                                    // Добавить логику публикации
-                                    break;
-                                case 'archive':
-                                    console.log('Archiving time slot:', id);
-                                    // Добавить логику архивирования
-                                    break;
+                console.log('Time slot action:', action, 'ID:', id);
+                
+                // Обрабатываем действия
+                switch(action) {
+                    case 'edit':
+                        console.log('Editing time slot:', id);
+                        // Открываем форму редактирования
+                        if (window.EditTimeSlotForm) {
+                            // Получаем данные time slot для редактирования из data-атрибутов
+                            const timeSlotElement = document.querySelector(`[data-timeslot-id="${id}"]`);
+                            if (timeSlotElement) {
+                                const hashtagsString = timeSlotElement.dataset.hashtags || '';
+                                const hashtags = hashtagsString ? hashtagsString.split(',').filter(tag => tag.trim()) : [];
+                                
+                                const timeSlotData = {
+                                    category: timeSlotElement.dataset.category || '',
+                                    services: timeSlotElement.dataset.services || '',
+                                    date_start: timeSlotElement.dataset.dateStart || '',
+                                    time_start: timeSlotElement.dataset.timeStart || '',
+                                    date_end: timeSlotElement.dataset.dateEnd || '',
+                                    time_end: timeSlotElement.dataset.timeEnd || '',
+                                    reserved_time_on_road: timeSlotElement.dataset.reservedTime || '',
+                                    start_location: timeSlotElement.dataset.startLocation || '',
+                                    cost_of_1_hour_of_work: timeSlotElement.dataset.costHour || '',
+                                    minimum_time_slot: timeSlotElement.dataset.minSlot || '',
+                                    hashtags: hashtags
+                                };
+                                window.EditTimeSlotForm.openModal(id, timeSlotData);
                             }
-                            
-                            // Закрываем dropdown
-                            dropdown.classList.remove('show');
-                        });
-                    });
-                    
-                    // Добавляем обработчик для кнопки меню
-                    menuTrigger.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        // Закрываем все другие dropdown
-                        document.querySelectorAll('.advertising_social_feed_overflow_menu.show').forEach(menu => {
-                            if (menu !== dropdown) {
-                                menu.classList.remove('show');
-                            }
-                        });
-                        
-                        // Переключаем текущий dropdown
-                        dropdown.classList.toggle('show');
-                    });
-                    
-                    // Добавляем обработчик для закрытия dropdown при клике вне его
-                    document.addEventListener('click', function(e) {
-                        if (!menuTrigger.contains(e.target) && !dropdown.contains(e.target)) {
-                            dropdown.classList.remove('show');
+                        } else {
+                            console.error('EditTimeSlotForm not found');
                         }
-                    });
+                        break;
+                    case 'publish':
+                        console.log('Publishing time slot:', id);
+                        // Добавить логику публикации
+                        break;
+                    case 'archive':
+                        console.log('Archiving time slot:', id);
+                        // Добавить логику архивирования
+                        break;
                 }
             }
-        }, 1000); // Ждем 1 секунду для загрузки всех скриптов
+        });
     });
 </script>

@@ -45,10 +45,46 @@
 
 /* ===== СТИЛИ ДЛЯ МЕНЮ ===== */
 
+/* Стили для сердечка в advertising feed */
+.sftsts1_favorites_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 12px;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+}
+
+/* Состояние "не в избранном" - контур */
+.sftsts1_favorites_icon.favorite-unchecked {
+    color: #282d3b;
+}
+
+.sftsts1_favorites_icon.favorite-unchecked:hover {
+    transform: scale(1.1);
+}
+
+/* Состояние "в избранном" - залитое красное */
+.sftsts1_favorites_icon.favorite-checked {
+    color: #e74c3c;
+}
+
+.sftsts1_favorites_icon.favorite-checked:hover {
+    transform: scale(1.1);
+}
+
 .advertising_social_feed_menu {
     position: relative;
     right: 10px;
     z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
 }
 
 .advertising_social_feed_menu_trigger {
@@ -75,9 +111,17 @@
     color: #333;
 }
 
-.advertising_social_feed_menu_trigger svg {
-    width: 18px;
-    height: 18px;
+/* Иконка трех точек для advertising feed */
+.advertising_social_feed_menu_trigger::after {
+    content: "\22EE";
+    right: 0;
+    top: 0;
+    color: #666;
+    font-size: 1.4em;
+    line-height: 1;
+    display: block;
+    transition: color 0.2s ease;
+    pointer-events: none;
 }
 
 /* ===== OVERFLOW MENU СТИЛИ ===== */

@@ -172,6 +172,7 @@
     margin: 0;
     cursor: pointer;
     transition: all 0.3s ease;
+    align-self: center;
 }
 
 /* Состояние "не в избранном" - контур */
@@ -193,14 +194,40 @@
 }
 
 .social_feed2 .my_task_social_feed_overflow_menu_trigger {
+    background: none;
+    border: none;
+    outline: none;
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    color: #666;
+    transition: color 0.2s ease;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .social_feed2 .my_task_social_feed_overflow_menu_trigger:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+/* Иконка трех точек для task feed */
+.social_feed2 .my_task_social_feed_overflow_menu_trigger::after {
+    content: "\22EE";
+    right: 0;
+    top: 0;
+    color: #666;
+    font-size: 1.4em;
+    line-height: 1;
+    display: block;
+    transition: color 0.2s ease;
+    pointer-events: none;
 }
 
 .social_feed2 .my_task_social_feed_overflow_menu {

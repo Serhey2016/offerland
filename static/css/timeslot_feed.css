@@ -298,6 +298,7 @@
     margin: 0;
     cursor: pointer;
     transition: all 0.3s ease;
+    align-self: center;
 }
 
 /* Состояние "не в избранном" - контур */
@@ -596,32 +597,38 @@
 .social_feed_time_slot .advertising_social_feed_menu_trigger {
     background: none;
     border: none;
+    outline: none;
     cursor: pointer;
-    padding: 12px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
+    padding: 0;
+    margin: 0;
+    color: #666;
+    transition: color 0.2s ease;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .social_feed_time_slot .advertising_social_feed_menu_trigger:hover {
-    background-color: #f0f0f0;
-    transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.social_feed_time_slot .advertising_social_feed_menu_trigger svg {
-    width: 28px;
-    height: 28px;
-    color: #666;
-    transition: color 0.2s ease;
-}
-
-.social_feed_time_slot .advertising_social_feed_menu_trigger:hover svg {
     color: #333;
+}
+
+/* Иконка трех точек для time slot feed */
+.social_feed_time_slot .advertising_social_feed_menu_trigger::after {
+    content: "\22EE";
+    right: 0;
+    top: 0;
+    color: #666;
+    font-size: 1.4em;
+    line-height: 1;
+    display: block;
+    transition: color 0.2s ease;
+    pointer-events: none;
 }
 
 .social_feed_time_slot .advertising_social_feed_overflow_menu {
