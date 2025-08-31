@@ -3,7 +3,7 @@
 <!-- My Task Feed CSS -->
 <link rel="stylesheet" href="{% static 'css/my_task_feed.css' %}">
 
-<div class="social_feed2" data-id="{{ task.id }}">
+<div class="social_feed2" data-id="{{ task.id }}" data-task-type="{{ task.type_of_task.type_of_task_name|lower }}">
     <div class="post_info_block">
         <div class="post_info_dates">
                     <div class="post_info_start_date_column">
@@ -22,7 +22,7 @@
                 <span class="post_end_date">{{ task.updated_at|date:'d.m.Y' }}</span>
             </div>
         </div>
-        <div class="my_task_social_feed_menu" id="my_task_social_feed_menu_{{ task.id }}">
+        <div class="my_task_social_feed_menu" id="my_task_social_feed_menu_{{ task.type_of_task.type_of_task_name|lower }}_{{ task.id }}">
             <!-- Heart icon for favorites -->
             <span class="sftsts1_favorites_icon favorite-unchecked" id="favorites_icon_{{ task.id }}" data-favorite="false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -31,28 +31,31 @@
             </span>
             
             <!-- Overflow Menu Icon Trigger -->
-            <div class="my_task_social_feed_overflow_menu_trigger" id="overflow_menu_trigger_{{ task.id }}">
+            <div class="my_task_social_feed_overflow_menu_trigger" id="overflow_menu_trigger_{{ task.type_of_task.type_of_task_name|lower }}_{{ task.id }}" title="Menu">
+                <span class="overflow_menu_icon">⋮</span>
             </div>
-            <div class="my_task_social_feed_overflow_menu" id="my_task_overflow_menu_{{ task.id }}">
-                <div class="my_task_social_feed_overflow_menu_item start" id="menu_item_start_{{ task.id }}" data-action="start" data-id="{{ task.id }}">
+            
+            <!-- Overflow Menu -->
+            <div class="my_task_social_feed_overflow_menu" id="my_task_overflow_menu_{{ task.type_of_task.type_of_task_name|lower }}_{{ task.id }}">
+                <div class="my_task_social_feed_overflow_menu_item start" id="menu_item_start_{{ task.type_of_task.type_of_task_name|lower }}_{{ task.id }}" data-action="start" data-id="{{ task.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 5v14l11-7z"/>
                     </svg>
                     Start
                 </div>
-                <div class="my_task_social_feed_overflow_menu_item edit" id="menu_item_edit_{{ task.id }}" data-action="edit" data-id="{{ task.id }}">
+                <div class="my_task_social_feed_overflow_menu_item edit" id="menu_item_edit_{{ task.type_of_task.type_of_task_name|lower }}_{{ task.id }}" data-action="edit" data-id="{{ task.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
                     </svg>
                     Edit
                 </div>
-                <div class="my_task_social_feed_overflow_menu_item publish" id="menu_item_publish_{{ task.id }}" data-action="publish" data-id="{{ task.id }}">
+                <div class="my_task_social_feed_overflow_menu_item publish" id="menu_item_publish_{{ task.type_of_task.type_of_task_name|lower }}_{{ task.id }}" data-action="publish" data-id="{{ task.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                     </svg>
                     Publish
                 </div>
-                <div class="my_task_social_feed_overflow_menu_item archive" id="menu_item_archive_{{ task.id }}" data-action="archive" data-id="{{ task.id }}">
+                <div class="my_task_social_feed_overflow_menu_item archive" id="menu_item_archive_{{ task.type_of_task.type_of_task_name|lower }}_{{ task.id }}" data-action="archive" data-id="{{ task.id }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5l-4-4h2.5V12h3v1.5H16l-4 4z"/>
                     </svg>
@@ -245,4 +248,7 @@
 
 <!-- Подключаем скрипт для hover эффектов -->
 <script src="{% static 'js/task_feed_hover.js' %}"></script>
+
+<!-- Подключаем скрипт для dropdown menu -->
+<script src="{% static 'js/my_task_feed.js' %}"></script>
 

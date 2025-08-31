@@ -1,6 +1,5 @@
 // My Task Feed JavaScript - Dropdown Menu Handler
 document.addEventListener('DOMContentLoaded', function() {
-    
     // Функция для скрытия всех открытых dropdown меню
     function hideAllMyTaskOverflowMenus() {
         const allMenus = document.querySelectorAll('[id^="my_task_overflow_menu_"]');
@@ -17,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
         openMenus.forEach(menu => {
             if (menu) {
                 menu.classList.remove('show');
+                // Убираем класс с родительского поста
+                const taskElement = menu.closest('.social_feed2');
+                if (taskElement) {
+                    taskElement.classList.remove('has-open-dropdown');
+                }
             }
         });
     }
@@ -28,11 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             
-            // Получаем ID задачи из ID элемента
-            const taskId = trigger.id.replace('overflow_menu_trigger_', '');
+            // Получаем ID задачи из ID элемента (новый формат: type_id)
+            const fullId = trigger.id.replace('overflow_menu_trigger_', '');
             
             // Находим соответствующий dropdown menu
-            const overflowMenu = document.getElementById(`my_task_overflow_menu_${taskId}`);
+            const overflowMenu = document.getElementById(`my_task_overflow_menu_${fullId}`);
             
             if (overflowMenu) {
                 // Закрываем все другие открытые меню
@@ -41,8 +45,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Переключаем текущее меню
                 if (overflowMenu.classList.contains('show')) {
                     overflowMenu.classList.remove('show');
+                    // Убираем класс с родительского поста
+                    const taskElement = trigger.closest('.social_feed2');
+                    if (taskElement) {
+                        taskElement.classList.remove('has-open-dropdown');
+                    }
                 } else {
                     overflowMenu.classList.add('show');
+                    // Добавляем класс к родительскому посту
+                    const taskElement = trigger.closest('.social_feed2');
+                    if (taskElement) {
+                        taskElement.classList.add('has-open-dropdown');
+                    }
+                }
+            } else {
+                // Попробуем найти по другому способу
+                const taskElement = trigger.closest('.social_feed2');
+                if (taskElement) {
+                    // Silent error handling
                 }
             }
         }
@@ -55,13 +75,13 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             
-            // Получаем ID задачи и действие из ID элемента
+            // Получаем ID задачи и действие из ID элемента (новый формат: type_id)
             const itemId = menuItem.id;
-            const taskId = itemId.replace(/^menu_item_(start|edit|publish|remove)_/, '');
+            const fullId = itemId.replace(/^menu_item_(start|edit|publish|remove)_/, '');
             const action = itemId.match(/^menu_item_(start|edit|publish|remove)_/)[1];
             
             // Закрываем меню
-            const overflowMenu = document.getElementById(`my_task_overflow_menu_${taskId}`);
+            const overflowMenu = document.getElementById(`my_task_overflow_menu_${fullId}`);
             if (overflowMenu) {
                 overflowMenu.classList.remove('show');
             }
@@ -69,16 +89,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Обрабатываем действия
             switch(action) {
                 case 'start':
-                    handleMyTaskStart(taskId);
+                    handleMyTaskStart(fullId);
                     break;
                 case 'edit':
-                    handleMyTaskEdit(taskId);
+                    handleMyTaskEdit(fullId);
                     break;
                 case 'publish':
-                    handleMyTaskPublish(taskId);
+                    handleMyTaskPublish(fullId);
                     break;
                 case 'remove':
-                    handleMyTaskRemove(taskId);
+                    handleMyTaskRemove(fullId);
                     break;
             }
         }
@@ -111,7 +131,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Отправляем AJAX запрос для установки даты начала
-        fetch(`/services_and_projects/start_task/${taskId}/`, {
+        // Извлекаем только ID задачи из полного ID (type_id)
+        const actualTaskId = taskId.split('_').pop();
+        fetch(`/services_and_projects/start_task/${actualTaskId}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrftoken,

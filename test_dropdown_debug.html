@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Menu Test</title>
+    <style>
+        .social_feed2 {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px;
+            position: relative;
+        }
+        
+        .my_task_social_feed_menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .my_task_social_feed_overflow_menu_trigger {
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            color: #666;
+            transition: color 0.2s ease;
+        }
+        
+        .my_task_social_feed_overflow_menu_trigger::after {
+            content: "⋮";
+            font-size: 1.4em;
+            line-height: 1;
+        }
+        
+        .my_task_social_feed_overflow_menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 120px;
+            z-index: 1001;
+            display: none;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+        }
+        
+        .my_task_social_feed_overflow_menu.show {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .my_task_social_feed_overflow_menu_item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .my_task_social_feed_overflow_menu_item:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dropdown Menu Test</h1>
+    
+    <!-- Test Task 1 (Tender) -->
+    <div class="social_feed2" data-id="1">
+        <div class="post_info_block">
+            <div class="post_info_dates">
+                <div class="post_info_dates_type_of_task">tender</div>
+            </div>
+            <div class="my_task_social_feed_menu" id="my_task_social_feed_menu_1">
+                <div class="my_task_social_feed_overflow_menu_trigger" id="overflow_menu_trigger_1"></div>
+                <div class="my_task_social_feed_overflow_menu" id="my_task_overflow_menu_1">
+                    <div class="my_task_social_feed_overflow_menu_item start" id="menu_item_start_1" data-action="start" data-id="1">
+                        Start
+                    </div>
+                    <div class="my_task_social_feed_overflow_menu_item edit" id="menu_item_edit_1" data-action="edit" data-id="1">
+                        Edit
+                    </div>
+                    <div class="my_task_social_feed_overflow_menu_item publish" id="menu_item_publish_1" data-action="publish" data-id="1">
+                        Publish
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="post_info_title_row">
+            <div class="post_info_project_or_task_title_column">
+                <span class="post_info_project_or_task_title_text">Test Tender</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Task 2 (Project) -->
+    <div class="social_feed2" data-id="2">
+        <div class="post_info_block">
+            <div class="post_info_dates">
+                <div class="post_info_dates_type_of_task">project</div>
+            </div>
+            <div class="my_task_social_feed_menu" id="my_task_social_feed_menu_2">
+                <div class="my_task_social_feed_overflow_menu_trigger" id="overflow_menu_trigger_2"></div>
+                <div class="my_task_social_feed_overflow_menu" id="my_task_overflow_menu_2">
+                    <div class="my_task_social_feed_overflow_menu_item start" id="menu_item_start_2" data-action="start" data-id="2">
+                        Start
+                    </div>
+                    <div class="my_task_social_feed_overflow_menu_item edit" id="menu_item_edit_2" data-action="edit" data-id="2">
+                        Edit
+                    </div>
+                    <div class="my_task_social_feed_overflow_menu_item publish" id="menu_item_publish_2" data-action="publish" data-id="2">
+                        Publish
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="post_info_title_row">
+            <div class="post_info_project_or_task_title_column">
+                <span class="post_info_project_or_task_title_text">Test Project</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Task 3 (My List) -->
+    <div class="social_feed2" data-id="3">
+        <div class="post_info_block">
+            <div class="post_info_dates">
+                <div class="post_info_dates_type_of_task">my-list</div>
+            </div>
+            <div class="my_task_social_feed_menu" id="my_task_social_feed_menu_3">
+                <div class="my_task_social_feed_overflow_menu_trigger" id="overflow_menu_trigger_3"></div>
+                <div class="my_task_social_feed_overflow_menu" id="my_task_overflow_menu_3">
+                    <div class="my_task_social_feed_overflow_menu_item start" id="menu_item_start_3" data-action="start" data-id="3">
+                        Start
+                    </div>
+                    <div class="my_task_social_feed_overflow_menu_item edit" id="menu_item_edit_3" data-action="edit" data-id="3">
+                        Edit
+                    </div>
+                    <div class="my_task_social_feed_overflow_menu_item publish" id="menu_item_publish_3" data-action="publish" data-id="3">
+                        Publish
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="post_info_title_row">
+            <div class="post_info_project_or_task_title_column">
+                <span class="post_info_project_or_task_title_text">Test My List</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simplified version of the dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            
+            // Function to hide all open dropdown menus
+            function hideAllMyTaskOverflowMenus() {
+                const allMenus = document.querySelectorAll('[id^="my_task_overflow_menu_"]');
+                allMenus.forEach(menu => {
+                    if (menu) {
+                        menu.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Function to close all open menus
+            function closeAllMyTaskOverflowMenus() {
+                const openMenus = document.querySelectorAll('[id^="my_task_overflow_menu_"][class*="show"]');
+                openMenus.forEach(menu => {
+                    if (menu) {
+                        menu.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Click handler for overflow menu trigger
+            document.addEventListener('click', function(e) {
+                const trigger = e.target.closest('[id^="overflow_menu_trigger_"]');
+                if (trigger) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('Trigger clicked:', trigger.id);
+                    
+                    // Get task ID from element ID
+                    const taskId = trigger.id.replace('overflow_menu_trigger_', '');
+                    console.log('Task ID:', taskId);
+                    
+                    // Find corresponding dropdown menu
+                    const overflowMenu = document.getElementById(`my_task_overflow_menu_${taskId}`);
+                    console.log('Overflow menu found:', overflowMenu);
+                    
+                    if (overflowMenu) {
+                        // Close all other open menus
+                        closeAllMyTaskOverflowMenus();
+                        
+                        // Toggle current menu
+                        if (overflowMenu.classList.contains('show')) {
+                            overflowMenu.classList.remove('show');
+                            console.log('Menu hidden');
+                        } else {
+                            overflowMenu.classList.add('show');
+                            console.log('Menu shown');
+                        }
+                    }
+                }
+            });
+            
+            // Click handler for menu items
+            document.addEventListener('click', function(e) {
+                const menuItem = e.target.closest('[id^="menu_item_"]');
+                if (menuItem) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('Menu item clicked:', menuItem.id);
+                    
+                    // Get task ID and action from element ID
+                    const itemId = menuItem.id;
+                    const taskId = itemId.replace(/^menu_item_(start|edit|publish|remove)_/, '');
+                    const action = itemId.match(/^menu_item_(start|edit|publish|remove)_/)[1];
+                    
+                    console.log('Action:', action, 'Task ID:', taskId);
+                    
+                    // Close menu
+                    const overflowMenu = document.getElementById(`my_task_overflow_menu_${taskId}`);
+                    if (overflowMenu) {
+                        overflowMenu.classList.remove('show');
+                    }
+                    
+                    // Handle actions
+                    switch(action) {
+                        case 'start':
+                            alert(`Start action for task ${taskId}`);
+                            break;
+                        case 'edit':
+                            alert(`Edit action for task ${taskId}`);
+                            break;
+                        case 'publish':
+                            alert(`Publish action for task ${taskId}`);
+                            break;
+                    }
+                }
+            });
+            
+            // Click outside menu to close
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('[id^="my_task_social_feed_menu_"]')) {
+                    closeAllMyTaskOverflowMenus();
+                }
+            });
+            
+            // Escape key to close menu
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeAllMyTaskOverflowMenus();
+                }
+            });
+            
+            // Hide all menus on page load
+            hideAllMyTaskOverflowMenus();
+            
+            console.log('Event handlers attached');
+        });
+    </script>
+</body>
+</html>

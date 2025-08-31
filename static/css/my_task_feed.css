@@ -143,13 +143,14 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     min-width: 120px;
-    z-index: 1001;
+    z-index: 10000;
     display: none;
     overflow: hidden;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+    transition: all 0.2s ease;
+    margin-top: 4px;
 }
 
 /* Specific styles for task feed posts */
@@ -159,6 +160,8 @@
     align-items: center;
     gap: 8px;
     justify-content: flex-end;
+    min-height: 44px;
+    z-index: 9999;
 }
 
 /* Heart icon styles for task feed */
@@ -198,61 +201,95 @@
     border: none;
     outline: none;
     cursor: pointer;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
     margin: 0;
     color: #666;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
     box-shadow: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    position: relative;
+    border-radius: 4px;
+    z-index: 9999;
 }
 
 .social_feed2 .my_task_social_feed_overflow_menu_trigger:hover {
+    background-color: #f5f5f5;
     color: #333;
 }
 
+.social_feed2 .my_task_social_feed_overflow_menu_trigger:hover .overflow_menu_icon {
+    color: #333;
+}
+
+.social_feed2 .my_task_social_feed_overflow_menu_trigger:active {
+    background-color: #e5e5e5;
+}
+
 /* Иконка трех точек для task feed */
-.social_feed2 .my_task_social_feed_overflow_menu_trigger::after {
-    content: "\22EE";
-    right: 0;
-    top: 0;
+.social_feed2 .my_task_social_feed_overflow_menu_trigger .overflow_menu_icon {
     color: #666;
-    font-size: 1.4em;
+    font-size: 20px;
     line-height: 1;
-    display: block;
+    font-weight: bold;
     transition: color 0.2s ease;
     pointer-events: none;
 }
 
 .social_feed2 .my_task_social_feed_overflow_menu {
+    position: absolute;
     top: 100%;
     right: 0;
-    margin-top: 4px;
+    margin-top: 8px;
+    z-index: 10000;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 140px;
+    overflow: hidden;
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.social_feed2 .my_task_social_feed_overflow_menu.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    z-index: 10000;
+    pointer-events: auto;
 }
 
 .my_task_social_feed_overflow_menu.show {
-    display: block;
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    z-index: 9999;
 }
 
 .my_task_social_feed_overflow_menu_item {
     padding: 12px 16px;
     cursor: pointer;
     border-bottom: 1px solid #f0f0f0;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 14px;
     color: #333;
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
 }
 
 .my_task_social_feed_overflow_menu_item:last-child {
@@ -747,13 +784,35 @@ textarea {
 /* Hover эффекты для постов task feed */
 .social_feed2 {
     transition: all 0.3s ease;
+    z-index: 1;
+    position: relative;
 }
 
 .social_feed2:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1;
 }
 
 .social_feed2.hover {
     background-color: rgba(39, 56, 77, 0.05);
+    z-index: 1;
+}
+
+/* После публикации - понижаем z-index для опубликованных задач */
+.social_feed2.published {
+    z-index: 1;
+}
+
+.social_feed2.published:hover {
+    z-index: 1;
+}
+
+/* Когда dropdown menu открыт - повышаем z-index для родительского поста */
+.social_feed2.has-open-dropdown {
+    z-index: 9998;
+}
+
+.social_feed2.has-open-dropdown:hover {
+    z-index: 9998;
 }
