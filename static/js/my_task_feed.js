@@ -185,9 +185,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleMyTaskEdit(taskId) {
         // Edit action for task ID
         
+        // Извлекаем только ID задачи из полного ID (type_id)
+        const actualTaskId = taskId.split('_').pop();
+        
         // Определяем тип задачи по данным в DOM
         // Looking for task element with ID
-        const taskElement = document.querySelector(`.social_feed2[data-id="${taskId}"]`);
+        const taskElement = document.querySelector(`.social_feed2[data-id="${actualTaskId}"]`);
         if (!taskElement) {
             // Task element not found for ID
             return;
@@ -229,51 +232,25 @@ document.addEventListener('DOMContentLoaded', function() {
         // Opening edit form for type
         
         // Открываем соответствующую форму редактирования
-        openEditForm(formType, taskId);
+        openEditForm(formType, actualTaskId);
     }
     
     // Функция для обработки действия Publish
     function handleMyTaskPublish(taskId) {
         // Publish action for task ID
         
-        // Показываем подтверждение публикации
-        if (confirm('Are you sure you want to publish this task?')) {
-            // Здесь можно добавить логику для публикации
-            // Например, отправить AJAX запрос на сервер
-            
-            // Пример AJAX запроса:
-            /*
-            fetch(`/api/publish/${taskId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Обновляем UI после публикации
-                    if (typeof window.alertify !== 'undefined') {
-                        window.alertify.success('Task published successfully!');
-                    } else {
-                        alert('Task published successfully!');
-                    }
-                } else {
-                    alert('Error publishing: ' + data.message);
-                }
-            })
-            .catch(error => {
-                // An error occurred while publishing
-                alert('An error occurred while publishing');
-            });
-            */
-            
-            // Временное решение - показать сообщение
+        // Извлекаем только ID задачи из полного ID (type_id)
+        const actualTaskId = taskId.split('_').pop();
+        
+        // Открываем форму публикации вместо confirm
+        if (window.publishFormManager) {
+            window.publishFormManager.openPublishForm(actualTaskId, 'task');
+        } else {
+            // Fallback если publishFormManager не загружен
             if (typeof window.alertify !== 'undefined') {
-                window.alertify.success('Publish functionality will be implemented soon!');
+                window.alertify.error('Publish form not loaded. Please refresh the page.');
             } else {
-                alert('Publish functionality will be implemented soon!');
+                alert('Publish form not loaded. Please refresh the page.');
             }
         }
     }

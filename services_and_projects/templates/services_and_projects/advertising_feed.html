@@ -117,11 +117,20 @@
 
 <!-- Форма редактирования теперь находится в testpage.html -->
 
+<!-- Подключаем CSS для Publish Form -->
+<link rel="stylesheet" href="{% static 'css/publish_form.css' %}">
+
+<!-- Popup форма для публикации -->
+{% include 'services_and_projects/publish_form.html' %}
+
 <!-- Подключаем скрипт для hover эффектов -->
 <script src="{% static 'js/advertising_feed_hover.js' %}"></script>
 
 <!-- Подключаем скрипт для Alertify -->
 <script src="{% static 'js/lib_alertify/alertify.js' %}"></script>
+
+<!-- Подключаем скрипт для Publish Form -->
+<script src="{% static 'js/publish_form.js' %}"></script>
 
 <script>
     // Инициализация для advertising_feed.html

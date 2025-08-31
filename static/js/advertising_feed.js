@@ -329,11 +329,15 @@ function handleOrderNowClick(postId) {
 
 // Обработчик публикации
 function handlePublishAction(postId) {
-    if (confirm('Are you sure you want to publish this post?')) {
+    // Открываем форму публикации напрямую
+    if (window.publishFormManager) {
+        window.publishFormManager.openPublishForm(postId);
+    } else {
+        // Fallback если publishFormManager не загружен
         if (typeof window.alertify !== 'undefined') {
-            window.alertify.success('Publish functionality coming soon...');
+            window.alertify.error('Publish form not loaded. Please refresh the page.');
         } else {
-            alert('Publish functionality coming soon...');
+            alert('Publish form not loaded. Please refresh the page.');
         }
     }
 }

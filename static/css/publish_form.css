@@ -1,0 +1,344 @@
+/* Publish Form Popup Styles */
+
+/* Overlay */
+.publish_form_popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.publish_form_popup.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.publish_form_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+/* Container */
+.publish_form_container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
+
+.publish_form_popup.show .publish_form_container {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Предотвращаем автоматическое закрытие */
+.publish_form_popup.show {
+    pointer-events: auto !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.publish_form_popup.show .publish_form_container {
+    pointer-events: auto !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+}
+
+.publish_form_popup.show .publish_form_overlay {
+    pointer-events: auto !important;
+}
+
+/* Дополнительная защита от скрытия */
+.publish_form_popup.show,
+.publish_form_popup.show * {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Header */
+.publish_form_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.publish_form_header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.publish_form_close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    color: #6b7280;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.publish_form_close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.publish_form_close svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Form */
+.publish_form {
+    padding: 24px;
+}
+
+.form_group {
+    margin-bottom: 20px;
+}
+
+.form_row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.form_group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form_group input,
+.form_group select,
+.form_group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #111827;
+    background: white;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.form_group input:focus,
+.form_group select:focus,
+.form_group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form_group input::placeholder,
+.form_group textarea::placeholder {
+    color: #9ca3af;
+}
+
+.form_group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Required field indicator */
+.form_group label[for*="required"]::after,
+.form_group label:has(+ input[required])::after,
+.form_group label:has(+ select[required])::after,
+.form_group label:has(+ textarea[required])::after {
+    content: " *";
+    color: #ef4444;
+}
+
+/* Actions */
+.form_actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn_primary,
+.btn_secondary {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn_primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn_primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn_primary:active {
+    transform: translateY(0);
+}
+
+.btn_secondary {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn_secondary:hover {
+    background: #e5e7eb;
+}
+
+.btn_primary svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .publish_form_container {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .publish_form_header {
+        padding: 20px 20px 16px;
+    }
+    
+    .publish_form {
+        padding: 20px;
+    }
+    
+    .form_row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .form_actions {
+        flex-direction: column;
+    }
+    
+    .btn_primary,
+    .btn_secondary {
+        width: 100%;
+    }
+}
+
+/* Дополнительные стили для предотвращения конфликтов */
+.publish_form_popup * {
+    box-sizing: border-box;
+}
+
+.publish_form_popup button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Убираем любые автоматические переходы, которые могут закрывать форму */
+.publish_form_popup.show {
+    animation: none !important;
+}
+
+.publish_form_popup.show .publish_form_container {
+    animation: none !important;
+}
+
+/* Animation for form elements */
+.form_group input,
+.form_group select,
+.form_group textarea {
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Stagger animation for form groups */
+.form_group:nth-child(1) { animation-delay: 0.1s; }
+.form_group:nth-child(2) { animation-delay: 0.2s; }
+.form_group:nth-child(3) { animation-delay: 0.3s; }
+.form_group:nth-child(4) { animation-delay: 0.4s; }
+.form_group:nth-child(5) { animation-delay: 0.5s; }
+.form_group:nth-child(6) { animation-delay: 0.6s; }
+.form_group:nth-child(7) { animation-delay: 0.7s; }
+
+/* Предотвращаем конфликты с анимациями */
+.publish_form_popup.show .form_group input,
+.publish_form_popup.show .form_group select,
+.publish_form_popup.show .form_group textarea {
+    animation-play-state: running;
+}
+
+/* Loading state */
+.publish_form.loading .btn_primary {
+    position: relative;
+    color: transparent;
+}
+
+.publish_form.loading .btn_primary::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
