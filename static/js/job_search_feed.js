@@ -95,7 +95,7 @@
             const activityForm = document.getElementById(`add-activity-form-${jobSearchId}`);
             
             if (activityForm) {
-                activityForm.style.display = 'block';
+                activityForm.classList.add('show');
                 
                 // Повторно инициализируем компании для этой формы
                 setTimeout(() => {
@@ -169,7 +169,7 @@
         button.addEventListener('click', function() {
             const modal = button.closest('.modal-overlay');
             if (modal) {
-                modal.style.display = 'none';
+                modal.classList.remove('show');
             }
         });
     });
@@ -238,7 +238,7 @@
             .then(data => {
                 if (data.success) {
                     window.alertify.success(data.message);
-                    form.style.display = 'none';
+                    form.classList.remove('show');
                     form.reset();
                     
                     // Перезагружаем страницу для отображения новой активности

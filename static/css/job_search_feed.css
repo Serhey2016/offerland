@@ -771,10 +771,13 @@
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
     z-index: 10000;
+    /* Добавляем flexbox для центрирования */
+    justify-content: center;
+    align-items: center;
 }
 
 .modal-overlay.show {
-    display: block;
+    display: flex;
 }
 
 .modal-form {
@@ -787,8 +790,8 @@
     overflow-y: auto;
     position: relative;
     animation: modalSlideIn 0.3s ease-out;
-    /* Центрирование по горизонтали */
-    margin: 50px auto 0;
+    /* Убираем margin, так как центрирование теперь через flexbox */
+    margin: 0;
 }
 
 @keyframes modalSlideIn {
