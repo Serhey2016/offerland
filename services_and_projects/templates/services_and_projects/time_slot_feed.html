@@ -216,12 +216,12 @@
                 const action = menuItem.dataset.action;
                 const id = menuItem.dataset.id;
                 
-                console.log('Time slot action:', action, 'ID:', id);
+
                 
                 // Обрабатываем действия
                 switch(action) {
                     case 'edit':
-                        console.log('Editing time slot:', id);
+
                         // Открываем форму редактирования
                         if (window.EditTimeSlotForm) {
                             // Получаем данные time slot для редактирования из data-атрибутов
@@ -250,11 +250,11 @@
                         }
                         break;
                     case 'publish':
-                        console.log('Publishing time slot:', id);
+
                         // Добавить логику публикации
                         break;
                     case 'archive':
-                        console.log('Archiving time slot:', id);
+
                         // Добавить логику архивирования
                         break;
                 }

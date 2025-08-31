@@ -486,8 +486,6 @@ class FormSubmitter {
         // Проверяем action формы
         if (!this.form.action) {
             throw new Error('Form action is undefined');
-            });
-            throw new Error('Form action is not set');
         }
         
         // Базовые поля

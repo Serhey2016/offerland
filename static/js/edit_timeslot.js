@@ -107,23 +107,23 @@ class EditTimeSlotForm {
             if (existingContainer && existingContainer.dataset.allTags) {
                 try {
                     this.allTags = JSON.parse(existingContainer.dataset.allTags);
-                    console.log('Tags loaded:', this.allTags.length);
+
                 } catch (e) {
                     console.error('Error parsing all tags:', e);
                     this.allTags = [];
                 }
             } else {
-                console.warn('No tags data found in existing form');
+
                 this.allTags = [];
             }
         } else {
-            console.warn('Existing form not found for tags');
+
             this.allTags = [];
         }
     }
     
     openModal(timeSlotId, timeSlotData) {
-        console.log('Opening modal for time slot:', timeSlotId, 'with data:', timeSlotData);
+
         
         this.currentTimeSlotId = timeSlotId;
         this.currentTimeSlotData = timeSlotData;
@@ -146,7 +146,7 @@ class EditTimeSlotForm {
             const firstInput = this.modal.querySelector('input:not([type="hidden"]), select');
             if (firstInput) firstInput.focus();
             
-            console.log('Modal opened and populated');
+
         }, 200);
     }
     
@@ -155,11 +155,11 @@ class EditTimeSlotForm {
         if (document.getElementById('edit-timeslot-modal')) {
             this.modal = document.getElementById('edit-timeslot-modal');
             this.form = document.getElementById('edit-timeslot-form-element');
-            console.log('Using existing modal');
+
             return;
         }
         
-        console.log('Creating new modal');
+
         
                 // Create modal HTML
         const modalHTML = `
@@ -252,16 +252,13 @@ class EditTimeSlotForm {
         this.modal = document.getElementById('edit-timeslot-modal');
         this.form = document.getElementById('edit-timeslot-form-element');
         
-        console.log('Modal references after creation:', {
-            modal: !!this.modal,
-            form: !!this.form
-        });
+
         
         // Load categories and services
         setTimeout(() => {
             this.loadCategoriesAndServices();
             this.loadAllTags();
-            console.log('Modal created and initialized');
+
         }, 100);
     }
     
@@ -278,14 +275,14 @@ class EditTimeSlotForm {
                     const editCategorySelect = document.getElementById('edit-timeslot-category');
                     if (editCategorySelect) {
                         editCategorySelect.innerHTML = categorySelect.innerHTML;
-                        console.log('Categories loaded:', editCategorySelect.options.length);
+
                     }
                     
                     // Copy services
                     const editServiceSelect = document.getElementById('edit-timeslot-service');
                     if (editServiceSelect) {
                         editServiceSelect.innerHTML = serviceSelect.innerHTML;
-                        console.log('Services loaded:', editServiceSelect.options.length);
+
                     }
                     
                     // Bind category change event
@@ -295,10 +292,10 @@ class EditTimeSlotForm {
                         });
                     }
                 } else {
-                    console.warn('Category or service select not found in existing form');
+
                 }
             } else {
-                console.warn('Existing form not found');
+
             }
         } catch (error) {
             console.error('Error loading categories/services:', error);
@@ -335,13 +332,13 @@ class EditTimeSlotForm {
         if (!this.currentTimeSlotData) return;
         
         const data = this.currentTimeSlotData;
-        console.log('Populating form with data:', data);
+
         
         // Set hidden ID
         const idField = document.getElementById('edit-timeslot-id');
         if (idField) {
             idField.value = this.currentTimeSlotId;
-            console.log('Set ID field to:', this.currentTimeSlotId);
+
         }
         
         // Set category and service
@@ -349,7 +346,7 @@ class EditTimeSlotForm {
             const categorySelect = document.getElementById('edit-timeslot-category');
             if (categorySelect) {
                 categorySelect.value = data.category;
-                console.log('Set category to:', data.category);
+
                 this.filterServicesByCategory();
             }
         }
@@ -358,7 +355,7 @@ class EditTimeSlotForm {
             const serviceSelect = document.getElementById('edit-timeslot-service');
             if (serviceSelect) {
                 serviceSelect.value = data.services;
-                console.log('Set service to:', data.services);
+
             }
         }
         
@@ -367,28 +364,28 @@ class EditTimeSlotForm {
             const dateStart = document.getElementById('edit-timeslot-date-start');
             if (dateStart) {
                 dateStart.value = data.date_start;
-                console.log('Set start date to:', data.date_start);
+
             }
         }
         if (data.time_start) {
             const timeStart = document.getElementById('edit-timeslot-time-start');
             if (timeStart) {
                 timeStart.value = data.time_start;
-                console.log('Set start time to:', data.time_start);
+
             }
         }
         if (data.date_end) {
             const dateEnd = document.getElementById('edit-timeslot-date-end');
             if (dateEnd) {
                 dateEnd.value = data.date_end;
-                console.log('Set end date to:', data.date_end);
+
             }
         }
         if (data.time_end) {
             const timeEnd = document.getElementById('edit-timeslot-time-end');
             if (timeEnd) {
                 timeEnd.value = data.time_end;
-                console.log('Set end time to:', data.time_end);
+
             }
         }
         
@@ -397,34 +394,34 @@ class EditTimeSlotForm {
             const reservedTime = document.getElementById('edit-timeslot-reserved-time');
             if (reservedTime) {
                 reservedTime.value = data.reserved_time_on_road;
-                console.log('Set reserved time to:', data.reserved_time_on_road);
+
             }
         }
         if (data.start_location) {
             const startLocation = document.getElementById('edit-timeslot-start-location');
             if (startLocation) {
                 startLocation.value = data.start_location;
-                console.log('Set start location to:', data.start_location);
+
             }
         }
         if (data.cost_of_1_hour_of_work) {
             const costHour = document.getElementById('edit-timeslot-cost-hour');
             if (costHour) {
                 costHour.value = data.cost_of_1_hour_of_work;
-                console.log('Set cost hour to:', data.cost_of_1_hour_of_work);
+
             }
         }
         if (data.minimum_time_slot) {
             const minSlot = document.getElementById('edit-timeslot-min-slot');
             if (minSlot) {
                 minSlot.value = data.minimum_time_slot;
-                console.log('Set min slot to:', data.minimum_time_slot);
+
             }
         }
         
         // Set hashtags
         this.hashtags = data.hashtags || [];
-        console.log('Set hashtags to:', this.hashtags);
+
         this.updateHashtagDisplay();
         this.updateHashtagHidden();
     }
@@ -559,7 +556,7 @@ class EditTimeSlotForm {
             // Ensure hashtags are properly set
             formData.set('hashtags', JSON.stringify(this.hashtags));
             
-            console.log('Sending form data:', Object.fromEntries(formData));
+
             
             // Send update request
             const response = await fetch('/services_and_projects/update_form/', {
@@ -570,11 +567,11 @@ class EditTimeSlotForm {
                 }
             });
             
-            console.log('Response status:', response.status);
+
             
             if (response.ok) {
                 const result = await response.json();
-                console.log('Success response:', result);
+
                 this.showSuccess('Time slot updated successfully!');
                 this.closeModal();
                 
@@ -760,7 +757,7 @@ class EditTimeSlotForm {
         }
         
         const tokenValue = token ? token.value : '';
-        console.log('CSRF Token found:', tokenValue ? 'Yes' : 'No');
+
         return tokenValue;
     }
     
