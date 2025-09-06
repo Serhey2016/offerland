@@ -844,14 +844,7 @@ function setupPublishFormEventHandlers(postId, postType) {
         };
     }
     
-    // Обработчик для overlay (закрытие по клику вне формы)
-    const overlay = document.querySelector(`#publish_form_popup_${postType}_${postId} .publish_form_overlay`);
-    if (overlay) {
-        overlay.onclick = function(e) {
-            e.preventDefault();
-            closePublishForm(postId, postType);
-        };
-    }
+
 }
 
 // Функция закрытия формы публикации

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offerland | Календар</title>
+    <style>
+      html, body, #app { height: 100%; margin: 0; }
+      nav { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; display: flex; gap: 12px; }
+      a { text-decoration: none; color: #111827; }
+      a.active { font-weight: 600; }
+      main { height: calc(100% - 42px); }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/" id="link-calendar" class="active">Календар</a>
+      <a href="/matrix.html" id="link-matrix">Матриця Ейзенхауера</a>
+    </nav>
+    <main id="app"></main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+  </html>
+
+

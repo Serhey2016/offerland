@@ -1174,14 +1174,7 @@ function setupAdvertisingPublishFormEventHandlers(postId) {
         };
     }
     
-    // Обработчик для overlay (закрытие по клику вне формы)
-    const overlay = document.querySelector(`#publish_form_popup_advertising_${postId} .publish_form_overlay`);
-    if (overlay) {
-        overlay.onclick = function(e) {
-            e.preventDefault();
-            closeAdvertisingPublishForm(postId);
-        };
-    }
+
 }
 
 // Функция закрытия формы публикации advertising

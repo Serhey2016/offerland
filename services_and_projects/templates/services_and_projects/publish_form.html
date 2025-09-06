@@ -54,51 +54,51 @@
             
             <div class="form_section">
                 <h4>Payment Options</h4>
-                <div class="checkbox_group">
-                    <label class="checkbox_label">
-                        <input type="checkbox" name="payment_online" value="online">
-                        <span class="checkmark"></span>
+                <div class="radio_group">
+                    <label class="radio_label">
+                        <input type="radio" name="payment_type" value="online">
+                        <span class="radio_mark"></span>
                         Online payments
                     </label>
-                    <label class="checkbox_label">
-                        <input type="checkbox" name="payment_cash" value="cash">
-                        <span class="checkmark"></span>
+                    <label class="radio_label">
+                        <input type="radio" name="payment_type" value="cash">
+                        <span class="radio_mark"></span>
                         Cash payments
                     </label>
-                    <label class="checkbox_label">
-                        <input type="checkbox" name="payment_crypto" value="crypto">
-                        <span class="checkmark"></span>
-                        Crypto
+                    <label class="radio_label disabled">
+                        <input type="radio" name="payment_type" value="crypto" disabled>
+                        <span class="radio_mark"></span>
+                        <span class="strikethrough">Crypto</span>
                     </label>
-                    <label class="checkbox_label">
-                        <input type="checkbox" name="payment_free" value="free">
-                        <span class="checkmark"></span>
+                    <label class="radio_label">
+                        <input type="radio" name="payment_type" value="free">
+                        <span class="radio_mark"></span>
                         Free
                     </label>
                 </div>
             </div>
             
             <div class="form_section">
-                <h4>Task Type Options</h4>
-                <div class="checkbox_group">
-                    <label class="checkbox_label">
-                        <input type="checkbox" name="task_subscription" value="subscription">
-                        <span class="checkmark"></span>
+                <h4>Payment Type Options</h4>
+                <div class="radio_group">
+                    <label class="radio_label">
+                        <input type="radio" name="task_type" value="subscription">
+                        <span class="radio_mark"></span>
                         Subscription
                     </label>
-                    <label class="checkbox_label">
-                        <input type="checkbox" name="task_contract" value="contract">
-                        <span class="checkmark"></span>
+                    <label class="radio_label">
+                        <input type="radio" name="task_type" value="contract">
+                        <span class="radio_mark"></span>
                         Contract
                     </label>
-                    <label class="checkbox_label">
-                        <input type="checkbox" name="task_project" value="project">
-                        <span class="checkmark"></span>
+                    <label class="radio_label">
+                        <input type="radio" name="task_type" value="project">
+                        <span class="radio_mark"></span>
                         Project
                     </label>
-                    <label class="checkbox_label">
-                        <input type="checkbox" name="task_one_time" value="one_time">
-                        <span class="checkmark"></span>
+                    <label class="radio_label">
+                        <input type="radio" name="task_type" value="one_time">
+                        <span class="radio_mark"></span>
                         One time task
                     </label>
                 </div>
@@ -106,17 +106,16 @@
             
             <div class="form_section">
                 <h4>Type of services</h4>
-                <div class="toggle_switch"> <span class="toggle_text_left">Online</span>
+                <div class="toggle_switch">
+                    <span class="toggle_text_left">Online (Remote)</span>
                     <input type="checkbox" id="publish_service_type_{{ post_type }}_{{ post_id }}" name="service_type" class="toggle_input">
-                    <label for="publish_service_type_{{ post_type }}_{{ post_id }}" class="toggle_label">
-                       
-                        
-                    </label><span class="toggle_text_right">Offline</span>
+                    <label for="publish_service_type_{{ post_type }}_{{ post_id }}" class="toggle_label"></label>
+                    <span class="toggle_text_right">Offline (Visiting)</span>
                 </div>
             </div>
             
-            <div class="form_group">
-                <label>Type of publishing</label>
+            <div class="form_section">
+                <h4>Type of publishing</h4>
                 <div class="radio_group">
                     <label class="radio_label">
                         <input type="radio" name="publishing_type" value="business" checked>

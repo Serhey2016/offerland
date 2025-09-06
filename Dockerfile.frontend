@@ -1,0 +1,21 @@
+# Lightweight Node image for building/serving frontend assets without touching backend Dockerfiles
+FROM node:20-alpine
+
+WORKDIR /app-frontend
+
+# Install dependencies first to leverage Docker layer cache
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm ci || npm install
+
+# Copy source
+COPY frontend/ ./
+
+# Build step (adjust if using Vite/Next/etc.)
+ARG BUILD_CMD="build"
+RUN npm run $BUILD_CMD
+
+# Default dev server (non-interactive). To test JS locally, run: Allow pasting, then paste the npm command you need
+EXPOSE 5173 3000 8080
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+

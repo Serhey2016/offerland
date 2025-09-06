@@ -329,14 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
         }
         
-        // Обработчик для overlay (закрытие по клику вне формы)
-        const overlay = document.querySelector(`#publish_form_popup_task_${taskId} .publish_form_overlay`);
-        if (overlay) {
-            overlay.onclick = function(e) {
-                e.preventDefault();
-                closeTaskPublishForm(taskId);
-            };
-        }
+
     }
     
     // Функция закрытия формы публикации task

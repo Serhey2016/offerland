@@ -100,14 +100,7 @@ class PublishFormManager {
             }
         });
 
-        // Обработчик для закрытия формы при клике на overlay
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('publish_form_overlay') && this.currentPopup) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.closeCurrentPopup();
-            }
-        });
+
 
         // Обработчик для закрытия формы при нажатии Escape
         document.addEventListener('keydown', (e) => {
@@ -454,13 +447,7 @@ class PublishFormManager {
             });
         }
         
-        // Закрываем при клике на overlay формы
-        const overlay = container.closest('.publish_form_popup').querySelector('.publish_form_overlay');
-        if (overlay) {
-            overlay.addEventListener('click', () => {
-                closeDropdown();
-            });
-        }
+
     }
     
     setupHashtagSelectionHandlers(dropdown, inputElement, container) {
@@ -669,18 +656,7 @@ class PublishFormManager {
             });
         });
 
-        // Убираем обработчики на overlay
-        const overlay = popup.querySelector('.publish_form_overlay');
-        if (overlay) {
-            const newOverlay = overlay.cloneNode(true);
-            overlay.parentNode.replaceChild(newOverlay, overlay);
-            
-            newOverlay.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.closeCurrentPopup();
-            });
-        }
+
     }
 
     setupPopupEventListeners(popup, itemId, itemType) {
@@ -745,6 +721,36 @@ class PublishFormManager {
             formActions.addEventListener('click', () => {
                 this.closeAllHashtagDropdowns();
             });
+        }
+        
+        // Настраиваем обработчик для toggle switch
+        this.setupToggleSwitchHandlers(popup);
+    }
+    
+    setupToggleSwitchHandlers(popup) {
+        const toggleInput = popup.querySelector('.toggle_input');
+        const toggleSwitch = popup.querySelector('.toggle_switch');
+        
+        if (toggleInput && toggleSwitch) {
+            // Устанавливаем начальное состояние
+            this.updateToggleSwitchState(toggleInput, toggleSwitch);
+            
+            // Добавляем обработчик изменения
+            toggleInput.addEventListener('change', () => {
+                this.updateToggleSwitchState(toggleInput, toggleSwitch);
+            });
+        }
+    }
+    
+    updateToggleSwitchState(toggleInput, toggleSwitch) {
+        // Убираем все классы состояний
+        toggleSwitch.classList.remove('online-selected', 'offline-selected');
+        
+        // Добавляем соответствующий класс
+        if (toggleInput.checked) {
+            toggleSwitch.classList.add('offline-selected');
+        } else {
+            toggleSwitch.classList.add('online-selected');
         }
     }
     

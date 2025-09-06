@@ -30,3 +30,28 @@ tablib==3.8.0
 urllib3==2.5.0
 xlrd==2.0.2
 xlwt==1.3.0
+
+## API, фільтри, CORS
+djangorestframework==3.15.2
+django-filter==24.3
+django-cors-headers==4.4.0
+
+## Дати, рецурентність, iCal
+python-dateutil==2.9.0.post0
+pendulum==3.0.0
+django-recurrence==1.11.1
+icalendar==5.0.12
+
+## Реалтайм (WebSockets)
+channels==4.1.0
+channels-redis==4.2.0
+
+## Бекграунд задачі/нагадування
+celery==5.4.0
+django-celery-beat==2.7.0
+django-celery-results==2.5.1
+redis==5.0.8
+
+## Таксономія/теги, документація API
+django-taggit==6.1.0
+drf-spectacular==0.27.2

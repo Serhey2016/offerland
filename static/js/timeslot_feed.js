@@ -707,13 +707,7 @@ function setupTimeSlotPublishFormEventHandlers(postId) {
     }
     
     // Обработчик для overlay (закрытие по клику вне формы)
-    const overlay = document.querySelector(`#publish_form_popup_time_slot_${postId} .publish_form_overlay`);
-    if (overlay) {
-        overlay.onclick = function(e) {
-            e.preventDefault();
-            closeTimeSlotPublishForm(postId);
-        };
-    }
+
 }
 
 // Функция закрытия формы публикации time slot
