@@ -394,6 +394,73 @@ class PublishFormManager {
                 closeDropdown();
             }
         });
+        
+        // НОВАЯ ФУНКЦИЯ: закрываем dropdown при клике в другом месте формы
+        const closeDropdownOnOutsideClick = (e) => {
+            // Проверяем, что клик не на input хэштегов и не на dropdown
+            if (!container.contains(e.target)) {
+                closeDropdown();
+                // Убираем обработчик после закрытия
+                document.removeEventListener('click', closeDropdownOnOutsideClick);
+            }
+        };
+        
+        // Добавляем обработчик на весь документ с небольшой задержкой
+        // чтобы не закрывать dropdown сразу при клике на input
+        setTimeout(() => {
+            document.addEventListener('click', closeDropdownOnOutsideClick);
+        }, 100);
+        
+        // Также закрываем при клике на другие поля формы
+        const form = container.closest('.publish_form');
+        if (form) {
+            const formInputs = form.querySelectorAll('input, select, textarea');
+            formInputs.forEach(input => {
+                if (input !== inputElement) {
+                    input.addEventListener('click', () => {
+                        closeDropdown();
+                    });
+                    input.addEventListener('focus', () => {
+                        closeDropdown();
+                    });
+                }
+            });
+            
+            // Закрываем при клике на заголовок формы
+            const formHeader = form.querySelector('.publish_form_header');
+            if (formHeader) {
+                formHeader.addEventListener('click', () => {
+                    closeDropdown();
+                });
+            }
+            
+            // Закрываем при клике на кнопки действий
+            const formActions = form.querySelector('.form_actions');
+            if (formActions) {
+                formActions.addEventListener('click', () => {
+                    closeDropdown();
+                });
+            }
+            
+            // Закрываем при клике на селекты категорий и сервисов
+            const formSelects = form.querySelectorAll('select');
+            formSelects.forEach(select => {
+                select.addEventListener('click', () => {
+                    closeDropdown();
+                });
+                select.addEventListener('focus', () => {
+                    closeDropdown();
+                });
+            });
+        }
+        
+        // Закрываем при клике на overlay формы
+        const overlay = container.closest('.publish_form_popup').querySelector('.publish_form_overlay');
+        if (overlay) {
+            overlay.addEventListener('click', () => {
+                closeDropdown();
+            });
+        }
     }
     
     setupHashtagSelectionHandlers(dropdown, inputElement, container) {
@@ -650,6 +717,43 @@ class PublishFormManager {
                 }
             });
         }
+        
+        // НОВАЯ ФУНКЦИЯ: закрываем все dropdown'ы при клике на другие поля формы
+        const formInputs = popup.querySelectorAll('input, select, textarea');
+        formInputs.forEach(input => {
+            if (input !== hashtagInput) {
+                input.addEventListener('click', () => {
+                    this.closeAllHashtagDropdowns();
+                });
+                input.addEventListener('focus', () => {
+                    this.closeAllHashtagDropdowns();
+                });
+            }
+        });
+        
+        // Закрываем dropdown при клике на заголовок формы или кнопки
+        const formHeader = popup.querySelector('.publish_form_header');
+        const formActions = popup.querySelector('.form_actions');
+        
+        if (formHeader) {
+            formHeader.addEventListener('click', () => {
+                this.closeAllHashtagDropdowns();
+            });
+        }
+        
+        if (formActions) {
+            formActions.addEventListener('click', () => {
+                this.closeAllHashtagDropdowns();
+            });
+        }
+    }
+    
+    closeAllHashtagDropdowns() {
+        // Закрываем все открытые dropdown'ы хэштегов
+        const openDropdowns = document.querySelectorAll('.publish_form_hashtags_dropdown.show');
+        openDropdowns.forEach(dropdown => {
+            this.hideDropdown(dropdown);
+        });
     }
     
     filterHashtagsDropdown(inputElement) {
