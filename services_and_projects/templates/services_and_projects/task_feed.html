@@ -16,7 +16,7 @@
                 {% endif %}
             </span>
         </div>
-            <div class="post_info_dates_type_of_task">{{ task.type_of_task.type_of_task_name }}</div>
+            <div class="post_info_dates_type_of_task">{% if task.type_of_task.type_of_task_name|lower == 'my' %}My task{% else %}{{ task.type_of_task.type_of_task_name }}{% endif %}</div>
             <div class="post_info_end_date_column">
                 <span class="post_info_end_date">last update:</span>
                 <span class="post_end_date">{{ task.updated_at|date:'d.m.Y' }}</span>

@@ -1,4 +1,6 @@
 {% comment %} Navigation and menu components {% endcomment %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/navigation_components.css' %}">
 
 <!-- Fixed Circle Menu -->
 <div class="fixed_circle_menu">
@@ -31,53 +33,39 @@
 </div>
 
 <!-- Navigation Menu -->
-<div class="nav_menu">
-    <button class="nav-arrow nav-arrow-left">
-        <svg xmlns="http://www.w3.org/2000/svg" width="21.82" height="37.062" viewBox="0 0 21.82 37.062">
-            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                transform="translate(0 880)" fill="#333a49" />
-        </svg>
-    </button>
-    <button class="nav-arrow nav-arrow-right">
-        <svg class="" xmlns="http://www.w3.org/2000/svg" width="21.82" height="37.062" viewBox="0 0 21.82 37.062">
-            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                transform="translate(21.82 -842.938) rotate(180)" fill="#333a49" />
-        </svg>
-    </button>
-    <button class="nav-arrow nav-arrow-up">
-        <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
-            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                transform="translate(-842.938) rotate(90)" fill="#333a49" />
-        </svg>
-    </button>
-    <button class="nav-arrow nav-arrow-down">
-        <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
-            <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
-                transform="translate(880 21.82) rotate(-90)" fill="#333a49" />
-        </svg>
-    </button>
+<div class="nav_menu_container">
+    <!-- Top decorative lines -->
+    <div class="nav_decorative_lines nav_decorative_lines_top">
+        <div class="nav_line nav_line_top_1"></div>
+        <div class="nav_line nav_line_top_2"></div>
+    </div>
+    
+    <div class="nav_menu">
+        <button class="nav-arrow nav-arrow-up">
+            <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
+                <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                    d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
+                    transform="translate(-842.938) rotate(90)" fill="#333a49" />
+            </svg>
+        </button>
+        <button class="nav-arrow nav-arrow-down">
+            <svg xmlns="http://www.w3.org/2000/svg" width="37.062" height="21.82" viewBox="0 0 37.062 21.82">
+                <path id="arrow_back_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
+                    d="M18.531-842.938,0-861.469,18.531-880l3.289,3.289L6.579-861.469,21.82-846.227Z"
+                    transform="translate(880 21.82) rotate(-90)" fill="#333a49" />
+            </svg>
+        </button>
 
-    <div class="nav_menu_content">
-        <div class="nav_menu_sub_category_name">
-            <div class="nav_menu_sub_category_name_1">All</div>
-            <div class="nav_menu_category_name">Business Support</div>
+        <div class="nav_menu_content">
+            <div class="nav_menu_sub_category_name">
+                <div class="nav_menu_category_name">Touchpoint</div>
+            </div>
         </div>
-        <div class="nav_menu_sub_category_name_2">
-            <div class="active"></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-        <div class="nav_menu_cat_change">
-            <div class="active"></div>
-            <div></div>
-            <div></div>
-        </div>
+    </div>
+    
+    <!-- Bottom decorative lines -->
+    <div class="nav_decorative_lines nav_decorative_lines_bottom">
+        <div class="nav_line nav_line_bottom_1"></div>
+        <div class="nav_line nav_line_bottom_2"></div>
     </div>
 </div>

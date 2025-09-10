@@ -1,16 +1,36 @@
 const categories = [
     {
-        name: 'My list',
+        name: 'Touchpoint',
         subcategories: ['All', 'Favorites', 'Orders', 'Subscriptions', 'Published', 'Archive' ]
     },
     {
-        name: 'Business Support',
+        name: 'Inbox',
         subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
     },
     {
-        name: 'Personal Support',
+        name: 'Agenda',
         subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
-    } 
+    },
+    {
+        name: 'Waiting',
+        subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
+    },
+    {
+        name: 'Someday',
+        subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
+    },
+    {
+        name: 'Projects',
+        subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
+    },
+    {
+        name: 'Lockbook (Done)',
+        subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
+    },
+    {
+        name: 'Trash',
+        subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
+    }
 ];
 
 let currentCategoryIndex = 0;
@@ -19,83 +39,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // Навигационные стрелки
     const upArrow = document.querySelector('.nav-arrow-up');
     const downArrow = document.querySelector('.nav-arrow-down');
-    const leftArrow = document.querySelector('.nav-arrow-left');
-    const rightArrow = document.querySelector('.nav-arrow-right');
 
     // DOM-элементы для названия категории и подкатегории
     const categoryNameElement = document.querySelector('.nav_menu_category_name');
-    const subCategoryNameElement = document.querySelector('.nav_menu_sub_category_name_1');
-    const subCategoryDotsContainer = document.querySelector('.nav_menu_sub_category_name_2');
+    const navMenuContainer = document.querySelector('.nav_menu_container');
+    let currentCategoryIndex = 0;
 
-    // Точки для категорий (вертикальные)
-    const dots = Array.from(document.querySelector('.nav_menu_cat_change').children);
-    let activeIndex = dots.findIndex(dot => dot.classList.contains('active'));
-    if (activeIndex === -1) activeIndex = 0;
 
-    // Точки для подкатегорий (горизонтальные)
-    let subCategoryDots = Array.from(subCategoryDotsContainer.children);
-    let activeSubCategoryIndex = subCategoryDots.findIndex(dot => dot.classList.contains('active'));
-    if (activeSubCategoryIndex === -1) activeSubCategoryIndex = 0;
-    let currentSubCategoryIndex = 0;
 
-    // Функция для обновления точек категорий
-    function updateCategoryDots() {
-        const requiredDots = categories.length;
-        dots.forEach((dot, index) => {
-            if (index < requiredDots) {
-                dot.style.display = 'block';
-            } else {
-                dot.style.display = 'none';
-            }
-            dot.classList.remove('active');
-        });
-        if (requiredDots > 0) {
-            dots[0].classList.add('active');
-            activeIndex = 0;
-        }
-    }
 
-    function setActiveDot(newIndex) {
-        dots[activeIndex].classList.remove('active');
-        dots[newIndex].classList.add('active');
-        activeIndex = newIndex;
-    }
-
-    function setActiveSubCategoryDot(newIndex) {
-        subCategoryDots[activeSubCategoryIndex].classList.remove('active');
-        subCategoryDots[newIndex].classList.add('active');
-        activeSubCategoryIndex = newIndex;
-        currentSubCategoryIndex = newIndex;
-    }
-
-    function updateSubCategoryDots(categoryIndex) {
-        const requiredDots = categories[categoryIndex].subcategories.length;
-        subCategoryDots.forEach((dot, index) => {
-            if (index < requiredDots) {
-                dot.style.display = 'block';
-            } else {
-                dot.style.display = 'none';
-            }
-            dot.classList.remove('active');
-        });
-        if (requiredDots > 0) {
-            subCategoryDots[0].classList.add('active');
-            activeSubCategoryIndex = 0;
-            currentSubCategoryIndex = 0;
-        }
-    }
 
     function updateCategoryName(index) {
         categoryNameElement.textContent = categories[index].name;
-        currentSubCategoryIndex = 0;
-        activeSubCategoryIndex = 0;
-        updateSubCategoryName(index, currentSubCategoryIndex);
-        updateSubCategoryDots(index);
     }
 
-    function updateSubCategoryName(categoryIndex, subIndex) {
-        subCategoryNameElement.textContent = categories[categoryIndex].subcategories[subIndex];
+    function updateLineColors(direction) {
+        // Убираем все активные классы
+        navMenuContainer.classList.remove('nav-up-active', 'nav-down-active');
+        
+        // Добавляем соответствующий класс
+        if (direction === 'up') {
+            navMenuContainer.classList.add('nav-up-active');
+        } else if (direction === 'down') {
+            navMenuContainer.classList.add('nav-down-active');
+        }
     }
+
 
     // Функция для обновления страницы с фильтрами
     function updatePageWithFilters(categoryIndex, subCategoryIndex) {
@@ -106,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let statusFilter = 'all';
         let categoryFilter = 'all';
         
-        if (category.name === 'My list') {
+        if (category.name === 'Touchpoint') {
             if (subCategory === 'All') {
                 statusFilter = 'all';
             } else if (subCategory === 'Published') {
@@ -261,40 +230,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     upArrow.addEventListener('click', () => {
-        const newIndex = activeIndex === 0 ? categories.length - 1 : activeIndex - 1;
-        setActiveDot(newIndex);
-        currentCategoryIndex = newIndex;
+        currentCategoryIndex = currentCategoryIndex === 0 ? categories.length - 1 : currentCategoryIndex - 1;
         updateCategoryName(currentCategoryIndex);
+        updateLineColors('up');
     });
 
     downArrow.addEventListener('click', () => {
-        const newIndex = activeIndex === categories.length - 1 ? 0 : activeIndex + 1;
-        setActiveDot(newIndex);
-        currentCategoryIndex = newIndex;
+        currentCategoryIndex = currentCategoryIndex === categories.length - 1 ? 0 : currentCategoryIndex + 1;
         updateCategoryName(currentCategoryIndex);
+        updateLineColors('down');
     });
 
-    leftArrow.addEventListener('click', () => {
-        const subcategories = categories[currentCategoryIndex].subcategories;
-        currentSubCategoryIndex = currentSubCategoryIndex === 0 ?
-            subcategories.length - 1 : currentSubCategoryIndex - 1;
-        setActiveSubCategoryDot(currentSubCategoryIndex);
-        updateSubCategoryName(currentCategoryIndex, currentSubCategoryIndex);
-        
-        // Применяем фильтры при изменении подкатегории
-        updatePageWithFilters(currentCategoryIndex, currentSubCategoryIndex);
-    });
 
-    rightArrow.addEventListener('click', () => {
-        const subcategories = categories[currentCategoryIndex].subcategories;
-        currentSubCategoryIndex = currentSubCategoryIndex === subcategories.length - 1 ?
-            0 : currentSubCategoryIndex + 1;
-        setActiveSubCategoryDot(currentSubCategoryIndex);
-        updateSubCategoryName(currentCategoryIndex, currentSubCategoryIndex);
-        
-        // Применяем фильтры при изменении подкатегории
-        updatePageWithFilters(currentCategoryIndex, currentSubCategoryIndex);
-    });
 
     // Добавляем поддержку свайпов для мобильных устройств
     const menuContainer = document.querySelector('.nav_menu');
@@ -316,16 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const dx = touchEndX - touchStartX;
             const dy = touchEndY - touchStartY;
 
-            if (Math.abs(dx) > Math.abs(dy)) {
-                // Горизонтальный свайп
-                if (dx > 30) {
-                    // Свайп вправо
-                    rightArrow.click();
-                } else if (dx < -30) {
-                    // Свайп влево
-                    leftArrow.click();
-                }
-            } else {
+            if (Math.abs(dx) <= Math.abs(dy)) {
                 // Вертикальный свайп
                 if (dy > 30) {
                     // Свайп вниз
@@ -348,39 +286,30 @@ document.addEventListener('DOMContentLoaded', () => {
     function setNavigationPositionFromURL() {
         const currentStatus = getCurrentStatusFromURL();
         
-        // Находим категорию "My list"
-        const myListIndex = categories.findIndex(cat => cat.name === 'My list');
-        if (myListIndex === -1) return;
+        // Находим категорию "Touchpoint"
+        const touchpointIndex = categories.findIndex(cat => cat.name === 'Touchpoint');
+        if (touchpointIndex === -1) return;
         
         // Определяем индекс подкатегории на основе статуса
         let subCategoryIndex = 0; // По умолчанию "All"
         
         if (currentStatus === 'published') {
-            subCategoryIndex = categories[myListIndex].subcategories.findIndex(sub => sub === 'Published');
+            subCategoryIndex = categories[touchpointIndex].subcategories.findIndex(sub => sub === 'Published');
         } else if (currentStatus === 'archived') {
-            subCategoryIndex = categories[myListIndex].subcategories.findIndex(sub => sub === 'Archive');
+            subCategoryIndex = categories[touchpointIndex].subcategories.findIndex(sub => sub === 'Archive');
         }
         
         // Если статус найден, устанавливаем позицию
         if (subCategoryIndex !== -1) {
             // Устанавливаем активную категорию
-            currentCategoryIndex = myListIndex;
-            activeIndex = myListIndex;
-            
-            // Устанавливаем активную подкатегорию
-            currentSubCategoryIndex = subCategoryIndex;
-            activeSubCategoryIndex = subCategoryIndex;
+            currentCategoryIndex = touchpointIndex;
             
             // Обновляем UI
-            setActiveDot(activeIndex);
             updateCategoryName(currentCategoryIndex);
-            setActiveSubCategoryDot(activeSubCategoryIndex);
-            updateSubCategoryName(currentCategoryIndex, activeSubCategoryIndex);
         }
     }
     
     // Инициализация
-    updateCategoryDots();
     updateCategoryName(currentCategoryIndex);
     
     // Устанавливаем позицию навигации на основе URL

@@ -1,3 +1,4 @@
+
 # Lightweight Node image for building/serving frontend assets without touching backend Dockerfiles
 FROM node:20-alpine
 

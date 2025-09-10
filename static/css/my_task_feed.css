@@ -810,9 +810,15 @@ textarea {
 
 /* Когда dropdown menu открыт - повышаем z-index для родительского поста */
 .social_feed2.has-open-dropdown {
-    z-index: 9998;
+    z-index: 50;
 }
 
 .social_feed2.has-open-dropdown:hover {
-    z-index: 9998;
+    z-index: 50;
+}
+
+/* Ensure expanded details never overlay popups */
+.social_feed_details {
+    position: relative;
+    z-index: 50;
 }

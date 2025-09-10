@@ -5,19 +5,19 @@ const grid = document.createElement('div')
 grid.className = 'grid'
 grid.innerHTML = `
   <div class="cell" data-quadrant="q1">
-    <h3>Важливо й Терміново</h3>
+    <h3>Important & Urgent</h3>
     <div class="items" id="q1"></div>
   </div>
   <div class="cell" data-quadrant="q2">
-    <h3>Важливо й Не терміново</h3>
+    <h3>Important & Not Urgent</h3>
     <div class="items" id="q2"></div>
   </div>
   <div class="cell" data-quadrant="q3">
-    <h3>Неважливо й Терміново</h3>
+    <h3>Not Important & Urgent</h3>
     <div class="items" id="q3"></div>
   </div>
   <div class="cell" data-quadrant="q4">
-    <h3>Неважливо й Не терміново</h3>
+    <h3>Not Important & Not Urgent</h3>
     <div class="items" id="q4"></div>
   </div>
 `
@@ -32,7 +32,7 @@ function createItem(id, title) {
   return el
 }
 
-document.getElementById('q2').appendChild(createItem('t1', 'Приклад задача'))
+document.getElementById('q2').appendChild(createItem('t1', 'Example task'))
 
 interact('.item').draggable({
   listeners: {
@@ -56,7 +56,7 @@ interact('.items').dropzone({
   ondrop (event) {
     const item = event.relatedTarget
     event.target.appendChild(item)
-    // Тут згодом зробимо PATCH до DRF: importance/urgency за id списку
+    // Later we will make a PATCH to DRF: importance/urgency by list id
     console.log('moved to', event.target.id, 'task', item.dataset.id)
   }
 })

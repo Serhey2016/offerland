@@ -1,0 +1,222 @@
+{% extends "task_tracker/base.html" %}
+
+{% block task_content %}
+<!-- Filter and Search Section -->
+<section class="container">
+    <div class="filter_search_container">
+        <div class="filter_search_container_content_left_side">
+            <div class="greeting_section">
+                <h1 class="greeting_main">
+                    <span class="greeting_time" id="greeting-time">Good Morning.</span>
+                    <span class="greeting_name">{% if user.is_authenticated %}{{ user.first_name|default:user.username }}{% else %}Guest{% endif %}</span>
+                </h1>
+                <p class="greeting_subtitle" id="greeting-subtitle">Today is a great day!</p>
+            </div>
+        </div>
+        <div class="filter_search_container_content_right_side">
+            <div class="Amount_counted">
+                <div class="Amount_counted_main_icon">£</div>
+                <div class="Amount_counted_text_digits">
+                    <span class="Amount_counted_amount">Earned</span>
+                    <span class="Amount_counted_value">800000</span>
+                </div>
+            </div>
+
+            <div class="contracts_counted">
+                <div class="contracts_counted_main_icon">
+                    <svg id="service-contract" xmlns="http://www.w3.org/2000/svg" width="34.802" height="39.586"
+                        viewBox="0 0 34.802 39.586">
+                        <path id="Path_5230" data-name="Path 5230"
+                            d="M47.752,23.046l-7.519-7.519a.731.731,0,0,0-.57-.228.779.779,0,0,0-.8.8v6.038a2.285,2.285,0,0,0,2.278,2.278h6.038a.779.779,0,0,0,.8-.8A.731.731,0,0,0,47.752,23.046Zm.228,5.924a1.143,1.143,0,0,0-1.139-1.139H38.866a3.428,3.428,0,0,1-3.418-3.418V16.439A1.143,1.143,0,0,0,34.309,15.3H22.918A3.428,3.428,0,0,0,19.5,18.718v27.34a3.428,3.428,0,0,0,3.418,3.418H34.48c.911,0,1.139-.627,1.082-1.595a11.655,11.655,0,0,1,2.449-8.43c2.848-3.3,7.519-3.531,8.2-3.531s1.823-.057,1.766-1.025S47.979,28.97,47.979,28.97ZM23.487,22.477l2.791-.4c.057,0,.171-.057.171-.114L27.7,19.4a.267.267,0,0,1,.456,0l1.253,2.563c.057.057.114.114.171.114l2.791.4c.171.057.285.285.114.4l-2.051,1.994c-.057.057-.057.114-.057.228l.456,2.791a.223.223,0,0,1-.342.228l-2.506-1.31a.173.173,0,0,0-.228,0l-2.506,1.31a.223.223,0,0,1-.342-.228l.456-2.791a.342.342,0,0,0-.057-.228l-2.051-1.994C23.2,22.762,23.316,22.534,23.487,22.477ZM33.74,41.5A1.143,1.143,0,0,1,32.6,42.64H25.2A1.143,1.143,0,0,1,24.057,41.5V40.362A1.143,1.143,0,0,1,25.2,39.223h7.4a1.143,1.143,0,0,1,1.139,1.139Zm6.265-6.835a1.143,1.143,0,0,1-1.139,1.139H25.2a1.143,1.143,0,0,1-1.139-1.139V33.527A1.143,1.143,0,0,1,25.2,32.388h13.67a1.143,1.143,0,0,1,1.139,1.139Z"
+                            transform="translate(-19.5 -15.3)" fill="#282d3b" />
+                        <path id="Path_5231" data-name="Path 5231"
+                            d="M60.145,56.2a8.145,8.145,0,1,0,8.145,8.145A8.143,8.143,0,0,0,60.145,56.2Zm1.424,8.886a2.86,2.86,0,0,1-.684-.114l-3.133,3.076a.9.9,0,0,1-.684.285.83.83,0,0,1-.684-.285,1.039,1.039,0,0,1,0-1.367l3.133-3.133a2.048,2.048,0,0,1-.114-.627,2.536,2.536,0,0,1,2.449-2.734,2.859,2.859,0,0,1,.684.114c.114,0,.114.114.057.228l-1.367,1.424a.214.214,0,0,0,0,.342l.968.968a.275.275,0,0,0,.4,0L63.961,61.9c.057-.057.228-.057.228.057a2.859,2.859,0,0,1,.114.684A2.536,2.536,0,0,1,61.569,65.086Z"
+                            transform="translate(-33.488 -32.904)" fill="#282d3b" />
+                    </svg>
+                </div>
+                <div class="contracts_counted_text_digits">
+                    <span class="contracts_counted_amount">Finished</span>
+                    <span class="contracts_counted_value">23</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sub Menu Section -->
+
+
+<!-- Date and Time Section -->
+<section class="container task_tracker_sides_separator">
+   
+    <div class="task_tracker_left_side_section">
+        <div class="task_tracker_left_side_menu">
+            <!-- Main Navigation Items -->
+            <div class="menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="menu_item_text">Touchpoint</span>
+                    <span class="menu_item_arrow">→</span>
+                </button>
+            </div>
+            
+            <div class="menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="menu_item_text">Inbox</span>
+                    <span class="menu_item_arrow">→</span>
+                </button>
+            </div>
+            
+            <div class="menu_item_container">
+                <button class="task_tracker_menu_item expandable" data-target="agenda-submenu">
+                    <span class="menu_item_text">Agenda</span>
+                    <span class="menu_item_arrow">↓</span>
+                </button>
+                <!-- Agenda Submenu -->
+                <div class="submenu" id="agenda-submenu">
+                    <div class="submenu_item">Favorites</div>
+                    <div class="submenu_item">Orders</div>
+                    <div class="submenu_item">Subscriptions</div>
+                    <div class="submenu_item">Published</div>
+                </div>
+            </div>
+            
+            <!-- Separator -->
+            <div class="menu_separator"></div>
+            
+            <!-- Bottom Section -->
+            <div class="menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="menu_item_text">Waiting</span>
+                </button>
+            </div>
+            
+            <div class="menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="menu_item_text">Someday</span>
+                </button>
+            </div>
+            
+            <div class="menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="menu_item_text">Projects</span>
+                </button>
+            </div>
+            
+            <div class="menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="menu_item_text">Lockbook (Done)</span>
+                </button>
+            </div>
+            
+            <div class="menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="menu_item_text">Archive</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="task_tracker_right_side_section">
+        <div class="sub_menu_section_task_tracker">
+            <!-- Filter Button (Fixed Left) -->
+            <button class="sub_menu_filter_btn">
+                🔍
+            </button>
+            
+            <!-- Scrollable Navigation Center -->
+            <div class="sub_menu_scrollable_container">
+                <div class="sub_menu_navigation_items">
+                    <button class="sub_menu_nav_btn active">Agenda</button>
+                    <button class="sub_menu_nav_btn">All</button>
+                    <button class="sub_menu_nav_btn">Business support</button>
+                    <button class="sub_menu_nav_btn">Personal support</button>
+                </div>
+            </div>
+            
+            <!-- Add Button (Fixed Right) -->
+            <button class="sub_menu_add_btn">
+                <span class="add_icon">+</span>
+            </button>
+        </div>
+        <div class="datetime_section">
+            <!-- Left Part - Date -->
+            <div class="datetime_left">
+                <div class="datetime_row_1">
+                    <span class="day_name" id="day-name">Monday</span>
+                    <span class="weather_icon">⛅</span>
+                </div>
+                <div class="datetime_row_2">
+                    <span class="day_number" id="day-number">25</span>
+                </div>
+                <div class="datetime_row_3">
+                    <span class="month_name" id="month-name">JANUARY</span>
+                </div>
+            </div>
+            
+            <!-- Center Divider -->
+            <div class="datetime_divider_center"></div>
+            
+            <!-- Right Part - Time and Location -->
+            <div class="datetime_right">
+                <div class="datetime_right_left">
+                    <div class="time_row_1">
+                        <span class="current_time" id="current-time">8.00</span>
+                    </div>
+                    <div class="time_row_2">
+                        <span class="location" id="location">London</span>
+                    </div>
+                </div>
+                <div class="datetime_right_right">
+                    <div class="action_icons">
+                        <div class="icon_item">🔍</div>
+                        <div class="icon_item">⏳</div>
+                        <div class="icon_item">🤓</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Divider -->
+            <div class="datetime_divider_bottom"></div>
+        </div>
+        <div class="task_tracker_right_side_sub_cat_menu" id="task_tracker_right_side_sub_cat_menu">
+            <div class="sub_cat_menu_item">Favorites</div>
+            <div class="sub_cat_menu_item">Orders</div>
+            <div class="sub_cat_menu_item">Subscriptions</div>
+            <div class="sub_cat_menu_item">Published</div>
+        </div>
+        <div class="list_of_tasks_task_tracker task_tracker_tasks_sides_separator">
+            <!-- <div class="task_tracker_tasks_left_side_section">
+                <div class="task_tracker_tasks_left_side_time_line">
+                    <span class="task_tracker_tasks_left_side_time_line_item">4.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">5.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">6.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">7.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">8.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">9.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">10.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">11.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">12.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">13.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">14.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">15.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">16.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">17.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">18.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">19.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">20.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">21.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">22.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">23.00</span>
+                    <span class="task_tracker_tasks_left_side_time_line_item">00.00</span>
+                </div>
+            </div>
+            <div class="task_tracker_tasks_right_side_section">
+                <div class="task_tracker_tasks_right_side_menu">
+                
+                </div>
+            </div> -->
+        </div>      
+    </div>
+
+</section>
+
+{% endblock %}

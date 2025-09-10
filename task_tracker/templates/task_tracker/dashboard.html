@@ -1,0 +1,136 @@
+{% extends "task_tracker/base.html" %}
+
+{% block task_content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Дашборд</h1>
+    <p class="dashboard-subtitle">Обзор ваших задач</p>
+</div>
+
+<div class="dashboard-stats">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stat-card stat-total">
+                <div class="stat-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ total_tasks }}</h3>
+                    <p>Всего задач</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-completed">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ completed_tasks }}</h3>
+                    <p>Завершено</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-pending">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ pending_tasks }}</h3>
+                    <p>В ожидании</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-progress">
+                <div class="stat-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>
+                        {% if total_tasks > 0 %}
+                            {{ completed_tasks|floatformat:0 }}/{{ total_tasks|floatformat:0 }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </h3>
+                    <p>Прогресс</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-content">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>Последние задачи</h3>
+                    <a href="{% url 'task_tracker:task_list' %}" class="btn btn-outline-primary btn-sm">
+                        Посмотреть все
+                    </a>
+                </div>
+                <div class="section-content">
+                    {% if recent_tasks %}
+                        <div class="task-list">
+                            {% for task in recent_tasks %}
+                                <div class="task-item">
+                                    <div class="task-info">
+                                        <h4 class="task-title">
+                                            <a href="{% url 'task_tracker:task_detail' task.id %}">
+                                                {{ task.title }}
+                                            </a>
+                                        </h4>
+                                        <p class="task-description">{{ task.description|truncatechars:100 }}</p>
+                                        <div class="task-meta">
+                                            <span class="task-status status-{{ task.status }}">
+                                                {{ task.get_status_display }}
+                                            </span>
+                                            <span class="task-priority priority-{{ task.priority }}">
+                                                {{ task.get_priority_display }}
+                                            </span>
+                                            <span class="task-date">
+                                                {{ task.created_at|date:"d.m.Y H:i" }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-tasks"></i>
+                            <h4>Нет задач</h4>
+                            <p>Создайте свою первую задачу</p>
+                            <a href="{% url 'task_tracker:task_create' %}" class="btn btn-primary">
+                                Создать задачу
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>Быстрые действия</h3>
+                </div>
+                <div class="section-content">
+                    <div class="quick-actions">
+                        <a href="{% url 'task_tracker:task_create' %}" class="quick-action-btn">
+                            <i class="fas fa-plus"></i>
+                            <span>Создать задачу</span>
+                        </a>
+                        <a href="{% url 'task_tracker:task_list' %}" class="quick-action-btn">
+                            <i class="fas fa-list"></i>
+                            <span>Все задачи</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

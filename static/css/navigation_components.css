@@ -1,0 +1,266 @@
+/* Navigation Components Styles */
+
+/* Fixed Circle Menu (Left Side) */
+.fixed_circle_menu {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 85;
+    width: 60px;
+    height: 60px;
+}
+
+.fixed_circle {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: #FBD551;
+    border: 3px solid #282D3B;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 8px rgba(40, 45, 59, 0.08);
+}
+
+.fixed_circle svg {
+    width: 24px;
+    height: 24px;
+}
+
+.fixed_circle.sub {
+    width: 51px;
+    /* 60px * 0.85 */
+    height: 51px;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        transform 0.35s cubic-bezier(.68, -0.55, .27, 1.55),
+        opacity 0.2s 0.4s;
+    /* задержка исчезновения 0.4s */
+    left: 4.5px;
+    /* (60-51)/2 */
+    top: 4.5px;
+    z-index: 999;
+    cursor: pointer;
+}
+
+/* Позиции для выезжающих кнопок */
+.fixed_circle.sub1 {
+    /* 95deg */
+    transform: translate(0, 0);
+}
+
+.fixed_circle.sub2 {
+    /* 145deg */
+    transform: translate(0, 0);
+}
+
+.fixed_circle.sub3 {
+    /* 170deg */
+    transform: translate(0, 0);
+}
+
+/* Показываем кнопки при hover/active на главной */
+.fixed_circle_menu.fab-open .fixed_circle.sub {
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: 0s, 0s;
+}
+
+.fixed_circle_menu.fab-open .fixed_circle.sub1 {
+    transform: translate(20.7px, -77.3px);
+}
+
+.fixed_circle_menu.fab-open .fixed_circle.sub2 {
+    transform: translate(63.4px, -48.7px);
+}
+
+.fixed_circle_menu.fab-open .fixed_circle.sub3 {
+    transform: translate(80px, 0px);
+}
+
+.fixed_circle.main {
+    z-index: 1001;
+}
+
+.fixed_circle.main:active {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(40, 45, 59, 0.2);
+}
+
+.fixed_circle.sub:hover {
+    box-shadow: 0 4px 15px rgba(40, 45, 59, 0.18);
+    background: #ffe066;
+}
+
+/* Navigation Menu Container */
+.nav_menu_container {
+    position: fixed;
+    bottom: 20px;
+    right: 70px;
+    z-index: 85;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Decorative Lines */
+.nav_decorative_lines {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.nav_decorative_lines_top {
+    margin-bottom: 8px;
+}
+
+.nav_decorative_lines_bottom {
+    margin-top: 8px;
+}
+
+.nav_line {
+    height: 2px;
+    background-color: #DC7E7E;
+    border-radius: 1px;
+    transition: background-color 0.3s ease;
+}
+
+/* Top lines - bottom line longer */
+.nav_line_top_1 {
+    width: 40px;
+}
+
+.nav_line_top_2 {
+    width: 60px;
+}
+
+/* Bottom lines - top line longer */
+.nav_line_bottom_1 {
+    width: 60px;
+}
+
+.nav_line_bottom_2 {
+    width: 40px;
+}
+
+/* Active states for lines */
+.nav_menu_container.nav-up-active .nav_decorative_lines_top .nav_line {
+    background-color: #DC7E7E;
+}
+
+.nav_menu_container.nav-up-active .nav_decorative_lines_bottom .nav_line {
+    background-color: #999;
+}
+
+.nav_menu_container.nav-down-active .nav_decorative_lines_top .nav_line {
+    background-color: #999;
+}
+
+.nav_menu_container.nav-down-active .nav_decorative_lines_bottom .nav_line {
+    background-color: #DC7E7E;
+}
+
+/* Navigation Menu (Right Side) */
+.nav_menu {
+    position: relative;
+    z-index: 85;
+    min-width: 250px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: #DC7E7E;
+    color:white;
+    padding: 7px;
+    border: 3px solid #282d3b;
+    align-items: center;
+   
+    will-change: transform;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.nav_menu_content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.nav_menu_category_name {
+    position: absolute;
+    font-size: 1.4em;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.nav_menu_sub_category_name {
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+
+/* Navigation Arrows */
+.nav-arrow {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+.nav-arrow-up {
+    top: -10px;
+    right: -7%;
+    transform: translateX(50%);
+}
+
+.nav-arrow-down {
+    bottom: -10px;
+    right: -7%;
+    transform: translateX(50%);
+}
+
+.nav-arrow:hover {
+    /* background: #fff; */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Responsive Design */
+@media screen and (max-width: 470px) {
+    .nav-arrow {
+        display: none;
+    }
+
+
+
+    .nav_menu_content {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -14,6 +14,7 @@ urlpatterns = [
     path('adminpanel_userside/', include('adminpanel_userside.urls')),
     path('ckeditor5/', include('django_ckeditor_5.urls')),  # Добавляем глобально
     path('services_and_projects/', include('services_and_projects.urls')),
+    path('task-tracker/', include('task_tracker.urls')),
 ]
 
 if settings.DEBUG:

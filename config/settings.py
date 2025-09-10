@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.linkedin_oauth2',
     'services_and_projects',
     'notifications',
+    'task_tracker',
 ]
 
 MIDDLEWARE = [

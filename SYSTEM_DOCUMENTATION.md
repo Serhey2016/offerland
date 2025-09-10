@@ -54,9 +54,8 @@ xlwt==1.3.0 - Запись старых Excel файлов формата XLS.
 services_and_projects/fixtures
 
 ### Live ссылки
-- **Навигационная панель статей**: http://192.168.0.146:8000/adminpanel_userside/articles/
+- **Навигационная панель статей**:  http://192.168.0.146:8000/adminpanel_userside/articles/
 - **Создание новой статьи**: http://192.168.0.146:8000/adminpanel_userside/create_article/
-[192.168.0.146:8000/task-tracker/](http://192.168.0.146:8000/task-tracker/)
 [Vacancies from Boards](http://192.168.0.146:8000/adminpanel_userside/vacancies_from_boards/#)
 
 ## 🔐 Доступ и авторизация

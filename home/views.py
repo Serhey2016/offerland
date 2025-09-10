@@ -45,8 +45,6 @@ def services_and_projects(request):
 def business_support(request):
     return render(request, 'home/Business_support.html')
 
-def task_tracker(request):
-    return render(request, 'home/task_tracker.html')
 
 def contdowntimer(request):
     return render(request, 'home/contdowntimer.html')
