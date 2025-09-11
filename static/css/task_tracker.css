@@ -395,6 +395,768 @@
     }
 }
 
+/* Timeline Styles - Optimized for Performance */
+/* Performance tip: Use CSS custom properties for better performance and maintainability */
+:root {
+    --timeline-pixels-per-hour: 60px;
+    --timeline-mobile-pixels-per-hour: 50px;
+    --timeline-separator-height: 60px;
+    --timeline-mobile-separator-height: 50px;
+    --timeline-task-padding: 12px 16px;
+    --timeline-mobile-task-padding: 8px 12px;
+}
+
+/* Performance tip: Use transform instead of changing layout properties for animations */
+.task_tracker_timeline_container {
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    /* Performance tip: Enable hardware acceleration */
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.timeline_day {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.timeline_day:last-child {
+    border-bottom: none;
+}
+
+/* Day Separator in Timeline */
+.timeline_day_separator {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    position: relative;
+}
+
+.timeline_day_separator::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 20px;
+    background: #d1d5db;
+}
+
+.day_separator_content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 0 20px;
+}
+
+/* Centered Date Info - Similar to datetime_section but centered */
+.separator_date_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.separator_date_row_1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.separator_day_name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.separator_weather_icon {
+    font-size: 1.8rem;
+}
+
+.separator_date_row_2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.separator_day_date {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #282d3b;
+    line-height: 1;
+}
+
+.separator_date_row_3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.separator_month_name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.timeline_hours {
+    display: flex;
+    flex-direction: column;
+    width: 80px;
+    background: #f8f9fa;
+    border-right: 1px solid #e5e7eb;
+    position: relative;
+}
+
+.timeline_hour {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+    position: relative;
+}
+
+.timeline_hour:last-child {
+    border-bottom: none;
+}
+
+.timeline_hour::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 20px;
+    background: #d1d5db;
+}
+
+.timeline_tasks {
+    flex: 1;
+    position: relative;
+    min-height: 1440px; /* 24 hours * 60px per hour */
+}
+
+.timeline_task {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    background: #282d3b;
+    color: white;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    /* Performance tip: Use transform and opacity for smooth animations */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    /* Performance tip: Enable hardware acceleration */
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.timeline_task:hover {
+    background: #1a1d28;
+    /* Performance tip: Use transform instead of changing layout properties */
+    transform: translateY(-1px) translateZ(0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.task_title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.task_time {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Timeline Layout */
+.timeline_day {
+    display: flex;
+}
+
+.timeline_hours {
+    flex-shrink: 0;
+}
+
+.timeline_tasks {
+    flex: 1;
+    position: relative;
+}
+
+/* Responsive Timeline */
+@media (max-width: 768px) {
+    .timeline_day_separator {
+        height: 100px;
+    }
+    
+    .day_separator_content {
+        padding: 0 12px;
+    }
+    
+    .separator_date_row_1 {
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .separator_day_name {
+        font-size: 0.9rem;
+    }
+    
+    .separator_weather_icon {
+        font-size: 1.4rem;
+    }
+    
+    .separator_day_date {
+        font-size: 2rem;
+    }
+    
+    .separator_month_name {
+        font-size: 0.9rem;
+    }
+    
+    .separator_date_row_2 {
+        margin-bottom: 10px;
+    }
+    
+    .timeline_hours {
+        width: 60px;
+    }
+    
+    .timeline_hour {
+        height: 50px;
+        font-size: 0.7rem;
+    }
+    
+    .timeline_tasks {
+        min-height: 1200px; /* 24 hours * 50px per hour */
+    }
+    
+    .timeline_task {
+        left: 12px;
+        right: 12px;
+        padding: 8px 12px;
+    }
+    
+    .task_title {
+        font-size: 0.8rem;
+    }
+    
+    .task_time {
+        font-size: 0.7rem;
+    }
+}
+
+/* FullCalendar custom styles */
+.fc {
+    font-family: 'League Spartan', sans-serif !important;
+}
+
+.fc-toolbar-title {
+    font-weight: 600 !important;
+    color: #282D3B !important;
+}
+
+.fc-button-primary {
+    background-color: #282D3B !important;
+    border-color: #282D3B !important;
+    border-radius: 8px !important;
+}
+
+.fc-button-primary:hover {
+    background-color: #1a1e2a !important;
+    border-color: #1a1e2a !important;
+}
+
+.fc-button-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(40, 45, 59, 0.25) !important;
+}
+
+.fc-button-primary:not(:disabled):active {
+    background-color: #1a1e2a !important;
+    border-color: #1a1e2a !important;
+}
+
+.fc-event {
+    border-radius: 6px !important;
+    border: none !important;
+    font-weight: 500 !important;
+}
+
+.fc-daygrid-event {
+    margin: 1px 2px !important;
+}
+
+.fc-timegrid-event {
+    border-radius: 4px !important;
+}
+
+/* Responsive calendar */
+@media (max-width: 768px) {
+    .task_tracker_calendar_container {
+        height: 500px;
+        margin: 15px 0;
+    }
+    
+    .fc-toolbar {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    
+    .fc-toolbar-chunk {
+        display: flex !important;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .task_tracker_calendar_container {
+        height: 400px;
+        margin: 10px 0;
+    }
+    
+    .fc-button {
+        padding: 4px 8px !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* FullCalendar Timeline Design Styles */
+.task_tracker_calendar_container {
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+/* Daily Navigation Styles */
+.daily_navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.nav_btn {
+    background: #282d3b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav_btn:hover {
+    background: #1a1d28;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nav_btn:active {
+    transform: translateY(0);
+}
+
+.current_date_display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.current_day_name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #282d3b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.current_day_date {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Hide default header */
+.fc-header-toolbar {
+    display: none !important;
+}
+
+/* Day headers styling */
+.fc-col-header-cell {
+    background: #f8f9fa !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 15px 10px !important;
+    font-weight: 500 !important;
+    color: #282d3b !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 1.1rem !important;
+}
+
+/* Time slots styling */
+.fc-timegrid-slot {
+    height: 60px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+.fc-timegrid-slot-label {
+    background: #f8f9fa !important;
+    border-right: 1px solid #e5e7eb !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    color: #6b7280 !important;
+    padding: 0 10px !important;
+    width: 80px !important;
+}
+
+.fc-timegrid-slot-label::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 20px;
+    background: #d1d5db;
+}
+
+/* Day cells styling */
+.fc-timegrid-col {
+    border-right: 1px solid #e5e7eb !important;
+}
+
+.fc-timegrid-col-events {
+    margin: 0 !important;
+}
+
+/* Event styling to match timeline tasks */
+.fc-event {
+    background: #282d3b !important;
+    border: none !important;
+    border-radius: 8px !important;
+    color: white !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    padding: 8px 12px !important;
+    margin: 2px 4px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.fc-event:hover {
+    background: #1a1d28 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.fc-event-title {
+    font-weight: 600 !important;
+    margin-bottom: 4px !important;
+}
+
+.fc-event-time {
+    font-size: 0.8rem !important;
+    opacity: 0.8 !important;
+}
+
+/* Selection styling */
+.fc-timegrid-slot-selected {
+    background: rgba(40, 45, 59, 0.1) !important;
+}
+
+/* Now indicator */
+.fc-timegrid-now-indicator-line {
+    border-color: #282d3b !important;
+    border-width: 2px !important;
+}
+
+/* Scrollbar styling */
+.fc-scroller::-webkit-scrollbar {
+    width: 8px;
+}
+
+.fc-scroller::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.fc-scroller::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.fc-scroller::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Infinite Calendar Styles */
+.infinite_calendar_container {
+    scroll-behavior: smooth;
+    position: relative;
+    background: #fff;
+    /* No height limit - use main page scroll */
+    min-height: 100vh;
+}
+
+/* Scrollbar styles removed - using main page scroll */
+
+/* Loading Spinner Styles - имитация следующего дня */
+.loading_spinner {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.spinner_day_header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.spinner_day_number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #d1d5db;
+    min-width: 50px;
+}
+
+.spinner_day_name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.spinner_content {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+    background: #f8f9fa;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e5e7eb;
+    border-top: 2px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Calendar Day Container Styles */
+.calendar_day_container {
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 0;
+    background: #fff;
+}
+
+.calendar_day_header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.calendar_day_number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #282d3b;
+    min-width: 50px;
+}
+
+.calendar_day_name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.calendar_day_date {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: auto;
+}
+
+.calendar_day_content {
+    background: #fff;
+}
+
+.calendar_instance {
+    width: 100%;
+}
+
+/* Responsive Timeline */
+@media (max-width: 768px) {
+    .task_tracker_calendar_container {
+        margin: 15px 0;
+    }
+    
+    .timeline_header {
+        padding: 12px 15px;
+    }
+    
+    .current_day_name {
+        font-size: 1rem;
+    }
+    
+    .current_day_date {
+        font-size: 0.9rem;
+    }
+    
+    .infinite_timeline_container {
+        height: 500px !important;
+    }
+    
+    .timeline_day_header {
+        padding: 12px 15px;
+    }
+    
+    .timeline_day_number {
+        font-size: 1.5rem;
+        min-width: 40px;
+    }
+    
+    .timeline_day_name {
+        font-size: 1rem;
+    }
+    
+    .timeline_time_slot {
+        padding: 6px 15px;
+        min-height: 45px;
+    }
+    
+    .timeline_time_label {
+        font-size: 0.8rem;
+        min-width: 50px;
+        margin-right: 10px;
+    }
+    
+    .timeline_time_line {
+        width: 2px;
+        height: 25px;
+        margin-right: 10px;
+    }
+    
+    .timeline_time_content {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+    
+    .timeline_time_content:empty::before {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .task_tracker_calendar_container {
+        margin: 10px 0;
+    }
+    
+    .daily_navigation {
+        padding: 10px 12px;
+    }
+    
+    .nav_btn {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+        min-width: 35px;
+        height: 35px;
+    }
+    
+    .current_day_name {
+        font-size: 0.9rem;
+    }
+    
+    .current_day_date {
+        font-size: 0.8rem;
+    }
+    
+    .fc-timegrid-slot {
+        height: 45px !important;
+    }
+    
+    .fc-timegrid-slot-label {
+        width: 50px !important;
+        font-size: 0.65rem !important;
+    }
+    
+    .fc-col-header-cell {
+        padding: 8px 6px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .fc-event {
+        font-size: 0.75rem !important;
+        padding: 4px 8px !important;
+    }
+}
+
 /* Date and Time Section Styles */
 .datetime_section {
     display: flex;
@@ -504,7 +1266,7 @@
     font-size: 1.5rem;
 }
 
-/* Action icons */
+/* Action icons in datetime section */
 .action_icons {
     display: flex;
     flex-direction: column;
