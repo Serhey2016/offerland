@@ -28,7 +28,7 @@ const categories = [
         subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
     },
     {
-        name: 'Trash',
+        name: 'Archive',
         subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
     }
 ];
@@ -51,6 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateCategoryName(index) {
         categoryNameElement.textContent = categories[index].name;
+        
+        // Dispatch event to sync with task tracker
+        const event = new CustomEvent('navMenuCategoryChange', {
+            detail: { category: categories[index].name }
+        });
+        window.dispatchEvent(event);
     }
 
     function updateLineColors(direction) {
@@ -323,5 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Загружаем контент для нового URL
         const currentStatus = getCurrentStatusFromURL();
         loadContentWithFilters(currentStatus, 'all');
+    });
+
+    // Listen for changes from task tracker
+    window.addEventListener('taskTrackerCategoryChange', function(event) {
+        const { category } = event.detail;
+        const categoryIndex = categories.findIndex(cat => cat.name === category);
+        
+        if (categoryIndex !== -1) {
+            currentCategoryIndex = categoryIndex;
+            updateCategoryName(currentCategoryIndex);
+        }
     });
 });

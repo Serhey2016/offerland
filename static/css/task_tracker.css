@@ -1,5 +1,5 @@
 /* Greeting Section Styles */
-.greeting_section {
+.task_tracker_greeting_section {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -7,7 +7,7 @@
     padding: 20px 0;
 }
 
-.greeting_main {
+.task_tracker_greeting_main {
     font-family: 'League Spartan', sans-serif;
     font-size: 2.5rem;
     font-weight: 400;
@@ -20,19 +20,19 @@
     align-items: baseline;
 }
 
-.greeting_time {
+.task_tracker_greeting_time {
     font-weight: 400;
     color: #282D3B;
 }
 
-.greeting_name {
+.task_tracker_greeting_name {
     font-weight: 700;
     color: #282D3B;
 }
 
-.greeting_subtitle {
+.task_tracker_greeting_subtitle {
     font-family: 'League Spartan', sans-serif;
-    font-size: 2rem;
+    font-size: 1.3rem;
     font-weight: 300;
     color: #6c757d;
     margin: 8px 0 0 0;
@@ -41,37 +41,37 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .greeting_main {
+    .task_tracker_greeting_main {
         font-size: 2rem;
     }
     
-    .greeting_subtitle {
+    .task_tracker_greeting_subtitle {
         font-size: 0.9rem;
     }
 }
 
 @media (max-width: 576px) {
-    .greeting_main {
+    .task_tracker_greeting_main {
         font-size: 1.8rem;
     }
     
-    .greeting_subtitle {
+    .task_tracker_greeting_subtitle {
         font-size: 0.85rem;
     }
 }
 
 /* Sub Menu Section Styles */
-.sub_menu_section_task_tracker {
+.task_tracker_sub_menu_section {
     display: flex;
     align-items: center;
     width: 100%;
     padding: 15px 0;
-    margin: 20px 0;
+    /* margin: 20px 0; */
     position: relative;
 }
 
 /* Filter Button (Fixed Left) */
-.sub_menu_filter_btn {
+.task_tracker_sub_menu_filter_btn {
     background-color: #282D3B;
     color: white;
     border: none;
@@ -86,19 +86,19 @@
     transition: background-color 0.2s ease;
 }
 
-.sub_menu_filter_btn:hover {
+.task_tracker_sub_menu_filter_btn:hover {
     background-color: #1a1e2a;
 }
 
 /* Scrollable Navigation Container */
-.sub_menu_scrollable_container {
+.task_tracker_sub_menu_scrollable_container {
     flex: 1;
     overflow: hidden;
     position: relative;
     z-index: 25;
 }
 
-.sub_menu_navigation_items {
+.task_tracker_sub_menu_navigation_items {
     display: flex;
     gap: 10px;
     padding: 0 10px;
@@ -109,21 +109,21 @@
     user-select: none;
 }
 
-.sub_menu_navigation_items::-webkit-scrollbar {
+.task_tracker_sub_menu_navigation_items::-webkit-scrollbar {
     display: none;
 }
 
-.sub_menu_navigation_items:active {
+.task_tracker_sub_menu_navigation_items:active {
     cursor: grabbing;
 }
 
 /* Navigation Buttons */
-.sub_menu_nav_btn {
+.task_tracker_sub_menu_nav_btn {
     background-color: white;
     color: #282D3B;
     border: 2px solid #282D3B;
     border-radius: 50px;
-    padding: 12px 20px;
+    padding: 0px 10px;
     font-family: 'League Spartan', sans-serif;
     font-size: 1rem;
     font-weight: 400;
@@ -133,19 +133,19 @@
     transition: all 0.2s ease;
 }
 
-.sub_menu_nav_btn:hover {
+.task_tracker_sub_menu_nav_btn:hover {
     background-color: #f8f9fa;
     cursor: pointer;
 }
 
-.sub_menu_nav_btn.active {
+.task_tracker_sub_menu_nav_btn.active {
     background-color: #282D3B;
     color: white;
     border-color: #282D3B;
 }
 
 /* Add Button (Fixed Right) */
-.sub_menu_add_btn {
+.task_tracker_sub_menu_add_btn {
     background-color: white;
     border: none;
     border-radius: 50%;
@@ -163,12 +163,12 @@
     transition: box-shadow 0.2s ease;
 }
 
-.sub_menu_add_btn:hover {
+.task_tracker_sub_menu_add_btn:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     cursor: pointer;
 }
 
-.add_icon {
+.task_tracker_add_icon {
     color: #282D3B;
     font-size: 1.5rem;
     font-weight: 300;
@@ -182,24 +182,24 @@
         margin: 15px 0;
     }
     
-    .sub_menu_filter_btn {
+    .task_tracker_sub_menu_filter_btn {
         padding: 10px 12px;
         font-size: 1rem;
         margin-right: 10px;
     }
     
-    .sub_menu_nav_btn {
+    .task_tracker_sub_menu_nav_btn {
         padding: 10px 16px;
         font-size: 0.9rem;
     }
     
-    .sub_menu_add_btn {
+    .task_tracker_sub_menu_add_btn {
         width: 45px;
         height: 45px;
         margin-left: 10px;
     }
     
-    .add_icon {
+    .task_tracker_add_icon {
         font-size: 1.3rem;
     }
 }
@@ -230,7 +230,60 @@
     padding: 20px 0;
 }
 
-.menu_item_container {
+/* Active state for menu items */
+.task_tracker_menu_item.active {
+    background-color: #f8f9fa;
+    border-left: 3px solid #007bff;
+    font-weight: 600;
+}
+
+.task_tracker_menu_item.active .task_tracker_menu_item_text {
+    color: #007bff;
+}
+
+.task_tracker_menu_item.active .task_tracker_menu_item_arrow {
+    color: #007bff;
+}
+
+/* Agenda Submenu Styles */
+.task_tracker_agenda_submenu {
+    margin-top: 8px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: slideDown 0.3s ease-out;
+}
+
+.task_tracker_agenda_submenu_item {
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.task_tracker_agenda_submenu_item:hover {
+    background-color: #f8f9fa;
+}
+
+.task_tracker_agenda_submenu_text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 400;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.task_tracker_menu_item_container {
     position: relative;
 }
 
@@ -240,7 +293,7 @@
     color: white;
     border: none;
     border-radius: 50px;
-    padding: 12px 20px;
+    padding: 6px 10px;
     font-family: 'League Spartan', sans-serif;
     font-size: 1rem;
     font-weight: 400;
@@ -256,21 +309,21 @@
     background-color: #1a1e2a;
 }
 
-.menu_item_text {
+.task_tracker_menu_item_text {
     flex: 1;
 }
 
-.menu_item_arrow {
+.task_tracker_menu_item_arrow {
     font-size: 1.2rem;
     transition: transform 0.2s ease;
 }
 
-.task_tracker_menu_item.expandable.expanded .menu_item_arrow {
+.task_tracker_menu_item.expandable.expanded .task_tracker_menu_item_arrow {
     transform: rotate(180deg);
 }
 
 /* Submenu Styles */
-.submenu {
+.task_tracker_submenu {
     margin-top: 8px;
     margin-left: 20px;
     display: none;
@@ -278,11 +331,11 @@
     gap: 4px;
 }
 
-.submenu.show {
+.task_tracker_submenu.show {
     display: flex;
 }
 
-.submenu_item {
+.task_tracker_submenu_item {
     padding: 8px 16px;
     font-family: 'League Spartan', sans-serif;
     font-size: 0.9rem;
@@ -293,19 +346,19 @@
     border-radius: 20px;
 }
 
-.submenu_item:hover {
+.task_tracker_submenu_item:hover {
     color: #282D3B;
     background-color: #f8f9fa;
 }
 
-.submenu_item.active {
+.task_tracker_submenu_item.active {
     color: #282D3B;
     background-color: #e9ecef;
     font-weight: 400;
 }
 
 /* Menu Separator */
-.menu_separator {
+.task_tracker_menu_separator {
     height: 2px;
     background-color: #f4d03f;
     border-radius: 1px;
@@ -337,11 +390,11 @@
     align-items: center;
     justify-content: center;
     gap: 30px;
-    padding: 20px 0;
-    margin: 20px 0;
+    /* padding: 20px 0;
+    margin: 20px 0; */
 }
 
-.sub_cat_menu_item {
+.task_tracker_sub_cat_menu_item {
     font-family: 'League Spartan', sans-serif;
     font-size: 1rem;
     font-weight: 700;
@@ -352,15 +405,15 @@
     position: relative;
 }
 
-.sub_cat_menu_item:hover {
+.task_tracker_sub_cat_menu_item:hover {
     color: #1a1e2a;
 }
 
-.sub_cat_menu_item.active {
+.task_tracker_sub_cat_menu_item.active {
     color: #282D3B;
 }
 
-.sub_cat_menu_item.active::after {
+.task_tracker_sub_cat_menu_item.active::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -379,7 +432,7 @@
         margin: 15px 0;
     }
     
-    .sub_cat_menu_item {
+    .task_tracker_sub_cat_menu_item {
         font-size: 0.9rem;
     }
 }
@@ -390,7 +443,7 @@
         flex-wrap: wrap;
     }
     
-    .sub_cat_menu_item {
+    .task_tracker_sub_cat_menu_item {
         font-size: 0.85rem;
     }
 }
@@ -418,16 +471,16 @@
     transform: translateZ(0);
 }
 
-.timeline_day {
+.task_tracker_timeline_day {
     border-bottom: 1px solid #e5e7eb;
 }
 
-.timeline_day:last-child {
+.task_tracker_timeline_day:last-child {
     border-bottom: none;
 }
 
 /* Day Separator in Timeline */
-.timeline_day_separator {
+.task_tracker_timeline_day_separator {
     height: 120px;
     display: flex;
     align-items: center;
@@ -438,7 +491,7 @@
     position: relative;
 }
 
-.timeline_day_separator::before {
+.task_tracker_timeline_day_separator::before {
     content: '';
     position: absolute;
     right: 0;
@@ -449,7 +502,7 @@
     background: #d1d5db;
 }
 
-.day_separator_content {
+.task_tracker_day_separator_content {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -460,7 +513,7 @@
 }
 
 /* Centered Date Info - Similar to datetime_section but centered */
-.separator_date_info {
+.task_tracker_separator_date_info {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -468,7 +521,7 @@
     text-align: center;
 }
 
-.separator_date_row_1 {
+.task_tracker_separator_date_row_1 {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -476,7 +529,7 @@
     margin-bottom: 12px;
 }
 
-.separator_day_name {
+.task_tracker_separator_day_name {
     font-size: 1.1rem;
     font-weight: 500;
     color: #6b7280;
@@ -484,31 +537,31 @@
     letter-spacing: 0.5px;
 }
 
-.separator_weather_icon {
+.task_tracker_separator_weather_icon {
     font-size: 1.8rem;
 }
 
-.separator_date_row_2 {
+.task_tracker_separator_date_row_2 {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 12px;
 }
 
-.separator_day_date {
+.task_tracker_separator_day_date {
     font-size: 2.5rem;
     font-weight: 700;
     color: #282d3b;
     line-height: 1;
 }
 
-.separator_date_row_3 {
+.task_tracker_separator_date_row_3 {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.separator_month_name {
+.task_tracker_separator_month_name {
     font-size: 1.1rem;
     font-weight: 500;
     color: #6b7280;
@@ -516,7 +569,7 @@
     letter-spacing: 0.5px;
 }
 
-.timeline_hours {
+.task_tracker_timeline_hours {
     display: flex;
     flex-direction: column;
     width: 80px;
@@ -525,7 +578,7 @@
     position: relative;
 }
 
-.timeline_hour {
+.task_tracker_timeline_hour {
     height: 60px;
     display: flex;
     align-items: center;
@@ -537,11 +590,11 @@
     position: relative;
 }
 
-.timeline_hour:last-child {
+.task_tracker_timeline_hour:last-child {
     border-bottom: none;
 }
 
-.timeline_hour::after {
+.task_tracker_timeline_hour::after {
     content: '';
     position: absolute;
     right: 0;
@@ -552,13 +605,13 @@
     background: #d1d5db;
 }
 
-.timeline_tasks {
+.task_tracker_timeline_tasks {
     flex: 1;
     position: relative;
     min-height: 1440px; /* 24 hours * 60px per hour */
 }
 
-.timeline_task {
+.task_tracker_timeline_task {
     position: absolute;
     left: 20px;
     right: 20px;
@@ -575,97 +628,97 @@
     transform: translateZ(0);
 }
 
-.timeline_task:hover {
+.task_tracker_timeline_task:hover {
     background: #1a1d28;
     /* Performance tip: Use transform instead of changing layout properties */
     transform: translateY(-1px) translateZ(0);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.task_title {
+.task_tracker_task_title {
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 4px;
 }
 
-.task_time {
+.task_tracker_task_time {
     font-size: 0.8rem;
     opacity: 0.8;
 }
 
 /* Timeline Layout */
-.timeline_day {
+.task_tracker_timeline_day {
     display: flex;
 }
 
-.timeline_hours {
+.task_tracker_timeline_hours {
     flex-shrink: 0;
 }
 
-.timeline_tasks {
+.task_tracker_timeline_tasks {
     flex: 1;
     position: relative;
 }
 
 /* Responsive Timeline */
 @media (max-width: 768px) {
-    .timeline_day_separator {
+    .task_tracker_timeline_day_separator {
         height: 100px;
     }
     
-    .day_separator_content {
+    .task_tracker_day_separator_content {
         padding: 0 12px;
     }
     
-    .separator_date_row_1 {
+    .task_tracker_separator_date_row_1 {
         gap: 8px;
         margin-bottom: 10px;
     }
     
-    .separator_day_name {
+    .task_tracker_separator_day_name {
         font-size: 0.9rem;
     }
     
-    .separator_weather_icon {
+    .task_tracker_separator_weather_icon {
         font-size: 1.4rem;
     }
     
-    .separator_day_date {
+    .task_tracker_separator_day_date {
         font-size: 2rem;
     }
     
-    .separator_month_name {
+    .task_tracker_separator_month_name {
         font-size: 0.9rem;
     }
     
-    .separator_date_row_2 {
+    .task_tracker_separator_date_row_2 {
         margin-bottom: 10px;
     }
     
-    .timeline_hours {
+    .task_tracker_timeline_hours {
         width: 60px;
     }
     
-    .timeline_hour {
+    .task_tracker_timeline_hour {
         height: 50px;
         font-size: 0.7rem;
     }
     
-    .timeline_tasks {
+    .task_tracker_timeline_tasks {
         min-height: 1200px; /* 24 hours * 50px per hour */
     }
     
-    .timeline_task {
+    .task_tracker_timeline_task {
         left: 12px;
         right: 12px;
         padding: 8px 12px;
     }
     
-    .task_title {
+    .task_tracker_task_title {
         font-size: 0.8rem;
     }
     
-    .task_time {
+    .task_tracker_task_time {
         font-size: 0.7rem;
     }
 }
@@ -717,7 +770,9 @@
 /* Responsive calendar */
 @media (max-width: 768px) {
     .task_tracker_calendar_container {
-        height: 500px;
+        /* Remove height restriction for infinite scroll */
+        height: auto;
+        min-height: 400px;
         margin: 15px 0;
     }
     
@@ -734,7 +789,9 @@
 
 @media (max-width: 576px) {
     .task_tracker_calendar_container {
-        height: 400px;
+        /* Remove height restriction for infinite scroll */
+        height: auto;
+        min-height: 350px;
         margin: 10px 0;
     }
     
@@ -754,8 +811,32 @@
     margin: 20px 0;
 }
 
+/* List of Tasks Container */
+.task_tracker_list_of_tasks {
+    width: 100%;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Tasks Sides Separator
+.task_tracker_tasks_sides_separator {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 20px;
+    padding-top: 20px;
+} */
+
+/* Time Row Styles */
+.task_tracker_time_row_1 {
+    margin-bottom: 10px;
+}
+
+.task_tracker_time_row_2 {
+    margin-bottom: 0;
+}
+
 /* Daily Navigation Styles */
-.daily_navigation {
+.task_tracker_daily_navigation {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -764,7 +845,7 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-.nav_btn {
+.task_tracker_nav_btn {
     background: #282d3b;
     color: white;
     border: none;
@@ -781,24 +862,24 @@
     justify-content: center;
 }
 
-.nav_btn:hover {
+.task_tracker_nav_btn:hover {
     background: #1a1d28;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.nav_btn:active {
+.task_tracker_nav_btn:active {
     transform: translateY(0);
 }
 
-.current_date_display {
+.task_tracker_current_date_display {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
-.current_day_name {
+.task_tracker_current_day_name {
     font-size: 1.2rem;
     font-weight: 500;
     color: #282d3b;
@@ -807,7 +888,7 @@
     margin-bottom: 4px;
 }
 
-.current_day_date {
+.task_tracker_current_day_date {
     font-size: 1rem;
     font-weight: 400;
     color: #6b7280;
@@ -820,16 +901,14 @@
     display: none !important;
 }
 
-/* Day headers styling */
+/* Hide duplicate day headers - we have custom calendar_day_header */
 .fc-col-header-cell {
-    background: #f8f9fa !important;
-    border: 1px solid #e5e7eb !important;
-    padding: 15px 10px !important;
-    font-weight: 500 !important;
-    color: #282d3b !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    font-size: 1.1rem !important;
+    display: none !important;
+}
+
+/* Hide thead since we have custom header */
+thead.fc-head {
+    display: none !important;
 }
 
 /* Time slots styling */
@@ -839,16 +918,22 @@
 }
 
 .fc-timegrid-slot-label {
-    background: #f8f9fa !important;
+    background: transparent !important;
     border-right: 1px solid #e5e7eb !important;
-    font-size: 0.8rem !important;
+    font-size: 1.152rem !important;
     font-weight: 500 !important;
-    color: #6b7280 !important;
+    color: #282D3B !important;
     padding: 0 10px !important;
     width: 80px !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding-top: 0px !important;
+    z-index: 100 !important;
 }
 
-.fc-timegrid-slot-label::after {
+.fc-timegrid-slot-label::before {
     content: '';
     position: absolute;
     right: 0;
@@ -857,6 +942,36 @@
     width: 1px;
     height: 20px;
     background: #d1d5db;
+}
+
+.fc-timegrid-slot-label-cushion {
+    background: transparent !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 10 !important;
+    margin-top: -15px !important;
+}
+
+.fc-timegrid-slot-label-cushion::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 25px;
+    background: #FFFADF;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Special styling for first time slot (00:00) to make it visible above header */
+.fc-timegrid-slot[data-time="00:00:00"] .fc-timegrid-slot-label-cushion {
+    margin-top: -20px !important;
+    z-index: 15 !important;
 }
 
 /* Day cells styling */
@@ -887,6 +1002,88 @@
     background: #1a1d28 !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Task checkbox styling */
+.fc-event {
+    position: relative !important;
+}
+
+.fc-event::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.fc-event:hover::after {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.fc-event.completed::after {
+    background: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.fc-event.completed::before {
+    content: '✓';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 11;
+    pointer-events: none;
+}
+
+/* Prevent event editing when clicking on checkbox area */
+.fc-event-main {
+    pointer-events: none;
+}
+
+.fc-event-main-frame {
+    pointer-events: none;
+}
+
+.fc-event-title-container {
+    pointer-events: none;
+}
+
+.fc-event-title {
+    pointer-events: none;
+}
+
+.fc-event-time {
+    pointer-events: none;
+}
+
+/* Make the event itself clickable again, but not the main content */
+.fc-event {
+    pointer-events: auto;
+}
+
+/* Create a clickable area for checkbox that prevents event editing */
+.fc-event::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    z-index: 9;
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 .fc-event-title {
@@ -929,19 +1126,75 @@
     background: #a8a8a8;
 }
 
+/* Custom container-fluid styles - 80% less padding */
+.task-tracker-container .container-fluid {
+    padding-left: 1.5rem !important; /* Reduced from ~15px to ~3px */
+    padding-right: 1.5rem !important; /* Reduced from ~15px to ~3px */
+}
+
 /* Infinite Calendar Styles */
-.infinite_calendar_container {
+.task_tracker_infinite_calendar_container {
     scroll-behavior: smooth;
     position: relative;
     background: #fff;
     /* No height limit - use main page scroll */
     min-height: 100vh;
+    margin: 0 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Ensure infinite scroll works */
+    height: auto;
+    overflow: visible;
+}
+
+/* Mobile styles for infinite_calendar_container */
+@media (max-width: 768px) {
+    /* Even more reduced padding on mobile */
+    .task-tracker-container .container-fluid {
+        padding-left: 0.5rem !important; /* ~8px */
+        padding-right: 0.5rem !important; /* ~8px */
+    }
+    
+    .task_tracker_infinite_calendar_container {
+        margin: 0 4px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Ensure container is visible and scrollable */
+        overflow-x: auto;
+        overflow-y: visible;
+        width: calc(100% - 8px);
+    }
+    
+    /* Ensure calendar instances are visible */
+    .task_tracker_calendar_day_container {
+        width: 100%;
+        min-width: 320px;
+    }
+    
+    .task_tracker_calendar_day_content {
+        width: 100%;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Minimal padding on extra small screens */
+    .task-tracker-container .container-fluid {
+        padding-left: 0.25rem !important; /* ~4px */
+        padding-right: 0.25rem !important; /* ~4px */
+    }
+    
+    .task_tracker_infinite_calendar_container {
+        margin: 0 4px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 }
 
 /* Scrollbar styles removed - using main page scroll */
 
 /* Loading Spinner Styles - имитация следующего дня */
-.loading_spinner {
+.task_tracker_loading_spinner {
     position: relative;
     background: #fff;
     border-radius: 12px;
@@ -951,7 +1204,7 @@
     overflow: hidden;
 }
 
-.spinner_day_header {
+.task_tracker_spinner_day_header {
     background: #f8f9fa;
     padding: 15px 20px;
     display: flex;
@@ -960,14 +1213,14 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-.spinner_day_number {
+.task_tracker_spinner_day_number {
     font-size: 2rem;
     font-weight: 700;
     color: #d1d5db;
     min-width: 50px;
 }
 
-.spinner_day_name {
+.task_tracker_spinner_day_name {
     font-size: 1.1rem;
     font-weight: 600;
     color: #9ca3af;
@@ -975,7 +1228,7 @@
     letter-spacing: 0.5px;
 }
 
-.spinner_content {
+.task_tracker_spinner_content {
     padding: 20px;
     display: flex;
     align-items: center;
@@ -987,7 +1240,7 @@
     background: #f8f9fa;
 }
 
-.spinner {
+.task_tracker_spinner {
     width: 20px;
     height: 20px;
     border: 2px solid #e5e7eb;
@@ -1002,13 +1255,13 @@
 }
 
 /* Calendar Day Container Styles */
-.calendar_day_container {
+.task_tracker_calendar_day_container {
     border-bottom: 2px solid #e5e7eb;
     margin-bottom: 0;
     background: #fff;
 }
 
-.calendar_day_header {
+.task_tracker_calendar_day_header {
     background: #f8f9fa;
     padding: 15px 20px;
     display: flex;
@@ -1017,17 +1270,225 @@
     border-bottom: 1px solid #e5e7eb;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 5;
 }
 
-.calendar_day_number {
+/* Mobile styles for calendar day containers */
+@media (max-width: 768px) {
+    .task_tracker_calendar_day_header {
+        padding: 12px 16px;
+        gap: 12px;
+    }
+    
+    .task_tracker_calendar_day_number {
+        font-size: 1.8rem;
+        min-width: 45px;
+    }
+    
+    .task_tracker_calendar_day_name {
+        font-size: 1rem;
+    }
+    
+    .task_tracker_calendar_day_date {
+        font-size: 0.8rem;
+    }
+    
+    /* FullCalendar mobile optimizations */
+    .task_tracker_calendar_instance {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 400px !important;
+    }
+    
+    .fc {
+        font-size: 12px !important;
+    }
+    
+    .fc-timegrid-slot {
+        height: 40px !important;
+    }
+    
+    .fc-timegrid-slot-label {
+        width: 60px !important;
+        font-size: 1.008rem !important;
+        padding: 0 8px !important;
+        padding-top: 0px !important;
+    }
+    
+    .fc-timegrid-slot-label-cushion {
+        margin-top: -12px !important;
+    }
+    
+    /* Special styling for first time slot on mobile */
+    .fc-timegrid-slot[data-time="00:00:00"] .fc-timegrid-slot-label-cushion {
+        margin-top: -18px !important;
+        z-index: 15 !important;
+    }
+    
+    .fc-timegrid-slot-label-cushion::after {
+        width: 40px;
+        height: 20px;
+        border-radius: 10px;
+    }
+    
+    /* fc-col-header-cell is hidden, no mobile styles needed */
+    
+    .fc-event {
+        font-size: 0.75rem !important;
+        padding: 4px 8px !important;
+        margin: 1px 2px !important;
+    }
+    
+    .fc-event::after {
+        top: 6px;
+        right: 6px;
+        width: 14px;
+        height: 14px;
+    }
+    
+    .fc-event.completed::before {
+        top: 4px;
+        right: 4px;
+        font-size: 10px;
+    }
+    
+    .fc-event::before {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .fc-timegrid-event {
+        font-size: 0.7rem !important;
+    }
+    
+    .fc-timegrid-event-title {
+        font-size: 0.7rem !important;
+    }
+    
+    .fc-timegrid-event-time {
+        font-size: 0.65rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .task_tracker_calendar_day_header {
+        padding: 10px 12px;
+        gap: 10px;
+    }
+    
+    .task_tracker_calendar_day_number {
+        font-size: 1.6rem;
+        min-width: 40px;
+    }
+    
+    .task_tracker_calendar_day_name {
+        font-size: 0.9rem;
+    }
+    
+    .task_tracker_calendar_day_date {
+        font-size: 0.75rem;
+    }
+    
+    /* FullCalendar extra small mobile optimizations */
+    .task_tracker_calendar_instance {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 350px !important;
+    }
+    
+    .fc {
+        font-size: 11px !important;
+    }
+    
+    .fc-timegrid-slot {
+        height: 35px !important;
+    }
+    
+    .fc-timegrid-slot-label {
+        width: 50px !important;
+        font-size: 0.936rem !important;
+        padding: 0 6px !important;
+        padding-top: 0px !important;
+    }
+    
+    .fc-timegrid-slot-label-cushion {
+        margin-top: -10px !important;
+    }
+    
+    /* Special styling for first time slot on extra small mobile */
+    .fc-timegrid-slot[data-time="00:00:00"] .fc-timegrid-slot-label-cushion {
+        margin-top: -16px !important;
+        z-index: 15 !important;
+    }
+    
+    .fc-timegrid-slot-label-cushion::after {
+        width: 36px;
+        height: 18px;
+        border-radius: 9px;
+    }
+    
+    /* fc-col-header-cell is hidden, no mobile styles needed */
+    
+    .fc-event {
+        font-size: 0.7rem !important;
+        padding: 3px 6px !important;
+        margin: 1px !important;
+    }
+    
+    .fc-event::after {
+        top: 5px;
+        right: 5px;
+        width: 12px;
+        height: 12px;
+    }
+    
+    .fc-event.completed::before {
+        top: 3px;
+        right: 3px;
+        font-size: 9px;
+    }
+    
+    .fc-event::before {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .fc-timegrid-event {
+        font-size: 0.65rem !important;
+    }
+    
+    .fc-timegrid-event-title {
+        font-size: 0.65rem !important;
+    }
+    
+    .fc-timegrid-event-time {
+        font-size: 0.6rem !important;
+    }
+    
+    /* Ensure calendar is visible and functional */
+    .fc-timegrid-body {
+        height: auto !important;
+        min-height: 300px !important;
+    }
+    
+    .fc-timegrid-slots {
+        height: auto !important;
+        min-height: 300px !important;
+    }
+    
+    .fc-timegrid-table {
+        height: auto !important;
+    }
+}
+
+.task_tracker_calendar_day_number {
     font-size: 2rem;
     font-weight: 700;
     color: #282d3b;
     min-width: 50px;
 }
 
-.calendar_day_name {
+.task_tracker_calendar_day_name {
     font-size: 1.1rem;
     font-weight: 600;
     color: #6b7280;
@@ -1035,7 +1496,7 @@
     letter-spacing: 0.5px;
 }
 
-.calendar_day_date {
+.task_tracker_calendar_day_date {
     font-size: 0.9rem;
     color: #9ca3af;
     text-transform: uppercase;
@@ -1043,12 +1504,29 @@
     margin-left: auto;
 }
 
-.calendar_day_content {
+.task_tracker_calendar_day_content {
     background: #fff;
+    position: relative;
+    z-index: 1;
+    padding: 0;
 }
 
-.calendar_instance {
+.task_tracker_calendar_instance {
     width: 100%;
+    height: auto;
+}
+
+/* Ensure FullCalendar has proper height for infinite scroll */
+.task_tracker_calendar_instance .fc {
+    height: auto !important;
+}
+
+.task_tracker_calendar_instance .fc-view-harness {
+    height: auto !important;
+}
+
+.task_tracker_calendar_instance .fc-timegrid {
+    height: auto;
 }
 
 /* Responsive Timeline */
@@ -1061,11 +1539,11 @@
         padding: 12px 15px;
     }
     
-    .current_day_name {
+    .task_tracker_current_day_name {
         font-size: 1rem;
     }
     
-    .current_day_date {
+    .task_tracker_current_day_date {
         font-size: 0.9rem;
     }
     
@@ -1118,22 +1596,22 @@
         margin: 10px 0;
     }
     
-    .daily_navigation {
+    .task_tracker_daily_navigation {
         padding: 10px 12px;
     }
     
-    .nav_btn {
+    .task_tracker_nav_btn {
         padding: 6px 10px;
         font-size: 0.9rem;
         min-width: 35px;
         height: 35px;
     }
     
-    .current_day_name {
+    .task_tracker_current_day_name {
         font-size: 0.9rem;
     }
     
-    .current_day_date {
+    .task_tracker_current_day_date {
         font-size: 0.8rem;
     }
     
@@ -1158,7 +1636,7 @@
 }
 
 /* Date and Time Section Styles */
-.datetime_section {
+.task_tracker_datetime_section {
     display: flex;
     width: 100%;
     position: relative;
@@ -1166,7 +1644,7 @@
     margin: 20px 0;
 }
 
-.datetime_left {
+.task_tracker_datetime_left {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -1175,7 +1653,7 @@
     padding-right: 20px;
 }
 
-.datetime_right {
+.task_tracker_datetime_right {
     flex: 1;
     display: flex;
     justify-content: center;
@@ -1184,14 +1662,14 @@
     position: relative;
 }
 
-.datetime_right_left {
+.task_tracker_datetime_right_left {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.datetime_right_right {
+.task_tracker_datetime_right_right {
     position: absolute;
     right: 0;
     top: 50%;
@@ -1204,7 +1682,7 @@
 }
 
 /* Left side rows */
-.datetime_row_1 {
+.task_tracker_datetime_row_1 {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1213,23 +1691,23 @@
     gap: 10px;
 }
 
-.datetime_row_2 {
+.task_tracker_datetime_row_2 {
     margin-bottom: 10px;
 }
 
-.datetime_row_3 {
+.task_tracker_datetime_row_3 {
     margin-bottom: 0;
 }
 
 /* Text styles */
-.day_name {
+.task_tracker_day_name {
     font-family: 'League Spartan', sans-serif;
     font-size: 1.2rem;
     font-weight: 400;
     color: #282D3B;
 }
 
-.day_number {
+.task_tracker_day_number {
     font-family: 'League Spartan', sans-serif;
     font-size: 4rem;
     font-weight: 700;
@@ -1237,7 +1715,7 @@
     line-height: 1;
 }
 
-.month_name {
+.task_tracker_month_name {
     font-family: 'League Spartan', sans-serif;
     font-size: 1.2rem;
     font-weight: 400;
@@ -1245,7 +1723,7 @@
     text-transform: uppercase;
 }
 
-.current_time {
+.task_tracker_current_time {
     font-family: 'League Spartan', sans-serif;
     font-size: 3.5rem;
     font-weight: 700;
@@ -1253,7 +1731,7 @@
     line-height: 1;
 }
 
-.location {
+.task_tracker_location {
     font-family: 'League Spartan', sans-serif;
     font-size: 1rem;
     font-weight: 300;
@@ -1262,29 +1740,29 @@
 }
 
 /* Weather icon */
-.weather_icon {
+.task_tracker_weather_icon {
     font-size: 1.5rem;
 }
 
 /* Action icons in datetime section */
-.action_icons {
+.task_tracker_action_icons {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.icon_item {
+.task_tracker_icon_item {
     font-size: 1.5rem;
     cursor: pointer;
     transition: opacity 0.2s ease;
 }
 
-.icon_item:hover {
+.task_tracker_icon_item:hover {
     opacity: 0.7;
 }
 
 /* Dividers */
-.datetime_divider_center {
+.task_tracker_datetime_divider_center {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -1294,7 +1772,7 @@
     background-color: #e0e0e0;
 }
 
-.datetime_divider_bottom {
+.task_tracker_datetime_divider_bottom {
     position: absolute;
     bottom: 0;
     left: 10%;
@@ -1305,37 +1783,37 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .day_number {
+    .task_tracker_day_number {
         font-size: 3rem;
     }
     
-    .current_time {
+    .task_tracker_current_time {
         font-size: 2.5rem;
     }
     
-    .datetime_section {
+    .task_tracker_datetime_section {
         padding: 20px 0;
     }
 }
 
 @media (max-width: 576px) {
-    .day_number {
+    .task_tracker_day_number {
         font-size: 2.5rem;
     }
     
-    .current_time {
+    .task_tracker_current_time {
         font-size: 2rem;
     }
     
-    .day_name, .month_name {
+    .task_tracker_day_name, .task_tracker_month_name {
         font-size: 1rem;
     }
     
-    .datetime_left {
+    .task_tracker_datetime_left {
         padding-right: 10px;
     }
     
-    .datetime_right {
+    .task_tracker_datetime_right {
         padding-left: 10px;
     }
 }

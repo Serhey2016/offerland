@@ -11,6 +11,30 @@ const TaskTracker = () => {
   const scrollContainerRef = useRef(null)
   const [currentDate, setCurrentDate] = useState(new Date())
   const [greeting, setGreeting] = useState({ greeting: 'Good Morning.', subtitle: 'Today is a great day!' })
+  
+  // Motivational time management quotes
+  const timeManagementQuotes = [
+    "Focus on progress, not perfection.",
+    "The best time to plant a tree was 20 years ago. The second best time is now.",
+    "Time is the most valuable asset you have. Invest it wisely.",
+    "Success is the sum of small efforts repeated day in and day out.",
+    "Don't watch the clock; do what it does. Keep going.",
+    "The way to get started is to quit talking and begin doing.",
+    "Your time is limited, so don't waste it living someone else's life.",
+    "The future depends on what you do today, not tomorrow.",
+    "Productivity is never an accident. It's always the result of commitment to excellence.",
+    "Time management is life management.",
+    "The key is not to prioritize what's on your schedule, but to schedule your priorities.",
+    "You have the same number of hours per day that were given to the most successful people.",
+    "The secret of getting ahead is getting started.",
+    "Don't count the days, make the days count.",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+    "The way to get started is to quit talking and begin doing.",
+    "Time is what we want most, but what we use worst.",
+    "The best preparation for tomorrow is doing your best today.",
+    "You don't have to be great to get started, but you have to get started to be great.",
+    "Every moment is a fresh beginning."
+  ]
   const [calendar, setCalendar] = useState(null)
   const [isScrolling, setIsScrolling] = useState(false)
   const [scrollPosition, setScrollPosition] = useState(0)
@@ -19,25 +43,59 @@ const TaskTracker = () => {
   const [showSpinner, setShowSpinner] = useState(false)
   const [allDays, setAllDays] = useState([])
   const [currentDayIndex, setCurrentDayIndex] = useState(0)
+  
+  // Category synchronization state
+  const [activeCategory, setActiveCategory] = useState('Touchpoint')
+  const [showAgendaSubmenu, setShowAgendaSubmenu] = useState(false)
+  const categories = [
+    'Touchpoint',
+    'Inbox', 
+    'Agenda',
+    'Waiting',
+    'Someday',
+    'Projects',
+    'Lockbook (Done)',
+    'Archive'
+  ]
+  
+  const agendaSubmenuItems = [
+    'Favorites',
+    'Orders', 
+    'Subscriptions',
+    'Published'
+  ]
 
   // Update greeting based on time
   useEffect(() => {
     const updateGreeting = () => {
       const hour = new Date().getHours()
+      const randomQuote = timeManagementQuotes[Math.floor(Math.random() * timeManagementQuotes.length)]
+      
       if (hour >= 5 && hour < 12) {
-        setGreeting({ greeting: 'Good Morning.', subtitle: 'Today is a great day!' })
+        setGreeting({ greeting: 'Good Morning.', subtitle: randomQuote })
       } else if (hour >= 12 && hour < 17) {
-        setGreeting({ greeting: 'Good Afternoon.', subtitle: 'Hope you\'re having a productive day!' })
+        setGreeting({ greeting: 'Good Afternoon.', subtitle: randomQuote })
       } else if (hour >= 17 && hour < 21) {
-        setGreeting({ greeting: 'Good Evening.', subtitle: 'Time to wrap up and relax!' })
+        setGreeting({ greeting: 'Good Evening.', subtitle: randomQuote })
       } else {
-        setGreeting({ greeting: 'Good Night.', subtitle: 'Time for some rest!' })
+        setGreeting({ greeting: 'Good Night.', subtitle: randomQuote })
       }
     }
 
     updateGreeting()
     const interval = setInterval(updateGreeting, 3600000) // Update every hour
     return () => clearInterval(interval)
+  }, [])
+
+  // Update quote every 5 minutes for variety
+  useEffect(() => {
+    const updateQuote = () => {
+      const randomQuote = timeManagementQuotes[Math.floor(Math.random() * timeManagementQuotes.length)]
+      setGreeting(prev => ({ ...prev, subtitle: randomQuote }))
+    }
+    
+    const quoteInterval = setInterval(updateQuote, 300000) // Update every 5 minutes
+    return () => clearInterval(quoteInterval)
   }, [])
 
   // Update datetime section with current real date (not synced with scroll)
@@ -52,7 +110,7 @@ const TaskTracker = () => {
       console.log('Updating datetime_section with:', { dayName, dayNumber, monthName, currentTime })
       
       // Update day name
-      const dayNameElement = document.querySelector('.day_name')
+      const dayNameElement = document.querySelector('.task_tracker_day_name')
       if (dayNameElement) {
         dayNameElement.textContent = dayName
         console.log('Updated day_name to:', dayName)
@@ -61,7 +119,7 @@ const TaskTracker = () => {
       }
       
       // Update day number
-      const dayNumberElement = document.querySelector('.day_number')
+      const dayNumberElement = document.querySelector('.task_tracker_day_number')
       if (dayNumberElement) {
         dayNumberElement.textContent = dayNumber
         console.log('Updated day_number to:', dayNumber)
@@ -70,7 +128,7 @@ const TaskTracker = () => {
       }
       
       // Update month name
-      const monthNameElement = document.querySelector('.month_name')
+      const monthNameElement = document.querySelector('.task_tracker_month_name')
       if (monthNameElement) {
         monthNameElement.textContent = monthName
         console.log('Updated month_name to:', monthName)
@@ -79,7 +137,7 @@ const TaskTracker = () => {
       }
       
       // Update current time
-      const currentTimeElement = document.querySelector('.current_time')
+      const currentTimeElement = document.querySelector('.task_tracker_current_time')
       if (currentTimeElement) {
         currentTimeElement.textContent = currentTime
         console.log('Updated current_time to:', currentTime)
@@ -121,39 +179,43 @@ const TaskTracker = () => {
   // Initialize FullCalendar for each day
   useEffect(() => {
     if (allDays.length > 0) {
+      console.log('Initializing FullCalendar for days:', allDays.length)
       // Create calendars for all days
       allDays.forEach((day, dayIndex) => {
-        const calendarElement = document.querySelector(`.calendar_instance[data-day-index="${dayIndex}"]`)
+        const calendarElement = document.querySelector(`.task_tracker_calendar_instance[data-day-index="${dayIndex}"]`)
+        console.log(`Looking for calendar element for day ${dayIndex}:`, calendarElement)
         if (calendarElement && !calendarElement.hasAttribute('data-calendar-initialized')) {
-          const cal = new Calendar(calendarElement, {
-            plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
-            initialView: 'timeGridDay',
-            initialDate: day,
-            headerToolbar: false,
-            selectable: true,
-            editable: true,
-            droppable: true,
-            nowIndicator: dayIndex === 0, // Only show now indicator for today
-            firstDay: 1,
-            height: 'auto',
-            slotMinTime: '00:00:00',
-            slotMaxTime: '23:59:59',
-            slotDuration: '01:00:00',
-            slotLabelInterval: '01:00:00',
-            allDaySlot: false,
-            dayHeaderFormat: { weekday: 'long' },
-            slotLabelFormat: {
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false
-            },
-            eventTimeFormat: {
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false
-            },
-            dayMaxEvents: false,
-            moreLinkClick: 'popover',
+          console.log(`Creating FullCalendar for day ${dayIndex}`)
+          try {
+            const cal = new Calendar(calendarElement, {
+              plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
+              initialView: 'timeGridDay',
+              initialDate: day,
+              headerToolbar: false,
+              selectable: true,
+              editable: true,
+              droppable: true,
+              nowIndicator: dayIndex === 0, // Only show now indicator for today
+              firstDay: 1,
+              height: 'auto',
+              slotMinTime: '00:00:00',
+              slotMaxTime: '23:59:59',
+              slotDuration: '01:00:00',
+              slotLabelInterval: '01:00:00',
+              allDaySlot: false,
+              dayHeaderFormat: { weekday: 'long' },
+              slotLabelFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              },
+              eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              },
+              dayMaxEvents: false,
+              moreLinkClick: 'popover',
             events: [
               { 
                 id: `${dayIndex}-1`, 
@@ -201,13 +263,21 @@ const TaskTracker = () => {
             }
           })
 
-          cal.render()
-          calendarElement.setAttribute('data-calendar-initialized', 'true')
-          
-          if (dayIndex === 0) {
-            setCalendar(cal)
-            setCurrentDate(day)
+            cal.render()
+            console.log(`FullCalendar rendered successfully for day ${dayIndex}`)
+            calendarElement.setAttribute('data-calendar-initialized', 'true')
+            
+            if (dayIndex === 0) {
+              setCalendar(cal)
+              setCurrentDate(day)
+            }
+          } catch (error) {
+            console.error(`Error creating FullCalendar for day ${dayIndex}:`, error)
           }
+        } else if (!calendarElement) {
+          console.warn(`Calendar element not found for day ${dayIndex}`)
+        } else {
+          console.log(`Calendar already initialized for day ${dayIndex}`)
         }
       })
     }
@@ -227,6 +297,38 @@ const TaskTracker = () => {
       window.removeEventListener('scroll', handleWindowScroll)
     }
   }, [isScrolling, showSpinner, isLoading, allDays, currentDayIndex])
+
+  // Category synchronization functions
+  const handleCategoryClick = (categoryName) => {
+    setActiveCategory(categoryName)
+    
+    // Show/hide Agenda submenu based on selection
+    setShowAgendaSubmenu(categoryName === 'Agenda')
+    
+    // Sync with nav menu by dispatching custom event
+    const event = new CustomEvent('taskTrackerCategoryChange', {
+      detail: { category: categoryName }
+    })
+    window.dispatchEvent(event)
+  }
+
+  // Listen for nav menu changes
+  useEffect(() => {
+    const handleNavMenuChange = (event) => {
+      const { category } = event.detail
+      if (category && categories.includes(category)) {
+        setActiveCategory(category)
+        // Show/hide Agenda submenu based on selection
+        setShowAgendaSubmenu(category === 'Agenda')
+      }
+    }
+
+    window.addEventListener('navMenuCategoryChange', handleNavMenuChange)
+    
+    return () => {
+      window.removeEventListener('navMenuCategoryChange', handleNavMenuChange)
+    }
+  }, [categories])
 
   // Navigation functions
   const goToPreviousDay = () => {
@@ -330,12 +432,12 @@ const TaskTracker = () => {
               <section className="container">
                 <div className="filter_search_container">
                   <div className="filter_search_container_content_left_side">
-                    <div className="greeting_section">
-                      <h1 className="greeting_main">
-                        <span className="greeting_time">{greeting.greeting}</span>
-                        <span className="greeting_name">Guest</span>
+                    <div className="task_tracker_greeting_section">
+                      <h1 className="task_tracker_greeting_main">
+                        <span className="task_tracker_greeting_time">{greeting.greeting}</span>
+                        <span className="task_tracker_greeting_name">Guest</span>
                       </h1>
-                      <p className="greeting_subtitle">{greeting.subtitle}</p>
+                      <p className="task_tracker_greeting_subtitle">{greeting.subtitle}</p>
                     </div>
                   </div>
                   <div className="filter_search_container_content_right_side">
@@ -367,168 +469,203 @@ const TaskTracker = () => {
                 <div className="task_tracker_left_side_section">
                   <div className="task_tracker_left_side_menu">
                     {/* Main Navigation Items */}
-                    <div className="menu_item_container">
-                      <button className="task_tracker_menu_item">
-                        <span className="menu_item_text">Touchpoint</span>
-                        <span className="menu_item_arrow">→</span>
+                    <div className="task_tracker_menu_item_container">
+                      <button 
+                        className={`task_tracker_menu_item ${activeCategory === 'Touchpoint' ? 'active' : ''}`}
+                        onClick={() => handleCategoryClick('Touchpoint')}
+                      >
+                        <span className="task_tracker_menu_item_text">Touchpoint</span>
+                        <span className="task_tracker_menu_item_arrow">→</span>
                       </button>
                     </div>
                     
-                    <div className="menu_item_container">
-                      <button className="task_tracker_menu_item">
-                        <span className="menu_item_text">Inbox</span>
-                        <span className="menu_item_arrow">→</span>
+                    <div className="task_tracker_menu_item_container">
+                      <button 
+                        className={`task_tracker_menu_item ${activeCategory === 'Inbox' ? 'active' : ''}`}
+                        onClick={() => handleCategoryClick('Inbox')}
+                      >
+                        <span className="task_tracker_menu_item_text">Inbox</span>
+                        <span className="task_tracker_menu_item_arrow">→</span>
                       </button>
                     </div>
                     
-                    <div className="menu_item_container">
-                      <button className="task_tracker_menu_item">
-                        <span className="menu_item_text">Agenda</span>
-                        <span className="menu_item_arrow">↓</span>
+                    <div className="task_tracker_menu_item_container">
+                      <button 
+                        className={`task_tracker_menu_item ${activeCategory === 'Agenda' ? 'active' : ''}`}
+                        onClick={() => handleCategoryClick('Agenda')}
+                      >
+                        <span className="task_tracker_menu_item_text">Agenda</span>
+                        <span className="task_tracker_menu_item_arrow">{showAgendaSubmenu ? '↑' : '↓'}</span>
                       </button>
+                      
+                      {/* Agenda Submenu */}
+                      {showAgendaSubmenu && (
+                        <div className="task_tracker_agenda_submenu">
+                          {agendaSubmenuItems.map((item, index) => (
+                            <div key={index} className="task_tracker_agenda_submenu_item">
+                              <span className="task_tracker_agenda_submenu_text">{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    
-                    {/* Separator */}
-                    <div className="menu_separator"></div>
                     
                     {/* Bottom Section */}
-                    <div className="menu_item_container">
-                      <button className="task_tracker_menu_item">
-                        <span className="menu_item_text">Waiting</span>
+                    <div className="task_tracker_menu_item_container">
+                      <button 
+                        className={`task_tracker_menu_item ${activeCategory === 'Waiting' ? 'active' : ''}`}
+                        onClick={() => handleCategoryClick('Waiting')}
+                      >
+                        <span className="task_tracker_menu_item_text">Waiting</span>
                       </button>
                     </div>
                     
-                    <div className="menu_item_container">
-                      <button className="task_tracker_menu_item">
-                        <span className="menu_item_text">Someday</span>
+                    <div className="task_tracker_menu_item_container">
+                      <button 
+                        className={`task_tracker_menu_item ${activeCategory === 'Someday' ? 'active' : ''}`}
+                        onClick={() => handleCategoryClick('Someday')}
+                      >
+                        <span className="task_tracker_menu_item_text">Someday</span>
                       </button>
                     </div>
                     
-                    <div className="menu_item_container">
-                      <button className="task_tracker_menu_item">
-                        <span className="menu_item_text">Projects</span>
+                    <div className="task_tracker_menu_item_container">
+                      <button 
+                        className={`task_tracker_menu_item ${activeCategory === 'Projects' ? 'active' : ''}`}
+                        onClick={() => handleCategoryClick('Projects')}
+                      >
+                        <span className="task_tracker_menu_item_text">Projects</span>
                       </button>
                     </div>
                     
-                    <div className="menu_item_container">
-                      <button className="task_tracker_menu_item">
-                        <span className="menu_item_text">Lockbook (Done)</span>
+                    <div className="task_tracker_menu_item_container">
+                      <button 
+                        className={`task_tracker_menu_item ${activeCategory === 'Lockbook (Done)' ? 'active' : ''}`}
+                        onClick={() => handleCategoryClick('Lockbook (Done)')}
+                      >
+                        <span className="task_tracker_menu_item_text">Lockbook (Done)</span>
                       </button>
                     </div>
                     
-                    <div className="menu_item_container">
-                      <button className="task_tracker_menu_item">
-                        <span className="menu_item_text">Archive</span>
+                    <div className="task_tracker_menu_item_container">
+                      <button 
+                        className={`task_tracker_menu_item ${activeCategory === 'Archive' ? 'active' : ''}`}
+                        onClick={() => handleCategoryClick('Archive')}
+                      >
+                        <span className="task_tracker_menu_item_text">Archive</span>
                       </button>
                     </div>
                   </div>
                 </div>
 
                 <div className="task_tracker_right_side_section">
-                  <div className="sub_menu_section_task_tracker">
+                  <div className="task_tracker_sub_menu_section">
                     {/* Filter Button (Fixed Left) */}
-                    <button className="sub_menu_filter_btn">🔍</button>
+                    <button className="task_tracker_sub_menu_filter_btn">🔍</button>
                     
                     {/* Scrollable Navigation Center */}
-                    <div className="sub_menu_scrollable_container">
-                      <div className="sub_menu_navigation_items">
-                        <button className="sub_menu_nav_btn active">Agenda</button>
-                        <button className="sub_menu_nav_btn">All</button>
-                        <button className="sub_menu_nav_btn">Business support</button>
-                        <button className="sub_menu_nav_btn">Personal support</button>
+                    <div className="task_tracker_sub_menu_scrollable_container">
+                      <div className="task_tracker_sub_menu_navigation_items">
+                        <button className="task_tracker_sub_menu_nav_btn active">Agenda</button>
+                        <button className="task_tracker_sub_menu_nav_btn">All</button>
+                        <button className="task_tracker_sub_menu_nav_btn">Business support</button>
+                        <button className="task_tracker_sub_menu_nav_btn">Personal support</button>
                       </div>
                     </div>
                     
                     {/* Add Button (Fixed Right) */}
-                    <button className="sub_menu_add_btn">
-                      <span className="add_icon">+</span>
+                    <button className="task_tracker_sub_menu_add_btn">
+                      <span className="task_tracker_add_icon">+</span>
                     </button>
                   </div>
 
                   <div className="task_tracker_right_side_sub_cat_menu">
-                    <div className="sub_cat_menu_item">Favorites</div>
-                    <div className="sub_cat_menu_item">Orders</div>
-                    <div className="sub_cat_menu_item">Subscriptions</div>
-                    <div className="sub_cat_menu_item">Published</div>
+                    <div className="task_tracker_sub_cat_menu_item">Favorites</div>
+                    <div className="task_tracker_sub_cat_menu_item">Orders</div>
+                    <div className="task_tracker_sub_cat_menu_item">Subscriptions</div>
+                    <div className="task_tracker_sub_cat_menu_item">Published</div>
                   </div>
 
-                  <div className="list_of_tasks_task_tracker task_tracker_tasks_sides_separator">
+                  <div className="task_tracker_list_of_tasks task_tracker_tasks_sides_separator">
                     {/* Tasks Timeline Container */}
-                    <div className="datetime_section">
+                    <div className="task_tracker_datetime_section">
                       {/* Left Part - Date */}
-                      <div className="datetime_left">
-                        <div className="datetime_row_1">
-                          <span className="day_name">Loading...</span>
-                          <span className="weather_icon">⛅</span>
+                      <div className="task_tracker_datetime_left">
+                        <div className="task_tracker_datetime_row_1">
+                          <span className="task_tracker_day_name">Loading...</span>
+                          <span className="task_tracker_weather_icon">⛅</span>
                         </div>
-                        <div className="datetime_row_2">
-                          <span className="day_number">--</span>
+                        <div className="task_tracker_datetime_row_2">
+                          <span className="task_tracker_day_number">--</span>
                         </div>
-                        <div className="datetime_row_3">
-                          <span className="month_name">LOADING</span>
+                        <div className="task_tracker_datetime_row_3">
+                          <span className="task_tracker_month_name">LOADING</span>
                         </div>
                       </div>
                       
                       {/* Center Divider */}
-                      <div className="datetime_divider_center"></div>
+                      <div className="task_tracker_datetime_divider_center"></div>
                       
                       {/* Right Part - Time and Location */}
-                      <div className="datetime_right">
-                        <div className="datetime_right_left">
-                          <div className="time_row_1">
-                            <span className="current_time">{formatTime(new Date())}</span>
+                      <div className="task_tracker_datetime_right">
+                        <div className="task_tracker_datetime_right_left">
+                          <div className="task_tracker_time_row_1">
+                            <span className="task_tracker_current_time">{formatTime(new Date())}</span>
                           </div>
-                          <div className="time_row_2">
-                            <span className="location">London</span>
+                          <div className="task_tracker_time_row_2">
+                            <span className="task_tracker_location">London</span>
                           </div>
                         </div>
-                        <div className="datetime_right_right">
-                          <div className="action_icons">
-                            <div className="icon_item">🔍</div>
-                            <div className="icon_item">⏳</div>
-                            <div className="icon_item">🤓</div>
+                        <div className="task_tracker_datetime_right_right">
+                          <div className="task_tracker_action_icons">
+                            <div className="task_tracker_icon_item">🔍</div>
+                            <div className="task_tracker_icon_item">⏳</div>
+                            <div className="task_tracker_icon_item">🤓</div>
                           </div>
                         </div>
                       </div>
                       
                       {/* Bottom Divider */}
-                      <div className="datetime_divider_bottom"></div>
+                      <div className="task_tracker_datetime_divider_bottom"></div>
                     </div>
                     
                     {/* FullCalendar Container with Infinite Scroll */}
                     <div className="task_tracker_calendar_container">
                       {/* FullCalendar with Infinite Scroll */}
                       <div 
-                        className="infinite_calendar_container"
+                        className="task_tracker_infinite_calendar_container"
                         ref={scrollContainerRef}
                       >
                         {/* FullCalendar for each day */}
-                        {allDays.map((day, dayIndex) => (
-                          <div key={dayIndex} className="calendar_day_container">
-                            <div className="calendar_day_header">
-                              <span className="calendar_day_number">{day.getDate()}</span>
-                              <span className="calendar_day_name">{day.toLocaleDateString('en-US', { weekday: 'long' })}</span>
-                              <span className="calendar_day_date">{day.toLocaleDateString('en-US', { month: 'long' }).toUpperCase()} {day.getFullYear()}</span>
+                        {allDays.map((day, dayIndex) => {
+                          console.log(`Rendering day ${dayIndex}:`, day)
+                          return (
+                            <div key={dayIndex} className="task_tracker_calendar_day_container">
+                              <div className="task_tracker_calendar_day_header">
+                                <span className="task_tracker_calendar_day_number">{day.getDate()}</span>
+                                <span className="task_tracker_calendar_day_name">{day.toLocaleDateString('en-US', { weekday: 'long' })}</span>
+                                <span className="task_tracker_calendar_day_date">{day.toLocaleDateString('en-US', { month: 'long' }).toUpperCase()} {day.getFullYear()}</span>
+                              </div>
+                              <div className="task_tracker_calendar_day_content">
+                                <div 
+                                  ref={dayIndex === 0 ? calendarRef : null} 
+                                  className="task_tracker_calendar_instance"
+                                  data-day-index={dayIndex}
+                                ></div>
+                              </div>
                             </div>
-                            <div className="calendar_day_content">
-                              <div 
-                                ref={dayIndex === 0 ? calendarRef : null} 
-                                className="calendar_instance"
-                                data-day-index={dayIndex}
-                              ></div>
-                            </div>
-                          </div>
-                        ))}
+                          )
+                        })}
                         
                         {/* Loading Spinner - имитация следующего дня */}
                         {showSpinner && (
-                          <div className="loading_spinner">
-                            <div className="spinner_day_header">
-                              <span className="spinner_day_number">--</span>
-                              <span className="spinner_day_name">Loading...</span>
+                          <div className="task_tracker_loading_spinner">
+                            <div className="task_tracker_spinner_day_header">
+                              <span className="task_tracker_spinner_day_number">--</span>
+                              <span className="task_tracker_spinner_day_name">Loading...</span>
                             </div>
-                            <div className="spinner_content">
-                              <div className="spinner"></div>
+                            <div className="task_tracker_spinner_content">
+                              <div className="task_tracker_spinner"></div>
                               <span>Loading next day...</span>
                             </div>
                           </div>

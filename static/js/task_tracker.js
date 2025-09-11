@@ -42,9 +42,9 @@ function cacheElements() {
         separatorDayName: document.getElementById('separator-day-name'),
         separatorDayDate: document.getElementById('separator-day-date'),
         separatorMonthName: document.getElementById('separator-month-name'),
-        subMenu: document.querySelector('.sub_menu_section_task_tracker'),
-        subCatItems: document.querySelectorAll('.sub_cat_menu_item'),
-        tasks: document.querySelectorAll('.timeline_task')
+        subMenu: document.querySelector('.task_tracker_sub_menu_section'),
+        subCatItems: document.querySelectorAll('.task_tracker_sub_cat_menu_item'),
+        tasks: document.querySelectorAll('.task_tracker_timeline_task')
     };
 }
 
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Sub-menu horizontal scrolling functionality
     function initSubMenuScrolling() {
-        const scrollableContainer = document.querySelector('.sub_menu_navigation_items');
+        const scrollableContainer = document.querySelector('.task_tracker_sub_menu_navigation_items');
         if (!scrollableContainer) return;
         
         let isDown = false;
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Handle submenu item clicks
-        const submenuItems = document.querySelectorAll('.submenu_item');
+        const submenuItems = document.querySelectorAll('.task_tracker_submenu_item');
         submenuItems.forEach(item => {
             item.addEventListener('click', function() {
                 // Remove active state from all submenu items
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Sub-category menu functionality
     function initSubCategoryMenu() {
-        const subCatItems = document.querySelectorAll('.sub_cat_menu_item');
+        const subCatItems = document.querySelectorAll('.task_tracker_sub_cat_menu_item');
         
         subCatItems.forEach(item => {
             item.addEventListener('click', function() {
@@ -278,12 +278,11 @@ function handleResize() {
     // Performance tip: Only recalculate when necessary
     initTimelineTasks();
 }
-});
 
 // Timeline Tasks Positioning - Optimized for performance
 function initTimelineTasks() {
     // Performance tip: Use cached elements if available, otherwise query once
-    const tasks = cachedElements.tasks.length > 0 ? cachedElements.tasks : document.querySelectorAll('.timeline_task');
+    const tasks = cachedElements.tasks.length > 0 ? cachedElements.tasks : document.querySelectorAll('.task_tracker_timeline_task');
     
     // Performance tip: Cache screen size check and calculations
     const isMobile = window.innerWidth <= 768;
@@ -308,9 +307,9 @@ function initTimelineTasks() {
                         ((timeData.endMinute - timeData.startMinute) * (pixelsPerHour / 60));
             
             // Adjust for day separator if task is in second day
-            const taskContainer = task.closest('.timeline_day');
+            const taskContainer = task.closest('.task_tracker_timeline_day');
             const isSecondDay = taskContainer && taskContainer.previousElementSibling && 
-                               taskContainer.previousElementSibling.classList.contains('timeline_day_separator');
+                               taskContainer.previousElementSibling.classList.contains('task_tracker_timeline_day_separator');
             
             if (isSecondDay) {
                 // Add extra space for day separator (60px on desktop, 50px on mobile)
