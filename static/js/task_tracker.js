@@ -1,3 +1,4 @@
+
 // Task Tracker JavaScript - Optimized for Performance
 // Performance optimization: Cache DOM elements and use throttling
 let cachedElements = {};
@@ -198,27 +199,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize sub-menu scrolling
     initSubMenuScrolling();
     
+
     // Left sidebar submenu functionality
     function initSidebarSubmenus() {
+        // Add click handlers for expandable menu items
         const expandableButtons = document.querySelectorAll('.task_tracker_menu_item.expandable');
-        
         expandableButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const submenu = document.getElementById(targetId);
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 
-                if (submenu) {
-                    const isExpanded = this.classList.contains('expanded');
-                    
-                    if (isExpanded) {
-                        // Collapse submenu
-                        submenu.classList.remove('show');
-                        this.classList.remove('expanded');
-                    } else {
-                        // Expand submenu
-                        submenu.classList.add('show');
-                        this.classList.add('expanded');
-                    }
+                const category = this.getAttribute('data-category');
+                if (category) {
+                    // Dispatch custom event to React component
+                    const customEvent = new CustomEvent('expandableMenuClick', {
+                        detail: { category: category }
+                    });
+                    window.dispatchEvent(customEvent);
                 }
             });
         });

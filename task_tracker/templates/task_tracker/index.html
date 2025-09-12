@@ -5,54 +5,103 @@
     <div class="task_tracker_left_side_section">
         <div class="task_tracker_left_side_menu">
             <div class="task_tracker_menu_item_container">
-                <button class="task_tracker_menu_item">
+                <button class="task_tracker_menu_item expandable" data-category="Touchpoint" data-target="touchpoint-submenu">
                     <span class="task_tracker_menu_item_text">Touchpoint</span>
-                    <span class="task_tracker_menu_item_arrow">→</span>
+                    <span class="task_tracker_menu_item_arrow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
                 </button>
+                <div class="task_tracker_submenu" id="touchpoint-submenu">
+                    <div class="task_tracker_submenu_item" data-subcategory="Contacts">Contacts</div>
+                </div>
             </div>
             <div class="task_tracker_menu_item_container">
                 <button class="task_tracker_menu_item">
                     <span class="task_tracker_menu_item_text">Inbox</span>
-                    <span class="task_tracker_menu_item_arrow">→</span>
+                    <span class="task_tracker_menu_item_arrow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
                 </button>
             </div>
             <div class="task_tracker_menu_item_container">
-                <button class="task_tracker_menu_item active" data-category="Agenda">
+                <button class="task_tracker_menu_item expandable active" data-category="Agenda" data-target="agenda-submenu">
                     <span class="task_tracker_menu_item_text">Agenda</span>
-                    <span class="task_tracker_menu_item_arrow">↓</span>
+                    <span class="task_tracker_menu_item_arrow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
                 </button>
                 <div class="task_tracker_submenu" id="agenda-submenu">
                     <div class="task_tracker_submenu_item" data-subcategory="Favorites">Favorites</div>
+                </div>
+            </div>
+            <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item expandable" data-category="Waiting" data-target="waiting-submenu">
+                    <span class="task_tracker_menu_item_text">Waiting</span>
+                    <span class="task_tracker_menu_item_arrow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </button>
+                <div class="task_tracker_submenu" id="waiting-submenu">
                     <div class="task_tracker_submenu_item" data-subcategory="Orders">Orders</div>
                     <div class="task_tracker_submenu_item" data-subcategory="Subscriptions">Subscriptions</div>
                     <div class="task_tracker_submenu_item" data-subcategory="Published">Published</div>
                 </div>
             </div>
-            <div class="task_tracker_menu_separator"></div>
-            <div class="task_tracker_menu_item_container">
-                <button class="task_tracker_menu_item">
-                    <span class="task_tracker_menu_item_text">Waiting</span>
-                </button>
-            </div>
             <div class="task_tracker_menu_item_container">
                 <button class="task_tracker_menu_item">
                     <span class="task_tracker_menu_item_text">Someday</span>
+                    <span class="task_tracker_menu_item_arrow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
                 </button>
             </div>
             <div class="task_tracker_menu_item_container">
                 <button class="task_tracker_menu_item">
                     <span class="task_tracker_menu_item_text">Projects</span>
+                    <span class="task_tracker_menu_item_arrow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
                 </button>
             </div>
             <div class="task_tracker_menu_item_container">
-                <button class="task_tracker_menu_item">
+                <button class="task_tracker_menu_item expandable" data-category="Lockbook (Done)" data-target="lockbook-submenu">
                     <span class="task_tracker_menu_item_text">Lockbook (Done)</span>
+                    <span class="task_tracker_menu_item_arrow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
                 </button>
+                <div class="task_tracker_submenu" id="lockbook-submenu">
+                    <div class="task_tracker_submenu_item" data-subcategory="Projects">Projects</div>
+                    <div class="task_tracker_submenu_item" data-subcategory="Tasks">Tasks</div>
+                </div>
             </div>
             <div class="task_tracker_menu_item_container">
-                <button class="task_tracker_menu_item">
+                <button class="task_tracker_menu_item expandable" data-category="Archive" data-target="archive-submenu">
                     <span class="task_tracker_menu_item_text">Archive</span>
+                    <span class="task_tracker_menu_item_arrow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
                 </button>
+                <div class="task_tracker_submenu" id="archive-submenu">
+                    <div class="task_tracker_submenu_item" data-subcategory="Projects">Projects</div>
+                    <div class="task_tracker_submenu_item" data-subcategory="Tasks">Tasks</div>
+                </div>
             </div>
         </div>
     </div>
@@ -61,8 +110,6 @@
             <button class="task_tracker_sub_menu_filter_btn">🔍</button>
             <div class="task_tracker_sub_menu_scrollable_container">
                 <div class="task_tracker_sub_menu_navigation_items">
-                    <button class="task_tracker_sub_menu_nav_btn active">Agenda</button>
-                    <button class="task_tracker_sub_menu_nav_btn">All</button>
                     <button class="task_tracker_sub_menu_nav_btn">Business support</button>
                     <button class="task_tracker_sub_menu_nav_btn">Personal support</button>
                 </div>
@@ -71,11 +118,8 @@
                 <span class="task_tracker_add_icon">+</span>
             </button>
         </div>
-        <div class="task_tracker_right_side_sub_cat_menu">
-            <div class="task_tracker_sub_cat_menu_item">Favorites</div>
-            <div class="task_tracker_sub_cat_menu_item">Orders</div>
-            <div class="task_tracker_sub_cat_menu_item">Subscriptions</div>
-            <div class="task_tracker_sub_cat_menu_item">Published</div>
+        <div class="task_tracker_right_side_sub_cat_menu" id="sub-cat-menu">
+            <!-- Subcategories will be populated by JavaScript based on selected category -->
         </div>
         <div class="list_of_tasks_task_tracker task_tracker_tasks_sides_separator">
             <div class="task_tracker_datetime_section">

@@ -6,7 +6,6 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 
 const AgendaView = () => {
-  console.log('AgendaView component rendering...')
   const calendarRef = useRef(null)
   const scrollContainerRef = useRef(null)
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -89,13 +88,10 @@ const AgendaView = () => {
   // Initialize FullCalendar for each day
   useEffect(() => {
     if (allDays.length > 0) {
-      console.log('Initializing FullCalendar for days:', allDays.length)
       // Create calendars for all days
       allDays.forEach((day, dayIndex) => {
         const calendarElement = document.querySelector(`.task_tracker_calendar_instance[data-day-index="${dayIndex}"]`)
-        console.log(`Looking for calendar element for day ${dayIndex}:`, calendarElement)
         if (calendarElement && !calendarElement.hasAttribute('data-calendar-initialized')) {
-          console.log(`Creating FullCalendar for day ${dayIndex}`)
           try {
             const cal = new Calendar(calendarElement, {
               plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
@@ -145,26 +141,21 @@ const AgendaView = () => {
                 }
               ],
               select: (selectInfo) => {
-                console.log('Date selected:', selectInfo)
                 // Handle task creation
               },
               eventClick: (clickInfo) => {
-                console.log('Event clicked:', clickInfo)
                 // Handle task editing
               },
               eventDrop: (dropInfo) => {
-                console.log('Event dropped:', dropInfo)
                 // Handle task rescheduling
               },
               eventResize: (resizeInfo) => {
-                console.log('Event resized:', resizeInfo)
                 // Handle task duration change
               }
             })
             
             cal.render()
             calendarElement.setAttribute('data-calendar-initialized', 'true')
-            console.log(`FullCalendar for day ${dayIndex} rendered successfully`)
           } catch (error) {
             console.error(`Error creating FullCalendar for day ${dayIndex}:`, error)
           }
@@ -231,7 +222,6 @@ const AgendaView = () => {
         >
           {/* FullCalendar for each day */}
           {allDays.map((day, dayIndex) => {
-            console.log(`Rendering day ${dayIndex}:`, day)
             return (
               <div key={dayIndex} className="task_tracker_calendar_day_container">
                 <div className="task_tracker_calendar_day_header">

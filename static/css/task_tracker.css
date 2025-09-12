@@ -316,10 +316,23 @@
 .task_tracker_menu_item_arrow {
     font-size: 1.2rem;
     transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.task_tracker_menu_item.expandable.expanded .task_tracker_menu_item_arrow {
-    transform: rotate(180deg);
+.task_tracker_menu_item_arrow svg {
+    width: 12px;
+    height: 12px;
+    transition: transform 0.2s ease;
+}
+
+.task_tracker_menu_item.expandable .task_tracker_menu_item_arrow svg {
+    transform: rotate(0deg);
+}
+
+.task_tracker_menu_item.expandable.expanded .task_tracker_menu_item_arrow svg {
+    transform: rotate(90deg);
 }
 
 /* Submenu Styles */
