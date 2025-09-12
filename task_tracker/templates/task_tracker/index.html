@@ -1,21 +1,124 @@
 {% extends "task_tracker/base.html" %}
 
 {% block task_content %}
-<!-- React Task Tracker App -->
-<div id="react-task-tracker">
-    <div style="padding: 40px; text-align: center; color: #666;">
-        <h3>Loading React TaskTracker...</h3>
-        <p>If you see this message, React is loading or there's an issue.</p>
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb; max-width: 400px; margin: 0 auto;">
-            <h4>Expected Features:</h4>
-            <ul style="text-align: left; color: #6b7280;">
-                <li>Daily timeline view</li>
-                <li>Drag & drop tasks</li>
-                <li>Create tasks by clicking</li>
-                <li>Resize tasks</li>
-                <li>Navigate between days</li>
-            </ul>
+<section class="container task_tracker_sides_separator">
+    <div class="task_tracker_left_side_section">
+        <div class="task_tracker_left_side_menu">
+            <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="task_tracker_menu_item_text">Touchpoint</span>
+                    <span class="task_tracker_menu_item_arrow">→</span>
+                </button>
+            </div>
+            <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="task_tracker_menu_item_text">Inbox</span>
+                    <span class="task_tracker_menu_item_arrow">→</span>
+                </button>
+            </div>
+            <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item active" data-category="Agenda">
+                    <span class="task_tracker_menu_item_text">Agenda</span>
+                    <span class="task_tracker_menu_item_arrow">↓</span>
+                </button>
+                <div class="task_tracker_submenu" id="agenda-submenu">
+                    <div class="task_tracker_submenu_item" data-subcategory="Favorites">Favorites</div>
+                    <div class="task_tracker_submenu_item" data-subcategory="Orders">Orders</div>
+                    <div class="task_tracker_submenu_item" data-subcategory="Subscriptions">Subscriptions</div>
+                    <div class="task_tracker_submenu_item" data-subcategory="Published">Published</div>
+                </div>
+            </div>
+            <div class="task_tracker_menu_separator"></div>
+            <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="task_tracker_menu_item_text">Waiting</span>
+                </button>
+            </div>
+            <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="task_tracker_menu_item_text">Someday</span>
+                </button>
+            </div>
+            <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="task_tracker_menu_item_text">Projects</span>
+                </button>
+            </div>
+            <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="task_tracker_menu_item_text">Lockbook (Done)</span>
+                </button>
+            </div>
+            <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item">
+                    <span class="task_tracker_menu_item_text">Archive</span>
+                </button>
+            </div>
         </div>
     </div>
-</div>
+    <div class="task_tracker_right_side_section">
+        <div class="task_tracker_sub_menu_section">
+            <button class="task_tracker_sub_menu_filter_btn">🔍</button>
+            <div class="task_tracker_sub_menu_scrollable_container">
+                <div class="task_tracker_sub_menu_navigation_items">
+                    <button class="task_tracker_sub_menu_nav_btn active">Agenda</button>
+                    <button class="task_tracker_sub_menu_nav_btn">All</button>
+                    <button class="task_tracker_sub_menu_nav_btn">Business support</button>
+                    <button class="task_tracker_sub_menu_nav_btn">Personal support</button>
+                </div>
+            </div>
+            <button class="task_tracker_sub_menu_add_btn">
+                <span class="task_tracker_add_icon">+</span>
+            </button>
+        </div>
+        <div class="task_tracker_right_side_sub_cat_menu">
+            <div class="task_tracker_sub_cat_menu_item">Favorites</div>
+            <div class="task_tracker_sub_cat_menu_item">Orders</div>
+            <div class="task_tracker_sub_cat_menu_item">Subscriptions</div>
+            <div class="task_tracker_sub_cat_menu_item">Published</div>
+        </div>
+        <div class="list_of_tasks_task_tracker task_tracker_tasks_sides_separator">
+            <div class="task_tracker_datetime_section">
+                <div class="task_tracker_datetime_left">
+                    <div class="task_tracker_datetime_row_1">
+                        <span class="task_tracker_day_name">Friday</span>
+                        <span class="task_tracker_weather_icon">⛅</span>
+                    </div>
+                    <div class="task_tracker_datetime_row_2">
+                        <span class="task_tracker_day_number">12</span>
+                    </div>
+                    <div class="task_tracker_datetime_row_3">
+                        <span class="task_tracker_month_name">SEPTEMBER</span>
+                    </div>
+                </div>
+                <div class="task_tracker_datetime_divider_center"></div>
+                <div class="task_tracker_datetime_right">
+                    <div class="task_tracker_datetime_right_left">
+                        <div class="time_row_1">
+                            <span class="task_tracker_current_time">12.40</span>
+                        </div>
+                        <div class="time_row_2">
+                            <span class="task_tracker_location">London</span>
+                        </div>
+                    </div>
+                    <div class="task_tracker_datetime_right_right">
+                        <div class="task_tracker_action_icons">
+                            <div class="task_tracker_icon_item">🔍</div>
+                            <div class="task_tracker_icon_item">⏳</div>
+                            <div class="task_tracker_icon_item">🤓</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="task_tracker_datetime_divider_bottom"></div>
+            </div>
+            <!-- React Task Tracker App will render here -->
+            <div id="react-task-tracker">
+                <div style="padding: 40px; text-align: center; color: #666;">
+                    <h3>Loading React TaskTracker...</h3>
+                    <p>If you see this message, React is loading or there's an issue.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

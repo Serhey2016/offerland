@@ -835,6 +835,269 @@
     margin-bottom: 0;
 }
 
+/* Task Tracker Main Container */
+.task-tracker-main {
+    width: 100%;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+/* View Container Styles - Only for non-Agenda categories */
+.touchpoint-container,
+.inbox-container,
+.waiting-container,
+.someday-container,
+.projects-container,
+.lockbook-container,
+.archive-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure Agenda keeps original styling */
+.task_tracker_list_of_tasks.task_tracker_tasks_sides_separator {
+    width: 100%;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.touchpoint-header,
+.inbox-header,
+.waiting-header,
+.someday-header,
+.projects-header,
+.lockbook-header,
+.archive-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.touchpoint-header h3,
+.inbox-header h3,
+.waiting-header h3,
+.someday-header h3,
+.projects-header h3,
+.lockbook-header h3,
+.archive-header h3 {
+    margin: 0 0 5px 0;
+    color: #282d3b;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.touchpoint-header p,
+.inbox-header p,
+.waiting-header p,
+.someday-header p,
+.projects-header p,
+.lockbook-header p,
+.archive-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* List Styles */
+.touchpoint-list,
+.inbox-list,
+.waiting-list,
+.someday-list,
+.projects-list,
+.lockbook-list,
+.archive-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.touchpoint-item,
+.inbox-item,
+.waiting-item,
+.someday-item,
+.project-item,
+.lockbook-item,
+.archive-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.touchpoint-item:hover,
+.inbox-item:hover,
+.waiting-item:hover,
+.someday-item:hover,
+.project-item:hover,
+.lockbook-item:hover,
+.archive-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Task Priority Styles */
+.task-priority {
+    width: 4px;
+    height: 100%;
+    border-radius: 2px;
+    margin-right: 12px;
+}
+
+.task-priority.high {
+    background: #ef4444;
+}
+
+.task-priority.medium {
+    background: #f59e0b;
+}
+
+.task-priority.low {
+    background: #10b981;
+}
+
+/* Contact Info Styles */
+.contact-info h4,
+.task-content h4,
+.waiting-info h4,
+.someday-info h4,
+.project-info h4,
+.task-info h4,
+.archive-info h4 {
+    margin: 0 0 5px 0;
+    color: #282d3b;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.contact-info p,
+.task-content p,
+.waiting-info p,
+.someday-info p,
+.project-info p,
+.task-info p,
+.archive-info p {
+    margin: 0 0 5px 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.last-contact,
+.task-date,
+.waiting-since,
+.someday-category,
+.completion-date,
+.archive-date {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+/* Project Progress Styles */
+.project-progress {
+    margin-top: 10px;
+}
+
+.progress {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #282d3b;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Task Actions */
+.task-actions,
+.contact-actions,
+.waiting-actions,
+.someday-actions,
+.project-actions,
+.archive-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Completed Task Styles */
+.lockbook-item.completed {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.lockbook-item.completed .task-info h4 {
+    color: #166534;
+}
+
+/* Task Tracker Submenu Styles */
+.task_tracker_submenu {
+    display: none;
+    background: #f8f9fa;
+    border-left: 3px solid #282d3b;
+    margin-left: 15px;
+    margin-top: 5px;
+    border-radius: 0 8px 8px 0;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task_tracker_submenu.show {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+.task_tracker_submenu_item {
+    padding: 12px 20px;
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.task_tracker_submenu_item:last-child {
+    border-bottom: none;
+}
+
+.task_tracker_submenu_item:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.task_tracker_submenu_item.active {
+    background: #282d3b;
+    color: #fff;
+}
+
+/* Animation for submenu */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Daily Navigation Styles */
 .task_tracker_daily_navigation {
     display: flex;
