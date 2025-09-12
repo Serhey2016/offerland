@@ -4,10 +4,6 @@ const ArchiveView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="archive-container">
-        <div className="archive-header">
-          <h3>Archive</h3>
-          <p>Historical tasks and completed projects</p>
-        </div>
         <div className="archive-content">
           <div className="archive-list">
             <div className="archive-item">

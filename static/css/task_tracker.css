@@ -865,42 +865,7 @@
     overflow: hidden;
 }
 
-.touchpoint-header,
-.inbox-header,
-.waiting-header,
-.someday-header,
-.projects-header,
-.lockbook-header,
-.archive-header {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.touchpoint-header h3,
-.inbox-header h3,
-.waiting-header h3,
-.someday-header h3,
-.projects-header h3,
-.lockbook-header h3,
-.archive-header h3 {
-    margin: 0 0 5px 0;
-    color: #282d3b;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.touchpoint-header p,
-.inbox-header p,
-.waiting-header p,
-.someday-header p,
-.projects-header p,
-.lockbook-header p,
-.archive-header p {
-    margin: 0;
-    color: #6b7280;
-    font-size: 14px;
-}
+/* Header styles removed - now handled dynamically in greeting section */
 
 /* List Styles */
 .touchpoint-list,

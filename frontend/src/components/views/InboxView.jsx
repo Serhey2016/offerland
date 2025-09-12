@@ -4,10 +4,6 @@ const InboxView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="inbox-container">
-        <div className="inbox-header">
-          <h3>Inbox</h3>
-          <p>Capture new tasks and ideas</p>
-        </div>
         <div className="inbox-content">
           <div className="inbox-list">
             <div className="inbox-item">

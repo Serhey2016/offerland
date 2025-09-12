@@ -4,10 +4,6 @@ const WaitingView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="waiting-container">
-        <div className="waiting-header">
-          <h3>Waiting</h3>
-          <p>Tasks waiting for others or external factors</p>
-        </div>
         <div className="waiting-content">
           <div className="waiting-list">
             <div className="waiting-item">

@@ -4,10 +4,6 @@ const ProjectsView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="projects-container">
-        <div className="projects-header">
-          <h3>Projects</h3>
-          <p>Active projects and their progress</p>
-        </div>
         <div className="projects-content">
           <div className="projects-list">
             <div className="project-item">

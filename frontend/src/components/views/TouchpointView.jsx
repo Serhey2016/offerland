@@ -4,10 +4,6 @@ const TouchpointView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="touchpoint-container">
-        <div className="touchpoint-header">
-          <h3>Touchpoint</h3>
-          <p>Manage your contacts and meetings</p>
-        </div>
         <div className="touchpoint-content">
           <div className="touchpoint-list">
             <div className="touchpoint-item">

@@ -4,10 +4,6 @@ const SomedayView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="someday-container">
-        <div className="someday-header">
-          <h3>Someday</h3>
-          <p>Ideas and tasks for future consideration</p>
-        </div>
         <div className="someday-content">
           <div className="someday-list">
             <div className="someday-item">

@@ -4,10 +4,6 @@ const LockbookView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="lockbook-container">
-        <div className="lockbook-header">
-          <h3>Lockbook (Done)</h3>
-          <p>Completed tasks and achievements</p>
-        </div>
         <div className="lockbook-content">
           <div className="lockbook-list">
             <div className="lockbook-item completed">
