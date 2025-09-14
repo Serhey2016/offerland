@@ -99,7 +99,7 @@
 /* Navigation Menu Container */
 .nav_menu_container {
     position: fixed;
-    bottom: 20px;
+    bottom: 10px;
     right: 70px;
     z-index: 85;
     display: flex;
@@ -257,7 +257,10 @@
         display: none;
     }
 
-
+    .nav_menu_container {
+        bottom: 5px;
+        right: 20px;
+    }
 
     .nav_menu_content {
         width: 100%;

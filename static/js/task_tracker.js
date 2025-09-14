@@ -228,8 +228,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 submenuItems.forEach(subItem => subItem.classList.remove('active'));
                 // Add active state to clicked item
                 this.classList.add('active');
+                
+                // Get subcategory and parent category
+                const subcategory = this.getAttribute('data-subcategory');
+                const parentCategory = this.closest('.task_tracker_menu_item_container').querySelector('.task_tracker_menu_item').getAttribute('data-category');
+                
+                // Dispatch custom event to React component
+                const customEvent = new CustomEvent('submenuItemClick', {
+                    detail: { 
+                        category: parentCategory,
+                        subcategory: subcategory 
+                    }
+                });
+                window.dispatchEvent(customEvent);
             });
         });
+        
     }
     
     // Initialize sidebar submenus
