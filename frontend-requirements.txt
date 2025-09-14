@@ -1,0 +1,35 @@
+# Frontend Dependencies - Updated Versions (September 2025)
+# Generated from package.json after updates
+
+## Core Dependencies
+react==19.1.0
+react-dom==19.1.0
+
+## FullCalendar Dependencies
+@fullcalendar/core==6.1.15
+@fullcalendar/daygrid==6.1.15
+@fullcalendar/interaction==6.1.15
+@fullcalendar/list==6.1.15
+@fullcalendar/timegrid==6.1.15
+
+## UI/Interaction Libraries
+interactjs==1.10.27
+
+## Development Dependencies
+@types/react==19.1.13
+@types/react-dom==19.1.9
+@vitejs/plugin-react==4.7.0
+typescript==5.9.2
+vite==5.4.10
+
+## Update Status:
+# ✅ React 19.1.0 (UPDATED from 18.3.1)
+# ⚠️ Vite 5.4.10 (Still needs update to 4.5)
+# ✅ TypeScript 5.9.2 (Close to latest 5.5)
+# ✅ @types packages are up to date
+# ✅ Removed @vitejs/plugin-react-swc (no longer needed)
+
+## React 19 New Features:
+# - useEvent, useOptimistic, useActionState hooks
+# - React Compiler for automatic optimization
+# - Improved performance and developer experience
