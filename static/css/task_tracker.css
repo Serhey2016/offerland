@@ -1018,7 +1018,7 @@
     background: #fff;
     border-radius: 8px;
     margin: 20px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
 }
 
 /* Ensure Agenda keeps original styling */
@@ -2161,6 +2161,106 @@ thead.fc-head {
     .fc-event {
         font-size: 0.75rem !important;
         padding: 4px 8px !important;
+    }
+}
+
+/* Subcategory Display Styles */
+.task_tracker_subcategory_display {
+    display: none;
+    width: 100%;
+    padding: 20px 0;
+    margin: 0 0 20px 0;
+    background: transparent;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.task_tracker_subcategory_display.show {
+    display: flex;
+}
+
+.task_tracker_subcategory_items {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.task_tracker_subcategory_item {
+    padding: 8px;
+    border-radius: 15px;
+    font-family: 'League Spartan', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #282D3B;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.task_tracker_subcategory_item:hover {
+    background: #282D3B;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 45, 59, 0.2);
+}
+
+.task_tracker_subcategory_item.active {
+    background: #DC7E7E;
+    color: white;
+    border-color: #DC7E7E;
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(220, 126, 126, 0.3);
+}
+
+.task_tracker_subcategory_item:active {
+    transform: scale(0.9);
+    transition: transform 0.1s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments for subcategory display */
+@media (max-width: 768px) {
+    .task_tracker_subcategory_display {
+        padding: 15px 0;
+        margin: 0 0 15px 0;
+    }
+    
+    .task_tracker_subcategory_items {
+        gap: 15px;
+    }
+    
+    .task_tracker_subcategory_item {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .task_tracker_subcategory_display {
+        padding: 10px 0;
+        margin: 0 0 10px 0;
+    }
+    
+    .task_tracker_subcategory_items {
+        gap: 10px;
+    }
+    
+    .task_tracker_subcategory_item {
+        padding: 8px 16px;
+        font-size: 0.85rem;
     }
 }
 

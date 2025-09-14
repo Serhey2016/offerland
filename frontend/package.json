@@ -15,8 +15,8 @@
     "@fullcalendar/list": "6.1.15",
     "@fullcalendar/timegrid": "6.1.15",
     "interactjs": "1.10.27",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@types/react": "^19.1.13",

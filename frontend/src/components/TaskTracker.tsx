@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react'
-import { Category, Subcategory, CategoryChangeEventDetail, SubmenuItemClickEventDetail, HeaderConfig } from '../types'
 
-// Import all view components - TEMPORARILY DISABLED due to Vite TSX errors
-// import AgendaView from './views/AgendaView'
-// import TouchpointView from './views/TouchpointView'
-// import ContactsView from './views/ContactsView'
-// import FavoritesView from './views/FavoritesView'
-// import OrdersView from './views/OrdersView'
-// import SubscriptionsView from './views/SubscriptionsView'
-// import PublishedView from './views/PublishedView'
-// import InboxView from './views/InboxView'
-// import WaitingView from './views/WaitingView'
-// import SomedayView from './views/SomedayView'
-// import ProjectsView from './views/ProjectsView'
-// import LockbookView from './views/LockbookView'
-// import LockbookProjectsView from './views/LockbookProjectsView'
-// import LockbookTasksView from './views/LockbookTasksView'
-// import ArchiveView from './views/ArchiveView'
-// import ArchiveProjectsView from './views/ArchiveProjectsView'
-// import ArchiveTasksView from './views/ArchiveTasksView'
+// @refresh reset
+// JSX preamble for Vite plugin detection
+const JSX_PREAMBLE = <div></div>
+
+// Types defined inline to avoid import issues
+type Category = 'Agenda' | 'Touchpoint' | 'Inbox' | 'Waiting' | 'Someday' | 'Projects' | 'Lockbook (Done)' | 'Archive'
+type Subcategory = 'Contacts' | 'Favorites' | 'Orders' | 'Subscriptions' | 'Published' | 'Lockbook_Projects' | 'Lockbook_Tasks' | 'Archive_projects' | 'Archive_Tasks'
+
+interface CategoryChangeEventDetail {
+  category: Category
+}
+
+interface SubmenuItemClickEventDetail {
+  category: Category
+  subcategory: Subcategory
+}
+
+interface HeaderConfig {
+  title: string
+  subtitle?: string
+  showBackButton?: boolean
+}
 
 // Category constants
 const CATEGORIES = {
@@ -69,16 +72,19 @@ const headerConfig: Partial<Record<Category, HeaderConfig>> = {
 }
 
 const TaskTracker = () => {
+  // Simple JSX to help Vite plugin detect React - must be at the top
+  if (false) return <div>Loading...</div>
+  
   const [selectedCategory, setSelectedCategory] = useState<Category>(CATEGORIES.AGENDA)
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('')
   const [isUpdating, setIsUpdating] = useState(false)
 
   // Debug logging
-  console.log('🔄 TaskTracker: Component rendered', {
-    selectedCategory,
-    selectedSubcategory,
-    isUpdating
-  })
+  // console.log('🔄 TaskTracker: Component rendered', {
+  //   selectedCategory,
+  //   selectedSubcategory,
+  //   isUpdating
+  // })
 
   // Helper function to update menu states
   const updateMenuStates = (category: Category, subcategory: Subcategory): void => {
@@ -86,18 +92,29 @@ const TaskTracker = () => {
     document.querySelectorAll('.task_tracker_menu_item').forEach(item => {
       item.classList.remove('active')
       const menuText = item.querySelector('.task_tracker_menu_item_text')
-      if (menuText && menuText.textContent.trim() === category) {
+      if (menuText && menuText.textContent?.trim() === category) {
         item.classList.add('active')
       }
     })
 
-    // Update submenu items
+    // Update submenu items in left sidebar
     document.querySelectorAll('.task_tracker_submenu_item').forEach(item => {
       item.classList.remove('active')
       if (item.getAttribute('data-subcategory') === subcategory) {
         item.classList.add('active')
       }
     })
+
+    // Update subcategory items in center display
+    const subcategoryDisplay = document.getElementById('subcategory-display')
+    if (subcategoryDisplay) {
+      subcategoryDisplay.querySelectorAll('.task_tracker_subcategory_item').forEach(item => {
+        item.classList.remove('active')
+        if (item.getAttribute('data-subcategory') === subcategory) {
+          item.classList.add('active')
+        }
+      })
+    }
   }
 
   // Helper function to toggle submenus
@@ -118,6 +135,8 @@ const TaskTracker = () => {
       'Touchpoint': 'touchpoint-submenu',
       'Inbox': 'inbox-submenu',
       'Waiting': 'waiting-submenu',
+      'Someday': '',
+      'Projects': '',
       'Lockbook (Done)': 'lockbook-submenu',
       'Archive': 'archive-submenu'
     }
@@ -139,15 +158,88 @@ const TaskTracker = () => {
       document.querySelectorAll('.task_tracker_menu_item').forEach(item => {
         item.classList.remove('active')
         const menuText = item.querySelector('.task_tracker_menu_item_text')
-        if (menuText && menuText.textContent.trim() === category) {
+        if (menuText && menuText.textContent?.trim() === category) {
           item.classList.add('active')
         }
       })
   }
 
-  // Helper function to update subcategories
-  const updateSubcategories = (): void => {
-    // This function can be expanded if needed for subcategory updates
+  // Helper function to update subcategory display in center
+  const updateSubcategoryDisplay = (category: Category): void => {
+    const subcategoryDisplay = document.getElementById('subcategory-display')
+    if (!subcategoryDisplay) return
+
+    // Find the submenu for the selected category in the left sidebar
+    const submenuMap: Record<Category, string> = {
+      'Agenda': 'agenda-submenu',
+      'Touchpoint': 'touchpoint-submenu',
+      'Inbox': 'inbox-submenu',
+      'Waiting': 'waiting-submenu',
+      'Someday': '',
+      'Projects': '',
+      'Lockbook (Done)': 'lockbook-submenu',
+      'Archive': 'archive-submenu'
+    }
+
+    const submenuId = submenuMap[category]
+    const submenu = submenuId ? document.getElementById(submenuId) : null
+    
+    if (!submenu) {
+      // Hide subcategory display if no submenu found
+      subcategoryDisplay.classList.remove('show')
+      subcategoryDisplay.innerHTML = ''
+      return
+    }
+
+    // Get subcategory items from the left sidebar submenu
+    const submenuItems = submenu.querySelectorAll('.task_tracker_submenu_item')
+    
+    if (submenuItems.length === 0) {
+      // Hide subcategory display if no subcategories
+      subcategoryDisplay.classList.remove('show')
+      subcategoryDisplay.innerHTML = ''
+    } else {
+      // Show subcategory display with subcategories from left menu
+      subcategoryDisplay.classList.add('show')
+      subcategoryDisplay.innerHTML = `
+        <div class="task_tracker_subcategory_items">
+          ${Array.from(submenuItems).map(item => {
+            const subcategory = item.getAttribute('data-subcategory') || ''
+            const text = item.textContent || ''
+            return `<div class="task_tracker_subcategory_item" data-subcategory="${subcategory}">${text}</div>`
+          }).join('')}
+        </div>
+      `
+
+      // Add click handlers for subcategory items
+      subcategoryDisplay.querySelectorAll('.task_tracker_subcategory_item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          const target = e.target as HTMLElement
+          const subcategory = target.getAttribute('data-subcategory') as Subcategory
+          
+          // Remove active class from all subcategory items in both displays
+          subcategoryDisplay.querySelectorAll('.task_tracker_subcategory_item').forEach(el => {
+            el.classList.remove('active')
+          })
+          submenu.querySelectorAll('.task_tracker_submenu_item').forEach(el => {
+            el.classList.remove('active')
+          })
+          
+          // Add active class to clicked item in both displays
+          target.classList.add('active')
+          const correspondingLeftItem = submenu.querySelector(`[data-subcategory="${subcategory}"]`)
+          if (correspondingLeftItem) {
+            correspondingLeftItem.classList.add('active')
+          }
+          
+          // Dispatch submenu item click event
+          const customEvent = new CustomEvent('submenuItemClick', {
+            detail: { category: category, subcategory: subcategory }
+          })
+          window.dispatchEvent(customEvent)
+        })
+      })
+    }
   }
 
   // Update greeting section based on category
@@ -201,6 +293,7 @@ const TaskTracker = () => {
   const handleExpandableMenuClick = (event: CustomEvent<CategoryChangeEventDetail>): void => {
     const category = event.detail.category
     console.log('🎯 TaskTracker: Expandable menu clicked', { category, isUpdating })
+    console.log('📡 TaskTracker: Event received:', event)
     
     // Prevent multiple simultaneous updates
     if (isUpdating) {
@@ -220,6 +313,7 @@ const TaskTracker = () => {
       // Update UI
       updateActiveMenuItems(category)
       toggleSubmenus(category)
+      updateSubcategoryDisplay(category)
       
       console.log('✅ TaskTracker: State updated successfully')
       
@@ -229,9 +323,10 @@ const TaskTracker = () => {
       })
       window.dispatchEvent(customEvent)
 
-      // Update subcategories
+      // Update greeting section
+      updateGreetingSection(category)
+      
       setTimeout(() => {
-        updateSubcategories()
         setIsUpdating(false)
       }, 100)
       
@@ -257,6 +352,7 @@ const TaskTracker = () => {
       try {
         setSelectedCategory(category)
         setSelectedSubcategory(subcategory)
+        updateSubcategoryDisplay(category)
         setIsUpdating(false)
       } catch (error) {
         console.error('Error in submenu item click:', error)
@@ -281,10 +377,11 @@ const TaskTracker = () => {
       setSelectedSubcategory('')
       
       // Update active states in task tracker menu
-      updateMenuStates(category, '')
+      updateMenuStates(category, '' as Subcategory)
       
       // Handle submenu toggle for expandable categories
       toggleSubmenus(category)
+      updateSubcategoryDisplay(category)
 
       // Update greeting section
       updateGreetingSection(category)
@@ -298,24 +395,6 @@ const TaskTracker = () => {
       setIsUpdating(false)
     }
   }
-
-  // Track state changes for menu updates
-  useEffect(() => {
-    if (selectedCategory) {
-      updateMenuStates(selectedCategory, selectedSubcategory)
-    }
-  }, [selectedCategory, selectedSubcategory])
-
-  // Safety timeout to reset updating state
-  useEffect(() => {
-    if (isUpdating) {
-      const timeout = setTimeout(() => {
-        setIsUpdating(false)
-      }, 2000) // 2 second safety timeout
-      
-      return () => clearTimeout(timeout)
-    }
-  }, [isUpdating])
 
   // Handle direct menu clicks (for non-expandable categories)
   const handleDirectMenuClick = (event: Event): void => {
@@ -349,6 +428,7 @@ const TaskTracker = () => {
             // Update UI
             updateActiveMenuItems(category)
             toggleSubmenus(category)
+            updateSubcategoryDisplay(category)
             
             // Dispatch event to sync with nav menu
             const customEvent = new CustomEvent('taskTrackerCategoryChange', {
@@ -372,28 +452,15 @@ const TaskTracker = () => {
   // Initialize and manage all event listeners
   useEffect(() => {
     console.log('🚀 TaskTracker: Initializing event listeners')
-    
-    // Проверяем, что DOM элементы существуют
-    const expandableButtons = document.querySelectorAll('.task_tracker_menu_item.expandable')
-    console.log('🔍 TaskTracker: Found expandable buttons in React', expandableButtons.length)
+    console.log('🔍 TaskTracker: Current state:', { selectedCategory, selectedSubcategory, isUpdating })
     
     // Add all event listeners
-    window.addEventListener('expandableMenuClick', handleExpandableMenuClick)
-    window.addEventListener('submenuItemClick', handleSubmenuItemClick)
-    window.addEventListener('navMenuCategoryChange', handleNavMenuChange)
+    window.addEventListener('expandableMenuClick', handleExpandableMenuClick as EventListener)
+    window.addEventListener('submenuItemClick', handleSubmenuItemClick as EventListener)
+    window.addEventListener('navMenuCategoryChange', handleNavMenuChange as EventListener)
     document.addEventListener('click', handleDirectMenuClick)
     
     console.log('✅ TaskTracker: Event listeners added')
-    
-    // Тестируем отправку события
-    setTimeout(() => {
-      console.log('🧪 TaskTracker: Testing event system...')
-      const testEvent = new CustomEvent('expandableMenuClick', {
-        detail: { category: 'Touchpoint' }
-      })
-      console.log('📡 TaskTracker: Dispatching test event', testEvent)
-      window.dispatchEvent(testEvent)
-    }, 500)
     
     // Initialize task tracker menu
     const taskTrackerMenuItems = document.querySelectorAll('.task_tracker_menu_item')
@@ -414,14 +481,35 @@ const TaskTracker = () => {
       agendaButton.classList.add('expanded')
     }
 
+    // Initialize subcategory display for default category
+    updateSubcategoryDisplay(selectedCategory)
+
     return () => {
       // Cleanup all event listeners
-      window.removeEventListener('expandableMenuClick', handleExpandableMenuClick)
-      window.removeEventListener('submenuItemClick', handleSubmenuItemClick)
-      window.removeEventListener('navMenuCategoryChange', handleNavMenuChange)
+      window.removeEventListener('expandableMenuClick', handleExpandableMenuClick as EventListener)
+      window.removeEventListener('submenuItemClick', handleSubmenuItemClick as EventListener)
+      window.removeEventListener('navMenuCategoryChange', handleNavMenuChange as EventListener)
       document.removeEventListener('click', handleDirectMenuClick)
     }
   }, [])
+
+  // Track state changes for menu updates
+  useEffect(() => {
+    if (selectedCategory) {
+      updateMenuStates(selectedCategory, selectedSubcategory)
+    }
+  }, [selectedCategory, selectedSubcategory])
+
+  // Safety timeout to reset updating state
+  useEffect(() => {
+    if (isUpdating) {
+      const timeout = setTimeout(() => {
+        setIsUpdating(false)
+      }, 2000) // 2 second safety timeout
+      
+      return () => clearTimeout(timeout)
+    }
+  }, [isUpdating])
 
   const renderCalendarContent = (): React.ReactElement => {
     // Handle subcategory views first
