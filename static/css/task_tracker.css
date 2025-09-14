@@ -1525,7 +1525,7 @@ thead.fc-head {
 }
 
 .fc-event:hover {
-    background: #1a1d28 !important;
+    background: #9E9AEBE !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
 }

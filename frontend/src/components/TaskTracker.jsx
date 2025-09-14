@@ -4,12 +4,20 @@ import React, { useState, useEffect } from 'react'
 import AgendaView from './views/AgendaView'
 import TouchpointView from './views/TouchpointView'
 import ContactsView from './views/ContactsView'
+import FavoritesView from './views/FavoritesView'
+import OrdersView from './views/OrdersView'
+import SubscriptionsView from './views/SubscriptionsView'
+import PublishedView from './views/PublishedView'
 import InboxView from './views/InboxView'
 import WaitingView from './views/WaitingView'
 import SomedayView from './views/SomedayView'
 import ProjectsView from './views/ProjectsView'
 import LockbookView from './views/LockbookView'
+import LockbookProjectsView from './views/LockbookProjectsView'
+import LockbookTasksView from './views/LockbookTasksView'
 import ArchiveView from './views/ArchiveView'
+import ArchiveProjectsView from './views/ArchiveProjectsView'
+import ArchiveTasksView from './views/ArchiveTasksView'
 
 // Category constants
 const CATEGORIES = {
@@ -364,8 +372,33 @@ const TaskTracker = () => {
 
   const renderCalendarContent = () => {
     // Handle subcategory views first
-    if (selectedSubcategory === 'Contacts' && selectedCategory === CATEGORIES.TOUCHPOINT) {
-      return <ContactsView />
+    if (selectedSubcategory && selectedCategory) {
+      // Touchpoint subcategories
+      if (selectedCategory === CATEGORIES.TOUCHPOINT) {
+        if (selectedSubcategory === 'Contacts') return <ContactsView />
+        if (selectedSubcategory === 'Favorites') return <FavoritesView />
+        if (selectedSubcategory === 'Orders') return <OrdersView />
+        if (selectedSubcategory === 'Subscriptions') return <SubscriptionsView />
+        if (selectedSubcategory === 'Published') return <PublishedView />
+      }
+      
+      // Waiting subcategories
+      if (selectedCategory === CATEGORIES.WAITING) {
+        if (selectedSubcategory === 'Orders') return <OrdersView />
+        if (selectedSubcategory === 'Subscriptions') return <SubscriptionsView />
+      }
+      
+      // Lockbook subcategories
+      if (selectedCategory === CATEGORIES.LOCKBOOK) {
+        if (selectedSubcategory === 'Lockbook_Projects') return <LockbookProjectsView />
+        if (selectedSubcategory === 'Lockbook_Tasks') return <LockbookTasksView />
+      }
+      
+      // Archive subcategories
+      if (selectedCategory === CATEGORIES.ARCHIVE) {
+        if (selectedSubcategory === 'Archive_projects') return <ArchiveProjectsView />
+        if (selectedSubcategory === 'Archive_Tasks') return <ArchiveTasksView />
+      }
     }
     
     const viewComponents = {
