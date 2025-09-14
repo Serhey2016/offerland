@@ -89,47 +89,24 @@ const TaskTracker = () => {
   // Helper function to update menu states
   const updateMenuStates = (category: Category, subcategory: Subcategory): void => {
     // Update main menu items
-    document.querySelectorAll('.task_tracker_menu_item').forEach(item => {
-      item.classList.remove('active')
-      const menuText = item.querySelector('.task_tracker_menu_item_text')
-      if (menuText && menuText.textContent?.trim() === category) {
-        item.classList.add('active')
-      }
-    })
+    updateActiveMenuItems(category)
 
     // Update submenu items in left sidebar
     document.querySelectorAll('.task_tracker_submenu_item').forEach(item => {
-      item.classList.remove('active')
-      if (item.getAttribute('data-subcategory') === subcategory) {
-        item.classList.add('active')
-      }
+      const isActive = item.getAttribute('data-subcategory') === subcategory
+      item.classList.toggle('active', isActive)
     })
 
     // Update subcategory items in center display
     const subcategoryDisplay = document.getElementById('subcategory-display')
-    if (subcategoryDisplay) {
-      subcategoryDisplay.querySelectorAll('.task_tracker_subcategory_item').forEach(item => {
-        item.classList.remove('active')
-        if (item.getAttribute('data-subcategory') === subcategory) {
-          item.classList.add('active')
-        }
-      })
-    }
+    subcategoryDisplay?.querySelectorAll('.task_tracker_subcategory_item').forEach(item => {
+      const isActive = item.getAttribute('data-subcategory') === subcategory
+      item.classList.toggle('active', isActive)
+    })
   }
 
   // Helper function to toggle submenus
   const toggleSubmenus = (category: Category): void => {
-    // Hide all submenus
-    document.querySelectorAll('.task_tracker_submenu').forEach(submenu => {
-      submenu.classList.remove('show')
-    })
-    
-    // Remove expanded class from all expandable buttons
-    document.querySelectorAll('.task_tracker_menu_item.expandable').forEach(button => {
-      button.classList.remove('expanded')
-    })
-    
-    // Show submenu for selected category if it's expandable
     const submenuMap: Record<Category, string> = {
       'Agenda': 'agenda-submenu',
       'Touchpoint': 'touchpoint-submenu',
@@ -141,27 +118,27 @@ const TaskTracker = () => {
       'Archive': 'archive-submenu'
     }
     
+    // Hide all submenus and remove expanded state
+    document.querySelectorAll('.task_tracker_submenu').forEach(submenu => submenu.classList.remove('show'))
+    document.querySelectorAll('.task_tracker_menu_item.expandable').forEach(button => button.classList.remove('expanded'))
+    
+    // Show submenu for selected category if it exists
     const submenuId = submenuMap[category]
     if (submenuId) {
       const submenu = document.getElementById(submenuId)
       const button = document.querySelector(`[data-category="${category}"]`)
-      
-      if (submenu && button) {
-        submenu.classList.add('show')
-        button.classList.add('expanded')
-      }
+      submenu?.classList.add('show')
+      button?.classList.add('expanded')
     }
   }
 
   // Helper function to update active menu items
   const updateActiveMenuItems = (category: Category): void => {
-      document.querySelectorAll('.task_tracker_menu_item').forEach(item => {
-        item.classList.remove('active')
-        const menuText = item.querySelector('.task_tracker_menu_item_text')
-        if (menuText && menuText.textContent?.trim() === category) {
-          item.classList.add('active')
-        }
-      })
+    document.querySelectorAll('.task_tracker_menu_item').forEach(item => {
+      const menuText = item.querySelector('.task_tracker_menu_item_text')
+      const isActive = menuText?.textContent?.trim() === category
+      item.classList.toggle('active', isActive)
+    })
   }
 
   // Helper function to update subcategory display in center
@@ -169,7 +146,6 @@ const TaskTracker = () => {
     const subcategoryDisplay = document.getElementById('subcategory-display')
     if (!subcategoryDisplay) return
 
-    // Find the submenu for the selected category in the left sidebar
     const submenuMap: Record<Category, string> = {
       'Agenda': 'agenda-submenu',
       'Touchpoint': 'touchpoint-submenu',
@@ -181,65 +157,45 @@ const TaskTracker = () => {
       'Archive': 'archive-submenu'
     }
 
-    const submenuId = submenuMap[category]
-    const submenu = submenuId ? document.getElementById(submenuId) : null
+    const submenu = submenuMap[category] ? document.getElementById(submenuMap[category]) : null
+    const submenuItems = submenu?.querySelectorAll('.task_tracker_submenu_item')
     
-    if (!submenu) {
-      // Hide subcategory display if no submenu found
+    if (!submenuItems || submenuItems.length === 0) {
       subcategoryDisplay.classList.remove('show')
       subcategoryDisplay.innerHTML = ''
       return
     }
 
-    // Get subcategory items from the left sidebar submenu
-    const submenuItems = submenu.querySelectorAll('.task_tracker_submenu_item')
-    
-    if (submenuItems.length === 0) {
-      // Hide subcategory display if no subcategories
-      subcategoryDisplay.classList.remove('show')
-      subcategoryDisplay.innerHTML = ''
-    } else {
-      // Show subcategory display with subcategories from left menu
-      subcategoryDisplay.classList.add('show')
-      subcategoryDisplay.innerHTML = `
-        <div class="task_tracker_subcategory_items">
-          ${Array.from(submenuItems).map(item => {
-            const subcategory = item.getAttribute('data-subcategory') || ''
-            const text = item.textContent || ''
-            return `<div class="task_tracker_subcategory_item" data-subcategory="${subcategory}">${text}</div>`
-          }).join('')}
-        </div>
-      `
+    // Generate HTML for subcategory items
+    const itemsHTML = Array.from(submenuItems).map(item => {
+      const subcategory = item.getAttribute('data-subcategory') || ''
+      const text = item.textContent || ''
+      return `<div class="task_tracker_subcategory_item" data-subcategory="${subcategory}">${text}</div>`
+    }).join('')
 
-      // Add click handlers for subcategory items
-      subcategoryDisplay.querySelectorAll('.task_tracker_subcategory_item').forEach(item => {
-        item.addEventListener('click', (e) => {
-          const target = e.target as HTMLElement
-          const subcategory = target.getAttribute('data-subcategory') as Subcategory
-          
-          // Remove active class from all subcategory items in both displays
-          subcategoryDisplay.querySelectorAll('.task_tracker_subcategory_item').forEach(el => {
-            el.classList.remove('active')
-          })
-          submenu.querySelectorAll('.task_tracker_submenu_item').forEach(el => {
-            el.classList.remove('active')
-          })
-          
-          // Add active class to clicked item in both displays
-          target.classList.add('active')
-          const correspondingLeftItem = submenu.querySelector(`[data-subcategory="${subcategory}"]`)
-          if (correspondingLeftItem) {
-            correspondingLeftItem.classList.add('active')
-          }
-          
-          // Dispatch submenu item click event
-          const customEvent = new CustomEvent('submenuItemClick', {
-            detail: { category: category, subcategory: subcategory }
-          })
-          window.dispatchEvent(customEvent)
-        })
-      })
+    subcategoryDisplay.classList.add('show')
+    subcategoryDisplay.innerHTML = `<div class="task_tracker_subcategory_items">${itemsHTML}</div>`
+
+    // Add click handlers for subcategory items
+    const handleSubcategoryClick = (e: Event) => {
+      const target = e.target as HTMLElement
+      const subcategory = target.getAttribute('data-subcategory') as Subcategory
+      
+      // Update active states in both displays
+      subcategoryDisplay.querySelectorAll('.task_tracker_subcategory_item').forEach(el => 
+        el.classList.toggle('active', el === target))
+      submenu?.querySelectorAll('.task_tracker_submenu_item').forEach(el => 
+        el.classList.toggle('active', el.getAttribute('data-subcategory') === subcategory))
+      
+      // Dispatch event
+      window.dispatchEvent(new CustomEvent('submenuItemClick', {
+        detail: { category, subcategory }
+      }))
     }
+
+    subcategoryDisplay.querySelectorAll('.task_tracker_subcategory_item').forEach(item => {
+      item.addEventListener('click', handleSubcategoryClick)
+    })
   }
 
   // Update greeting section based on category
@@ -678,7 +634,19 @@ const TaskTracker = () => {
   }
 
   return React.createElement(React.Fragment, null,
-    React.createElement('div', { key: `${selectedCategory}-${selectedSubcategory}` },
+    React.createElement('div', { 
+      key: `${selectedCategory}-${selectedSubcategory}`,
+      style: { 
+        padding: '20px', 
+        backgroundColor: '#f0f0f0', 
+        border: '2px solid #007bff',
+        borderRadius: '8px',
+        margin: '10px'
+      }
+    },
+      React.createElement('h2', { style: { color: '#007bff', margin: '0 0 10px 0' } }, 'React TaskTracker Loaded!'),
+      React.createElement('p', { style: { margin: '5px 0' } }, `Selected Category: ${selectedCategory}`),
+      React.createElement('p', { style: { margin: '5px 0' } }, `Selected Subcategory: ${selectedSubcategory || 'None'}`),
       renderCalendarContent()
     )
   )
