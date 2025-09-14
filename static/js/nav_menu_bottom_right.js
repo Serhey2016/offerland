@@ -1,11 +1,11 @@
 const categories = [
     {
         name: 'Touchpoint',
-        subcategories: ['All', 'Favorites', 'Orders', 'Subscriptions', 'Published', 'Archive' ]
+        subcategories: ['All', 'Contacts' ]
     },
     {
         name: 'Inbox',
-        subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
+        subcategories: ['All', 'Favorites', 'Projects', 'Tasks', 'Time slots']
     },
     {
         name: 'Agenda',
@@ -13,7 +13,7 @@ const categories = [
     },
     {
         name: 'Waiting',
-        subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
+        subcategories: ['All', 'Published', 'Projects', 'Tasks', 'Time slots']
     },
     {
         name: 'Someday',

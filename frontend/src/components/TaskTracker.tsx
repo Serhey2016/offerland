@@ -116,6 +116,7 @@ const TaskTracker = () => {
     const submenuMap: Record<Category, string> = {
       'Agenda': 'agenda-submenu',
       'Touchpoint': 'touchpoint-submenu',
+      'Inbox': 'inbox-submenu',
       'Waiting': 'waiting-submenu',
       'Lockbook (Done)': 'lockbook-submenu',
       'Archive': 'archive-submenu'
@@ -329,7 +330,7 @@ const TaskTracker = () => {
         console.log('📝 TaskTracker: Menu text found', { category })
         
         // Only handle non-expandable categories
-        const nonExpandableCategories: Category[] = ['Inbox', 'Someday', 'Projects']
+        const nonExpandableCategories: Category[] = ['Someday', 'Projects']
         if (category && nonExpandableCategories.includes(category)) {
           event.preventDefault()
           event.stopPropagation()
@@ -435,14 +436,10 @@ const TaskTracker = () => {
             )
           )
         )
-        if (selectedSubcategory === 'Favorites') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Favorites View (Loading...)'),
-              React.createElement('p', null, 'Favorites functionality will be implemented here.')
-            )
-          )
-        )
+      }
+      
+      // Waiting subcategories
+      if (selectedCategory === CATEGORIES.WAITING) {
         if (selectedSubcategory === 'Orders') return React.createElement('div', { className: 'task_tracker_calendar_container' },
           React.createElement('div', { className: 'touchpoint-container' },
             React.createElement('div', { className: 'touchpoint-content' },
@@ -469,21 +466,13 @@ const TaskTracker = () => {
         )
       }
       
-      // Waiting subcategories
-      if (selectedCategory === CATEGORIES.WAITING) {
-        if (selectedSubcategory === 'Orders') return React.createElement('div', { className: 'task_tracker_calendar_container' },
+      // Inbox subcategories
+      if (selectedCategory === CATEGORIES.INBOX) {
+        if (selectedSubcategory === 'Favorites') return React.createElement('div', { className: 'task_tracker_calendar_container' },
           React.createElement('div', { className: 'touchpoint-container' },
             React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Orders View (Loading...)'),
-              React.createElement('p', null, 'Orders functionality will be implemented here.')
-            )
-          )
-        )
-        if (selectedSubcategory === 'Subscriptions') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Subscriptions View (Loading...)'),
-              React.createElement('p', null, 'Subscriptions functionality will be implemented here.')
+              React.createElement('h3', null, 'Favorites View (Loading...)'),
+              React.createElement('p', null, 'Favorites functionality will be implemented here.')
             )
           )
         )

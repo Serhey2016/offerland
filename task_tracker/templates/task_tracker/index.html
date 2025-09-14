@@ -15,14 +15,10 @@
                 </button>
                 <div class="task_tracker_submenu" id="touchpoint-submenu">
                     <div class="task_tracker_submenu_item" data-subcategory="Contacts">Contacts</div>
-                    <div class="task_tracker_submenu_item" data-subcategory="Favorites">Favorites</div>
-                    <div class="task_tracker_submenu_item" data-subcategory="Orders">Orders</div>
-                    <div class="task_tracker_submenu_item" data-subcategory="Subscriptions">Subscriptions</div>
-                    <div class="task_tracker_submenu_item" data-subcategory="Published">Published</div>
                 </div>
             </div>
             <div class="task_tracker_menu_item_container">
-                <button class="task_tracker_menu_item" data-category="Inbox">
+                <button class="task_tracker_menu_item expandable" data-category="Inbox" data-target="inbox-submenu">
                     <span class="task_tracker_menu_item_text">Inbox</span>
                     <span class="task_tracker_menu_item_arrow">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,6 +26,9 @@
                         </svg>
                     </span>
                 </button>
+                <div class="task_tracker_submenu" id="inbox-submenu">
+                    <div class="task_tracker_submenu_item" data-subcategory="Favorites">Favorites</div>
+                </div>
             </div>
             <div class="task_tracker_menu_item_container">
                 <button class="task_tracker_menu_item expandable active" data-category="Agenda" data-target="agenda-submenu">
@@ -41,7 +40,6 @@
                     </span>
                 </button>
                 <div class="task_tracker_submenu" id="agenda-submenu">
-                    <div class="task_tracker_submenu_item" data-subcategory="Favorites">Favorites</div>
                 </div>
             </div>
             <div class="task_tracker_menu_item_container">
@@ -56,6 +54,7 @@
                 <div class="task_tracker_submenu" id="waiting-submenu">
                     <div class="task_tracker_submenu_item" data-subcategory="Orders">Orders</div>
                     <div class="task_tracker_submenu_item" data-subcategory="Subscriptions">Subscriptions</div>
+                    <div class="task_tracker_submenu_item" data-subcategory="Published">Published</div>
                 </div>
             </div>
             <div class="task_tracker_menu_item_container">
