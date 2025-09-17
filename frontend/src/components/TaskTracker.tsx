@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import TaskDesign from './TaskDesign'
+import AgendaView from './views/AgendaView'
 
 // @refresh reset
 // JSX preamble for Vite plugin detection
@@ -564,14 +566,7 @@ const TaskTracker = () => {
     }
     
     const viewComponents = {
-      [CATEGORIES.AGENDA]: React.createElement('div', { className: 'task_tracker_calendar_container' },
-        React.createElement('div', { className: 'touchpoint-container' },
-          React.createElement('div', { className: 'touchpoint-content' },
-            React.createElement('h3', null, 'Agenda View (Loading...)'),
-            React.createElement('p', null, 'Agenda functionality will be implemented here.')
-          )
-        )
-      ),
+      [CATEGORIES.AGENDA]: React.createElement(AgendaView),
       [CATEGORIES.TOUCHPOINT]: React.createElement('div', { className: 'task_tracker_calendar_container' },
         React.createElement('div', { className: 'touchpoint-container' },
           React.createElement('div', { className: 'touchpoint-content' },
@@ -583,8 +578,17 @@ const TaskTracker = () => {
       [CATEGORIES.INBOX]: React.createElement('div', { className: 'task_tracker_calendar_container' },
         React.createElement('div', { className: 'touchpoint-container' },
           React.createElement('div', { className: 'touchpoint-content' },
-            React.createElement('h3', null, 'Inbox View (Loading...)'),
-            React.createElement('p', null, 'Inbox functionality will be implemented here.')
+            React.createElement('h3', null, 'Inbox View'),
+            React.createElement(TaskDesign, {
+              title: 'Sample Task',
+              description: 'This is a sample task in the inbox',
+              timeRange: '2 hours',
+              category: 'Inbox',
+              priority: 'high',
+              dateAdded: 'Today',
+              onNotesClick: () => console.log('Notes clicked'),
+              onDropdownClick: () => console.log('Dropdown clicked')
+            })
           )
         )
       ),
@@ -633,22 +637,11 @@ const TaskTracker = () => {
     return viewComponents[selectedCategory] || viewComponents[CATEGORIES.AGENDA]
   }
 
-  return React.createElement(React.Fragment, null,
-    React.createElement('div', { 
-      key: `${selectedCategory}-${selectedSubcategory}`,
-      style: { 
-        padding: '20px', 
-        backgroundColor: '#f0f0f0', 
-        border: '2px solid #007bff',
-        borderRadius: '8px',
-        margin: '10px'
-      }
-    },
-      React.createElement('h2', { style: { color: '#007bff', margin: '0 0 10px 0' } }, 'React TaskTracker Loaded!'),
-      React.createElement('p', { style: { margin: '5px 0' } }, `Selected Category: ${selectedCategory}`),
-      React.createElement('p', { style: { margin: '5px 0' } }, `Selected Subcategory: ${selectedSubcategory || 'None'}`),
-      renderCalendarContent()
-    )
+  return React.createElement('div', { 
+    className: 'react-task-tracker',
+    key: `${selectedCategory}-${selectedSubcategory}`
+  },
+    renderCalendarContent()
   )
 }
 

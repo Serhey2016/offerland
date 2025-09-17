@@ -5,12 +5,9 @@
 react==19.1.0
 react-dom==19.1.0
 
-## FullCalendar Dependencies
-@fullcalendar/core==6.1.15
-@fullcalendar/daygrid==6.1.15
-@fullcalendar/interaction==6.1.15
-@fullcalendar/list==6.1.15
-@fullcalendar/timegrid==6.1.15
+## Calendar Dependencies
+react-big-calendar==1.19.4
+moment==2.30.1
 
 ## UI/Interaction Libraries
 interactjs==1.10.27

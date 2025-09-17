@@ -1,84 +1,90 @@
 import React from 'react'
+import InfiniteDailyCalendar from '../InfiniteDailyCalendar'
 // CSS styles moved to task_tracker.css
 
 const AgendaView: React.FC = () => {
   const sampleEvents = [
+    // Today's events
     {
       id: 'event1',
-      title: 'Sample Task 1',
-      time: '04:00 - 07:00',
-      backgroundColor: '#3B82F6',
+      title: 'Morning Workout',
+      start: new Date(2025, 0, 14, 6, 0), // January 14, 2025, 6:00 AM
+      end: new Date(2025, 0, 14, 7, 0),   // January 14, 2025, 7:00 AM
     },
     {
       id: 'event2', 
-      title: 'Sample Task 2',
-      time: '10:00 - 12:00',
-      backgroundColor: '#10B981',
+      title: 'Team Standup',
+      start: new Date(2025, 0, 14, 9, 0), // January 14, 2025, 9:00 AM
+      end: new Date(2025, 0, 14, 9, 30),   // January 14, 2025, 9:30 AM
     },
     {
       id: 'event3',
-      title: 'Sample Task 3', 
-      time: '14:00 - 16:00',
-      backgroundColor: '#F59E0B',
+      title: 'Project Planning', 
+      start: new Date(2025, 0, 14, 14, 0), // January 14, 2025, 2:00 PM
+      end: new Date(2025, 0, 14, 15, 30),   // January 14, 2025, 3:30 PM
+    },
+    {
+      id: 'event4',
+      title: 'Client Meeting',
+      start: new Date(2025, 0, 14, 16, 0), // January 14, 2025, 4:00 PM
+      end: new Date(2025, 0, 14, 17, 0), // January 14, 2025, 5:00 PM
+    },
+    // Tomorrow's events
+    {
+      id: 'event5',
+      title: 'Code Review',
+      start: new Date(2025, 0, 15, 10, 0), // January 15, 2025, 10:00 AM
+      end: new Date(2025, 0, 15, 11, 0), // January 15, 2025, 11:00 AM
+    },
+    {
+      id: 'event6',
+      title: 'Design Workshop',
+      start: new Date(2025, 0, 15, 14, 0), // January 15, 2025, 2:00 PM
+      end: new Date(2025, 0, 15, 16, 0), // January 15, 2025, 4:00 PM
+    },
+    // Day after tomorrow
+    {
+      id: 'event7',
+      title: 'Sprint Planning',
+      start: new Date(2025, 0, 16, 9, 0), // January 16, 2025, 9:00 AM
+      end: new Date(2025, 0, 16, 11, 0), // January 16, 2025, 11:00 AM
+    },
+    {
+      id: 'event8',
+      title: 'Product Demo',
+      start: new Date(2025, 0, 16, 15, 0), // January 16, 2025, 3:00 PM
+      end: new Date(2025, 0, 16, 16, 0), // January 16, 2025, 4:00 PM
     }
   ]
 
-  const timeSlots = Array.from({ length: 24 }, (_, i) => {
-    const hour = i.toString().padStart(2, '0')
-    return `${hour}:00`
-  })
+  const handleSelectEvent = (event: any) => {
+    console.log('Event selected:', event)
+    // You can add modal or detailed view here
+  }
+
+  const handleSelectSlot = (slotInfo: any) => {
+    console.log('Slot selected:', slotInfo)
+    // You can add new event creation here
+  }
+
+  const handleNavigate = (date: Date, view: string) => {
+    console.log('Calendar navigated:', { date, view })
+  }
 
   return React.createElement('div', { className: 'agenda-view-container' },
     React.createElement('div', { className: 'agenda-header' },
-      React.createElement('h2', null, 'Agenda View'),
-      React.createElement('p', null, 'Task list with time slots')
+      React.createElement('h2', null, 'Daily Agenda View'),
+      React.createElement('p', null, 'Infinite daily calendar with 24-hour timeline')
     ),
     
-    React.createElement('div', { className: 'time-schedule' },
-      timeSlots.map((time, index) => {
-        const event = sampleEvents.find(e => e.time.startsWith(time.split(':')[0]))
-        
-        return React.createElement('div', { 
-          key: index,
-          className: 'time-slot',
-          style: { 
-            borderBottom: '1px solid #e5e7eb',
-            padding: '10px',
-            display: 'flex',
-            alignItems: 'center'
-          }
-        },
-          React.createElement('div', { 
-            style: { 
-              minWidth: '60px',
-              fontWeight: 'bold',
-              color: '#6b7280'
-            }
-          }, time),
-          
-          event ? React.createElement('div', {
-            className: 'task-event',
-            style: {
-              backgroundColor: event.backgroundColor,
-              color: 'white',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              marginLeft: '10px',
-              flex: 1
-            }
-          },
-            React.createElement('div', { style: { fontWeight: 'bold' } }, event.title),
-            React.createElement('div', { style: { fontSize: '0.875rem', opacity: 0.9 } }, event.time)
-          ) : React.createElement('div', { 
-            style: { 
-              marginLeft: '10px',
-              color: '#9ca3af',
-              fontStyle: 'italic'
-            }
-          }, 'No tasks scheduled')
-        )
-      })
-    )
+    React.createElement(InfiniteDailyCalendar, {
+      events: sampleEvents,
+      onSelectEvent: handleSelectEvent,
+      onSelectSlot: handleSelectSlot,
+      onNavigate: handleNavigate,
+      height: 'auto',
+      daysToShow: 7
+    })
   )
 }
 

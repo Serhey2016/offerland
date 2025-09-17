@@ -184,7 +184,7 @@ ssh dev@192.168.0.226
   - `frontend/vite.config.js` (host 0.0.0.0, port 5173)
   - `frontend/index.html` — Calendar page
   - `frontend/matrix.html` — Eisenhower Matrix page
-  - `frontend/src/main.js` — FullCalendar (day/week/month/list) with DnD/time-blocking hooks
+  - `frontend/src/main.js` — React Big Calendar (day/week/month/agenda) with DnD/time-blocking hooks
   - `frontend/src/matrix.js` — Basic Eisenhower Matrix grid with DnD (interactjs)
 
 ### Python dependencies added (requirements.txt)
@@ -212,7 +212,7 @@ docker-compose up --build -d
 ### Notes
 - Frontend dev server listens on `0.0.0.0` and exposes ports 5173/3000/8080. Primary dev port is 5173.
 - If you need to install extra JS libs inside the running container, use “Allow pasting” in terminal and then paste the needed npm command, e.g.:
-  - `npm i @fullcalendar/core @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/interaction @fullcalendar/list interactjs`
+  - `npm i react-big-calendar moment interactjs`
 - Next steps (optional): add Redis service, wire `channels` and ASGI (Daphne) for realtime, and add Celery worker/beat for reminders.
 
 ---
@@ -221,7 +221,7 @@ docker-compose up --build -d
 
 You are continuing work on the Offerland Django project running in Docker. Keep all responses in English. Repository specifics:
 - Single `docker-compose.yml` orchestrates: `web` (Django 5.1), `db` (Postgres 17), `frontend` (Node 20, Vite dev server). Backend serves at `http://<host-ip>:8000`, frontend at `http://<host-ip>:5173`.
-- Frontend scaffold exists under `frontend/` with FullCalendar (day/week/month/list) and an Eisenhower Matrix page using interactjs. No test files should be added.
+- Frontend scaffold exists under `frontend/` with React Big Calendar (day/week/month/agenda) and an Eisenhower Matrix page using interactjs. No test files should be added.
 - Backend `requirements.txt` includes DRF, django-filter, django-cors-headers, python-dateutil, pendulum, django-recurrence, icalendar, channels, channels-redis, celery, django-celery-beat, django-celery-results, redis, django-taggit, drf-spectacular.
 - Do not close popups when clicking outside them. Do not add any test files. If something must be tested in JS, instruct the exact command to paste after “Allow pasting”.
 
