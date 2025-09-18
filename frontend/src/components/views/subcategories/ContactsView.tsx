@@ -1,16 +1,16 @@
 import React from 'react'
 
-const ProjectsView: React.FC = () => {
+const ContactsView: React.FC = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="touchpoint-container">
         <div className="touchpoint-content">
-          <h3>Projects View (Loading...)</h3>
-          <p>Projects functionality will be implemented here.</p>
+          <h3>Contacts View (Loading...)</h3>
+          <p>Contacts functionality will be implemented here.</p>
         </div>
       </div>
     </div>
   )
 }
 
-export default ProjectsView
+export default ContactsView

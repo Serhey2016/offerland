@@ -9,8 +9,12 @@
     "preview": "vite preview --host 0.0.0.0 --port 5173"
   },
   "dependencies": {
+    "chart.js": "^4.4.0",
     "interactjs": "1.10.27",
     "moment": "^2.30.1",
+    "primereact": "^10.0.0",
+    "primeicons": "^7.0.0",
+    "quill": "^1.3.7",
     "react": "^19.1.0",
     "react-big-calendar": "^1.19.4",
     "react-dom": "^19.1.0"

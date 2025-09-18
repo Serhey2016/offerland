@@ -1,3 +1,14 @@
+/* CSS Variables for consistent colors */
+:root {
+    --primary-color: #282d3b;
+    --secondary-color: #6b7280;
+    --accent-color: #DC7E7E;
+    --hover-bg: rgba(0, 0, 0, 0.1);
+    --light-bg: #f8f9fa;
+    --border-color: #e5e7eb;
+    --text-muted: #9ca3af;
+}
+
 /* Mobile Browser Style Reset - Fix for white overlay issues */
 .task_tracker_sub_menu_filter_btn,
 .task_tracker_sub_menu_add_btn {
@@ -65,7 +76,7 @@
     font-family: 'League Spartan', sans-serif;
     font-size: 2.5rem;
     font-weight: 400;
-    color: #282D3B;
+    color: var(--primary-color);
     margin: 0;
     line-height: 1.2;
     display: flex;
@@ -76,12 +87,12 @@
 
 .task_tracker_greeting_time {
     font-weight: 400;
-    color: #282D3B;
+    color: var(--primary-color);
 }
 
 .task_tracker_greeting_name {
     font-weight: 700;
-    color: #282D3B;
+    color: var(--primary-color);
 }
 
 .task_tracker_greeting_subtitle {
@@ -189,7 +200,7 @@
 /* Navigation Buttons */
 .task_tracker_sub_menu_nav_btn {
     background-color: white;
-    color: #282D3B;
+    color: var(--primary-color);
     border: 2px solid #282D3B;
     border-radius: 50px;
     padding: 8px 20px;
@@ -206,7 +217,7 @@
 }
 
 .task_tracker_sub_menu_nav_btn:hover {
-    background-color: #f8f9fa;
+    background-color: var(--light-bg);
     cursor: pointer;
 }
 
@@ -376,7 +387,7 @@
 
 /* Active state for menu items */
 .task_tracker_menu_item.active {
-    background-color: #f8f9fa;
+    background-color: var(--light-bg);
     border-left: 3px solid #007bff;
     font-weight: 600;
 }
@@ -407,7 +418,7 @@
 }
 
 .task_tracker_agenda_submenu_item:hover {
-    background-color: #f8f9fa;
+    background-color: var(--light-bg);
 }
 
 .task_tracker_agenda_submenu_text {
@@ -504,12 +515,12 @@
 }
 
 .task_tracker_submenu_item:hover {
-    color: #282D3B;
-    background-color: #f8f9fa;
+    color: var(--primary-color);
+    background-color: var(--light-bg);
 }
 
 .task_tracker_submenu_item.active {
-    color: #282D3B;
+    color: var(--primary-color);
     background-color: #e9ecef;
     font-weight: 400;
     transform: scale(0.98);
@@ -562,7 +573,7 @@
     font-family: 'League Spartan', sans-serif;
     font-size: 1rem;
     font-weight: 700;
-    color: #282D3B;
+    color: var(--primary-color);
     cursor: pointer;
     transition: color 0.2s ease;
     padding: 8px 0;
@@ -574,7 +585,7 @@
 }
 
 .task_tracker_sub_cat_menu_item.active {
-    color: #282D3B;
+    color: var(--primary-color);
 }
 
 .task_tracker_sub_cat_menu_item.active::after {
@@ -696,7 +707,7 @@
 .task_tracker_separator_day_name {
     font-size: 1.1rem;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--secondary-color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -728,7 +739,7 @@
 .task_tracker_separator_month_name {
     font-size: 1.1rem;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--secondary-color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -749,7 +760,7 @@
     justify-content: center;
     font-size: 0.8rem;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--secondary-color);
     border-bottom: 1px solid #e5e7eb;
     position: relative;
 }
@@ -971,7 +982,7 @@
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    overflow: visible;
     margin: 20px 0;
 }
 
@@ -980,7 +991,7 @@
     width: 100%;
     background: #fff;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* Tasks Sides Separator
@@ -1026,7 +1037,7 @@
     width: 100%;
     background: #fff;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* Header styles removed - now handled dynamically in greeting section */
@@ -1062,16 +1073,7 @@
     transition: all 0.2s ease;
 }
 
-.touchpoint-item:hover,
-.task_tracker_task_design:hover,
-.waiting-item:hover,
-.someday-item:hover,
-.project-item:hover,
-.lockbook-item:hover,
-.archive-item:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-1px);
-}
+
 
 /* Task Content Styles for task_tracker_task_design */
 .task_tracker_task_design .task-content {
@@ -1099,7 +1101,7 @@
 .task_tracker_task_design .task-folder-icon {
     width: 20px;
     height: 20px;
-    color: #6b7280;
+    color: var(--secondary-color);
     flex-shrink: 0;
     transform: translateY(-4px);
 }
@@ -1108,7 +1110,7 @@
     font-family: 'League Spartan', sans-serif;
     font-size: 1rem;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--secondary-color);
     margin: 0 0 8px 0;
     line-height: 1.3;
 }
@@ -1142,36 +1144,21 @@
     transform: rotate(1deg);
 }
 
-/* Task Actions Dropdown Button */
-.task_tracker_dropdown_btn {
-    background: none;
-    border: none;
-    padding: 8px;
-    border-radius: 6px;
-    cursor: pointer;
+/* Task Actions Container */
+.task-actions,
+.contact-actions,
+.waiting-actions,
+.someday-actions,
+.project-actions,
+.archive-actions {
     display: flex;
+    gap: 8px;
     align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease;
-}
-
-.task_tracker_dropdown_btn:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.task_tracker_dots_icon {
-    width: 20px;
-    height: 20px;
-    color: #6b7280;
-    transition: color 0.2s ease;
-}
-
-.task_tracker_dropdown_btn:hover .task_tracker_dots_icon {
-    color: #282d3b;
+    position: relative;
 }
 
 /* Task Notes Button */
-.task_tracker_notes_btn {
+.task_tracker_notes_btn, .task_tracker_dropdown_btn {
     background: none;
     border: none;
     padding: 8px;
@@ -1184,20 +1171,38 @@
     margin-right: 4px;
 }
 
-.task_tracker_notes_btn:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
 .task_tracker_notes_icon {
     width: 26.542px;
     height: 17.695px;
-    color: #6b7280;
+    color: var(--secondary-color);
     transition: color 0.2s ease;
 }
 
-.task_tracker_notes_btn:hover .task_tracker_notes_icon {
-    color: #282d3b;
+/* Task Actions Dropdown Button */
+.task_tracker_dropdown_btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
 }
+
+.task_tracker_dropdown_btn svg {
+    transition: color 0.2s ease;
+    color: var(--secondary-color);
+}
+
+/* Hover Effects for Task Action Buttons */
+.task_tracker_notes_btn:hover,
+.task_tracker_dropdown_btn:hover {
+    background-color: var(--hover-bg) ;
+}
+
+
 
 /* Task Priority Styles */
 .task-priority {
@@ -1217,6 +1222,89 @@
 
 .task-priority.low {
     background: #10b981;
+}
+
+/* Dropdown Menu Container */
+.task_tracker_dropdown_container {
+    position: relative;
+    display: inline-block;
+  
+}
+
+/* Dropdown Menu */
+.task_tracker_dropdown_menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 999999;
+    min-width: 200px;
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    padding: 8px 0;
+}
+
+/* Left positioning (default) - dropdown right-aligned to button */
+.task_tracker_dropdown_menu.position-left {
+    right: 0;
+    left: auto;
+}
+
+/* Right positioning (when not enough space on left) - dropdown left-aligned to button */
+.task_tracker_dropdown_menu.position-right {
+    left: 0;
+    right: auto;
+}
+
+.task_tracker_dropdown_menu.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Dropdown Menu Items */
+.task_tracker_dropdown_item {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+    font-family: 'League Spartan', sans-serif;
+    font-size: 0.9rem;
+    color: #282d3b;
+    border-bottom: 1px solid #eee;
+}
+
+.task_tracker_dropdown_item:last-child {
+    border-bottom: none;
+}
+
+.task_tracker_dropdown_item:hover {
+    background-color: var(--light-bg);
+}
+
+/* Dropdown Icons */
+.task_tracker_dropdown_icon {
+    color: var(--secondary-color);
+    transition: color 0.2s ease;
+}
+
+.task_tracker_dropdown_arrow {
+    margin-left: auto;
+    color: var(--secondary-color);
+    transition: color 0.2s ease;
+}
+
+.task_tracker_dropdown_item:hover .task_tracker_dropdown_icon,
+.task_tracker_dropdown_item:hover .task_tracker_dropdown_arrow {
+    color: #282d3b;
 }
 
 /* Contact Info Styles */
@@ -1241,7 +1329,7 @@
 .task-info p,
 .archive-info p {
     margin: 0 0 5px 0;
-    color: #6b7280;
+    color: var(--secondary-color);
     font-size: 14px;
 }
 
@@ -1252,7 +1340,7 @@
 .completion-date,
 .archive-date {
     font-size: 12px;
-    color: #9ca3af;
+    color: var(--text-muted);
 }
 
 /* Project Progress Styles */
@@ -1276,20 +1364,10 @@
 
 .progress-text {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--secondary-color);
     font-weight: 500;
 }
 
-/* Task Actions */
-.task-actions,
-.contact-actions,
-.waiting-actions,
-.someday-actions,
-.project-actions,
-.archive-actions {
-    display: flex;
-    gap: 8px;
-}
 
 /* Completed Task Styles */
 .lockbook-item.completed {
@@ -1321,7 +1399,7 @@
 .task_tracker_submenu_item {
     padding: 12px 20px;
     cursor: pointer;
-    color: #6b7280;
+    color: var(--secondary-color);
     font-size: 14px;
     font-weight: 500;
     transition: all 0.2s ease;
@@ -1347,6 +1425,154 @@
 .task_tracker_submenu_item:active {
     transform: scale(0.95);
     transition: transform 0.1s ease;
+}
+
+/* Dropdown Submenu Styles for TaskDesign */
+.task_tracker_dropdown_item {
+    position: relative;
+}
+
+.task_tracker_dropdown_item .task_tracker_submenu {
+    position: absolute;
+    top: 0;
+    min-width: 180px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    margin: 0;
+    display: block !important;
+}
+
+/* Submenu positioning based on dropdown position */
+.task_tracker_dropdown_menu.position-left .task_tracker_dropdown_item .task_tracker_submenu {
+    left: 100%;
+    animation: slideInRight 0.2s ease-out;
+}
+
+.task_tracker_dropdown_menu.position-right .task_tracker_dropdown_item .task_tracker_submenu {
+    right: 100%;
+    left: auto;
+    animation: slideInLeft 0.2s ease-out;
+}
+
+/* Dynamic submenu positioning based on available space */
+.task_tracker_dropdown_item .task_tracker_submenu.submenu-left {
+    right: 100% !important;
+    left: auto !important;
+    animation: slideInLeft 0.2s ease-out !important;
+}
+
+.task_tracker_dropdown_item .task_tracker_submenu.submenu-right {
+    left: 100% !important;
+    right: auto !important;
+    animation: slideInRight 0.2s ease-out !important;
+}
+
+.task_tracker_dropdown_item .task_tracker_submenu_item {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+    transition: all 0.2s ease;
+    margin: 0;
+    border-radius: 0;
+}
+
+.task_tracker_dropdown_item .task_tracker_submenu_item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.task_tracker_dropdown_item .task_tracker_submenu_item:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.task_tracker_dropdown_item .task_tracker_submenu_item:hover {
+    background: #f8fafc;
+    color: #1f2937;
+    transform: translateX(2px);
+}
+
+.task_tracker_dropdown_item .task_tracker_submenu_icon {
+    width: 12px;
+    height: 12px;
+    color: #6b7280;
+    flex-shrink: 0;
+}
+
+.task_tracker_dropdown_item .task_tracker_submenu_item:hover .task_tracker_submenu_icon {
+    color: #374151;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* MOBILE-FRIENDLY SUBMENU: Mobile-specific styles */
+/* TO REMOVE: Delete this entire @media block if mobile functionality is not needed */
+@media (max-width: 768px) {
+    .task_tracker_dropdown_item .task_tracker_submenu {
+        position: static !important;
+        display: block !important;
+        margin-top: 8px;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-left: none !important;
+        border-top: 2px solid #e5e7eb;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        background: #f8f9fa;
+        animation: slideDown 0.3s ease-out;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .task_tracker_dropdown_item .task_tracker_submenu_item {
+        padding: 12px 16px;
+        font-size: 14px;
+        border-radius: 0;
+        margin: 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .task_tracker_dropdown_item .task_tracker_submenu_item:first-child {
+        border-radius: 8px 8px 0 0;
+        border-top: none;
+    }
+    
+    .task_tracker_dropdown_item .task_tracker_submenu_item:last-child {
+        border-radius: 0 0 8px 8px;
+        border-bottom: none;
+    }
+    
+    .task_tracker_dropdown_item .task_tracker_submenu_item:hover {
+        background: #e5e7eb;
+        transform: none;
+    }
 }
 
 /* Animation for submenu */
@@ -1417,7 +1643,7 @@
 .task_tracker_current_day_date {
     font-size: 1rem;
     font-weight: 400;
-    color: #6b7280;
+    color: var(--secondary-color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -1525,7 +1751,7 @@ thead.fc-head {
 }
 
 .fc-event:hover {
-    background: #9E9AEBE !important;
+    background: #9E9AEB !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
 }
@@ -1659,20 +1885,6 @@ thead.fc-head {
     background: transparent !important; /* Remove white background that cuts off navigation */
 }
 
-/* Infinite Calendar Styles */
-.task_tracker_infinite_calendar_container {
-    scroll-behavior: smooth;
-    position: relative;
-    background: #fff;
-    /* No height limit - use main page scroll */
-    min-height: 100vh;
-    margin: 0 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    /* Ensure infinite scroll works */
-    height: auto;
-    overflow: visible;
-}
 
 /* Mobile styles for infinite_calendar_container */
 @media (max-width: 768px) {
@@ -1681,27 +1893,6 @@ thead.fc-head {
         padding-left: 0.5rem !important; /* ~8px */
         padding-right: 0.5rem !important; /* ~8px */
         background: transparent !important; /* Remove white background that cuts off navigation */
-    }
-    
-    .task_tracker_infinite_calendar_container {
-        margin: 0 4px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        /* Ensure container is visible and scrollable */
-        overflow-x: auto;
-        overflow-y: visible;
-        width: calc(100% - 8px);
-    }
-    
-    /* Ensure calendar instances are visible */
-    .task_tracker_calendar_day_container {
-        width: 100%;
-        min-width: 320px;
-    }
-    
-    .task_tracker_calendar_day_content {
-        width: 100%;
-        overflow-x: auto;
     }
 }
 
@@ -1712,351 +1903,8 @@ thead.fc-head {
         padding-right: 0.25rem !important; /* ~4px */
         background: transparent !important; /* Remove white background that cuts off navigation */
     }
-    
-    .task_tracker_infinite_calendar_container {
-        margin: 0 4px;
-        border-radius: 6px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
 }
 
-/* Scrollbar styles removed - using main page scroll */
-
-/* Loading Spinner Styles - имитация следующего дня */
-.task_tracker_loading_spinner {
-    position: relative;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
-    margin-top: 20px;
-    overflow: hidden;
-}
-
-.task_tracker_spinner_day_header {
-    background: #f8f9fa;
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.task_tracker_spinner_day_number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #d1d5db;
-    min-width: 50px;
-}
-
-.task_tracker_spinner_day_name {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.task_tracker_spinner_content {
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    color: #6b7280;
-    font-size: 14px;
-    font-weight: 500;
-    background: #f8f9fa;
-}
-
-.task_tracker_spinner {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #e5e7eb;
-    border-top: 2px solid #3b82f6;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Calendar Day Container Styles */
-.task_tracker_calendar_day_container {
-    border-bottom: 2px solid #e5e7eb;
-    margin-bottom: 0;
-    background: #fff;
-}
-
-.task_tracker_calendar_day_header {
-    background: #f8f9fa;
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border-bottom: 1px solid #e5e7eb;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-}
-
-/* Mobile styles for calendar day containers */
-@media (max-width: 768px) {
-    .task_tracker_calendar_day_header {
-        padding: 12px 16px;
-        gap: 12px;
-    }
-    
-    .task_tracker_calendar_day_number {
-        font-size: 1.8rem;
-        min-width: 45px;
-    }
-    
-    .task_tracker_calendar_day_name {
-        font-size: 1rem;
-    }
-    
-    .task_tracker_calendar_day_date {
-        font-size: 0.8rem;
-    }
-    
-    /* FullCalendar mobile optimizations */
-    .task_tracker_calendar_instance {
-        width: 100% !important;
-        height: auto !important;
-        min-height: 400px !important;
-    }
-    
-    .fc {
-        font-size: 12px !important;
-    }
-    
-    .fc-timegrid-slot {
-        height: 40px !important;
-    }
-    
-    .fc-timegrid-slot-label {
-        width: 60px !important;
-        font-size: 1.008rem !important;
-        padding: 0 8px !important;
-        padding-top: 0px !important;
-    }
-    
-    .fc-timegrid-slot-label-cushion {
-        margin-top: -12px !important;
-    }
-    
-    /* Special styling for first time slot on mobile */
-    .fc-timegrid-slot[data-time="00:00:00"] .fc-timegrid-slot-label-cushion {
-        margin-top: -18px !important;
-        z-index: 15 !important;
-    }
-    
-    .fc-timegrid-slot-label-cushion::after {
-        width: 40px;
-        height: 20px;
-        border-radius: 10px;
-    }
-    
-    /* fc-col-header-cell is hidden, no mobile styles needed */
-    
-    .fc-event {
-        font-size: 0.75rem !important;
-        padding: 4px 8px !important;
-        margin: 1px 2px !important;
-    }
-    
-    .fc-event::after {
-        top: 6px;
-        right: 6px;
-        width: 14px;
-        height: 14px;
-    }
-    
-    .fc-event.completed::before {
-        top: 4px;
-        right: 4px;
-        font-size: 10px;
-    }
-    
-    .fc-event::before {
-        width: 28px;
-        height: 28px;
-    }
-    
-    .fc-timegrid-event {
-        font-size: 0.7rem !important;
-    }
-    
-    .fc-timegrid-event-title {
-        font-size: 0.7rem !important;
-    }
-    
-    .fc-timegrid-event-time {
-        font-size: 0.65rem !important;
-    }
-}
-
-@media (max-width: 576px) {
-    .task_tracker_calendar_day_header {
-        padding: 10px 12px;
-        gap: 10px;
-    }
-    
-    .task_tracker_calendar_day_number {
-        font-size: 1.6rem;
-        min-width: 40px;
-    }
-    
-    .task_tracker_calendar_day_name {
-        font-size: 0.9rem;
-    }
-    
-    .task_tracker_calendar_day_date {
-        font-size: 0.75rem;
-    }
-    
-    /* FullCalendar extra small mobile optimizations */
-    .task_tracker_calendar_instance {
-        width: 100% !important;
-        height: auto !important;
-        min-height: 350px !important;
-    }
-    
-    .fc {
-        font-size: 11px !important;
-    }
-    
-    .fc-timegrid-slot {
-        height: 35px !important;
-    }
-    
-    .fc-timegrid-slot-label {
-        width: 50px !important;
-        font-size: 0.936rem !important;
-        padding: 0 6px !important;
-        padding-top: 0px !important;
-    }
-    
-    .fc-timegrid-slot-label-cushion {
-        margin-top: -10px !important;
-    }
-    
-    /* Special styling for first time slot on extra small mobile */
-    .fc-timegrid-slot[data-time="00:00:00"] .fc-timegrid-slot-label-cushion {
-        margin-top: -16px !important;
-        z-index: 15 !important;
-    }
-    
-    .fc-timegrid-slot-label-cushion::after {
-        width: 36px;
-        height: 18px;
-        border-radius: 9px;
-    }
-    
-    /* fc-col-header-cell is hidden, no mobile styles needed */
-    
-    .fc-event {
-        font-size: 0.7rem !important;
-        padding: 3px 6px !important;
-        margin: 1px !important;
-    }
-    
-    .fc-event::after {
-        top: 5px;
-        right: 5px;
-        width: 12px;
-        height: 12px;
-    }
-    
-    .fc-event.completed::before {
-        top: 3px;
-        right: 3px;
-        font-size: 9px;
-    }
-    
-    .fc-event::before {
-        width: 24px;
-        height: 24px;
-    }
-    
-    .fc-timegrid-event {
-        font-size: 0.65rem !important;
-    }
-    
-    .fc-timegrid-event-title {
-        font-size: 0.65rem !important;
-    }
-    
-    .fc-timegrid-event-time {
-        font-size: 0.6rem !important;
-    }
-    
-    /* Ensure calendar is visible and functional */
-    .fc-timegrid-body {
-        height: auto !important;
-        min-height: 300px !important;
-    }
-    
-    .fc-timegrid-slots {
-        height: auto !important;
-        min-height: 300px !important;
-    }
-    
-    .fc-timegrid-table {
-        height: auto !important;
-    }
-}
-
-.task_tracker_calendar_day_number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #282d3b;
-    min-width: 50px;
-}
-
-.task_tracker_calendar_day_name {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.task_tracker_calendar_day_date {
-    font-size: 0.9rem;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-left: auto;
-}
-
-.task_tracker_calendar_day_content {
-    background: #fff;
-    position: relative;
-    z-index: 1;
-    padding: 0;
-}
-
-.task_tracker_calendar_instance {
-    width: 100%;
-    height: auto;
-}
-
-/* Ensure FullCalendar has proper height for infinite scroll */
-.task_tracker_calendar_instance .fc {
-    height: auto !important;
-}
-
-.task_tracker_calendar_instance .fc-view-harness {
-    height: auto !important;
-}
-
-.task_tracker_calendar_instance .fc-timegrid {
-    height: auto;
-}
 
 /* Responsive Timeline */
 @media (max-width: 768px) {
@@ -2194,7 +2042,7 @@ thead.fc-head {
     font-family: 'League Spartan', sans-serif;
     font-size: 1rem;
     font-weight: 700;
-    color: #282D3B;
+    color: var(--primary-color);
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
@@ -2360,14 +2208,14 @@ thead.fc-head {
     font-family: 'League Spartan', sans-serif;
     font-size: 1.2rem;
     font-weight: 400;
-    color: #282D3B;
+    color: var(--primary-color);
 }
 
 .task_tracker_day_number {
     font-family: 'League Spartan', sans-serif;
     font-size: 5rem;
     font-weight: 700;
-    color: #282D3B;
+    color: var(--primary-color);
     line-height: 1;
 }
 
@@ -2375,7 +2223,7 @@ thead.fc-head {
     font-family: 'League Spartan', sans-serif;
     font-size: 1.2rem;
     font-weight: 400;
-    color: #282D3B;
+    color: var(--primary-color);
     text-transform: uppercase;
 }
 
@@ -2383,7 +2231,7 @@ thead.fc-head {
     font-family: 'League Spartan', sans-serif;
     font-size: 5rem;
     font-weight: 700;
-    color: #282D3B;
+    color: var(--primary-color);
     line-height: 1;
 }
 
@@ -2474,204 +2322,3 @@ thead.fc-head {
     }
 }
 
-/* React Big Calendar Styles */
-.agenda-view-container {
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.agenda-header {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.agenda-header h2 {
-    color: #333;
-    margin: 0 0 10px 0;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.agenda-header p {
-    color: #666;
-    margin: 0;
-    font-size: 14px;
-}
-
-/* Custom styles for React Big Calendar */
-.rbc-calendar {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.rbc-header {
-    background: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-    padding: 12px 8px;
-    font-weight: 600;
-    color: #495057;
-}
-
-.rbc-today {
-    background-color: #e3f2fd !important;
-}
-
-.rbc-event {
-    background-color: #3B82F6 !important;
-    border: none !important;
-    border-radius: 4px;
-    padding: 2px 4px;
-    font-size: 12px;
-    font-weight: 500;
-    color: white;
-}
-
-.rbc-event:hover {
-    background-color: #2563eb !important;
-}
-
-.rbc-event-content {
-    color: white;
-    font-weight: 500;
-}
-
-.rbc-time-view .rbc-header {
-    border-bottom: 1px solid #dee2e6;
-}
-
-.rbc-time-view .rbc-time-gutter {
-    background: #f8f9fa;
-}
-
-.rbc-time-view .rbc-time-content {
-    border-left: 1px solid #dee2e6;
-}
-
-.rbc-time-view .rbc-timeslot-group {
-    border-bottom: 1px solid #e9ecef;
-}
-
-.rbc-time-view .rbc-time-slot {
-    border-top: 1px solid #f1f3f4;
-}
-
-.rbc-toolbar {
-    background: #f8f9fa;
-    padding: 12px 16px;
-    border-bottom: 1px solid #dee2e6;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.rbc-toolbar button {
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    padding: 6px 12px;
-    font-size: 14px;
-    color: #495057;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.rbc-toolbar button:hover {
-    background: #e9ecef;
-    border-color: #adb5bd;
-}
-
-.rbc-toolbar button.rbc-active {
-    background: #3B82F6;
-    color: white;
-    border-color: #3B82F6;
-}
-
-.rbc-toolbar-label {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-}
-
-.rbc-month-view .rbc-date-cell {
-    padding: 8px;
-}
-
-.rbc-month-view .rbc-off-range-bg {
-    background: #f8f9fa;
-}
-
-.rbc-month-view .rbc-today {
-    background-color: #e3f2fd;
-}
-
-.rbc-month-view .rbc-today .rbc-date-cell {
-    background-color: #3B82F6;
-    color: white;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-}
-
-/* Agenda view specific styles */
-.rbc-agenda-view table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.rbc-agenda-view .rbc-agenda-date-cell {
-    background: #f8f9fa;
-    border-right: 1px solid #dee2e6;
-    padding: 12px;
-    font-weight: 600;
-    color: #495057;
-    width: 120px;
-}
-
-.rbc-agenda-view .rbc-agenda-time-cell {
-    background: #f8f9fa;
-    border-right: 1px solid #dee2e6;
-    padding: 12px;
-    font-weight: 500;
-    color: #6c757d;
-    width: 100px;
-}
-
-.rbc-agenda-view .rbc-agenda-event-cell {
-    padding: 12px;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.rbc-agenda-view .rbc-agenda-event-cell:hover {
-    background: #f8f9fa;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .agenda-view-container {
-        padding: 10px;
-    }
-    
-    .rbc-toolbar {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .rbc-toolbar-label {
-        font-size: 16px;
-    }
-    
-    .rbc-toolbar button {
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-}

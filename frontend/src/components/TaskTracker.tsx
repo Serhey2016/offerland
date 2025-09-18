@@ -1,77 +1,29 @@
 import React, { useState, useEffect } from 'react'
-import TaskDesign from './TaskDesign'
 import AgendaView from './views/AgendaView'
+import TouchpointView from './views/TouchpointView'
+import InboxView from './views/InboxView'
+import WaitingView from './views/WaitingView'
+import SomedayView from './views/SomedayView'
+import ProjectsView from './views/ProjectsView'
+import LockbookView from './views/LockbookView'
+import ArchiveView from './views/ArchiveView'
+import ContactsView from './views/subcategories/ContactsView'
+import FavoritesView from './views/subcategories/FavoritesView'
+import {
+  Category,
+  Subcategory,
+  CategoryChangeEventDetail,
+  SubmenuItemClickEventDetail,
+  CATEGORIES,
+  updateActiveMenuItems,
+  toggleSubmenus,
+  updateMenuStates,
+  updateGreetingSection
+} from './shared/MenuHandlers'
 
 // @refresh reset
 // JSX preamble for Vite plugin detection
 const JSX_PREAMBLE = <div></div>
-
-// Types defined inline to avoid import issues
-type Category = 'Agenda' | 'Touchpoint' | 'Inbox' | 'Waiting' | 'Someday' | 'Projects' | 'Lockbook (Done)' | 'Archive'
-type Subcategory = 'Contacts' | 'Favorites' | 'Orders' | 'Subscriptions' | 'Published' | 'Lockbook_Projects' | 'Lockbook_Tasks' | 'Archive_projects' | 'Archive_Tasks'
-
-interface CategoryChangeEventDetail {
-  category: Category
-}
-
-interface SubmenuItemClickEventDetail {
-  category: Category
-  subcategory: Subcategory
-}
-
-interface HeaderConfig {
-  title: string
-  subtitle?: string
-  showBackButton?: boolean
-}
-
-// Category constants
-const CATEGORIES = {
-  AGENDA: 'Agenda',
-  TOUCHPOINT: 'Touchpoint',
-  INBOX: 'Inbox',
-  WAITING: 'Waiting',
-  SOMEDAY: 'Someday',
-  PROJECTS: 'Projects',
-  LOCKBOOK: 'Lockbook (Done)',
-  ARCHIVE: 'Archive'
-}
-
-// Header configuration for different categories
-const headerConfig: Partial<Record<Category, HeaderConfig>> = {
-  'Agenda': {
-    title: 'Agenda',
-    subtitle: 'Your daily agenda and schedule'
-  },
-  'Touchpoint': {
-    title: 'Touchpoint',
-    subtitle: 'Manage your contacts and relationships'
-  },
-  'Inbox': {
-    title: 'Inbox',
-    subtitle: 'All your tasks in one place'
-  },
-  'Waiting': {
-    title: 'Waiting',
-    subtitle: 'Tasks waiting for others'
-  },
-  'Someday': {
-    title: 'Someday',
-    subtitle: 'Tasks for future consideration'
-  },
-  'Projects': {
-    title: 'Projects',
-    subtitle: 'Your active projects'
-  },
-  'Lockbook (Done)': {
-    title: 'Lockbook (Done)',
-    subtitle: 'Completed tasks'
-  },
-  'Archive': {
-    title: 'Archive',
-    subtitle: 'Archived tasks and projects'
-  }
-}
 
 const TaskTracker = () => {
   // Simple JSX to help Vite plugin detect React - must be at the top
@@ -88,60 +40,7 @@ const TaskTracker = () => {
   //   isUpdating
   // })
 
-  // Helper function to update menu states
-  const updateMenuStates = (category: Category, subcategory: Subcategory): void => {
-    // Update main menu items
-    updateActiveMenuItems(category)
-
-    // Update submenu items in left sidebar
-    document.querySelectorAll('.task_tracker_submenu_item').forEach(item => {
-      const isActive = item.getAttribute('data-subcategory') === subcategory
-      item.classList.toggle('active', isActive)
-    })
-
-    // Update subcategory items in center display
-    const subcategoryDisplay = document.getElementById('subcategory-display')
-    subcategoryDisplay?.querySelectorAll('.task_tracker_subcategory_item').forEach(item => {
-      const isActive = item.getAttribute('data-subcategory') === subcategory
-      item.classList.toggle('active', isActive)
-    })
-  }
-
-  // Helper function to toggle submenus
-  const toggleSubmenus = (category: Category): void => {
-    const submenuMap: Record<Category, string> = {
-      'Agenda': 'agenda-submenu',
-      'Touchpoint': 'touchpoint-submenu',
-      'Inbox': 'inbox-submenu',
-      'Waiting': 'waiting-submenu',
-      'Someday': '',
-      'Projects': '',
-      'Lockbook (Done)': 'lockbook-submenu',
-      'Archive': 'archive-submenu'
-    }
-    
-    // Hide all submenus and remove expanded state
-    document.querySelectorAll('.task_tracker_submenu').forEach(submenu => submenu.classList.remove('show'))
-    document.querySelectorAll('.task_tracker_menu_item.expandable').forEach(button => button.classList.remove('expanded'))
-    
-    // Show submenu for selected category if it exists
-    const submenuId = submenuMap[category]
-    if (submenuId) {
-      const submenu = document.getElementById(submenuId)
-      const button = document.querySelector(`[data-category="${category}"]`)
-      submenu?.classList.add('show')
-      button?.classList.add('expanded')
-    }
-  }
-
-  // Helper function to update active menu items
-  const updateActiveMenuItems = (category: Category): void => {
-    document.querySelectorAll('.task_tracker_menu_item').forEach(item => {
-      const menuText = item.querySelector('.task_tracker_menu_item_text')
-      const isActive = menuText?.textContent?.trim() === category
-      item.classList.toggle('active', isActive)
-    })
-  }
+  // Helper function to update subcategory display in center
 
   // Helper function to update subcategory display in center
   const updateSubcategoryDisplay = (category: Category): void => {
@@ -200,52 +99,6 @@ const TaskTracker = () => {
     })
   }
 
-  // Update greeting section based on category
-  const updateGreetingSection = (category: Category): void => {
-      setTimeout(() => {
-        const greetingSection = document.querySelector('.filter_search_container_content_left_side .task_tracker_greeting_section')
-        if (greetingSection) {
-          if (category === 'Agenda') {
-            const now = new Date()
-            const hour = now.getHours()
-            let greeting = ''
-            if (hour < 12) {
-              greeting = 'Good Morning.'
-            } else if (hour < 17) {
-              greeting = 'Good Afternoon.'
-            } else {
-              greeting = 'Good Evening.'
-            }
-            
-            greetingSection.innerHTML = `
-              <h1 class="task_tracker_greeting_main">
-                <span class="task_tracker_greeting_time">${greeting}</span>
-                <span class="task_tracker_greeting_name">Guest</span>
-              </h1>
-              <p class="task_tracker_greeting_subtitle">Hope you're having a productive day!</p>
-            `
-          } else {
-            const header = headerConfig[category]
-            if (header) {
-              greetingSection.innerHTML = `
-                <h1 class="task_tracker_greeting_main">
-                  <span class="task_tracker_greeting_time">${header.title}</span>
-                </h1>
-                <p class="task_tracker_greeting_subtitle">${header.subtitle}</p>
-              `
-            } else {
-              // Fallback for categories without specific header config
-              greetingSection.innerHTML = `
-                <h1 class="task_tracker_greeting_main">
-                  <span class="task_tracker_greeting_time">${category}</span>
-                </h1>
-                <p class="task_tracker_greeting_subtitle">Manage your tasks and projects</p>
-              `
-            }
-          }
-        }
-      }, 50)
-    }
 
   // Handle expandable menu clicks
   const handleExpandableMenuClick = (event: CustomEvent<CategoryChangeEventDetail>): void => {
@@ -469,179 +322,43 @@ const TaskTracker = () => {
     }
   }, [isUpdating])
 
-  const renderCalendarContent = (): React.ReactElement => {
-    // Handle subcategory views first
-    if (selectedSubcategory && selectedCategory) {
-      // Touchpoint subcategories
-      if (selectedCategory === CATEGORIES.TOUCHPOINT) {
-        if (selectedSubcategory === 'Contacts') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Contacts View (Loading...)'),
-              React.createElement('p', null, 'Contacts functionality will be implemented here.')
-            )
-          )
-        )
-      }
-      
-      // Waiting subcategories
-      if (selectedCategory === CATEGORIES.WAITING) {
-        if (selectedSubcategory === 'Orders') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Orders View (Loading...)'),
-              React.createElement('p', null, 'Orders functionality will be implemented here.')
-            )
-          )
-        )
-        if (selectedSubcategory === 'Subscriptions') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Subscriptions View (Loading...)'),
-              React.createElement('p', null, 'Subscriptions functionality will be implemented here.')
-            )
-          )
-        )
-        if (selectedSubcategory === 'Published') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Published View (Loading...)'),
-              React.createElement('p', null, 'Published functionality will be implemented here.')
-            )
-          )
-        )
-      }
-      
-      // Inbox subcategories
-      if (selectedCategory === CATEGORIES.INBOX) {
-        if (selectedSubcategory === 'Favorites') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Favorites View (Loading...)'),
-              React.createElement('p', null, 'Favorites functionality will be implemented here.')
-            )
-          )
-        )
-      }
-      
-      // Lockbook subcategories
-      if (selectedCategory === CATEGORIES.LOCKBOOK) {
-        if (selectedSubcategory === 'Lockbook_Projects') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Lockbook Projects View (Loading...)'),
-              React.createElement('p', null, 'Lockbook Projects functionality will be implemented here.')
-            )
-          )
-        )
-        if (selectedSubcategory === 'Lockbook_Tasks') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Lockbook Tasks View (Loading...)'),
-              React.createElement('p', null, 'Lockbook Tasks functionality will be implemented here.')
-            )
-          )
-        )
-      }
-      
-      // Archive subcategories
-      if (selectedCategory === CATEGORIES.ARCHIVE) {
-        if (selectedSubcategory === 'Archive_projects') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Archive Projects View (Loading...)'),
-              React.createElement('p', null, 'Archive Projects functionality will be implemented here.')
-            )
-          )
-        )
-        if (selectedSubcategory === 'Archive_Tasks') return React.createElement('div', { className: 'task_tracker_calendar_container' },
-          React.createElement('div', { className: 'touchpoint-container' },
-            React.createElement('div', { className: 'touchpoint-content' },
-              React.createElement('h3', null, 'Archive Tasks View (Loading...)'),
-              React.createElement('p', null, 'Archive Tasks functionality will be implemented here.')
-            )
-          )
-        )
-      }
+  const renderSubcategoryContent = (): React.ReactElement | null => {
+    if (!selectedSubcategory || !selectedCategory) return null
+
+    // Touchpoint subcategories
+    if (selectedCategory === CATEGORIES.TOUCHPOINT && selectedSubcategory === 'Contacts') {
+      return <ContactsView />
     }
     
+    // Inbox subcategories
+    if (selectedCategory === CATEGORIES.INBOX && selectedSubcategory === 'Favorites') {
+      return <FavoritesView />
+    }
+    
+    // TODO: Add more subcategory views as needed
+    return null
+  }
+
+  const renderMainContent = (): React.ReactElement => {
     const viewComponents = {
-      [CATEGORIES.AGENDA]: React.createElement(AgendaView),
-      [CATEGORIES.TOUCHPOINT]: React.createElement('div', { className: 'task_tracker_calendar_container' },
-        React.createElement('div', { className: 'touchpoint-container' },
-          React.createElement('div', { className: 'touchpoint-content' },
-            React.createElement('h3', null, 'Touchpoint View (Loading...)'),
-            React.createElement('p', null, 'Touchpoint functionality will be implemented here.')
-          )
-        )
-      ),
-      [CATEGORIES.INBOX]: React.createElement('div', { className: 'task_tracker_calendar_container' },
-        React.createElement('div', { className: 'touchpoint-container' },
-          React.createElement('div', { className: 'touchpoint-content' },
-            React.createElement('h3', null, 'Inbox View'),
-            React.createElement(TaskDesign, {
-              title: 'Sample Task',
-              description: 'This is a sample task in the inbox',
-              timeRange: '2 hours',
-              category: 'Inbox',
-              priority: 'high',
-              dateAdded: 'Today',
-              onNotesClick: () => console.log('Notes clicked'),
-              onDropdownClick: () => console.log('Dropdown clicked')
-            })
-          )
-        )
-      ),
-      [CATEGORIES.WAITING]: React.createElement('div', { className: 'task_tracker_calendar_container' },
-        React.createElement('div', { className: 'touchpoint-container' },
-          React.createElement('div', { className: 'touchpoint-content' },
-            React.createElement('h3', null, 'Waiting View (Loading...)'),
-            React.createElement('p', null, 'Waiting functionality will be implemented here.')
-          )
-        )
-      ),
-      [CATEGORIES.SOMEDAY]: React.createElement('div', { className: 'task_tracker_calendar_container' },
-        React.createElement('div', { className: 'touchpoint-container' },
-          React.createElement('div', { className: 'touchpoint-content' },
-            React.createElement('h3', null, 'Someday View (Loading...)'),
-            React.createElement('p', null, 'Someday functionality will be implemented here.')
-          )
-        )
-      ),
-      [CATEGORIES.PROJECTS]: React.createElement('div', { className: 'task_tracker_calendar_container' },
-        React.createElement('div', { className: 'touchpoint-container' },
-          React.createElement('div', { className: 'touchpoint-content' },
-            React.createElement('h3', null, 'Projects View (Loading...)'),
-            React.createElement('p', null, 'Projects functionality will be implemented here.')
-          )
-        )
-      ),
-      [CATEGORIES.LOCKBOOK]: React.createElement('div', { className: 'task_tracker_calendar_container' },
-        React.createElement('div', { className: 'touchpoint-container' },
-          React.createElement('div', { className: 'touchpoint-content' },
-            React.createElement('h3', null, 'Lockbook View (Loading...)'),
-            React.createElement('p', null, 'Lockbook functionality will be implemented here.')
-          )
-        )
-      ),
-      [CATEGORIES.ARCHIVE]: React.createElement('div', { className: 'task_tracker_calendar_container' },
-        React.createElement('div', { className: 'touchpoint-container' },
-          React.createElement('div', { className: 'touchpoint-content' },
-            React.createElement('h3', null, 'Archive View (Loading...)'),
-            React.createElement('p', null, 'Archive functionality will be implemented here.')
-          )
-        )
-      )
+      [CATEGORIES.AGENDA]: <AgendaView />,
+      [CATEGORIES.TOUCHPOINT]: <TouchpointView />,
+      [CATEGORIES.INBOX]: <InboxView />,
+      [CATEGORIES.WAITING]: <WaitingView />,
+      [CATEGORIES.SOMEDAY]: <SomedayView />,
+      [CATEGORIES.PROJECTS]: <ProjectsView />,
+      [CATEGORIES.LOCKBOOK]: <LockbookView />,
+      [CATEGORIES.ARCHIVE]: <ArchiveView />
     }
     
-    return viewComponents[selectedCategory] || viewComponents[CATEGORIES.AGENDA]
+    return viewComponents[selectedCategory] || <AgendaView />
   }
 
   return React.createElement('div', { 
     className: 'react-task-tracker',
     key: `${selectedCategory}-${selectedSubcategory}`
   },
-    renderCalendarContent()
+    renderSubcategoryContent() || renderMainContent()
   )
 }
 

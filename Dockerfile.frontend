@@ -6,7 +6,7 @@ WORKDIR /app-frontend
 
 # Install dependencies first to leverage Docker layer cache
 COPY frontend/package.json frontend/package-lock.json* ./
-RUN npm ci || npm install
+RUN npm install
 
 # Copy source
 COPY frontend/ ./
