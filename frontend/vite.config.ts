@@ -10,32 +10,53 @@ export default defineConfig({
     port: 5173,
     cors: true,
     hmr: false,
-    https: false, // Keep HTTP for now, but add proper CORS headers
+    https: false,
     fs: {
       allow: ['..']
     },
     headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp'
+      'Cross-Origin-Opener-Policy': 'unsafe-none',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    },
+    sourcemapIgnoreList: false,
+    proxy: {
+      '/task-tracker/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/static': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      }
     }
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: 'inline',
     rollupOptions: {
       output: {
         entryFileNames: 'calendar.js',
         chunkFileNames: 'calendar-[hash].js',
-        assetFileNames: 'calendar-[hash].[ext]'
+        assetFileNames: 'calendar-[hash].[ext]',
+        sourcemap: true
       }
     }
   },
   css: {
     devSourcemap: true
   },
+  define: {
+    __VUE_PROD_DEVTOOLS__: false
+  },
   optimizeDeps: {
     include: ['primereact'],
-    exclude: ['chart.js/auto', 'quill']
+    exclude: ['chart.js/auto', 'quill'],
+    force: true
   },
   resolve: {
     alias: {

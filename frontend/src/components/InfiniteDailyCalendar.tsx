@@ -38,20 +38,54 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
-  // Generate initial days starting from current date
+  // Generate initial days starting from TODAY
   useEffect(() => {
     const generateDays = (startDate: Date, count: number) => {
       const days: Date[] = []
+      // Start from TODAY (current date)
+      const startFromDate = new Date(startDate)
+      // No need to subtract days - start from today
+      
       for (let i = 0; i < count; i++) {
-        const day = new Date(startDate)
-        day.setDate(startDate.getDate() + i)
+        const day = new Date(startFromDate)
+        day.setDate(startFromDate.getDate() + i)
         days.push(day)
       }
+      
+      
       return days
     }
 
     setVisibleDays(generateDays(currentDate, daysToShow))
   }, [currentDate, daysToShow])
+
+  const loadMoreDays = useCallback(() => {
+    if (isLoading) {
+      return
+    }
+
+    // Use functional update to get the latest state
+    setVisibleDays(currentVisibleDays => {
+      if (currentVisibleDays.length === 0) {
+        return currentVisibleDays
+      }
+
+      setIsLoading(true)
+      const lastDay = currentVisibleDays[currentVisibleDays.length - 1]
+      const nextDay = new Date(lastDay)
+      nextDay.setDate(lastDay.getDate() + 1)
+
+      // Load only 1 day at a time
+      const newDays: Date[] = [nextDay]
+
+      setTimeout(() => {
+        setVisibleDays(prev => [...prev, ...newDays])
+        setIsLoading(false)
+      }, 500)
+
+      return currentVisibleDays
+    })
+  }, [isLoading])
 
   // Set up intersection observer for infinite scroll
   useEffect(() => {
@@ -63,7 +97,10 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
           }
         })
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.1,
+        rootMargin: '50px' // Start loading when element is 50px away from viewport
+      }
     )
 
     observerRef.current = observer
@@ -73,28 +110,7 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
         observerRef.current.disconnect()
       }
     }
-  }, [])
-
-  const loadMoreDays = useCallback(() => {
-    if (isLoading) return
-
-    setIsLoading(true)
-    const lastDay = visibleDays[visibleDays.length - 1]
-    const nextDay = new Date(lastDay)
-    nextDay.setDate(lastDay.getDate() + 1)
-
-    const newDays: Date[] = []
-    for (let i = 0; i < daysToShow; i++) {
-      const day = new Date(nextDay)
-      day.setDate(nextDay.getDate() + i)
-      newDays.push(day)
-    }
-
-    setTimeout(() => {
-      setVisibleDays(prev => [...prev, ...newDays])
-      setIsLoading(false)
-    }, 500)
-  }, [visibleDays, daysToShow, isLoading])
+  }, [loadMoreDays])
 
   // Format day header
   const formatDayHeader = (date: Date) => {
@@ -150,11 +166,13 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
     }
   }
 
+
   return (
     <div 
       ref={containerRef}
       className="task_tracker_infinite_calendar_container"
     >
+      
       {/* Render each day */}
       {visibleDays.map((day, index) => {
         const { dayNumber, dayName, monthYear } = formatDayHeader(day)

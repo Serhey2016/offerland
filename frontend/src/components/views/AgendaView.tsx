@@ -3,72 +3,84 @@ import InfiniteDailyCalendar from '../InfiniteDailyCalendar'
 // CSS styles moved to task_tracker.css
 
 const AgendaView: React.FC = () => {
+  // Get current date and generate events for the next 3 days
+  const today = new Date()
+  const tomorrow = new Date(today)
+  tomorrow.setDate(today.getDate() + 1)
+  const dayAfterTomorrow = new Date(today)
+  dayAfterTomorrow.setDate(today.getDate() + 2)
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
+  const dayBeforeYesterday = new Date(today)
+  dayBeforeYesterday.setDate(today.getDate() - 2)
+
   const sampleEvents = [
-    // Today's events
+    // Day before yesterday's events
     {
       id: 'event1',
+      title: 'Previous Task',
+      start: new Date(dayBeforeYesterday.getFullYear(), dayBeforeYesterday.getMonth(), dayBeforeYesterday.getDate(), 10, 0),
+      end: new Date(dayBeforeYesterday.getFullYear(), dayBeforeYesterday.getMonth(), dayBeforeYesterday.getDate(), 11, 0),
+      priority: 'Low' as const,
+      category: 'Work'
+    },
+    // Yesterday's events
+    {
+      id: 'event2',
+      title: 'Yesterday Meeting',
+      start: new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 14, 0),
+      end: new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 15, 0),
+      priority: 'Medium' as const,
+      category: 'Meeting'
+    },
+    // Today's events
+    {
+      id: 'event3',
       title: 'Morning Workout',
-      start: new Date(2025, 0, 14, 6, 0), // January 14, 2025, 6:00 AM
-      end: new Date(2025, 0, 14, 7, 0),   // January 14, 2025, 7:00 AM
+      start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 6, 0),
+      end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 7, 0),
       priority: 'High' as const,
       category: 'Health'
     },
     {
-      id: 'event2', 
+      id: 'event4', 
       title: 'Team Standup',
-      start: new Date(2025, 0, 14, 9, 0), // January 14, 2025, 9:00 AM
-      end: new Date(2025, 0, 14, 9, 30),   // January 14, 2025, 9:30 AM
+      start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9, 0),
+      end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9, 30),
       priority: 'Medium' as const,
       category: 'Work'
     },
     {
-      id: 'event3',
+      id: 'event5',
       title: 'Project Planning', 
-      start: new Date(2025, 0, 14, 14, 0), // January 14, 2025, 2:00 PM
-      end: new Date(2025, 0, 14, 15, 30),   // January 14, 2025, 3:30 PM
+      start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14, 0),
+      end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 15, 30),
       priority: 'High' as const,
       category: 'Work'
     },
     {
-      id: 'event4',
+      id: 'event6',
       title: 'Client Meeting',
-      start: new Date(2025, 0, 14, 16, 0), // January 14, 2025, 4:00 PM
-      end: new Date(2025, 0, 14, 17, 0), // January 14, 2025, 5:00 PM
+      start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 16, 0),
+      end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 17, 0),
       priority: 'High' as const,
       category: 'Meeting'
     },
     // Tomorrow's events
     {
-      id: 'event5',
+      id: 'event7',
       title: 'Code Review',
-      start: new Date(2025, 0, 15, 10, 0), // January 15, 2025, 10:00 AM
-      end: new Date(2025, 0, 15, 11, 0), // January 15, 2025, 11:00 AM
+      start: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 10, 0),
+      end: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 11, 0),
       priority: 'Medium' as const,
       category: 'Work'
-    },
-    {
-      id: 'event6',
-      title: 'Design Workshop',
-      start: new Date(2025, 0, 15, 14, 0), // January 15, 2025, 2:00 PM
-      end: new Date(2025, 0, 15, 16, 0), // January 15, 2025, 4:00 PM
-      priority: 'Low' as const,
-      category: 'Work'
-    },
-    // Day after tomorrow
-    {
-      id: 'event7',
-      title: 'Sprint Planning',
-      start: new Date(2025, 0, 16, 9, 0), // January 16, 2025, 9:00 AM
-      end: new Date(2025, 0, 16, 11, 0), // January 16, 2025, 11:00 AM
-      priority: 'High' as const,
-      category: 'Meeting'
     },
     {
       id: 'event8',
-      title: 'Product Demo',
-      start: new Date(2025, 0, 16, 15, 0), // January 16, 2025, 3:00 PM
-      end: new Date(2025, 0, 16, 16, 0), // January 16, 2025, 4:00 PM
-      priority: 'Medium' as const,
+      title: 'Design Workshop',
+      start: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 14, 0),
+      end: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 16, 0),
+      priority: 'Low' as const,
       category: 'Work'
     }
   ]
@@ -94,7 +106,7 @@ const AgendaView: React.FC = () => {
       onSelectSlot: handleSelectSlot,
       onNavigate: handleNavigate,
       height: 'auto',
-      daysToShow: 7
+      daysToShow: 3
     })
   )
 }
