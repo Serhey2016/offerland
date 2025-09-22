@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react({
-    fastRefresh: false,
+    fastRefresh: true,
     jsxRuntime: 'automatic', // Enable modern JSX transform
     jsxImportSource: 'react' // Ensure React JSX import source
   })],
@@ -11,7 +11,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     cors: true,
-    hmr: false,
+    hmr: true,
     https: false,
     fs: {
       allow: ['..']

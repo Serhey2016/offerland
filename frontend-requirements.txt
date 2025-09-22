@@ -1,9 +1,12 @@
-# Frontend Dependencies - Updated Versions (September 2025)
+# Frontend Dependencies - Updated Versions (January 2025)
 # Generated from package.json after updates
 
 ## Core Dependencies
 react==19.1.0
 react-dom==19.1.0
+
+## API Communication
+axios==1.12.2
 
 ## Calendar Dependencies
 react-big-calendar==1.19.4
@@ -11,8 +14,15 @@ moment==2.30.1
 
 ## UI/Interaction Libraries
 interactjs==1.10.27
-primereact==10.0.0
+primereact==10.9.7
 primeicons==7.0.0
+primeflex==3.3.1
+
+## Rich Text Editor
+quill==1.3.7
+
+## Charts
+chart.js==4.4.0
 
 ## Development Dependencies
 @types/react==19.1.13
@@ -22,25 +32,58 @@ react-devtools==4.28.0
 typescript==5.9.2
 vite==5.4.10
 
+## Legacy Support
+prop-types==15.8.1
+
 ## Update Status:
-# ✅ React 19.1.0 (UPDATED from 18.3.1)
-# ⚠️ Vite 5.4.10 (Still needs update to 4.5)
-# ✅ TypeScript 5.9.2 (Close to latest 5.5)
-# ✅ @types packages are up to date
-# ✅ Removed @vitejs/plugin-react-swc (no longer needed)
-# ✅ PrimeReact 10.0.0 (NEW - UI component library)
-# ✅ PrimeIcons 7.0.0 (NEW - Icon library)
+# ✅ React 19.1.0 (LATEST - with new hooks and compiler)
+# ✅ Axios 1.12.2 (NEW - for Django API communication)
+# ✅ PrimeReact 10.9.7 (UPDATED - latest stable version)
+# ✅ PrimeIcons 7.0.0 (LATEST - icon library)
+# ✅ PrimeFlex 3.3.1 (NEW - flexbox grid system)
+# ✅ TypeScript 5.9.2 (LATEST - full React 19 support)
+# ✅ Vite 5.4.10 (STABLE - fast build tool)
+# ✅ All @types packages up to date
 
 ## React 19 New Features:
 # - useEvent, useOptimistic, useActionState hooks
 # - React Compiler for automatic optimization
 # - Improved performance and developer experience
+# - Better TypeScript integration
 
 ## PrimeReact Integration:
 # - 40+ UI components (Button, Dialog, DataTable, Calendar, etc.)
 # - Full TypeScript support out of the box
 # - Responsive design and accessibility
 # - Multiple themes (lara-light-blue default)
-# - PrimeIcons icon library
+# - PrimeIcons icon library (7.0.0)
+# - PrimeFlex grid system (3.3.1)
 # - Toast notifications, forms, validation
 # - Integration with existing calendar system
+
+## Axios API Integration:
+# - HTTP client for Django REST API communication
+# - Automatic CSRF token handling
+# - Request/Response interceptors
+# - Error handling and retry logic
+# - TypeScript support with proper interfaces
+# - Base URL: http://192.168.0.146:8000/api
+
+## Installation Commands:
+# npm install (for development)
+# docker exec offerland-frontend npm install (in Docker)
+# npm run dev (start development server)
+# npm run build (production build)
+
+## Docker Integration:
+# - All dependencies automatically installed in frontend container
+# - Volume mounting for live development
+# - HMR (Hot Module Replacement) enabled
+# - Source maps for debugging
+# - CORS configured for Django backend
+
+## API Client Structure:
+# - api/client.ts - Base axios configuration
+# - api/taskApi.ts - Task management API
+# - api/categoryApi.ts - Category management API
+# - hooks/useTasks.ts - Custom React hooks for state management

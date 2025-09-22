@@ -3,6 +3,15 @@ import { createRoot } from 'react-dom/client'
 import TaskTracker from './components/TaskTracker'
 import { initializeSubMenuRenderer } from './components/SubMenuRenderer'
 
+// PrimeReact стилі (глобально)
+import 'primereact/resources/themes/lara-light-blue/theme.css'
+import 'primereact/resources/primereact.min.css'
+import 'primeicons/primeicons.css'
+import 'primeflex/primeflex.css'
+
+// PrimeReact провайдер для глобальних налаштувань
+import { PrimeReactProvider } from 'primereact/api'
+
 // Wait for DOM to be ready
 function initializeReact() {
   const mountPoint = document.getElementById('react-task-tracker')
@@ -15,7 +24,9 @@ function initializeReact() {
     const root = createRoot(mountPoint)
     root.render(
       <React.StrictMode>
-        <TaskTracker />
+        <PrimeReactProvider>
+          <TaskTracker />
+        </PrimeReactProvider>
       </React.StrictMode>
     )
     
@@ -32,5 +43,3 @@ if (document.readyState === 'loading') {
 } else {
   initializeReact()
 }
-
-
