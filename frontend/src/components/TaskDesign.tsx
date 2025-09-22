@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react'
 import 'primereact/resources/themes/lara-light-blue/theme.css'
 import 'primereact/resources/primereact.min.css'
-import 'primeicons/primeicons.css'
 
 interface TaskDesignProps {
 title: string
@@ -196,7 +195,6 @@ const TaskDesign: React.FC<TaskDesignProps> = ({
       }
 
       setIsDropdownOpen(!isDropdownOpen)
-      }
 
       const closeDropdown = (): void => {
       setIsDropdownOpen(false)
@@ -246,33 +244,32 @@ const TaskDesign: React.FC<TaskDesignProps> = ({
 
       switch (option.value) {
       case 'start':
-      return
-      <polygon points="5,3 19,12 5,21" fill="currentColor" />
+        return <polygon points="5,3 19,12 5,21" fill="currentColor" />
       case 'edit':
-      return (
-      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" fill="none" stroke="currentColor"
-        strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      )
+        return (
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" fill="none" stroke="currentColor"
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        )
       case 'details':
-      return (
-      <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
-      )
+        return (
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
+        )
       case 'delegate':
-      return (
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" strokeWidth="2"
-        strokeLinecap="round" strokeLinejoin="round" />
-      )
+        return (
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" strokeWidth="2"
+            strokeLinecap="round" strokeLinejoin="round" />
+        )
       case 'publish':
-      return (
-      <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      )
+        return (
+          <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        )
       case 'move':
-      return (
-      <polyline points="9,18 15,12 9,6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-        strokeLinejoin="round" />
-      )
+        return (
+          <polyline points="9,18 15,12 9,6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+            strokeLinejoin="round" />
+        )
       default:
-      return null
+        return null
       }
       }
 
@@ -422,6 +419,7 @@ const TaskDesign: React.FC<TaskDesignProps> = ({
         </div>
       </div>
       )
-      }
+}
+}
 
-      export default TaskDesign
+export default TaskDesign

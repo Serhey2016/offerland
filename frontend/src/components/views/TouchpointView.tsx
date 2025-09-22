@@ -1,6 +1,6 @@
-import React from 'react'
+// React import removed - using modern JSX transform
 
-const TouchpointView: React.FC = () => {
+const TouchpointView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="touchpoint-container">

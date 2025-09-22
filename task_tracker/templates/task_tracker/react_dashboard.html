@@ -1,0 +1,31 @@
+{% extends "task_tracker/base.html" %}
+{% load static %}
+
+{% block title %}Task Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Task Dashboard</h1>
+    
+    <!-- React TaskTracker Container -->
+    <div id="react-task-tracker"></div>
+</div>
+
+<!-- React Development Server Script (only in development) -->
+{% if debug %}
+    <script type="module" src="http://localhost:5173/src/main.tsx"></script>
+{% else %}
+    <!-- Production React Build -->
+    <script type="module" src="{% static 'calendar.js' %}"></script>
+{% endif %}
+
+<!-- CSRF Token for API calls -->
+<script>
+    window.csrfToken = '{{ csrf_token }}';
+    window.apiBaseUrl = '/task-tracker/api';
+    window.userInfo = {
+        isAuthenticated: {{ user.is_authenticated|yesno:"true,false" }},
+        username: '{{ user.username|escapejs }}',
+    };
+</script>
+{% endblock %}

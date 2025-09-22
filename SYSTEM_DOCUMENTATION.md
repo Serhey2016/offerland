@@ -47,6 +47,10 @@ xlwt==1.3.0 - Запись старых Excel файлов формата XLS.
 ### static - css, js и другие файлы что отвечают за логику и визуальные стили
 ### templates - страница авторизации пользователей
 ### user_data - данные что сохраняются на сервере от пользователей (аватары, CV, фотографии постов)
+### task_tracker - приложение для управления задачами с гибридной архитектурой
+- Django backend с API endpoints для React frontend
+- React компоненты для современного UI (TaskTracker, AgendaView, TouchpointView и др.)
+- Hybrid Approach: простые страницы используют Django templates, сложные - React
 
 
 # Разворачивание проекта.
@@ -62,7 +66,7 @@ services_and_projects/fixtures
 
 ### SSH доступ
 ```bash
-ssh dev@192.168.0.226
+ssh dev@192.168.0.146
 ```
 
 ### Учетные данные
@@ -165,69 +169,303 @@ ssh dev@192.168.0.226
 - **Business services** - Любые услуги онлайн или офлайн для бизнеса от самозанятых или компаний
 - **Personal support** - Личная поддержка пользователей на этом сайте о работе и заработке
 
+## 🏗️ Task Tracker - Hybrid Architecture
 
+### Архитектурный подход
+Проект использует **Hybrid Approach** для оптимального сочетания Django backend и React frontend:
 
+#### Django Backend (task_tracker/)
+- **Traditional Views**: Простые страницы используют Django templates
+  - `/task_tracker/` - главная страница
+  - `/task_tracker/tasks/` - список задач
+  - `/task_tracker/tasks/create/` - создание задачи
+  - `/task_tracker/dashboard-traditional/` - традиционный дашборд
+  
+- **API Endpoints**: REST API для React компонентов
+  - `GET /task_tracker/api/tasks/` - получение всех задач
+  - `GET /task_tracker/api/tasks/<id>/` - получение конкретной задачи
+  - `POST /task_tracker/api/tasks/create/` - создание новой задачи
+  - `PUT /task_tracker/api/tasks/<id>/update/` - обновление задачи
+  - `DELETE /task_tracker/api/tasks/<id>/delete/` - удаление задачи
+  - `GET /task_tracker/api/dashboard/stats/` - статистика дашборда
 
+#### React Frontend (frontend/)
+- **TaskTracker Component**: Основной компонент с меню и навигацией
+- **View Components**: Специализированные компоненты для разных категорий
+  - AgendaView, TouchpointView, InboxView, WaitingView
+  - SomedayView, ProjectsView, LockbookView, ArchiveView
+- **Hybrid Integration**: React монтируется в Django templates через `id="react-task-tracker"`
 
-## Today’s infrastructure and frontend changes (Task Tracker enablement)
+### Конфигурация
 
-### Docker/Compose
-- Unified compose: `docker-compose.yml` now includes `frontend` service in addition to `web` (Django) and `db` (Postgres).
-- Removed obsolete file: `docker-compose.frontend.yml` (no longer needed).
-- Files kept:
-  - `Dockerfile` — Django backend image
-  - `Dockerfile.frontend` — Node 20 Alpine image for the frontend (Vite dev server)
+#### Django Settings (config/settings.py)
+```python
+# CORS поддержка для React frontend
+INSTALLED_APPS = ['corsheaders', ...]
+MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware', ...]
 
-### Frontend scaffold
-- Added `frontend/` directory with minimal Vite setup and no test files:
-  - `frontend/package.json` with scripts: `dev`, `build`, `preview`
-  - `frontend/vite.config.js` (host 0.0.0.0, port 5173)
-  - `frontend/index.html` — Calendar page
-  - `frontend/matrix.html` — Eisenhower Matrix page
-  - `frontend/src/main.js` — React Big Calendar (day/week/month/agenda) with DnD/time-blocking hooks
-  - `frontend/src/matrix.js` — Basic Eisenhower Matrix grid with DnD (interactjs)
+# Статические файлы React
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+    BASE_DIR / 'frontend/dist',  # React build files
+]
 
-### Python dependencies added (requirements.txt)
-- API and filters: `djangorestframework`, `django-filter`, `django-cors-headers`
-- Dates/recurrence: `python-dateutil`, `pendulum`, `django-recurrence`, `icalendar`
-- Realtime: `channels`, `channels-redis`
-- Background jobs: `celery`, `django-celery-beat`, `django-celery-results`, `redis`
-- Tags and API docs: `django-taggit`, `drf-spectacular`
-
-### How to run (single command)
-- Start all services (backend, db, frontend):
+# CORS настройки
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+CORS_ALLOW_CREDENTIALS = True
 ```
-docker-compose up --build -d
+
+#### Vite Configuration (frontend/vite.config.ts)
+```typescript
+server: {
+  proxy: {
+    '/task_tracker/api': {
+      target: 'http://localhost:8000',
+      changeOrigin: true,
+    },
+    '/static': {
+      target: 'http://localhost:8000',
+      changeOrigin: true,
+    }
+  }
+}
 ```
-- Open:
-  - Backend: `http://<host-ip>:8000/` (e.g., `http://192.168.0.146:8000/`)
-  - Frontend Calendar: `http://<host-ip>:5173/`
-  - Eisenhower Matrix: `http://<host-ip>:5173/matrix.html`
 
-### Useful commands
-- Tail logs: `docker-compose logs -f frontend` or `docker-compose logs -f web`
-- Restart a service: `docker-compose restart frontend`
-- Stop all: `docker-compose down`
+### Разработка и деплой
 
-### Notes
-- Frontend dev server listens on `0.0.0.0` and exposes ports 5173/3000/8080. Primary dev port is 5173.
-- If you need to install extra JS libs inside the running container, use “Allow pasting” in terminal and then paste the needed npm command, e.g.:
-  - `npm i react-big-calendar moment interactjs`
-- Next steps (optional): add Redis service, wire `channels` and ASGI (Daphne) for realtime, and add Celery worker/beat for reminders.
+#### Development режим
+1. **Django**: `python manage.py runserver` (порт 8000)
+2. **Vite**: `cd frontend && npm run dev` (порт 5173)
+3. **Access**: `http://localhost:8000/task_tracker/dashboard/`
 
----
+#### Production режим
+1. **Build React**: `cd frontend && npm run build`
+2. **Django**: автоматически обслуживает статические файлы из `frontend/dist/`
 
-## Continuation prompt (paste into assistant to resume context)
+### Преимущества Hybrid Approach
+- **Гибкость**: Простые страницы быстро разрабатываются на Django, сложные - на React
+- **Производительность**: React только там, где нужен современный UI
+- **Совместимость**: Существующий Django код не требует переписывания
+- **Масштабируемость**: Можно постепенно мигрировать страницы на React
 
-You are continuing work on the Offerland Django project running in Docker. Keep all responses in English. Repository specifics:
-- Single `docker-compose.yml` orchestrates: `web` (Django 5.1), `db` (Postgres 17), `frontend` (Node 20, Vite dev server). Backend serves at `http://<host-ip>:8000`, frontend at `http://<host-ip>:5173`.
-- Frontend scaffold exists under `frontend/` with React Big Calendar (day/week/month/agenda) and an Eisenhower Matrix page using interactjs. No test files should be added.
-- Backend `requirements.txt` includes DRF, django-filter, django-cors-headers, python-dateutil, pendulum, django-recurrence, icalendar, channels, channels-redis, celery, django-celery-beat, django-celery-results, redis, django-taggit, drf-spectacular.
-- Do not close popups when clicking outside them. Do not add any test files. If something must be tested in JS, instruct the exact command to paste after “Allow pasting”.
+## 🔧 Frontend Configuration & Dependencies
 
-Goals to continue:
-1) Add DRF endpoints for tasks and time blocks (create/update via drag/resize/drop), including recurrence expansion when needed.
-2) Connect frontend calendar to these endpoints (load events, create on select, update on move/resize).
-3) Add Eisenhower Matrix persistence (importance/urgency) and drag-to-quadrant updates.
-4) Plan next: optional Channels (WebSockets) for realtime updates and Celery for reminders.
+> **Note**: For debugging instructions and troubleshooting, see **FRONTEND_DEBUG_GUIDE.md**
+
+### Package.json Dependencies
+```json
+{
+  "dependencies": {
+    "chart.js": "^4.4.0",
+    "interactjs": "1.10.27",
+    "moment": "^2.30.1",
+    "primereact": "^10.0.0",
+    "primeicons": "^7.0.0",
+    "quill": "^1.3.7",
+    "react": "^19.1.0",
+    "react-big-calendar": "^1.19.4",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^4.7.0",
+    "react-devtools": "^4.28.0",
+    "typescript": "^5.9.2",
+    "vite": "5.4.10"
+  }
+}
+```
+
+### Vite Configuration (frontend/vite.config.ts)
+```typescript
+export default defineConfig({
+  plugins: [react({
+    jsxRuntime: 'automatic',
+    jsxImportSource: 'react'
+  })],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    headers: {
+      'Cross-Origin-Opener-Policy': 'unsafe-none',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    },
+    proxy: {
+      '/task-tracker/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/static': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  },
+  optimizeDeps: {
+    include: ['primereact', 'primereact/button', 'primereact/menu'],
+    exclude: ['chart.js/auto', 'quill'],
+    force: true
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
+  }
+})
+```
+
+### TypeScript Configuration (frontend/tsconfig.json)
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+```
+
+## 🐳 Docker Configuration
+
+### Frontend Docker Setup
+```dockerfile
+# Dockerfile.frontend
+FROM node:20-alpine
+WORKDIR /app-frontend
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
+EXPOSE 5173
+CMD ["npm", "run", "dev"]
+```
+
+### Docker Compose Commands
+```bash
+# Rebuild frontend container
+docker compose build frontend --no-cache
+
+# Start frontend container
+docker compose up frontend -d
+
+# Restart frontend container
+docker compose restart frontend
+
+# View frontend logs
+docker logs offerland-frontend --tail=10
+
+# Clear Docker cache
+docker system prune -f
+```
+
+## 🔧 Troubleshooting Commands
+
+### Dependency Management
+```bash
+# Install new dependency
+docker compose exec frontend npm install [package-name]
+
+# Remove problematic dependency
+docker compose exec frontend npm uninstall [package-name]
+
+# Check installed packages
+docker compose exec frontend npm list
+
+# Clear npm cache
+docker compose exec frontend npm cache clean --force
+```
+
+### Vite Development Server
+```bash
+# Check if Vite is running
+curl -I http://localhost:5173/
+
+# Check PrimeReact components
+curl -I http://localhost:5173/node_modules/primereact/button/Button.js
+
+# Check PrimeIcons CSS
+curl -I http://localhost:5173/node_modules/primeicons/primeicons.css
+
+# Check font files
+curl -I http://localhost:5173/node_modules/primeicons/fonts/primeicons.woff2
+```
+
+### Browser Testing Commands
+```javascript
+// Check React JSX transform
+console.log('React JSX transform:', typeof React === 'undefined' ? 'Modern JSX working' : 'Old transform');
+
+// Check PrimeIcons loading
+console.log('PrimeIcons loaded:', document.fonts.check('16px primeicons'));
+
+// Check PrimeReact components
+console.log('PrimeReact buttons:', document.querySelectorAll('.p-button').length);
+
+// Check SubMenuSection
+console.log('SubMenuSection:', document.getElementById('react-submenu-section'));
+```
+
+## 📋 Known Working Configurations
+
+### Successful Vite optimizeDeps Configuration
+```typescript
+optimizeDeps: {
+  include: ['primereact', 'primereact/button', 'primereact/menu'],
+  exclude: ['chart.js/auto', 'quill'],
+  force: true
+}
+```
+
+### Working CORS Headers for IP Access
+```typescript
+headers: {
+  'Cross-Origin-Opener-Policy': 'unsafe-none',
+  'Cross-Origin-Embedder-Policy': 'unsafe-none',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+}
+```
+
+### Modern JSX Transform Setup
+```typescript
+// Vite config
+plugins: [react({
+  jsxRuntime: 'automatic',
+  jsxImportSource: 'react'
+})]
+
+// TypeScript config
+{
+  "jsx": "react-jsx",
+  "jsxImportSource": "react"
+}
+```
+
+
 

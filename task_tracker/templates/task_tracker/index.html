@@ -1,5 +1,52 @@
 {% extends "task_tracker/base.html" %}
 
+{% load static %}
+{% block extra_head %}
+<style>
+/* Повний PrimeIcons CSS з локальними шрифтами - версія 2 */
+@font-face {
+  font-family: 'primeicons';
+  src: url('{% static "css/fonts/primeicons.woff2" %}?v=2') format('woff2'),
+       url('{% static "css/fonts/primeicons.woff" %}?v=2') format('woff'),
+       url('{% static "css/fonts/primeicons.ttf" %}?v=2') format('truetype'),
+       url('{% static "css/fonts/primeicons.eot" %}?v=2') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.pi {
+  font-family: 'primeicons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.pi-filter:before { content: "\e900"; }
+.pi-plus:before { content: "\e901"; }
+.pi-play:before { content: "\e902"; }
+.pi-pencil:before { content: "\e903"; }
+.pi-info-circle:before { content: "\e904"; }
+.pi-users:before { content: "\e905"; }
+.pi-send:before { content: "\e906"; }
+.pi-calendar:before { content: "\e907"; }
+.pi-clock:before { content: "\e908"; }
+.pi-calendar-plus:before { content: "\e909"; }
+.pi-briefcase:before { content: "\e90a"; }
+.pi-check:before { content: "\e90b"; }
+.pi-archive:before { content: "\e90c"; }
+.pi-check-circle:before { content: "\e90d"; }
+.pi-exclamation-triangle:before { content: "\e90e"; }
+.pi-user:before { content: "\e90f"; }
+.pi-file-edit:before { content: "\e910"; }
+</style>
+{% endblock %}
+
 {% block task_content %}
 <section class="container task_tracker_sides_separator">
     <div class="task_tracker_left_side_section">
@@ -108,23 +155,12 @@
         </div>
     </div>
     <div class="task_tracker_right_side_section">
-        <div class="task_tracker_sub_menu_section">
-            <button class="task_tracker_sub_menu_filter_btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#282d3b" stroke-width="2"/>
-                    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="#282d3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                  
-            </button>
-            <div class="task_tracker_sub_menu_scrollable_container">
-                <div class="task_tracker_sub_menu_navigation_items">
-                    <button class="task_tracker_sub_menu_nav_btn">Business support</button>
-                    <button class="task_tracker_sub_menu_nav_btn">Personal support</button>
-                </div>
+        <!-- React SubMenu Section will render here -->
+        <div id="react-submenu-section">
+            <div style="padding: 20px; text-align: center; color: #666;">
+                <h4>Loading SubMenu...</h4>
+                <p>React SubMenu component is loading...</p>
             </div>
-            <button class="task_tracker_sub_menu_add_btn">
-                <span class="task_tracker_add_icon">+</span>
-            </button>
         </div>
         <div class="task_tracker_right_side_sub_cat_menu" id="sub-cat-menu">
             <!-- Subcategories will be populated by JavaScript based on selected category -->
@@ -137,24 +173,24 @@
             <div class="task_tracker_datetime_section">
                 <div class="task_tracker_datetime_left">
                     <div class="task_tracker_datetime_row_1">
-                        <span class="task_tracker_day_name">Friday</span>
+                        <span class="task_tracker_day_name" id="day-name">Sunday</span>
                         <span class="task_tracker_weather_icon">⛅</span>
                     </div>
                     <div class="task_tracker_datetime_row_2">
-                        <span class="task_tracker_day_number">12</span>
+                        <span class="task_tracker_day_number" id="day-number">21</span>
                     </div>
                     <div class="task_tracker_datetime_row_3">
-                        <span class="task_tracker_month_name">SEPTEMBER</span>
+                        <span class="task_tracker_month_name" id="month-name">SEPTEMBER</span>
                     </div>
                 </div>
                 <div class="task_tracker_datetime_divider_center"></div>
                 <div class="task_tracker_datetime_right">
                     <div class="task_tracker_datetime_right_left">
                         <div class="time_row_1">
-                            <span class="task_tracker_current_time">12.40</span>
+                            <span class="task_tracker_current_time" id="current-time"></span>
                         </div>
                         <div class="time_row_2">
-                            <span class="task_tracker_location">London</span>
+                            <span class="task_tracker_location" id="location">London</span>
                         </div>
                     </div>
                     <div class="task_tracker_datetime_right_right">

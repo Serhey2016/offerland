@@ -3,7 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react({
-    fastRefresh: false
+    fastRefresh: false,
+    jsxRuntime: 'automatic', // Enable modern JSX transform
+    jsxImportSource: 'react' // Ensure React JSX import source
   })],
   server: {
     host: '0.0.0.0',
@@ -21,18 +23,23 @@ export default defineConfig({
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     },
+    cors: {
+      origin: ['http://localhost:8000', 'http://192.168.0.146:8000', 'http://192.168.0.146:5173'],
+      credentials: true
+    },
     sourcemapIgnoreList: false,
     proxy: {
       '/task-tracker/api': {
-        target: 'http://localhost:8000',
+        target: 'http://192.168.0.146:8000',
         changeOrigin: true,
         secure: false,
       },
       '/static': {
-        target: 'http://localhost:8000',
+        target: 'http://192.168.0.146:8000',
         changeOrigin: true,
         secure: false,
       }
+      // Removed node_modules proxy - Vite should handle these directly
     }
   },
   build: {
@@ -54,8 +61,8 @@ export default defineConfig({
     __VUE_PROD_DEVTOOLS__: false
   },
   optimizeDeps: {
-    include: ['primereact'],
-    exclude: ['chart.js/auto', 'quill'],
+    include: ['primereact', 'primereact/button', 'primereact/menu'],
+    exclude: ['chart.js/auto', 'quill', 'primeicons'],
     force: true
   },
   resolve: {
@@ -66,7 +73,8 @@ export default defineConfig({
     }
   },
   publicDir: '../static',
-  assetsInclude: ['**/*.woff', '**/*.woff2', '**/*.ttf']
+  assetsInclude: ['**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.eot', '**/*.svg'],
+  assetsInlineLimit: 0 // Don't inline font files
 })
 
 

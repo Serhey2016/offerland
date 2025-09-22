@@ -1,7 +1,7 @@
-import React from 'react'
+// React import removed - using modern JSX transform
 import TaskDesign from '../TaskDesign'
 
-const InboxView: React.FC = () => {
+const InboxView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="touchpoint-container">

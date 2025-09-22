@@ -50,12 +50,6 @@ function cacheElements() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 JS: DOM Content Loaded - Starting initialization');
-    
-    // Добавляем глобальный слушатель событий для отладки
-    window.addEventListener('expandableMenuClick', function(event) {
-        console.log('🌐 JS: Global expandableMenuClick event received', event.detail);
-    });
     
     // Performance tip: Cache DOM elements once at startup
     cacheElements();
@@ -209,26 +203,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Left sidebar submenu functionality
     function initSidebarSubmenus() {
-        console.log('🔧 JS: Initializing sidebar submenus');
-        
         // Add click handlers for expandable menu items
         const expandableButtons = document.querySelectorAll('.task_tracker_menu_item.expandable');
-        console.log('🔍 JS: Found expandable buttons', expandableButtons.length);
         
         expandableButtons.forEach((button, index) => {
-            console.log(`🔘 JS: Adding listener to button ${index}`, button);
-            
             // Проверяем, есть ли уже обработчик
             const hasExistingHandler = button.onclick !== null;
-            console.log(`🔍 JS: Button ${index} already has onclick:`, hasExistingHandler);
             
             button.addEventListener('click', function(e) {
-                console.log('🎯 JS: Expandable button clicked - EVENT FIRED!', { 
-                    category: this.getAttribute('data-category'), 
-                    button: this,
-                    event: e
-                });
-                
                 e.preventDefault();
                 e.stopPropagation();
                 
@@ -239,31 +221,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     const customEvent = new CustomEvent('expandableMenuClick', {
                         detail: { category: category }
                     });
-                    console.log('📡 JS: Dispatching expandableMenuClick event', customEvent);
                     window.dispatchEvent(customEvent);
                 } else {
                     console.error('❌ JS: No category found for button', this);
                 }
             });
-            
-            // Проверяем, что обработчик добавился
-            console.log(`✅ JS: Event listener added to button ${index}`);
         });
         
         // Add click handlers for non-expandable menu items
         const nonExpandableButtons = document.querySelectorAll('.task_tracker_menu_item:not(.expandable)');
-        console.log('🔍 JS: Found non-expandable buttons', nonExpandableButtons.length);
         
         nonExpandableButtons.forEach((button, index) => {
-            console.log(`🔘 JS: Adding listener to non-expandable button ${index}`, button);
             
             button.addEventListener('click', function(e) {
-                console.log('🎯 JS: Non-expandable button clicked - EVENT FIRED!', { 
-                    category: this.getAttribute('data-category'), 
-                    button: this,
-                    event: e
-                });
-                
                 e.preventDefault();
                 e.stopPropagation();
                 
@@ -274,29 +244,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     const customEvent = new CustomEvent('expandableMenuClick', {
                         detail: { category: category }
                     });
-                    console.log('📡 JS: Dispatching expandableMenuClick event for non-expandable', customEvent);
                     window.dispatchEvent(customEvent);
                 } else {
                     console.error('❌ JS: No category found for non-expandable button', this);
                 }
             });
-            
-            console.log(`✅ JS: Event listener added to non-expandable button ${index}`);
         });
 
         // Handle submenu item clicks
         const submenuItems = document.querySelectorAll('.task_tracker_submenu_item');
-        console.log('🔍 JS: Found submenu items', submenuItems.length);
         
         submenuItems.forEach((item, index) => {
-            console.log(`🔘 JS: Adding listener to submenu item ${index}`, item);
             
             item.addEventListener('click', function() {
-                console.log('🎯 JS: Submenu item clicked - EVENT FIRED!', { 
-                    subcategory: this.getAttribute('data-subcategory'), 
-                    item: this
-                });
-                
                 // Remove active state from all submenu items
                 submenuItems.forEach(subItem => subItem.classList.remove('active'));
                 // Add active state to clicked item
@@ -306,8 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const subcategory = this.getAttribute('data-subcategory');
                 const parentCategory = this.closest('.task_tracker_menu_item_container').querySelector('.task_tracker_menu_item').getAttribute('data-category');
                 
-                console.log('📊 JS: Submenu click details', { parentCategory, subcategory });
-                
                 // Dispatch custom event to React component
                 const customEvent = new CustomEvent('submenuItemClick', {
                     detail: { 
@@ -315,19 +273,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         subcategory: subcategory 
                     }
                 });
-                console.log('📡 JS: Dispatching submenuItemClick event', customEvent);
                 window.dispatchEvent(customEvent);
             });
-            
-            console.log(`✅ JS: Event listener added to submenu item ${index}`);
         });
         
     }
     
     // Initialize sidebar submenus
-    console.log('🔧 JS: About to initialize sidebar submenus');
     initSidebarSubmenus();
-    console.log('✅ JS: Sidebar submenus initialized');
     
     // Sub-category menu functionality
     function initSubCategoryMenu() {

@@ -9,6 +9,7 @@ import LockbookView from './views/LockbookView'
 import ArchiveView from './views/ArchiveView'
 import ContactsView from './views/subcategories/ContactsView'
 import FavoritesView from './views/subcategories/FavoritesView'
+import SubMenuSection from './SubMenuSection'
 import {
   Category,
   Subcategory,
@@ -32,13 +33,8 @@ const TaskTracker = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(CATEGORIES.AGENDA)
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('')
   const [isUpdating, setIsUpdating] = useState(false)
+  const [renderKey, setRenderKey] = useState(0)
 
-  // Debug logging
-  // console.log('🔄 TaskTracker: Component rendered', {
-  //   selectedCategory,
-  //   selectedSubcategory,
-  //   isUpdating
-  // })
 
   // Helper function to update subcategory display in center
 
@@ -103,20 +99,15 @@ const TaskTracker = () => {
   // Handle expandable menu clicks
   const handleExpandableMenuClick = (event: CustomEvent<CategoryChangeEventDetail>): void => {
     const category = event.detail.category
-    console.log('🎯 TaskTracker: Expandable menu clicked', { category, isUpdating })
-    console.log('📡 TaskTracker: Event received:', event)
     
     // Prevent multiple simultaneous updates
     if (isUpdating) {
-      console.log('⏸️ TaskTracker: Update blocked - already updating')
       return
     }
     
     setIsUpdating(true)
     
     try {
-      console.log('✅ TaskTracker: Starting state update', { category })
-      
       // Update React state
       setSelectedCategory(category)
       setSelectedSubcategory('')
@@ -125,8 +116,6 @@ const TaskTracker = () => {
       updateActiveMenuItems(category)
       toggleSubmenus(category)
       updateSubcategoryDisplay(category)
-      
-      console.log('✅ TaskTracker: State updated successfully')
       
       // Dispatch event to sync with nav menu
       const customEvent = new CustomEvent('taskTrackerCategoryChange', {
@@ -211,13 +200,11 @@ const TaskTracker = () => {
   const handleDirectMenuClick = (event: Event): void => {
     const target = event.target as Element
     const menuItem = target.closest('.task_tracker_menu_item')
-    console.log('🖱️ TaskTracker: Direct menu click detected', { target, menuItem })
     
     if (menuItem) {
       const menuText = menuItem.querySelector('.task_tracker_menu_item_text')
       if (menuText) {
         const category = menuText.textContent?.trim() as Category
-        console.log('📝 TaskTracker: Menu text found', { category })
         
         // Only handle non-expandable categories
         const nonExpandableCategories: Category[] = ['Someday', 'Projects']
@@ -260,18 +247,37 @@ const TaskTracker = () => {
     }
   }
 
+  // Handle submenu filter events
+  const handleSubMenuFilter = (event: CustomEvent): void => {
+    const { category, filters } = event.detail
+    console.log('SubMenu Filter:', { category, filters })
+    // TODO: Implement filter logic based on selected filters
+  }
+
+  // Handle submenu add events
+  const handleSubMenuAdd = (event: CustomEvent): void => {
+    const { category, itemType } = event.detail
+    console.log('SubMenu Add:', { category, itemType })
+    // TODO: Implement add logic based on item type
+  }
+
+  // Handle submenu navigation events
+  const handleSubMenuNavigation = (event: CustomEvent): void => {
+    const { category, item, itemId } = event.detail
+    console.log('SubMenu Navigation:', { category, item, itemId })
+    // TODO: Implement navigation logic
+  }
+
   // Initialize and manage all event listeners
   useEffect(() => {
-    console.log('🚀 TaskTracker: Initializing event listeners')
-    console.log('🔍 TaskTracker: Current state:', { selectedCategory, selectedSubcategory, isUpdating })
-    
     // Add all event listeners
     window.addEventListener('expandableMenuClick', handleExpandableMenuClick as EventListener)
     window.addEventListener('submenuItemClick', handleSubmenuItemClick as EventListener)
     window.addEventListener('navMenuCategoryChange', handleNavMenuChange as EventListener)
+    window.addEventListener('subMenuFilter', handleSubMenuFilter as EventListener)
+    window.addEventListener('subMenuAdd', handleSubMenuAdd as EventListener)
+    window.addEventListener('subMenuNavigation', handleSubMenuNavigation as EventListener)
     document.addEventListener('click', handleDirectMenuClick)
-    
-    console.log('✅ TaskTracker: Event listeners added')
     
     // Initialize task tracker menu
     const taskTrackerMenuItems = document.querySelectorAll('.task_tracker_menu_item')
@@ -300,6 +306,9 @@ const TaskTracker = () => {
       window.removeEventListener('expandableMenuClick', handleExpandableMenuClick as EventListener)
       window.removeEventListener('submenuItemClick', handleSubmenuItemClick as EventListener)
       window.removeEventListener('navMenuCategoryChange', handleNavMenuChange as EventListener)
+      window.removeEventListener('subMenuFilter', handleSubMenuFilter as EventListener)
+      window.removeEventListener('subMenuAdd', handleSubMenuAdd as EventListener)
+      window.removeEventListener('subMenuNavigation', handleSubMenuNavigation as EventListener)
       document.removeEventListener('click', handleDirectMenuClick)
     }
   }, [])
@@ -308,6 +317,7 @@ const TaskTracker = () => {
   useEffect(() => {
     if (selectedCategory) {
       updateMenuStates(selectedCategory, selectedSubcategory)
+      setRenderKey(prev => prev + 1) // Update render key to prevent duplicate keys
     }
   }, [selectedCategory, selectedSubcategory])
 
@@ -356,8 +366,15 @@ const TaskTracker = () => {
 
   return React.createElement('div', { 
     className: 'react-task-tracker',
-    key: `${selectedCategory}-${selectedSubcategory}`
+    key: `task-tracker-${renderKey}`
   },
+    React.createElement(SubMenuSection, {
+      selectedCategory,
+      selectedSubcategory,
+      onFilterClick: () => console.log('Filter clicked'),
+      onAddClick: () => console.log('Add clicked'),
+      onNavigationItemClick: (item) => console.log('Navigation clicked:', item)
+    }),
     renderSubcategoryContent() || renderMainContent()
   )
 }

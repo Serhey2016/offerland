@@ -2,6 +2,24 @@
 
 ## 🚀 Debug Workflow Rules
 
+### ⚠️ CRITICAL: FRONTEND_DEBUG_GUIDE.md Purpose & Rules
+- **THIS FILE IS FOR DEBUGGING ONLY** - not for system documentation or configuration
+- **NEVER add system configurations** - use SYSTEM_DOCUMENTATION.md for that
+- **NEVER add dependency lists** - use SYSTEM_DOCUMENTATION.md for that
+- **NEVER add Docker/Vite configs** - use SYSTEM_DOCUMENTATION.md for that
+- **ONLY document debugging methods, errors, and solutions** - keep focus on troubleshooting
+
+### ⚠️ CRITICAL: FRONTEND_DEBUG_GUIDE.md Editing Rules
+- **NEVER edit this file during active debugging** - it's a reference guide only
+- **ONLY update this file AFTER successfully resolving problems** - document solutions for future use
+- **ADD recommendations and improvements** - suggest what information would be useful to add
+- **DOCUMENT successful solutions** - record what worked and what didn't
+- **PRESERVE existing structure** - maintain the current organization and format
+
+### 📚 Related Documentation
+- **SYSTEM_DOCUMENTATION.md** - System configuration, dependencies, and setup
+- **DEVELOPMENT_RULES.md** - Development workflow and coding standards
+
 ### ⚠️ CRITICAL: No Test Files Rule
 - **NEVER create test files** during debugging process
 - **ALWAYS work with existing files** and current codebase
@@ -91,6 +109,12 @@
 - **isUpdating**: Should be false
 - **Event Listeners**: Should be attached
 
+**Check JSX Transform Status:**
+- **Modern JSX**: Components should use automatic JSX transform (no React import needed)
+- **JSX Runtime**: Check if `react/jsx-runtime` functions are being used
+- **Import Analysis**: Verify no unused React imports in components
+- **Transform Warnings**: Look for "outdated JSX transform" warnings in console
+
 #### Step 3: DOM Inspection
 **Elements Tab Check:**
 - React mount point: `#react-task-tracker` exists
@@ -141,12 +165,19 @@
 - ❌ TypeScript compilation errors - Code issues
 - ❌ Network errors - Resource loading problems
 - ❌ Component crashes - React rendering issues
+- ❌ JSX Transform errors - Outdated JSX configuration
+- ❌ `react/jsx-runtime` import errors - JSX runtime not available
+- ❌ `PropTypes module does not provide default export` - Missing prop-types dependency
+- ❌ `React is not defined` - Using React.createElement without React import
+- ❌ `PrimeIcons 404 errors` - Font files not loading correctly
 
 #### Warning Errors (Monitor)
 - ⚠️ Deprecated API usage - Future compatibility
 - ⚠️ Performance warnings - Optimization needed
 - ⚠️ Console warnings - Non-critical issues
 - ⚠️ Network timeouts - Slow loading
+- ⚠️ "Outdated JSX transform" warning - Upgrade to modern JSX transform
+- ⚠️ Unused React imports - Clean up after JSX transform upgrade
 
 #### Info Messages (Track)
 - ℹ️ Initialization logs - Normal operation
@@ -222,6 +253,39 @@ docker logs -f offerland-frontend
 
 # Enter container
 docker exec -it offerland-frontend sh
+```
+
+#### JSX Transform Debug Commands
+```javascript
+// Check JSX Transform Status
+// Look in Sources tab for compiled JSX code patterns:
+
+// OLD Transform (Classic) - Should NOT see this:
+// React.createElement('div', { className: 'test' }, 'Hello')
+
+// NEW Transform (Automatic) - Should see this:
+// import {jsx as _jsx} from 'react/jsx-runtime'
+// _jsx('div', { className: 'test', children: 'Hello' })
+
+// Check for unused React imports
+document.querySelectorAll('script[type="module"]')
+// Look for imports that are no longer needed
+
+// Verify JSX runtime is available
+console.log('JSX Runtime available:', typeof window !== 'undefined' && window.React)
+```
+
+#### PropTypes Debug Commands
+```javascript
+// Check if PropTypes is available
+console.log('PropTypes available:', typeof PropTypes !== 'undefined');
+
+// Check for PropTypes import errors in Network tab
+// Look for: /node_modules/prop-types/index.js?v=...
+// Should return 200 OK, not 404 or import errors
+
+// Verify prop-types dependency is installed
+// In container: npm list prop-types
 ```
 
 ### Phase 5: Debug Report Format
@@ -315,6 +379,9 @@ Browser: [Browser version]
 - ✅ State updates successful
 - ✅ UI responds correctly
 - ✅ TypeScript compilation clean
+- ✅ Modern JSX transform working (no "outdated JSX transform" warnings)
+- ✅ No unused React imports in components
+- ✅ JSX runtime functions properly imported from `react/jsx-runtime`
 
 ### Debug Failure:
 - ❌ Missing initialization logs
@@ -323,6 +390,9 @@ Browser: [Browser version]
 - ❌ State updates failing
 - ❌ UI not responding
 - ❌ TypeScript errors
+- ❌ "Outdated JSX transform" warnings in console
+- ❌ Unused React imports causing bundle bloat
+- ❌ JSX runtime import errors
 
 ## 🎯 Quick Debug Checklist
 
@@ -428,16 +498,19 @@ console.log('TEMPORARY DEBUG:', { variable, state, props });
 - [ ] **Sources tab** - source maps enabled
 - [ ] **Network tab** - monitoring requests
 - [ ] **Console cleared** (Ctrl+L)
+- [ ] **JSX Transform** - modern JSX transform enabled in config
+- [ ] **TypeScript config** - `jsx: 'react-jsx'` and `jsxImportSource: 'react'`
 
 ### Debug Process (In Order):
 1. [ ] **React DevTools** - Check component state
-2. [ ] **Sources Tab** - Set breakpoints
+2. [ ] **Sources Tab** - Set breakpoints and check JSX transform
 3. [ ] **Elements Tab** - Inspect DOM
-4. [ ] **Network Tab** - Check API calls
+4. [ ] **Network Tab** - Check API calls and JSX runtime imports
 5. [ ] **Performance Tab** - Profile if needed
-6. [ ] **Ask Permission** - Before adding console.log
-7. [ ] **Conditional Logging** - If console.log needed
-8. [ ] **Remove Logs** - Clean up immediately
+6. [ ] **JSX Transform Check** - Verify modern transform working
+7. [ ] **Ask Permission** - Before adding console.log
+8. [ ] **Conditional Logging** - If console.log needed
+9. [ ] **Remove Logs** - Clean up immediately
 
 ### Success Indicators:
 - ✅ React DevTools shows component tree
@@ -446,8 +519,154 @@ console.log('TEMPORARY DEBUG:', { variable, state, props });
 - ✅ API calls successful in Network tab
 - ✅ No console errors
 - ✅ Clean code (no debug logs)
+- ✅ No "outdated JSX transform" warnings
+- ✅ JSX runtime functions imported correctly
+- ✅ No unused React imports in bundle
 
 ---
 
 **Remember:** Always follow this debug workflow for consistent and effective debugging!
 **Priority:** React DevTools → Browser DevTools → Conditional Logging → Console.log (last resort)
+
+---
+
+## 📝 Recommendations for Future Updates
+
+### What to Add to FRONTEND_DEBUG_GUIDE.md
+
+#### 1. **New Error Patterns**
+- Document new error messages encountered
+- Add solutions that worked for specific problems
+- Include troubleshooting steps for new technologies
+
+#### 2. **Successful Debug Workflows**
+- Record complete debug sequences that worked
+- Document time-saving techniques
+- Add shortcuts for common problems
+
+#### 3. **Browser DevTools Techniques**
+- New debugging methods discovered
+- Console commands that provide useful information
+- Network tab analysis techniques
+
+#### 4. **Performance Debugging**
+- Methods to identify performance bottlenecks
+- Tools for analyzing bundle sizes
+- Techniques for optimizing loading times
+
+### What NOT to Add to FRONTEND_DEBUG_GUIDE.md
+
+#### ❌ **System Documentation**
+- Package.json dependencies
+- Vite configuration files
+- Docker setup instructions
+- TypeScript configuration
+
+#### ❌ **Setup Instructions**
+- Installation commands
+- Environment setup
+- Build configurations
+- Deployment procedures
+
+#### ❌ **Code Examples**
+- Working configurations
+- Complete setup scripts
+- System architecture
+- Infrastructure details
+
+**Use SYSTEM_DOCUMENTATION.md for all system-related information!**
+
+### How to Update This File
+
+1. **Wait until problem is completely resolved**
+2. **Test the solution thoroughly**
+3. **Document the exact steps that worked**
+4. **Add any new insights or techniques**
+5. **Preserve existing structure and organization**
+
+### Example Update Format
+
+```markdown
+## 🔧 New Problem Type Debugging Guide
+
+### Understanding [New Problem Type] Issues
+
+#### Common [Problem Type] Problems
+
+##### 1. [Specific Problem]
+**Symptoms:**
+```
+[Exact error message]
+```
+
+**Causes:**
+- [Root cause 1]
+- [Root cause 2]
+
+**Solutions:**
+1. **[Solution 1]:**
+   ```bash
+   [Exact command that worked]
+   ```
+
+2. **[Solution 2]:**
+   ```typescript
+   // [Configuration that worked]
+   ```
+
+3. **[Solution 3]:**
+   ```bash
+   [Rebuild commands]
+   ```
+```
+
+**Remember:** Only add information after confirming it works in practice!
+
+---
+
+## ⚠️ FINAL RULE: When to Edit This File
+
+### ✅ EDIT ONLY WHEN:
+- **Problem is completely resolved** and tested
+- **Solution is proven to work** in practice
+- **Adding new successful debugging techniques**
+- **Documenting working configurations**
+- **Updating with new error patterns and solutions**
+
+### ❌ NEVER EDIT WHEN:
+- **Actively debugging** a current problem
+- **Problem is not fully resolved** yet
+- **Testing potential solutions** that might not work
+- **Adding untested information** or guesses
+- **Making changes during troubleshooting**
+- **Adding system documentation** - use SYSTEM_DOCUMENTATION.md instead
+- **Adding configuration files** - use SYSTEM_DOCUMENTATION.md instead
+- **Adding dependency lists** - use SYSTEM_DOCUMENTATION.md instead
+
+### 📋 UPDATE CHECKLIST:
+- [ ] Problem completely resolved
+- [ ] Solution tested and verified
+- [ ] All error messages eliminated
+- [ ] Components working as expected
+- [ ] No console errors or warnings
+- [ ] Documentation reflects actual working state
+
+**This file is a DEBUGGING REFERENCE GUIDE ONLY - keep it accurate and useful!**
+
+## 🎯 FILE PURPOSE REMINDER
+
+**FRONTEND_DEBUG_GUIDE.md** is **ONLY** for:
+- ✅ Debugging methods and techniques
+- ✅ Error patterns and solutions
+- ✅ Troubleshooting workflows
+- ✅ Browser DevTools usage
+- ✅ Performance debugging
+
+**FRONTEND_DEBUG_GUIDE.md** is **NOT** for:
+- ❌ System configurations
+- ❌ Dependencies and packages
+- ❌ Docker/Vite setups
+- ❌ Installation instructions
+- ❌ Code examples
+
+**Use SYSTEM_DOCUMENTATION.md for system-related information!**

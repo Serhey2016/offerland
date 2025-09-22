@@ -1,14 +1,16 @@
-# Feed Life - Система меню и взаимодействие с постами
+# Feed Life - Система меню и взаимодействие с постами задачами и проектами.
 
 ## Обзор системы
 
-Система `Feed Life` представляет собой комплексное решение для управления постами в социальной ленте с расширенным функционалом dropdown меню и различными типами постов. 
+Система `Feed Life` 
 
-### Основные типы постов:
-- **Advertising** - рекламные посты
-- **TimeSlot** - временные слоты
-- **Job Search** - поиск работы
-- **Task** - задачи различных типов
+### Основные типы отображаемых елементов:
+Персонально
+- **Task** - задачи
+- **Project** - проекты
+Публично - посты
+- **Announcement** - рекламные посты 
+- **Time slot** - временные слоты
 
 ## Модель Task - основа системы
 
@@ -27,15 +29,18 @@ class Task(models.Model):
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000, blank=True, null=True)
+    photo_link = models.CharField(max_length=2000, blank=True, null=True)
     
     # Временные параметры
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     date_start = models.DateField(null=True, blank=True)
     date_end = models.DateField(null=True, blank=True)
     time_start = models.TimeField(null=True, blank=True)
     time_end = models.TimeField(null=True, blank=True)
     
     # Статус и режим
-    task_mode = models.CharField(max_length=10, choices=TASK_MODE_CHOICES, default='draft')
+    task_mode = models.CharField(max_length=10, choices=TASK_MODE_CHOICES, default='draft', verbose_name='Task mode')
     status = models.ForeignKey('TaskStatus', on_delete=models.SET_NULL, null=True)
     
     # Настройки видимости
@@ -44,11 +49,31 @@ class Task(models.Model):
     hidden = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
     
+    # Дополнительные поля
+    documents = models.CharField(max_length=2000, blank=True, null=True)
+    note = models.TextField(max_length=10000, blank=True, null=True)
+    finance = models.ForeignKey('Finance', on_delete=models.SET_NULL, null=True, blank=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subtasks')
+    
     # Связи
-    hashtags = models.ManyToManyField('joblist.AllTags', through='TaskHashtagRelations')
-    performers = models.ManyToManyField(User, through='PerformersRelations')
-    photos = models.ManyToManyField('PhotoRelations', related_name='tasks')
-    services = models.ManyToManyField('Services', through='ServicesRelations')
+    hashtags = models.ManyToManyField('joblist.AllTags', through='TaskHashtagRelations', blank=True)
+    performers = models.ManyToManyField(User, through='PerformersRelations', blank=True)
+    comments = models.ManyToManyField('Comment', through='CommentTaskRelations', blank=True)
+    photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='tasks')
+    services = models.ManyToManyField('Services', through='ServicesRelations', blank=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Task"
+        verbose_name_plural = "Tasks"
+
+    def delete(self, *args, **kwargs):
+        related_photos = list(self.photos.all())
+        super().delete(*args, **kwargs)
+        for photo in related_photos:
+            photo.delete()
 ```
 
 ### 2. Типы задач (TypeOfTask)
@@ -56,7 +81,7 @@ class Task(models.Model):
 Система поддерживает три основных типа задач:
 
 #### **Tender** (Тендер)
-- **Назначение**: Публичные конкурсы и закупки
+- **Назначение**: Публичные конкурсы на выполнение больших заданий исполнителями
 - **Особенности**: 
   - Открытые для всех исполнителей
   - Фиксированные сроки подачи заявок
@@ -64,46 +89,165 @@ class Task(models.Model):
 - **Использование**: Поиск исполнителей для конкретных проектов
 
 #### **Project** (Проект)
-- **Назначение**: Долгосрочные проекты и сотрудничество
+- **Назначение**: Долгосрочные проекты 
 - **Особенности**:
   - Может быть как публичным, так и приватным
+  - Возможность скрытия от других пользователей
   - Гибкие сроки и условия
   - Возможность создания подзадач (subtasks)
 - **Использование**: Управление сложными проектами с множественными этапами
 
-#### **My Task** (Моя задача)
+#### **Task** (Моя задача)
 - **Назначение**: Личные задачи пользователя
 - **Особенности**:
   - Приватные задачи для личного использования
-  - Возможность скрытия от других пользователей
+  - Изначально после создания личная таска
   - Персональное управление и отслеживание
 - **Использование**: Организация личной работы и планирование
 
-### 3. Жизненный цикл задач
+### 3. Жизненный цикл объектов в Task Tracker
+
+#### 3.1. Категории и подкатегории
+
+**Основные категории:**
+- **Touchpoint** - контакты и связи
+- **Inbox** - входящие задачи и проекты
+- **Agenda** - просмотр задач в расписании
+- **Waiting** - задачи в ожидании от выполнения кем то - кому делегировано
+- **Someday** - задачи на будущее
+- **Projects** - активные проекты
+- **Lock book (Done)** - завершенные задачи и проекты
+- **Archive** - архивированные объекты 
+
+**Подкатегории:**
+- **Touchpoint**: Contacts
+- **Inbox**: Tasks, Projects, Favorites
+- **Waiting**: in progress, Orders, Subscriptions, Published
+- **Lock book (Done)**: Projects, Tasks
+- **Archive**: Projects, Tasks
+
+#### 3.2. Правила перемещения задач
+
+**Задачи могут быть одновременно в нескольких категориях:**
+- В категории **Touchpoint** И в одной из: Inbox, Agenda, Waiting, Someday, Projects, Lockbook (Done), Archive
+- В категории **Projects** (внутри проекта) И в одной из: Inbox, Agenda, Waiting, Someday, Lockbook (Done), Archive
+
+**Задачи могут быть только в одном экземпляре:**
+- В одной из категорий: Inbox, Agenda, Waiting, Someday, Lockbook (Done), Archive
+- Не могут дублироваться между этими категориями
+
+#### 3.3. Правила перемещения проектов
+
+**Проекты могут быть в одной категории:**
+- В одной из: Projects, Done, Archive
+
+**Проекты могут быть одновременно:**
+- В категории **Touchpoint** И в категории **Projects**
+- НЕ могут быть в Touchpoint если находятся в Done или Archive
+
+#### 3.4. Жизненный цикл задач
 
 ```mermaid
-graph LR
-    A[Draft] --> B[Published]
-    B --> C[Archived]
-    C --> A
-    B --> D[Completed]
+graph TD
+    A[Создание задачи] --> B[Inbox]
+    B --> C[Agenda]
+    B --> D[Waiting]
+    B --> E[Someday]
+    B --> F[Projects]
+    B --> G[Lock book Done]
+    B --> H[Archive]
+    
+    C --> D
+    C --> E
+    C --> F
+    C --> G
+    C --> H
+    
     D --> C
+    D --> E
+    D --> F
+    D --> G
+    D --> H
+    
+    E --> C
+    E --> D
+    E --> F
+    E --> G
+    E --> H
+    
+    F --> C
+    F --> D
+    F --> E
+    F --> G
+    F --> H
+    
+    G --> H
+    H --> G
+    
+    I[Touchpoint] -.-> B
+    I -.-> C
+    I -.-> D
+    I -.-> E
+    I -.-> F
+    I -.-> G
+    I -.-> H
 ```
 
-#### **Draft (Черновик)**
-- Задача создана, но не опубликована
-- Видна только создателю
-- Возможность редактирования и настройки
+#### 3.5. Жизненный цикл проектов
 
-#### **Published (Опубликовано)**
-- Задача доступна для просмотра и участия
-- Видна всем (если не приватная)
+```mermaid
+graph TD
+    A[Создание проекта] --> B[Projects]
+    B --> C[Lock book Done]
+    B --> D[Archive]
+    C --> D
+    D --> C
+    
+    E[Touchpoint] -.-> B
+    E -.-> C
+    E -.-> D
+```
+
+#### 3.6. Состояния объектов
+
+**Draft (Черновик)**
+- Объект создан, но не опубликован
+- Виден только создателю
+- Возможность редактирования, перемещения между категориями и настройки
+- Находится в категории Inbox
+
+**Published (Опубликовано)**
+- Объект доступен для просмотра и участия
+- Виден всем (если не приватный)
 - Возможность подачи заявок исполнителями
+- Может быть в любой категории кроме Draft
 
-#### **Archived (Архивировано)**
-- Задача скрыта из активной ленты
+**Archived (Архивировано)**
+- Объект скрыт из активной ленты
 - Сохраняется в базе данных
-- Возможность восстановления в draft
+- Возможность восстановления
+- Находится в категории Archive
+
+#### 3.7. API для перемещения
+
+**Перемещение задачи:**
+
+
+**Перемещение проекта:**
+
+
+
+#### 3.8. Валидация перемещений
+
+**Проверки для задач:**
+- Задача не может быть одновременно в Inbox, Agenda, Waiting, Someday, Lock book Done, Archive
+- Задача может быть в Touchpoint + одна из основных категорий
+- Задача может быть в Projects + одна из основных категорий
+
+**Проверки для проектов:**
+- Проект не может быть одновременно в Projects, Lock book Done, Archive
+- Проект может быть в Touchpoint только если не в Done/Archive
+- Проект может быть в Touchpoint + Projects одновременно
 
 ### 4. Связи и отношения
 
@@ -160,7 +304,7 @@ class PhotoRelations(models.Model):
   - Сохранение заметок
 
 #### Task Management System
-- **Назначение**: Управление задачами (Tender, Project, My Task)
+- **Назначение**: Управление задачами (Tender, Project, Task)
 - **Основные функции**:
   - Создание и редактирование задач
   - Управление статусами и режимами
@@ -170,104 +314,12 @@ class PhotoRelations(models.Model):
 ### 2. Структура HTML
 
 #### Advertising Post Structure
-```html
-<div class="social_feed" data-post-id="{{ advertising.id }}" data-post-type="advertising">
-    <!-- Header с пользователем и меню -->
-    <div class="social_feed_user_name">
-        <div class="advertising_social_feed_menu">
-            <!-- Кнопка меню -->
-            <button class="advertising_social_feed_menu_trigger" id="menu_trigger_{{ advertising.id }}">
-                <svg>⋮</svg>
-            </button>
-            <!-- Dropdown меню -->
-            <div class="advertising_social_feed_overflow_menu" id="overflow_menu_{{ advertising.id }}">
-                <!-- Пункты меню в зависимости от статуса -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Контент поста -->
-    <div class="social_feed_text">{{ advertising.description }}</div>
-    <div class="social_feed_image_gallery_1">
-        <!-- Галерея изображений -->
-    </div>
-    Network error occurred while updating
-    <!-- Действия -->
-    <div class="post_actions">
-        <button class="action_btn">Chat</button>
-        <button class="action_btn">Comments</button>
-        <button class="order_now">Order now</button>
-    </div>
-</div>
-```
 
 #### Task Post Structure
-```html
-<div class="social_feed" data-post-id="{{ task.id }}" data-post-type="task" data-task-type="{{ task.type_of_task.name }}">
-    <!-- Header с пользователем и меню -->
-    <div class="social_feed_user_name">
-        <div class="task_social_feed_menu">
-            <!-- Кнопка меню -->
-            <button class="task_social_feed_menu_trigger" id="menu_trigger_{{ task.id }}">
-                <svg>⋮</svg>
-            </button>
-            <!-- Dropdown меню -->
-            <div class="task_social_feed_overflow_menu" id="overflow_menu_{{ task.id }}">
-                <!-- Пункты меню в зависимости от task_mode -->
-                {% if task.task_mode == 'draft' %}
-                    <div class="menu_item publish" data-action="publish">Publish</div>
-                {% elif task.task_mode == 'published' %}
-                    <div class="menu_item archive" data-action="archive">Archive</div>
-                    <div class="menu_item edit" data-action="edit">Edit</div>
-                {% elif task.task_mode == 'archived' %}
-                    <div class="menu_item unarchive" data-action="unarchive">Unarchive</div>
-                    <div class="menu_item remove" data-action="remove">Remove</div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    
-    <!-- Информация о задаче -->
-    <div class="task_info">
-        <div class="task_type_badge {{ task.type_of_task.name|lower }}">
-            {{ task.type_of_task.name }}
-        </div>
-        <div class="task_dates">
-            <span class="start_date">{{ task.date_start|date:'d.m.Y' }}</span>
-            <span class="end_date">{{ task.date_end|date:'d.m.Y' }}</span>
-        </div>
-    </div>
-    
-    <!-- Контент задачи -->
-    <div class="social_feed_text">{{ task.description }}</div>
-    
-    <!-- Хештеги -->
-    <div class="social_feed_tags">
-        {% for hashtag in task.hashtags.all %}
-            <span class="tag">{{ hashtag.tag }}</span>
-        {% endfor %}
-    </div>
-    
-    <!-- Действия -->
-    <div class="post_actions">
-        <button class="action_btn">Apply</button>
-        <button class="action_btn">Details</button>
-        {% if task.type_of_task.name == 'Tender' %}
-            <button class="tender_btn">Submit Proposal</button>
-        {% endif %}
-    </div>
-</div>
-```
 
-## Система Dropdown Меню
 
-### 1. Принцип работы
 
-#### ID-ориентированный подход
-- Каждый пост имеет уникальный `data-post-id`
-- Кнопка меню: `menu_trigger_{postId}`
-- Dropdown меню: `overflow_menu_{postId}`
-- Все взаимодействия происходят через ID, а не CSS классы
+
 
 #### Состояния постов
 ```javascript
@@ -291,126 +343,33 @@ if (task.task_mode == 'archived') {
 ### 2. Жизненный цикл dropdown
 
 #### Открытие меню
-```javascript
-function openDropdownById(postId) {
-    const dropdown = getOverflowMenuById(postId);
-    if (dropdown) {
-        // Закрываем предыдущий открытый dropdown
-        if (activeDropdown && activeDropdown !== dropdown) {
-            activeDropdown.classList.remove('show');
-        }
-        
-        dropdown.classList.add('show');
-        activeDropdown = dropdown;
-    }
-}
-```
 
 #### Закрытие меню
-```javascript
-function closeDropdownById(postId) {
-    const dropdown = getOverflowMenuById(postId);
-    if (dropdown) {
-        dropdown.classList.remove('show');
-        if (activeDropdown === dropdown) {
-            activeDropdown = null;
-        }
-    }
-}
-```
+
+
 
 #### Автозакрытие при клике вне
-```javascript
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('.advertising_social_feed_menu_trigger') && 
-        !e.target.closest('.advertising_social_feed_overflow_menu')) {
-        closeAllDropdowns();
-    }
-});
-```
+
 
 ### 3. CSS стили dropdown
 
 #### Базовые стили
-```css
-.advertising_social_feed_overflow_menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 120px;
-    z-index: 9999;
-    display: none;
-    overflow: hidden;
-    transition: all 0.2s ease;
-    margin-top: 5px;
-    opacity: 0;
-    transform: translateY(-10px);
-}
-```
+
 
 #### Состояние показа
-```css
-.advertising_social_feed_overflow_menu.show {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-```
+
+
 
 ## Взаимодействие с постами
 
 ### 1. Типы действий
 
 #### Архивирование
-```javascript
-function handleArchiveClick(postId) {
-    const csrfToken = getCookie('csrftoken');
-    
-    // Показываем спиннер
-    const post = getPostById(postId);
-    const originalContent = post.innerHTML;
-    post.innerHTML = `<div class="loading">Archiving post...</div>`;
-    
-    // Отправляем запрос
-    fetch(`/services_and_projects/change_advertising_status/${postId}/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': csrfToken,
-        },
-        body: `adv_mode=archived`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Скрываем пост из ленты
-            post.style.display = 'none';
-            closeDropdownById(postId);
-        } else {
-            // Восстанавливаем контент
-            post.innerHTML = originalContent;
-        }
-    });
-}
-```
 
 #### Публикация
-```javascript
-function handlePublishClick(postId) {
-    // Аналогично архивированию, но с adv_mode=published
-}
-```
 
 #### Разархивирование
-```javascript
-function handleUnarchiveClick(postId) {
-    // Возвращаем в draft: adv_mode=draft
-}
-```
+
 
 ### 2. Обработка ошибок
 
@@ -424,14 +383,7 @@ if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
 ```
 
 #### Восстановление состояния
-```javascript
-.catch(error => {
-    console.error('Error:', error);
-    // Восстанавливаем оригинальный контент
-    post.innerHTML = originalContent;
-    // Показываем ошибку
-});
-```
+
 
 ## Система уведомлений
 
@@ -449,105 +401,36 @@ if (typeof alertify !== 'undefined' && alertify && alertify.notify) {
 ## Защита от повторной загрузки
 
 ### 1. Глобальные флаги
-```javascript
-if (!window.__AdvertisingFeedBootstrapped__) {
-    window.__AdvertisingFeedBootstrapped__ = true;
-    // Инициализация
-}
-```
+
+
 
 ### 2. Проверка существования конфигурации
-```javascript
-if (window.TIMESLOT_FEED_CONFIG) {
-    // TimeSlot Feed already loaded, skipping...
-} else {
-    // Loading TimeSlot Feed...
-}
-```
+
 
 ## Утилиты и диагностика
 
 ### 1. AdvertisingFeedUtils
-```javascript
-window.AdvertisingFeedUtils = {
-    getMenuTriggerById,
-    getOverflowMenuById,
-    getPostById,
-    getAllPostIds,
-    openDropdownById,
-    closeDropdownById,
-    closeAllDropdowns,
-    testDropdown,      // Тестирование dropdown
-    diagnosePage       // Диагностика страницы
-};
-```
+
 
 ### 2. Функции диагностики
-```javascript
-function diagnosePage() {
-    console.log('=== PAGE DIAGNOSIS ===');
-    console.log('All social_feed elements:', document.querySelectorAll('.social_feed'));
-    console.log('All menu trigger elements:', document.querySelectorAll('.advertising_social_feed_menu_trigger'));
-    console.log('All dropdown elements:', document.querySelectorAll('.advertising_social_feed_overflow_menu'));
-    
-    // Проверяем каждый пост
-    const posts = document.querySelectorAll('.social_feed[data-post-id]');
-    posts.forEach((post, index) => {
-        const postId = post.dataset.postId;
-        console.log(`\n--- Post ${index + 1} (ID: ${postId}) ---`);
-        console.log('Post element:', post);
-        console.log('Menu trigger:', getMenuTriggerById(postId));
-        console.log('Dropdown:', getOverflowMenuById(postId));
-        console.log('Post data attributes:', post.dataset);
-    });
-}
-```
+
+
 
 ## Лучшие практики
 
 ### 1. Производительность
-- Использование ID вместо CSS селекторов для быстрого поиска
-- Делегирование событий на уровне документа
-- Защита от повторной загрузки скриптов
+
 
 ### 2. Надежность
-- Проверка существования объектов перед использованием
-- Fallback механизмы для критических функций
-- Обработка ошибок с восстановлением состояния
+
 
 ### 3. UX
-- Плавные анимации открытия/закрытия
-- Автозакрытие при клике вне меню
-- Визуальная обратная связь (спиннеры, уведомления)
+
 
 ## Отладка и тестирование
 
 ### 1. Консольные команды
-```javascript
-// Диагностика страницы
-AdvertisingFeedUtils.diagnosePage();
 
-// Тестирование конкретного dropdown
-AdvertisingFeedUtils.testDropdown(123);
 
-// Закрытие всех dropdown
-AdvertisingFeedUtils.closeAllDropdowns();
-```
-
-### 2. Тестовые кнопки
-- В режиме разработки автоматически добавляются кнопки тестирования
-- Позиционирование: правый верхний угол
-- Функции: Test Dropdown, Diagnose Post
 
 ## Заключение
-
-Система `Feed Life` представляет собой хорошо структурированное решение для управления социальной лентой с:
-
-- **Модульной архитектурой** для разных типов постов
-- **ID-ориентированным подходом** для производительности
-- **Надежной системой dropdown меню** с защитой от ошибок
-- **Комплексной системой уведомлений** с fallback механизмами
-- **Инструментами диагностики** для разработки и отладки
-- **Поддержкой различных типов задач**: Tender, Project, My Task
-
-Система готова к расширению новыми типами постов и функциональностью, сохраняя при этом высокую производительность и надежность.

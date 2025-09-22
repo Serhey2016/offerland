@@ -1,8 +1,8 @@
-import React from 'react'
+// React import removed - using modern JSX transform
 import InfiniteDailyCalendar from '../InfiniteDailyCalendar'
 // CSS styles moved to task_tracker.css
 
-const AgendaView: React.FC = () => {
+const AgendaView = () => {
   // Get current date and generate events for the next 3 days
   const today = new Date()
   const tomorrow = new Date(today)
@@ -99,15 +99,17 @@ const AgendaView: React.FC = () => {
     console.log('Calendar navigated:', { date, view })
   }
 
-  return React.createElement('div', { className: 'agenda-view-container' },
-    React.createElement(InfiniteDailyCalendar, {
-      events: sampleEvents,
-      onSelectEvent: handleSelectEvent,
-      onSelectSlot: handleSelectSlot,
-      onNavigate: handleNavigate,
-      height: 'auto',
-      daysToShow: 3
-    })
+  return (
+    <div className="agenda-view-container">
+      <InfiniteDailyCalendar
+        events={sampleEvents}
+        onSelectEvent={handleSelectEvent}
+        onSelectSlot={handleSelectSlot}
+        onNavigate={handleNavigate}
+        height="auto"
+        daysToShow={3}
+      />
+    </div>
   )
 }
 

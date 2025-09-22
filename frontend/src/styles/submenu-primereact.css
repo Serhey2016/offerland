@@ -1,0 +1,190 @@
+/* PrimeReact SubMenu Integration Styles */
+
+/* Filter Button Container */
+.task_tracker_sub_menu_filter_container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Override PrimeReact Button styles to match existing design */
+.task_tracker_sub_menu_filter_btn.p-button {
+  background: transparent !important;
+  border: none !important;
+  padding: 8px !important;
+  min-width: auto !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 8px !important;
+  color: #282d3b !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.task_tracker_sub_menu_filter_btn.p-button:hover {
+  background: rgba(40, 45, 59, 0.1) !important;
+}
+
+.task_tracker_sub_menu_filter_btn.p-button:focus {
+  box-shadow: 0 0 0 2px rgba(40, 45, 59, 0.2) !important;
+}
+
+.task_tracker_sub_menu_filter_btn.p-button .p-button-icon {
+  font-size: 16px !important;
+  color: #282d3b !important;
+}
+
+/* Add Button Container */
+.task_tracker_sub_menu_add_container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Override PrimeReact Button styles for Add button */
+.task_tracker_sub_menu_add_btn.p-button {
+  background: transparent !important;
+  border: none !important;
+  padding: 8px !important;
+  min-width: auto !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 8px !important;
+  color: #282d3b !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.task_tracker_sub_menu_add_btn.p-button:hover {
+  background: rgba(40, 45, 59, 0.1) !important;
+}
+
+.task_tracker_sub_menu_add_btn.p-button:focus {
+  box-shadow: 0 0 0 2px rgba(40, 45, 59, 0.2) !important;
+}
+
+.task_tracker_sub_menu_add_btn.p-button .p-button-icon {
+  font-size: 18px !important;
+  color: #282d3b !important;
+  font-weight: bold !important;
+}
+
+/* PrimeReact Menu Overrides */
+.task_tracker_filter_menu.p-menu,
+.task_tracker_add_menu.p-menu {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  padding: 4px 0 !important;
+  min-width: 160px !important;
+  z-index: 1000 !important;
+}
+
+.task_tracker_filter_menu.p-menu .p-menuitem,
+.task_tracker_add_menu.p-menu .p-menuitem {
+  margin: 0 !important;
+}
+
+.task_tracker_filter_menu.p-menu .p-menuitem-link,
+.task_tracker_add_menu.p-menu .p-menuitem-link {
+  padding: 8px 16px !important;
+  color: #374151 !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: background-color 0.2s ease !important;
+  border-radius: 0 !important;
+}
+
+.task_tracker_filter_menu.p-menu .p-menuitem-link:hover,
+.task_tracker_add_menu.p-menu .p-menuitem-link:hover {
+  background: #f3f4f6 !important;
+  color: #282d3b !important;
+}
+
+.task_tracker_filter_menu.p-menu .p-menuitem-link:focus,
+.task_tracker_add_menu.p-menu .p-menuitem-link:focus {
+  background: #f3f4f6 !important;
+  box-shadow: none !important;
+}
+
+.task_tracker_filter_menu.p-menu .p-menuitem-link .p-menuitem-icon,
+.task_tracker_add_menu.p-menu .p-menuitem-link .p-menuitem-icon {
+  font-size: 14px !important;
+  color: #6b7280 !important;
+}
+
+.task_tracker_filter_menu.p-menu .p-menuitem-link .p-menuitem-text,
+.task_tracker_add_menu.p-menu .p-menuitem-link .p-menuitem-text {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+/* Mobile-friendly adjustments */
+@media (max-width: 768px) {
+  .task_tracker_filter_menu.p-menu,
+  .task_tracker_add_menu.p-menu {
+    min-width: 140px !important;
+  }
+  
+  .task_tracker_filter_menu.p-menu .p-menuitem-link,
+  .task_tracker_add_menu.p-menu .p-menuitem-link {
+    padding: 12px 16px !important;
+  }
+}
+
+/* Ensure popup menus don't close on outside click (following development rules) */
+.task_tracker_filter_menu.p-menu,
+.task_tracker_add_menu.p-menu {
+  pointer-events: auto !important;
+}
+
+/* Hide default PrimeReact overlay behavior that might interfere */
+.p-menu-overlay {
+  pointer-events: none !important;
+}
+
+/* Custom scrollbar for navigation items */
+.task_tracker_sub_menu_navigation_items::-webkit-scrollbar {
+  height: 4px;
+}
+
+.task_tracker_sub_menu_navigation_items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.task_tracker_sub_menu_navigation_items::-webkit-scrollbar-thumb {
+  background: rgba(40, 45, 59, 0.3);
+  border-radius: 2px;
+}
+
+.task_tracker_sub_menu_navigation_items::-webkit-scrollbar-thumb:hover {
+  background: rgba(40, 45, 59, 0.5);
+}
+
+/* Dragging state styles */
+.task_tracker_sub_menu_navigation_items.dragging {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+
+.task_tracker_sub_menu_navigation_items.dragging .task_tracker_sub_menu_nav_btn {
+  pointer-events: none !important;
+}
+
+/* Active navigation button styles */
+.task_tracker_sub_menu_nav_btn.active {
+  background: rgba(40, 45, 59, 0.1) !important;
+  color: #282d3b !important;
+  font-weight: 600 !important;
+}
+
+.task_tracker_sub_menu_nav_btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: #282d3b;
+  border-radius: 1px;
+}
