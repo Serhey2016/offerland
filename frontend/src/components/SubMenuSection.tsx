@@ -1,3 +1,7 @@
+// @refresh reset
+// JSX preamble for Vite plugin detection
+const JSX_PREAMBLE = <div></div>
+
 import React, { useState, useEffect, useRef } from 'react'
 import { Button } from 'primereact/button'
 import { Menu } from 'primereact/menu'

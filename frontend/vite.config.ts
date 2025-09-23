@@ -3,25 +3,19 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react({
-    fastRefresh: true,
-    jsxRuntime: 'automatic', // Enable modern JSX transform
-    jsxImportSource: 'react' // Ensure React JSX import source
+    fastRefresh: false,
+    include: "**/*.{jsx,tsx}",
+    babel: {
+      plugins: []
+    }
   })],
   server: {
     host: '0.0.0.0',
     port: 5173,
-    cors: true,
-    hmr: true,
+    hmr: false, // Отключаем HMR полностью
     https: false,
     fs: {
       allow: ['..']
-    },
-    headers: {
-      'Cross-Origin-Opener-Policy': 'unsafe-none',
-      'Cross-Origin-Embedder-Policy': 'unsafe-none',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     },
     cors: {
       origin: ['http://localhost:8000', 'http://192.168.0.146:8000', 'http://192.168.0.146:5173'],
@@ -39,7 +33,6 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       }
-      // Removed node_modules proxy - Vite should handle these directly
     }
   },
   build: {
@@ -76,5 +69,3 @@ export default defineConfig({
   assetsInclude: ['**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.eot', '**/*.svg'],
   assetsInlineLimit: 0 // Don't inline font files
 })
-
-

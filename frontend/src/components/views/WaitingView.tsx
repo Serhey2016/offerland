@@ -1,3 +1,7 @@
+// @refresh reset
+// JSX preamble for Vite plugin detection
+const JSX_PREAMBLE = <div></div>
+
 import React from 'react'
 
 const WaitingView: React.FC = () => {

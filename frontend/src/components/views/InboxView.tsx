@@ -1,3 +1,7 @@
+// @refresh reset
+// JSX preamble for Vite plugin detection
+const JSX_PREAMBLE = <div></div>
+
 // React import removed - using modern JSX transform
 import TaskDesign from '../TaskDesign'
 
