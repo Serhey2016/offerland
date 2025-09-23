@@ -5,6 +5,7 @@ const JSX_PREAMBLE = <div></div>
 import React, { useState, useEffect, useRef } from 'react'
 import { Button } from 'primereact/button'
 import { Menu } from 'primereact/menu'
+import { SpeedDial } from 'primereact/speeddial'
 import { Category, Subcategory } from './shared/MenuHandlers'
 import '../styles/submenu-primereact.css'
 
@@ -60,7 +61,6 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
   const [scrollStart, setScrollStart] = useState(0)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const filterMenuRef = useRef<Menu>(null)
-  const addMenuRef = useRef<Menu>(null)
 
   // PrimeReact menu items
   const filterMenuItems = [
@@ -86,7 +86,7 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
     }
   ]
 
-  const addMenuItems = [
+  const speedDialItems = [
     {
       label: 'Add Task',
       icon: 'pi pi-plus',
@@ -104,7 +104,7 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
     },
     {
       label: 'Add Note',
-      icon: 'pi pi-file-edit',
+      icon: 'pi pi-check-circle',
       command: () => handleAddMenuClick('note')
     }
   ]
@@ -177,12 +177,6 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
     }
   }
 
-  // Handle add button click (toggle menu)
-  const handleAddClick = (): void => {
-    if (addMenuRef.current) {
-      addMenuRef.current.toggle(event)
-    }
-  }
 
   // Mouse drag functionality for scrollable container
   const handleMouseDown = (e: React.MouseEvent): void => {
@@ -325,22 +319,22 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
         </div>
       </div>
 
-      {/* Add Button with PrimeReact Menu */}
+      {/* Add Button with PrimeReact SpeedDial */}
       <div className="task_tracker_sub_menu_add_container">
-        <Button
-          className="task_tracker_sub_menu_add_btn"
-          onClick={handleAddClick}
-          icon="pi pi-plus"
-          text
-          aria-label="Add new item"
+        <SpeedDial
+          model={speedDialItems}
+          direction="left"
+          style={{ 
+            position: 'relative',
+            right: 0,
+            top: 'calc(50% - 2rem)',
+            justifyContent: 'center',
+            flexDirection: 'row-reverse'
+          }}
+          buttonClassName="task_tracker_sub_menu_add_btn"
+          showIcon="pi pi-plus"
+          hideIcon="pi pi-times"
         />
-            <Menu
-              model={addMenuItems}
-              popup
-              ref={addMenuRef}
-              className="task_tracker_add_menu"
-              hideOverlaysOnDocumentScrolling={false}
-            />
       </div>
     </div>
   )

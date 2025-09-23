@@ -32,37 +32,103 @@
   color: #282d3b !important;
 }
 
-/* Add Button Container */
+/* Add Button Container with SpeedDial */
 .task_tracker_sub_menu_add_container {
   position: relative;
   display: inline-block;
+  height: 60px; /* Ensure container has enough height for SpeedDial */
 }
 
-/* Override PrimeReact Button styles for Add button */
-.task_tracker_sub_menu_add_btn.p-button {
-  background: transparent !important;
+/* SpeedDial Component Styles */
+.task_tracker_sub_menu_add_container .p-speeddial {
+  position: relative !important;
+  right: 0 !important;
+  top: calc(50% - 2rem) !important;
+  justify-content: center !important;
+  flex-direction: row-reverse !important;
+}
+
+/* SpeedDial Button Styles */
+.task_tracker_sub_menu_add_btn.p-speeddial-button {
+  background: linear-gradient(135deg, #DC7E7E 0%, #C65A5A 100%) !important;
   border: none !important;
-  padding: 8px !important;
-  min-width: auto !important;
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 8px !important;
-  color: #282d3b !important;
-  transition: background-color 0.2s ease !important;
+  border-radius: 50% !important;
+  width: 55px !important;
+  height: 55px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 50 !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+  margin-left: 15px !important;
+  box-shadow: 0 4px 15px rgba(220, 126, 126, 0.4) !important;
+  transition: all 0.3s ease !important;
+  transform: scale(1) !important;
+  line-height: 1 !important;
 }
 
-.task_tracker_sub_menu_add_btn.p-button:hover {
-  background: rgba(40, 45, 59, 0.1) !important;
+.task_tracker_sub_menu_add_btn.p-speeddial-button:hover {
+  background: linear-gradient(135deg, #E89090 0%, #D07070 100%) !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 20px rgba(220, 126, 126, 0.5) !important;
+  cursor: pointer !important;
 }
 
-.task_tracker_sub_menu_add_btn.p-button:focus {
-  box-shadow: 0 0 0 2px rgba(40, 45, 59, 0.2) !important;
+.task_tracker_sub_menu_add_btn.p-speeddial-button:active {
+  transform: scale(0.95) !important;
+  transition: transform 0.1s ease !important;
 }
 
-.task_tracker_sub_menu_add_btn.p-button .p-button-icon {
+.task_tracker_sub_menu_add_btn.p-speeddial-button .p-button-icon {
   font-size: 18px !important;
-  color: #282d3b !important;
+  color: white !important;
   font-weight: bold !important;
+}
+
+/* SpeedDial List Styles */
+.task_tracker_sub_menu_add_container .p-speeddial-list {
+  flex-direction: row-reverse !important;
+  gap: 8px !important;
+}
+
+/* SpeedDial Action Items */
+.task_tracker_sub_menu_add_container .p-speeddial-action {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 50% !important;
+  width: 42px !important;
+  height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.2s ease !important;
+  color: #374151 !important;
+  text-decoration: none !important;
+}
+
+.task_tracker_sub_menu_add_container .p-speeddial-action:hover {
+  background: #f3f4f6 !important;
+  color: #282d3b !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.task_tracker_sub_menu_add_container .p-speeddial-action-icon {
+  font-size: 16px !important;
+  color: inherit !important;
+}
+
+/* SpeedDial Item Animation */
+.task_tracker_sub_menu_add_container .p-speeddial-item {
+  transition: all 0.2s ease !important;
+}
+
+/* Tooltip styles for SpeedDial actions */
+.task_tracker_sub_menu_add_container .p-tooltip {
+  z-index: 1001 !important;
 }
 
 /* PrimeReact Menu Overrides */
