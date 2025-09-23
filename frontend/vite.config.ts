@@ -62,7 +62,9 @@ export default defineConfig({
     alias: {
       'chart.js/auto': 'chart.js',
       'quill': 'quill',
-      '/static': '../static'
+      '/static': '../static',
+      // ✅ Алиас для PrimeIcons шрифтов
+      'primeicons/fonts': '/fonts'
     }
   },
   publicDir: '../static',

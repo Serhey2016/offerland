@@ -9,7 +9,6 @@ import LockbookView from './views/LockbookView'
 import ArchiveView from './views/ArchiveView'
 import ContactsView from './views/subcategories/ContactsView'
 import FavoritesView from './views/subcategories/FavoritesView'
-import SubMenuSection from './SubMenuSection'
 import {
   Category,
   Subcategory,
@@ -368,13 +367,6 @@ const TaskTracker = () => {
     className: 'react-task-tracker',
     key: `task-tracker-${renderKey}`
   },
-    React.createElement(SubMenuSection, {
-      selectedCategory,
-      selectedSubcategory,
-      onFilterClick: () => console.log('Filter clicked'),
-      onAddClick: () => console.log('Add clicked'),
-      onNavigationItemClick: (item) => console.log('Navigation clicked:', item)
-    }),
     renderSubcategoryContent() || renderMainContent()
   )
 }
