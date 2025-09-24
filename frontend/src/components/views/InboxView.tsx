@@ -29,32 +29,26 @@ const InboxView = () => {
   const dropdownMenuItems = [
     {
       label: 'Start date',
-      icon: 'pi pi-calendar',
       command: () => console.log('Start date selected')
     },
     {
       label: 'Due date',
-      icon: 'pi pi-calendar-plus',
       command: () => console.log('Due date selected')
     },
     {
       label: 'Scheduled date',
-      icon: 'pi pi-clock',
       command: () => console.log('Scheduled date selected')
     },
     {
       label: 'Add subtask',
-      icon: 'pi pi-plus',
       command: () => console.log('Add subtask selected')
     },
     {
       label: 'Priority',
-      icon: 'pi pi-exclamation-triangle',
       command: () => console.log('Priority selected')
     },
     {
       label: 'Depends on',
-      icon: 'pi pi-link',
       command: () => console.log('Depends on selected')
     }
   ]
@@ -92,6 +86,7 @@ const InboxView = () => {
               model={dropdownMenuItems}
               popup
               className="task_creation_dropdown_menu"
+              popupAlignment="right"
             />
           </div>
         </div>
