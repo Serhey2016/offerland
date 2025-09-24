@@ -1032,6 +1032,143 @@
   
 }
 
+/* Task Creation Block Styles */
+.task_tracker_task_creation {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.task_creation_input_container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #9EAEBE;
+    border: 2px solid #282D3B;
+    border-radius: 25px;
+    padding: 8px 15px;
+    min-height: 50px;
+}
+
+.task_creation_input {
+    flex: 1;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: #282D3B !important;
+    font-size: 16px !important;
+    font-family: 'League Spartan', sans-serif !important;
+    font-weight: 500 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+.task_creation_input::placeholder {
+    color: #282D3B !important;
+    opacity: 0.7 !important;
+}
+
+.task_creation_confirm_btn {
+    background: #9EAEBE !important;
+    border: 2px solid #282D3B !important;
+    color: #282D3B !important;
+    border-radius: 20px !important;
+    padding: 8px 16px !important;
+    font-family: 'League Spartan', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    min-width: 80px !important;
+    height: 36px !important;
+    transition: all 0.2s ease !important;
+}
+
+.task_creation_confirm_btn:hover {
+    background: #8a9aab !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(40, 45, 59, 0.2) !important;
+}
+
+.task_creation_confirm_btn:active {
+    transform: translateY(0) !important;
+}
+
+.task_creation_dropdown_btn {
+    background: transparent !important;
+    border: none !important;
+    color: #282D3B !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+    padding: 0 !important;
+    min-width: 36px !important;
+}
+
+.task_creation_dropdown_btn:hover {
+    background: rgba(40, 45, 59, 0.1) !important;
+    transform: scale(1.05) !important;
+}
+
+.task_creation_dropdown_btn .p-button-icon {
+    font-size: 16px !important;
+    color: #282D3B !important;
+}
+
+/* Dropdown Menu Styles */
+.task_creation_dropdown_menu .p-menu {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    padding: 4px 0 !important;
+    min-width: 180px !important;
+    z-index: 1000 !important;
+}
+
+.task_creation_dropdown_menu .p-menuitem {
+    margin: 0 !important;
+}
+
+.task_creation_dropdown_menu .p-menuitem-link {
+    padding: 10px 16px !important;
+    color: #374151 !important;
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    transition: background-color 0.2s ease !important;
+    border-radius: 0 !important;
+    font-family: 'League Spartan', sans-serif !important;
+    font-weight: 500 !important;
+}
+
+.task_creation_dropdown_menu .p-menuitem-link:hover {
+    background: #f3f4f6 !important;
+    color: #282d3b !important;
+}
+
+.task_creation_dropdown_menu .p-menuitem-link:focus {
+    background: #f3f4f6 !important;
+    box-shadow: none !important;
+}
+
+.task_creation_dropdown_menu .p-menuitem-link .p-menuitem-icon {
+    font-size: 14px !important;
+    color: #6b7280 !important;
+    width: 16px !important;
+    text-align: center !important;
+}
+
+.task_creation_dropdown_menu .p-menuitem-link:hover .p-menuitem-icon {
+    color: #282d3b !important;
+}
+
 /* Ensure Agenda keeps original styling */
 .task_tracker_list_of_tasks.task_tracker_tasks_sides_separator {
     width: 100%;
