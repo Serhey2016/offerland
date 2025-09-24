@@ -70,18 +70,23 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
       command: () => handleFilterMenuClick('all')
     },
     {
-      label: 'Active Only',
+      label: 'Tasks',
       icon: 'pi pi-check-circle',
       command: () => handleFilterMenuClick('active')
     },
     {
-      label: 'Completed',
-      icon: 'pi pi-check',
+      label: 'Projects',
+      icon: 'pi pi-briefcase',
       command: () => handleFilterMenuClick('completed')
     },
     {
-      label: 'Priority High',
-      icon: 'pi pi-exclamation-triangle',
+      label: 'Announcements',
+      icon: 'pi pi-megaphone',
+      command: () => handleFilterMenuClick('high-priority')
+    },
+    {
+      label: 'Time Slots',
+      icon: 'pi pi-calendar-clock',
       command: () => handleFilterMenuClick('high-priority')
     }
   ]
@@ -89,17 +94,17 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
   const speedDialItems = [
     {
       label: 'Add Task',
-      icon: 'pi pi-plus',
+      icon: 'pi pi-calendar-clock',
       command: () => handleAddMenuClick('task')
     },
     {
       label: 'Add Project',
-      icon: 'pi pi-briefcase',
+      icon: 'pi pi-megaphone',
       command: () => handleAddMenuClick('project')
     },
     {
       label: 'Add Contact',
-      icon: 'pi pi-user',
+      icon: 'pi pi-briefcase',
       command: () => handleAddMenuClick('contact')
     },
     {
