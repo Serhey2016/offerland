@@ -1160,6 +1160,8 @@
     /* Equal left and right padding */
     padding-left: 16px !important;
     padding-right: 16px !important;
+    /* Ensure no default background */
+    background: transparent !important;
 }
 
 .task_creation_dropdown_menu .p-menuitem-link:hover {
@@ -1183,10 +1185,42 @@
     color: #282d3b !important;
 }
 
-/* Remove any persistent hover state */
+/* Remove any persistent hover state and ensure proper reset */
+.task_creation_dropdown_menu .p-menuitem-link {
+    background: transparent !important;
+    color: #374151 !important;
+}
+
+/* Override any PrimeReact default hover states */
 .task_creation_dropdown_menu .p-menuitem-link:not(:hover) {
     background: transparent !important;
     color: #374151 !important;
+}
+
+/* Ensure no element has persistent background */
+.task_creation_dropdown_menu .p-menuitem-link.p-menuitem-link-active {
+    background: transparent !important;
+    color: #374151 !important;
+}
+
+/* Override all possible PrimeReact states */
+.task_creation_dropdown_menu .p-menuitem-link:focus,
+.task_creation_dropdown_menu .p-menuitem-link:active,
+.task_creation_dropdown_menu .p-menuitem-link:visited {
+    background: transparent !important;
+    color: #374151 !important;
+}
+
+/* Force reset all menu items to transparent background */
+.task_creation_dropdown_menu .p-menuitem .p-menuitem-link {
+    background: transparent !important;
+    color: #374151 !important;
+}
+
+/* Only apply hover effect on actual hover */
+.task_creation_dropdown_menu .p-menuitem .p-menuitem-link:hover {
+    background: #f3f4f6 !important;
+    color: #282d3b !important;
 }
 
 /* Ensure Agenda keeps original styling */
