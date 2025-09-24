@@ -1157,9 +1157,9 @@
     border-radius: 0 !important;
     font-family: 'League Spartan', sans-serif !important;
     font-weight: 500 !important;
-    /* Equal left and right padding */
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    /* Equal left and right padding - reduced left padding */
+    padding-left: 12px !important;
+    padding-right: 12px !important;
     /* Ensure no default background */
     background: transparent !important;
 }
@@ -1181,7 +1181,7 @@
 
 /* Ensure hover effect works properly without icons */
 .task_creation_dropdown_menu .p-menuitem-link:hover {
-    background: #f3f4f6 !important;
+    background: #E5E7EB !important;
     color: #282d3b !important;
 }
 
@@ -1219,8 +1219,23 @@
 
 /* Only apply hover effect on actual hover */
 .task_creation_dropdown_menu .p-menuitem .p-menuitem-link:hover {
-    background: #f3f4f6 !important;
+    background: #E5E7EB !important;
     color: #282d3b !important;
+}
+
+/* Force remove any active/focus states that persist */
+.task_creation_dropdown_menu .p-menuitem-link[aria-expanded="true"],
+.task_creation_dropdown_menu .p-menuitem-link[data-pc-section="action"]:not(:hover),
+.task_creation_dropdown_menu .p-menuitem-link.p-focus,
+.task_creation_dropdown_menu .p-menuitem-link.p-menuitem-link-active:not(:hover) {
+    background: transparent !important;
+    color: #374151 !important;
+}
+
+/* Ensure proper hover behavior - only show background on actual hover */
+.task_creation_dropdown_menu .p-menuitem-link:not(:hover) {
+    background: transparent !important;
+    color: #374151 !important;
 }
 
 /* Ensure Agenda keeps original styling */
