@@ -28,26 +28,32 @@ const InboxView = () => {
 
   const dropdownMenuItems = [
     {
+      id: 'start-date-option',
       label: 'Start date',
       command: () => console.log('Start date selected')
     },
     {
+      id: 'due-date-option',
       label: 'Due date',
       command: () => console.log('Due date selected')
     },
     {
+      id: 'scheduled-date-option',
       label: 'Scheduled date',
       command: () => console.log('Scheduled date selected')
     },
     {
+      id: 'add-subtask-option',
       label: 'Add subtask',
       command: () => console.log('Add subtask selected')
     },
     {
+      id: 'priority-option',
       label: 'Priority',
       command: () => console.log('Priority selected')
     },
     {
+      id: 'depends-on-option',
       label: 'Depends on',
       command: () => console.log('Depends on selected')
     }
@@ -61,9 +67,10 @@ const InboxView = () => {
     <div className="task_tracker_calendar_container">
       <div className="touchpoint-container">
         {/* Task Creation Block */}
-        <div className="task_tracker_task_creation">
-          <div className="task_creation_input_container">
+        <div id="task-creation-block" className="task_tracker_task_creation">
+          <div id="task-creation-input-container" className="task_creation_input_container">
             <InputText
+              id="task-input-field"
               value={taskInput}
               onChange={(e) => setTaskInput(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -71,17 +78,21 @@ const InboxView = () => {
               className="task_creation_input"
             />
             <Button
-              label="Confirm"
+              id="task-confirm-button"
+              icon="pi pi-check"
               onClick={handleConfirm}
               className="task_creation_confirm_btn"
+              text
             />
             <Button
+              id="task-dropdown-button"
               icon="pi pi-ellipsis-v"
               onClick={toggleMenu}
               className="task_creation_dropdown_btn"
               text
             />
             <Menu
+              id="task-dropdown-menu"
               ref={menuRef}
               model={dropdownMenuItems}
               popup

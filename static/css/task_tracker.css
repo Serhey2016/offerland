@@ -1036,9 +1036,7 @@
 .task_tracker_task_creation {
     margin-bottom: 20px;
     padding: 15px;
-    background: #f8f9fa;
     border-radius: 8px;
-    border: 1px solid #e5e7eb;
 }
 
 .task_creation_input_container {
@@ -1080,7 +1078,6 @@
     font-family: 'League Spartan', sans-serif !important;
     font-weight: 600 !important;
     font-size: 14px !important;
-    min-width: 80px !important;
     height: 36px !important;
     transition: all 0.2s ease !important;
 }
@@ -1122,120 +1119,120 @@
 
 /* Dropdown Menu Styles */
 .task_creation_dropdown_menu .p-menu {
-    background: white !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-    padding: 4px 0 !important;
-    min-width: 180px !important;
-    z-index: 1000 !important;
-    /* Position menu to align with top-right of button */
-    transform-origin: top right !important;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 4px 0;
+    min-width: 180px;
+    z-index: 1000;
+    transform-origin: top right;
 }
 
 /* Override PrimeReact Menu positioning to align with top-right */
 .task_creation_dropdown_menu .p-menu.p-menu-overlay {
-    transform-origin: top right !important;
+    transform-origin: top right;
 }
 
 /* Ensure proper positioning for the dropdown */
 .task_creation_dropdown_menu .p-menu.p-menu-overlay[data-pc-section="root"] {
-    transform-origin: top right !important;
+    transform-origin: top right;
 }
 
 .task_creation_dropdown_menu .p-menuitem {
-    margin: 0 !important;
+    margin: 0;
 }
 
-.task_creation_dropdown_menu .p-menuitem-link {
-    padding: 12px 16px !important;
-    color: #374151 !important;
-    text-decoration: none !important;
-    display: flex !important;
-    align-items: center !important;
-    transition: background-color 0.2s ease !important;
-    border-radius: 0 !important;
-    font-family: 'League Spartan', sans-serif !important;
-    font-weight: 500 !important;
-    /* Equal left and right padding - reduced left padding */
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    /* Ensure no default background */
-    background: transparent !important;
+/* Menu item links - base styles */
+.task_creation_dropdown_menu .p-menuitem .p-menuitem-link {
+    padding: 12px 16px;
+    color: #374151;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    border-radius: 0;
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 500;
+    background: transparent;
+    pointer-events: auto; 
 }
 
-.task_creation_dropdown_menu .p-menuitem-link:hover {
-    background: #f3f4f6 !important;
-    color: #282d3b !important;
+/* Menu item links - hover effect */
+.task_creation_dropdown_menu .p-menuitem .p-menuitem-link:hover {
+    background: #E5E7EB;
+    color: #282d3b;
 }
 
-.task_creation_dropdown_menu .p-menuitem-link:focus {
-    background: #f3f4f6 !important;
-    box-shadow: none !important;
+/* Menu item links - focus state */
+.task_creation_dropdown_menu .p-menuitem .p-menuitem-link:focus {
+    background: #E5E7EB;
+    color: #282d3b;
+    box-shadow: none;
 }
 
 /* Remove icon styles since we're not using icons */
 .task_creation_dropdown_menu .p-menuitem-link .p-menuitem-icon {
-    display: none !important;
+    display: none;
 }
 
-/* Ensure hover effect works properly without icons */
-.task_creation_dropdown_menu .p-menuitem-link:hover {
-    background: #E5E7EB !important;
-    color: #282d3b !important;
+/* Override PrimeReact default states */
+.task_creation_dropdown_menu .p-menuitem-link:not(:hover):not(:focus) {
+    background: transparent;
+    color: #374151;
 }
 
-/* Remove any persistent hover state and ensure proper reset */
-.task_creation_dropdown_menu .p-menuitem-link {
-    background: transparent !important;
-    color: #374151 !important;
+/* Override active states */
+.task_creation_dropdown_menu .p-menuitem-link.p-menuitem-link-active:not(:hover):not(:focus) {
+    background: transparent;
+    color: #374151;
 }
 
-/* Override any PrimeReact default hover states */
-.task_creation_dropdown_menu .p-menuitem-link:not(:hover) {
-    background: transparent !important;
-    color: #374151 !important;
-}
-
-/* Ensure no element has persistent background */
-.task_creation_dropdown_menu .p-menuitem-link.p-menuitem-link-active {
-    background: transparent !important;
-    color: #374151 !important;
-}
-
-/* Override all possible PrimeReact states */
-.task_creation_dropdown_menu .p-menuitem-link:focus,
+/* Override other PrimeReact states */
 .task_creation_dropdown_menu .p-menuitem-link:active,
 .task_creation_dropdown_menu .p-menuitem-link:visited {
-    background: transparent !important;
-    color: #374151 !important;
+    background: transparent;
+    color: #374151;
 }
 
-/* Force reset all menu items to transparent background */
-.task_creation_dropdown_menu .p-menuitem .p-menuitem-link {
-    background: transparent !important;
-    color: #374151 !important;
-}
-
-/* Only apply hover effect on actual hover */
-.task_creation_dropdown_menu .p-menuitem .p-menuitem-link:hover {
-    background: #E5E7EB !important;
-    color: #282d3b !important;
-}
-
-/* Force remove any active/focus states that persist */
-.task_creation_dropdown_menu .p-menuitem-link[aria-expanded="true"],
-.task_creation_dropdown_menu .p-menuitem-link[data-pc-section="action"]:not(:hover),
-.task_creation_dropdown_menu .p-menuitem-link.p-focus,
-.task_creation_dropdown_menu .p-menuitem-link.p-menuitem-link-active:not(:hover) {
-    background: transparent !important;
-    color: #374151 !important;
-}
-
-/* Ensure proper hover behavior - only show background on actual hover */
-.task_creation_dropdown_menu .p-menuitem-link:not(:hover) {
-    background: transparent !important;
-    color: #374151 !important;
+/* Mobile styles for task creation block */
+@media (max-width: 444px) {
+  .task_creation_input_container {
+    padding: 6px 10px;
+    gap: 6px;
+    min-height: 44px;
+  }
+  
+  .task_creation_confirm_btn {
+    min-width: 18px;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+  }
+  
+  .task_creation_confirm_btn .p-button-icon {
+    font-size: 12px;
+    color: #282D3B;
+  }
+  
+  .task_creation_dropdown_btn {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+  }
+  
+  .task_creation_dropdown_btn .p-button-icon {
+    font-size: 12px;
+  }
+  
+  .task_creation_input {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+  
+  .task_creation_input::placeholder {
+    font-size: 14px;
+  }
 }
 
 /* Ensure Agenda keeps original styling */
