@@ -1,0 +1,102 @@
+/* Priority Matrix Grid Styles */
+.priority-matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  padding: 10px;
+  min-width: 140px;
+  max-width: 160px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+/* Matrix quadrants */
+
+.quadrant {
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.quadrant:hover {
+  transform: scale(1.05) translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.quadrant:active {
+  transform: scale(1.02) translateY(0px);
+  transition: all 0.1s ease;
+}
+
+.quadrant-important-urgent {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.quadrant-important-urgent:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.quadrant-important-not-urgent {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.quadrant-important-not-urgent:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.quadrant-not-important-urgent {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.quadrant-not-important-urgent:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.quadrant-not-important-not-urgent {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+}
+
+.quadrant-not-important-not-urgent:hover {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+/* Tooltip styles */
+.quadrant[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 4px 6px;
+  border-radius: 1px;
+  font-size: 9px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.quadrant[title]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid transparent;
+  border-top-color: #1f2937;
+  z-index: 1000;
+  margin-bottom: 1px;
+}

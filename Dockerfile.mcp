@@ -13,5 +13,5 @@ EXPOSE 3025
 # Set environment variables
 ENV NODE_ENV=development
 
-# Command to run the MCP server
-CMD ["npx", "@agentdeskai/browser-tools-mcp@latest"]
+# Command to run the MCP server and keep container alive
+CMD ["sh", "-c", "npx @agentdeskai/browser-tools-mcp@latest & python3 -m http.server 3025 --bind 0.0.0.0 & sleep infinity"]

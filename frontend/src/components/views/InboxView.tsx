@@ -1,18 +1,14 @@
-// @refresh reset
-// JSX preamble for Vite plugin detection
-const JSX_PREAMBLE = <div></div>
-
 import React, { useState, useRef } from 'react'
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
-import { Menu } from 'primereact/menu'
+import { TieredMenu } from 'primereact/tieredmenu'
 import TaskDesign from '../TaskDesign'
-import PriorityCascadeSelect from '../PriorityCascadeSelect'
+import '../../styles/priority-matrix-submenu.css'
 
 const InboxView = () => {
   const [taskInput, setTaskInput] = useState('')
   const [selectedPriority, setSelectedPriority] = useState<string>('')
-  const menuRef = useRef<Menu>(null)
+  const menuRef = useRef<TieredMenu>(null)
 
   const handleConfirm = () => {
     if (taskInput.trim()) {
@@ -34,6 +30,7 @@ const InboxView = () => {
     }
   }
 
+
   const dropdownMenuItems = [
     {
       id: 'start-date-option',
@@ -54,6 +51,39 @@ const InboxView = () => {
       id: 'add-subtask-option',
       label: 'Add subtask',
       command: () => console.log('Add subtask selected')
+    },
+    {
+      id: 'priority-option',
+      label: 'Priority',
+      items: [
+        {
+          id: 'priority-matrix',
+          template: () => (
+            <div className="priority-matrix-grid">
+              <div 
+                className="quadrant quadrant-important-urgent"
+                onClick={() => handlePrioritySelect('important-urgent')}
+                title="Important & Urgent - Do First"
+              ></div>
+              <div 
+                className="quadrant quadrant-important-not-urgent"
+                onClick={() => handlePrioritySelect('important-not-urgent')}
+                title="Important & Not Urgent - Schedule"
+              ></div>
+              <div 
+                className="quadrant quadrant-not-important-urgent"
+                onClick={() => handlePrioritySelect('not-important-urgent')}
+                title="Not Important & Urgent - Delegate"
+              ></div>
+              <div 
+                className="quadrant quadrant-not-important-not-urgent"
+                onClick={() => handlePrioritySelect('not-important-not-urgent')}
+                title="Not Important & Not Urgent - Eliminate"
+              ></div>
+            </div>
+          )
+        }
+      ]
     },
     {
       id: 'depends-on-option',
@@ -87,7 +117,6 @@ const InboxView = () => {
               className="task_creation_confirm_btn"
               text
             />
-            <PriorityCascadeSelect onPrioritySelect={handlePrioritySelect} />
             <Button
               id="task-dropdown-button"
               icon="pi pi-ellipsis-v"
@@ -95,7 +124,7 @@ const InboxView = () => {
               className="task_creation_dropdown_btn"
               text
             />
-            <Menu
+            <TieredMenu
               id="task-dropdown-menu"
               ref={menuRef}
               model={dropdownMenuItems}
@@ -146,6 +175,7 @@ const InboxView = () => {
           />
         </div>
       </div>
+
     </div>
   )
 }

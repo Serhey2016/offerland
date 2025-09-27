@@ -5,6 +5,8 @@ export default defineConfig({
   plugins: [react({
     fastRefresh: false,
     include: "**/*.{jsx,tsx}",
+    jsxRuntime: 'automatic',
+    jsxImportSource: 'react',
     babel: {
       plugins: []
     }

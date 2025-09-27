@@ -183,7 +183,7 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
 
         return (
           <div
-            key={day.toISOString()}
+            key={`day-${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
             className="task_tracker_calendar_day_container"
           >
             {/* Day Header */}

@@ -1,44 +1,103 @@
-/* Priority CascadeSelect Styles */
-.priority-cascade-select {
-  min-width: 120px;
+/* Priority Menu Item Styles */
+.priority-menu-item {
+  position: relative;
 }
 
-.priority-cascade-select .p-cascadeselect {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  padding: 8px 12px;
-  font-family: 'League Spartan', sans-serif;
-  font-weight: 500;
-  color: #374151;
+.priority-menu-item .p-menuitem-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.priority-menu-item .p-menuitem-text {
+  flex: 1;
+}
+
+.priority-menu-item .p-submenu-icon {
+  margin-left: auto;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Priority Submenu */
+.priority-submenu {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  min-width: 120px;
+  z-index: 1001;
+}
+
+.priority-submenu .p-menuitem {
+  margin: 0;
+  padding: 0;
+}
+
+.priority-submenu .p-menuitem-link {
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
   transition: background-color 0.2s ease;
 }
 
-.priority-cascade-select .p-cascadeselect:hover {
-  background: rgba(40, 45, 59, 0.1);
-  transform: scale(1.05);
+.priority-submenu .p-menuitem-link:hover {
+  background: #f3f4f6;
 }
 
-.priority-cascade-select .p-cascadeselect-label {
-  font-size: 14px;
+/* Priority Color Squares */
+.priority-color-square {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.priority-color-important-urgent {
+  background-color: #EF9A9A;
+}
+
+.priority-color-important-not-urgent {
+  background-color: #90CAF9;
+}
+
+.priority-color-not-important-urgent {
+  background-color: #FFCC80;
+}
+
+.priority-color-not-important-not-urgent {
+  background-color: #E0E0E0;
+}
+
+.priority-submenu .p-menuitem-text {
+  font-size: 12px;
   color: #374151;
+  white-space: nowrap;
 }
 
-.priority-cascade-select .p-cascadeselect-trigger {
+.priority-submenu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.priority-submenu-item:hover {
+  background: #f3f4f6;
+}
+
+.priority-submenu-item .p-menuitem-text {
+  font-size: 12px;
   color: #374151;
-  width: 16px;
-  height: 16px;
-}
-
-/* Priority Cascade Panel */
-.priority-cascade-panel {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: 8px;
-  min-width: 280px;
-  z-index: 1000;
+  white-space: nowrap;
 }
 
 /* Priority Option Styles */
