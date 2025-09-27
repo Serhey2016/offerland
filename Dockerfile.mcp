@@ -1,0 +1,17 @@
+# Dockerfile for MCP Server
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+RUN npm install -g @agentdeskai/browser-tools-mcp@latest
+
+# Expose the port that MCP server will run on
+EXPOSE 3025
+
+# Set environment variables
+ENV NODE_ENV=development
+
+# Command to run the MCP server
+CMD ["npx", "@agentdeskai/browser-tools-mcp@latest"]

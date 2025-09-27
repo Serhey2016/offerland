@@ -7,17 +7,25 @@ import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import { Menu } from 'primereact/menu'
 import TaskDesign from '../TaskDesign'
+import PriorityCascadeSelect from '../PriorityCascadeSelect'
 
 const InboxView = () => {
   const [taskInput, setTaskInput] = useState('')
+  const [selectedPriority, setSelectedPriority] = useState<string>('')
   const menuRef = useRef<Menu>(null)
 
   const handleConfirm = () => {
     if (taskInput.trim()) {
-      console.log('Creating task:', taskInput)
+      console.log('Creating task:', taskInput, 'with priority:', selectedPriority)
       // TODO: Implement task creation logic
       setTaskInput('')
+      setSelectedPriority('')
     }
+  }
+
+  const handlePrioritySelect = (priority: string) => {
+    setSelectedPriority(priority)
+    console.log('Priority selected:', priority)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -46,11 +54,6 @@ const InboxView = () => {
       id: 'add-subtask-option',
       label: 'Add subtask',
       command: () => console.log('Add subtask selected')
-    },
-    {
-      id: 'priority-option',
-      label: 'Priority',
-      command: () => console.log('Priority selected')
     },
     {
       id: 'depends-on-option',
@@ -84,6 +87,7 @@ const InboxView = () => {
               className="task_creation_confirm_btn"
               text
             />
+            <PriorityCascadeSelect onPrioritySelect={handlePrioritySelect} />
             <Button
               id="task-dropdown-button"
               icon="pi pi-ellipsis-v"

@@ -34,6 +34,7 @@
 - **ALWAYS use CSS classes** for styling
 - **Use IDs only for JavaScript/TypeScript** functionality
 - **Separate concerns**: CSS for styling, IDs for JS, classes for styling
+- **NO !important rules in CSS** - Use proper CSS specificity instead
 - **Example**: Use `className="my-component"` instead of `style="display: flex; gap: 10px;"`
 
 ## 🎯 Current Task Context

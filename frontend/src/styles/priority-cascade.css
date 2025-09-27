@@ -1,0 +1,191 @@
+/* Priority CascadeSelect Styles */
+.priority-cascade-select {
+  min-width: 120px;
+}
+
+.priority-cascade-select .p-cascadeselect {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 8px 12px;
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 500;
+  color: #374151;
+  transition: background-color 0.2s ease;
+}
+
+.priority-cascade-select .p-cascadeselect:hover {
+  background: rgba(40, 45, 59, 0.1);
+  transform: scale(1.05);
+}
+
+.priority-cascade-select .p-cascadeselect-label {
+  font-size: 14px;
+  color: #374151;
+}
+
+.priority-cascade-select .p-cascadeselect-trigger {
+  color: #374151;
+  width: 16px;
+  height: 16px;
+}
+
+/* Priority Cascade Panel */
+.priority-cascade-panel {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 8px;
+  min-width: 280px;
+  z-index: 1000;
+}
+
+/* Priority Option Styles */
+.priority-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.priority-option:hover {
+  background: #f3f4f6;
+}
+
+.priority-color-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+/* Eisenhower Matrix Layout */
+.eisenhower-matrix {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  grid-template-rows: auto 1fr 1fr;
+  gap: 4px;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  min-width: 240px;
+}
+
+/* Matrix Labels */
+.matrix-label-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 10px;
+  font-weight: 500;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.matrix-label-horizontal {
+  font-size: 10px;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: center;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Matrix Quadrants */
+.matrix-quadrant {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.matrix-quadrant:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.matrix-quadrant.selected {
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+/* Quadrant Colors */
+.quadrant-important-urgent {
+  background-color: #EF9A9A;
+}
+
+.quadrant-important-not-urgent {
+  background-color: #90CAF9;
+}
+
+.quadrant-not-important-urgent {
+  background-color: #FFCC80;
+}
+
+.quadrant-not-important-not-urgent {
+  background-color: #E0E0E0;
+}
+
+/* Custom CascadeSelect Panel for Matrix */
+.priority-cascade-panel .p-cascadeselect-panel {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.priority-cascade-panel .p-cascadeselect-item {
+  padding: 0;
+  margin: 0;
+}
+
+.priority-cascade-panel .p-cascadeselect-item-content {
+  padding: 0;
+}
+
+/* Override PrimeReact default styles */
+.priority-cascade-panel .p-cascadeselect-item:not(.p-cascadeselect-item-active):not(.p-cascadeselect-item-focus) {
+  background: transparent;
+}
+
+.priority-cascade-panel .p-cascadeselect-item:hover {
+  background: transparent;
+}
+
+/* Matrix Container */
+.matrix-container {
+  padding: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .eisenhower-matrix {
+    min-width: 200px;
+  }
+  
+  .matrix-quadrant {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .matrix-label-vertical,
+  .matrix-label-horizontal {
+    font-size: 9px;
+  }
+}

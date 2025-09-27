@@ -230,52 +230,9 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
     setIsDragging(false)
   }
 
-  // Update navigation items based on selected category
-  useEffect(() => {
-    // Define navigation items for different categories
-    const categoryNavigationMap: Record<Category, NavigationItem[]> = {
-      'Agenda': [
-        { id: 'daily-tasks', label: 'Daily Tasks', active: true },
-        { id: 'scheduled', label: 'Scheduled', active: false }
-      ],
-      'Touchpoint': [
-        { id: 'contacts', label: 'Contacts', active: true },
-        { id: 'relationships', label: 'Relationships', active: false }
-      ],
-      'Inbox': [
-        { id: 'new-items', label: 'New Items', active: true },
-        { id: 'reviewed', label: 'Reviewed', active: false }
-      ],
-      'Waiting': [
-        { id: 'orders', label: 'Orders', active: true },
-        { id: 'subscriptions', label: 'Subscriptions', active: false },
-        { id: 'published', label: 'Published', active: false }
-      ],
-      'Someday': [
-        { id: 'future-ideas', label: 'Future Ideas', active: true }
-      ],
-      'Projects': [
-        { id: 'active-projects', label: 'Active Projects', active: true },
-        { id: 'planning', label: 'Planning', active: false }
-      ],
-      'Lockbook (Done)': [
-        { id: 'completed-projects', label: 'Completed Projects', active: true },
-        { id: 'completed-tasks', label: 'Completed Tasks', active: false }
-      ],
-      'Archive': [
-        { id: 'archived-projects', label: 'Archived Projects', active: true },
-        { id: 'archived-tasks', label: 'Archived Tasks', active: false }
-      ]
-    }
-
-    const newNavigationItems = categoryNavigationMap[selectedCategory] || [
-      { id: 'business-support', label: 'Business support', active: true },
-      { id: 'personal-support', label: 'Personal support', active: false }
-    ]
-
-    setNavigationItems(newNavigationItems)
-    console.log('Navigation items updated for category:', selectedCategory)
-  }, [selectedCategory])
+  // Navigation items are now static and independent of selected category
+  // They always show "Business support" and "Personal support"
+  // No useEffect needed as the initial state is already correct
 
   return (
     <div className="task_tracker_sub_menu_section">
