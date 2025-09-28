@@ -1136,12 +1136,12 @@
     user-select: none;
 }
 
-/* Only title and hashtag chips are clickable */
+/* Only title chips are clickable (hashtag functionality commented out) */
 .task_creation_chip[title="Remove"] {
     cursor: pointer;
 }
 
-/* Hover effect only for clickable chips (title and hashtag chips) */
+/* Hover effect only for clickable chips (title chips only) */
 .task_creation_chip[title="Remove"]:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

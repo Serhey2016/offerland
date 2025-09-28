@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button } from 'primereact/button'
 import { TieredMenu } from 'primereact/tieredmenu'
-import { Chips } from 'primereact/chips'
+// import { Chips } from 'primereact/chips' // Commented out - hashtag functionality disabled
 import TaskDesign from '../TaskDesign'
 import '../../styles/priority-matrix-submenu.css'
 
@@ -16,10 +16,10 @@ interface ChipData {
 
 const InboxView = () => {
   const [taskInput, setTaskInput] = useState('')
-  const [selectedPriority, setSelectedPriority] = useState<string>('')
+  // const [selectedPriority, setSelectedPriority] = useState<string>('') // Commented out - not used
   const [hasText, setHasText] = useState(false)
   const [chips, setChips] = useState<ChipData[]>([])
-  const [currentInput, setCurrentInput] = useState('')
+  // const [currentInput, setCurrentInput] = useState('') // Commented out - not used
   const [showMessage, setShowMessage] = useState('')
   const menuRef = useRef<TieredMenu>(null)
   const contentEditableRef = useRef<HTMLDivElement>(null)
@@ -43,9 +43,9 @@ const InboxView = () => {
   }
 
   // Check if text is a hashtag
-  const isHashtag = (text: string): boolean => {
-    return text.startsWith('#')
-  }
+  // const isHashtag = (text: string): boolean => {
+  //   return text.startsWith('#')
+  // }
 
   // Process input and create chips
   const processInput = (input: string) => {
@@ -76,7 +76,7 @@ const InboxView = () => {
       }
       
       setChips(prev => [...prev, newChip])
-      setCurrentInput('')
+      // setCurrentInput('') // Commented out - hashtag functionality disabled
       return
     }
 
@@ -125,47 +125,47 @@ const InboxView = () => {
         }
         
         setChips(prev => [...prev, newChip])
-        setCurrentInput('')
+        // setCurrentInput('') // Commented out - hashtag functionality disabled
         return
       }
     }
 
     // Check for hashtag
-    if (isHashtag(trimmedInput)) {
-      console.log('Hashtag detected:', trimmedInput)
-      
-      // Remove the # symbol for processing
-      const hashtagText = trimmedInput.substring(1).trim()
-      
-      if (!hashtagText) {
-        setShowMessage('Hashtag cannot be empty. Please enter text after # symbol.')
-        setTimeout(() => setShowMessage(''), 3000)
-        return
-      }
-      
-      // Check for duplicate hashtags
-      const existingHashtag = chips.find(chip => 
-        chip.type === 'hashtag' && chip.value.toLowerCase() === trimmedInput.toLowerCase()
-      )
-      
-      if (existingHashtag) {
-        setShowMessage('This hashtag already exists.')
-        setTimeout(() => setShowMessage(''), 3000)
-        return
-      }
-      
-      const newChip: ChipData = {
-        id: `hashtag-${Date.now()}`,
-        type: 'hashtag',
-        value: trimmedInput,
-        displayValue: trimmedInput,
-        backgroundColor: '#B3C3D4'
-      }
-      
-      setChips(prev => [...prev, newChip])
-      setCurrentInput('')
-      return
-    }
+    // if (isHashtag(trimmedInput)) {
+    //   console.log('Hashtag detected:', trimmedInput)
+    //   
+    //   // Remove the # symbol for processing
+    //   const hashtagText = trimmedInput.substring(1).trim()
+    //   
+    //   if (!hashtagText) {
+    //     setShowMessage('Hashtag cannot be empty. Please enter text after # symbol.')
+    //     setTimeout(() => setShowMessage(''), 3000)
+    //     return
+    //   }
+    //   
+    //   // Check for duplicate hashtags
+    //   const existingHashtag = chips.find(chip => 
+    //     chip.type === 'hashtag' && chip.value.toLowerCase() === trimmedInput.toLowerCase()
+    //   )
+    //   
+    //   if (existingHashtag) {
+    //     setShowMessage('This hashtag already exists.')
+    //     setTimeout(() => setShowMessage(''), 3000)
+    //     return
+    //   }
+    //   
+    //   const newChip: ChipData = {
+    //     id: `hashtag-${Date.now()}`,
+    //     type: 'hashtag',
+    //     value: trimmedInput,
+    //     displayValue: trimmedInput,
+    //     backgroundColor: '#B3C3D4'
+    //   }
+    //   
+    //   setChips(prev => [...prev, newChip])
+    //   setCurrentInput('')
+    //   return
+    // }
 
     // Check for title (if no existing title and text doesn't match any pattern)
     const existingTitle = chips.find(chip => chip.type === 'title')
@@ -183,7 +183,7 @@ const InboxView = () => {
       }
       
       setChips(prev => [...prev, newChip])
-      setCurrentInput('')
+      // setCurrentInput('') // Commented out - hashtag functionality disabled
       return
     } else if (existingTitle) {
       console.log('Title already exists')
@@ -200,14 +200,14 @@ const InboxView = () => {
     setChips(prev => prev.filter(chip => chip.id !== chipId))
   }
 
-  // Edit chip (convert back to input) - for title and hashtag chips
+  // Edit chip (convert back to input) - for title chips only (hashtag functionality commented out)
   const editChip = (chip: ChipData) => {
-    if (chip.type === 'title' || chip.type === 'hashtag') {
+    if (chip.type === 'title') {
       // Remove the chip first
       removeChip(chip.id)
       
       // Set the text back to input field
-      setCurrentInput(chip.value)
+      // setCurrentInput(chip.value) // Commented out - hashtag functionality disabled
       setTaskInput(chip.value)
       
       // Focus the input field and set cursor to end
@@ -228,15 +228,42 @@ const InboxView = () => {
         }
       }, 0)
     }
+    // Hashtag editing functionality commented out
+    // if (chip.type === 'hashtag') {
+    //   // Remove the chip first
+    //   removeChip(chip.id)
+    //   
+    //   // Set the text back to input field
+    //   setCurrentInput(chip.value)
+    //   setTaskInput(chip.value)
+    //   
+    //   // Focus the input field and set cursor to end
+    //   setTimeout(() => {
+    //     if (contentEditableRef.current) {
+    //       contentEditableRef.current.textContent = chip.value
+    //       contentEditableRef.current.focus()
+    //       
+    //       // Set cursor to end of text
+    //       const range = document.createRange()
+    //       const selection = window.getSelection()
+    //       if (contentEditableRef.current.firstChild) {
+    //         range.selectNodeContents(contentEditableRef.current)
+    //         range.collapse(false) // false means collapse to end
+    //         selection?.removeAllRanges()
+    //         selection?.addRange(range)
+    //       }
+    //     }
+    //   }, 0)
+    // }
   }
 
   // Функция для автоматического изменения высоты contenteditable
-  const adjustContentHeight = () => {
-    const element = contentEditableRef.current
-    if (element) {
-      // Auto-resize not needed for contenteditable, it grows naturally
-    }
-  }
+  // const adjustContentHeight = () => {
+  //   const element = contentEditableRef.current
+  //   if (element) {
+  //     // Auto-resize not needed for contenteditable, it grows naturally
+  //   }
+  // }
 
   // useEffect для настройки contenteditable
   useEffect(() => {
@@ -254,8 +281,8 @@ const InboxView = () => {
       console.log('Creating task with chips:', chips, 'and input:', taskInput)
       // TODO: Implement task creation logic with chips data
       setTaskInput('')
-      setCurrentInput('')
-      setSelectedPriority('')
+      // setCurrentInput('') // Commented out - hashtag functionality disabled
+      // setSelectedPriority('') // Commented out - not used
       setHasText(false)
       setChips([])
       setShowMessage('')
@@ -267,7 +294,7 @@ const InboxView = () => {
   }
 
   const handlePrioritySelect = (priority: string) => {
-    setSelectedPriority(priority)
+    // setSelectedPriority(priority) // Commented out - not used
     console.log('Priority selected:', priority)
   }
 
@@ -282,7 +309,7 @@ const InboxView = () => {
       if (text.trim()) {
         processInput(text.trim())
         element.textContent = ''
-        setCurrentInput('')
+        // setCurrentInput('') // Commented out - hashtag functionality disabled
         setTaskInput('')
         setHasText(chips.length > 0)
       } else {
@@ -334,14 +361,14 @@ const InboxView = () => {
         processInput(textWithoutComma)
         // Clear the input after processing
         element.textContent = ''
-        setCurrentInput('')
+        // setCurrentInput('') // Commented out - hashtag functionality disabled
         setTaskInput('')
         setHasText(chips.length > 0)
         return
       }
     }
     
-    setCurrentInput(text)
+    // setCurrentInput(text) // Commented out - hashtag functionality disabled
     
     if (text.length <= 120) {
       setTaskInput(text)
@@ -351,7 +378,7 @@ const InboxView = () => {
       const truncatedText = text.substring(0, 120)
       element.textContent = truncatedText
       setTaskInput(truncatedText)
-      setCurrentInput(truncatedText)
+      // setCurrentInput(truncatedText) // Commented out - hashtag functionality disabled
       setHasText(true)
       
       // Восстанавливаем позицию курсора
@@ -433,8 +460,8 @@ const InboxView = () => {
                     key={chip.id}
                     className="task_creation_chip"
                     style={{ backgroundColor: chip.backgroundColor }}
-                    onClick={() => (chip.type === 'title' || chip.type === 'hashtag') ? editChip(chip) : undefined}
-                    title={(chip.type === 'title' || chip.type === 'hashtag') ? 'Remove' : ''}
+                    onClick={() => chip.type === 'title' ? editChip(chip) : undefined}
+                    title={chip.type === 'title' ? 'Remove' : ''}
                   >
                     <span className="chip_text">{chip.displayValue}</span>
                     <button
