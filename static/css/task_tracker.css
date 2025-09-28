@@ -1025,7 +1025,7 @@
 .projects-container,
 .lockbook-container,
 .archive-container {
-    padding: 20px;
+    padding: 10px;
     background: #fff;
     border-radius: 8px;
     margin: 20px 0;
@@ -1035,19 +1035,19 @@
 /* Task Creation Block Styles */
 .task_tracker_task_creation {
     margin-bottom: 20px;
-    padding: 15px;
     border-radius: 8px;
 }
 
 .task_creation_input_container {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     background: #9EAEBE;
     border: 2px solid #282D3B;
     border-radius: 25px;
-    padding: 8px 15px;
+    padding: 4px 15px;
     min-height: 50px;
+    position: relative;
 }
 
 .task_creation_input {
@@ -1056,17 +1056,60 @@
     border: none !important;
     outline: none !important;
     color: #282D3B !important;
-    font-size: 16px !important;
+    font-size: 42px !important;
     font-family: 'League Spartan', sans-serif !important;
     font-weight: 500 !important;
     padding: 0 !important;
     margin: 0 !important;
     box-shadow: none !important;
+    line-height: 1 !important;
+    min-height: 42px !important;
+    max-height: 200px !important;
+    resize: none !important;
+    overflow-y: auto !important;
+    word-wrap: break-word !important;
+    white-space: pre-wrap !important;
+    transition: height 0.1s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .task_creation_input::placeholder {
     color: #282D3B !important;
     opacity: 0.7 !important;
+}
+
+/* Max length warning styles */
+.task_creation_max_length_warning {
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    font-size: 12px;
+    color: #e74c3c;
+    font-weight: 500;
+    font-family: 'League Spartan', sans-serif;
+    background: rgba(231, 76, 60, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Max length reached state */
+.task_creation_input.max-length-reached {
+    border-color: rgba(231, 76, 60, 0.3) !important;
+    background: rgba(231, 76, 60, 0.05) !important;
 }
 
 .task_creation_confirm_btn {
@@ -1080,12 +1123,14 @@
     font-size: 14px !important;
     height: 36px !important;
     transition: all 0.2s ease !important;
+    margin-top: 3px !important;
 }
 
 .task_creation_confirm_btn:hover {
     background: #8a9aab !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 2px 4px rgba(40, 45, 59, 0.2) !important;
+    margin-top: 4px !important;
 }
 
 .task_creation_confirm_btn:active {
@@ -1195,12 +1240,35 @@
     color: #374151;
 }
 
-/* Mobile styles for task creation block */
-@media (max-width: 444px) {
+/* Mobile styles for task creation block - screens smaller than 768px */
+/* @media (max-width: 767px) {
+  .touchpoint-container,
+  .inbox-container,
+  .waiting-container,
+  .someday-container,
+  .projects-container,
+  .lockbook-container,
+  .archive-container {
+    padding: 5px;
+  }
+  
+  .task_tracker_task_creation {
+    margin: 0 5px;
+    width: calc(100% - 10px);
+    box-sizing: border-box;
+  }
+  
   .task_creation_input_container {
     padding: 6px 10px;
     gap: 6px;
     min-height: 44px;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
   
   .task_creation_confirm_btn {
@@ -1208,6 +1276,10 @@
     width: 18px;
     height: 18px;
     padding: 0;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-shrink: 0;
   }
   
   .task_creation_confirm_btn .p-button-icon {
@@ -1219,6 +1291,10 @@
     width: 16px;
     height: 16px;
     min-width: 16px;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-shrink: 0;
   }
   
   .task_creation_dropdown_btn .p-button-icon {
@@ -1228,10 +1304,66 @@
   .task_creation_input {
     font-size: 14px;
     padding: 8px 0;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    min-height: 14px !important;
+    max-height: 150px !important;
+  }
+  
+  .task_creation_max_length_warning {
+    font-size: 10px;
+    bottom: -20px;
+    padding: 1px 4px;
   }
   
   .task_creation_input::placeholder {
     font-size: 14px;
+  }
+} */
+
+/* Extra small screens - screens smaller than 444px */
+@media (max-width: 444px) {
+  .task_tracker_task_creation {
+    margin: 0 10px;
+    width: calc(100% - 20px);
+  }
+  
+  .task_creation_input_container {
+    padding: 4px 8px;
+    gap: 4px;
+    min-height: 40px;
+  }
+  
+  .task_creation_confirm_btn {
+    min-width: 16px;
+    width: 16px;
+    height: 16px;
+  }
+  
+  .task_creation_dropdown_btn {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+  }
+  
+  .task_creation_input {
+    font-size: 12px;
+    min-height: 12px !important;
+    max-height: 120px !important;
+  }
+  
+  .task_creation_max_length_warning {
+    font-size: 9px;
+    bottom: -18px;
+    padding: 1px 3px;
+  }
+  
+  .task_creation_input::placeholder {
+    font-size: 12px;
   }
 }
 

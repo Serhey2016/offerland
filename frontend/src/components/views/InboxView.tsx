@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react'
-import { InputText } from 'primereact/inputtext'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button } from 'primereact/button'
 import { TieredMenu } from 'primereact/tieredmenu'
 import TaskDesign from '../TaskDesign'
@@ -9,6 +8,29 @@ const InboxView = () => {
   const [taskInput, setTaskInput] = useState('')
   const [selectedPriority, setSelectedPriority] = useState<string>('')
   const menuRef = useRef<TieredMenu>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Функция для автоматического изменения высоты textarea
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current
+    if (textarea) {
+      textarea.style.height = 'auto'
+      textarea.style.height = textarea.scrollHeight + 'px'
+    }
+  }
+
+  // useEffect для настройки автоматического изменения высоты
+  useEffect(() => {
+    const textarea = textareaRef.current
+    if (textarea) {
+      textarea.addEventListener('input', adjustTextareaHeight)
+      
+      // Очистка при размонтировании
+      return () => {
+        textarea.removeEventListener('input', adjustTextareaHeight)
+      }
+    }
+  }, [])
 
   const handleConfirm = () => {
     if (taskInput.trim()) {
@@ -16,6 +38,8 @@ const InboxView = () => {
       // TODO: Implement task creation logic
       setTaskInput('')
       setSelectedPriority('')
+      // Сбрасываем высоту после очистки
+      setTimeout(adjustTextareaHeight, 0)
     }
   }
 
@@ -28,7 +52,19 @@ const InboxView = () => {
     if (e.key === 'Enter') {
       handleConfirm()
     }
+    // Вызываем adjustTextareaHeight при любом изменении
+    setTimeout(adjustTextareaHeight, 0)
   }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value
+    if (value.length <= 120) {
+      setTaskInput(value)
+      setTimeout(adjustTextareaHeight, 0)
+    }
+  }
+
+  const isMaxLength = taskInput.length >= 120
 
 
   const dropdownMenuItems = [
@@ -41,11 +77,6 @@ const InboxView = () => {
       id: 'due-date-option',
       label: 'Due date',
       command: () => console.log('Due date selected')
-    },
-    {
-      id: 'scheduled-date-option',
-      label: 'Scheduled date',
-      command: () => console.log('Scheduled date selected')
     },
     {
       id: 'add-subtask-option',
@@ -85,11 +116,6 @@ const InboxView = () => {
         }
       ]
     },
-    {
-      id: 'depends-on-option',
-      label: 'Depends on',
-      command: () => console.log('Depends on selected')
-    }
   ]
 
   const toggleMenu = (event: React.MouseEvent) => {
@@ -102,14 +128,22 @@ const InboxView = () => {
         {/* Task Creation Block */}
         <div id="task-creation-block" className="task_tracker_task_creation">
           <div id="task-creation-input-container" className="task_creation_input_container">
-            <InputText
+            <textarea
+              ref={textareaRef}
               id="task-input-field"
               value={taskInput}
-              onChange={(e) => setTaskInput(e.target.value)}
+              onChange={handleInputChange}
               onKeyPress={handleKeyPress}
-              placeholder="Enter task description..."
-              className="task_creation_input"
+              placeholder="Enter task..."
+              className={`task_creation_input ${isMaxLength ? 'max-length-reached' : ''}`}
+              rows={1}
+              maxLength={120}
             />
+            {isMaxLength && (
+              <div className="task_creation_max_length_warning">
+                Maximum length reached (120 characters)
+              </div>
+            )}
             <Button
               id="task-confirm-button"
               icon="pi pi-check"

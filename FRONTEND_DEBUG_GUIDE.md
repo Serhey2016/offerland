@@ -142,22 +142,8 @@
 2. Event Listeners tab → Check for click handlers
 3. Console tab → Type: `getEventListeners($0)`
 
-**Test Cases:**
-- **Touchpoint** (expandable) → Should trigger `expandableMenuClick` event
-- **Inbox** (direct click) → Should trigger `expandableMenuClick` event  
-- **Agenda** (expandable) → Should trigger `expandableMenuClick` event
-- **Waiting** (expandable) → Should trigger `expandableMenuClick` event
-- **Someday** (direct click) → Should trigger `expandableMenuClick` event
-- **Projects** (direct click) → Should trigger `expandableMenuClick` event
-- **Lockbook (Done)** (expandable) → Should trigger `expandableMenuClick` event
-- **Archive** (expandable) → Should trigger `expandableMenuClick` event
 
-**Expected Behavior (Check in React DevTools):**
-- **selectedCategory** should update to clicked category
-- **selectedSubcategory** should reset to empty string
-- **isUpdating** should briefly be true, then false
 
-### Phase 3: Error Classification
 
 #### Critical Errors (Fix Immediately)
 - ❌ `React mount point not found` - HTML structure issue
