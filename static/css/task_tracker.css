@@ -1053,23 +1053,23 @@
 
 .task_creation_input {
     flex: 1;
-    background: transparent !important;
-    border: none !important;
-    outline: none !important;
-    color: #282D3B !important;
-    font-size: 42px !important;
-    font-family: 'League Spartan', sans-serif !important;
-    font-weight: 500 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-    line-height: 1 !important;
-    min-height: 42px !important;
-    max-height: 200px !important;
-    resize: none !important;
-    overflow-y: auto !important;
-    word-wrap: break-word !important;
-    white-space: pre-wrap !important;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #282D3B;
+    font-size: 42px;
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 500;
+    padding: 0;
+    margin-top: 5px;
+    box-shadow: none;
+    line-height: 1;
+    min-height: 42px;
+    max-height: 200px;
+    resize: none;
+    overflow-y: auto; 
+    word-wrap: break-word;
+    white-space: pre-wrap; 
     transition: height 0.1s ease;
     width: 100%;
     box-sizing: border-box;
@@ -1142,28 +1142,29 @@
 }
 
 .task_creation_dropdown_btn {
-    background: transparent !important;
-    border: none !important;
-    color: #282D3B !important;
-    width: 36px !important;
-    height: 36px !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: all 0.2s ease !important;
-    padding: 0 !important;
-    min-width: 36px !important;
+    margin-top: 3px;
+    background: transparent;
+    border: none;
+    color: #282D3B;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    min-width: 36px;
 }
 
 .task_creation_dropdown_btn:hover {
-    background: rgba(40, 45, 59, 0.1) !important;
-    transform: scale(1.05) !important;
+    background: rgba(40, 45, 59, 0.1);
+    transform: scale(1.05);
 }
 
 .task_creation_dropdown_btn .p-button-icon {
-    font-size: 16px !important;
-    color: #282D3B !important;
+    font-size: 16px;
+    color: #282D3B;
 }
 
 /* Dropdown Menu Styles */
@@ -1244,91 +1245,7 @@
     color: #374151;
 }
 
-/* Mobile styles for task creation block - screens smaller than 768px */
-/* @media (max-width: 767px) {
-  .touchpoint-container,
-  .inbox-container,
-  .backlog-container,
-  .waiting-container,
-  .someday-container,
-  .projects-container,
-  .lockbook-container,
-  .archive-container {
-    padding: 5px;
-  }
-  
-  .task_tracker_task_creation {
-    margin: 0 5px;
-    width: calc(100% - 10px);
-    box-sizing: border-box;
-  }
-  
-  .task_creation_input_container {
-    padding: 6px 10px;
-    gap: 6px;
-    min-height: 44px;
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    width: 100%;
-    box-sizing: border-box;
-    flex-wrap: nowrap;
-    overflow: hidden;
-  }
-  
-  .task_creation_confirm_btn {
-    min-width: 18px;
-    width: 18px;
-    height: 18px;
-    padding: 0;
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    flex-shrink: 0;
-  }
-  
-  .task_creation_confirm_btn .p-button-icon {
-    font-size: 12px;
-    color: #282D3B;
-  }
-  
-  .task_creation_dropdown_btn {
-    width: 16px;
-    height: 16px;
-    min-width: 16px;
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    flex-shrink: 0;
-  }
-  
-  .task_creation_dropdown_btn .p-button-icon {
-    font-size: 12px;
-  }
-  
-  .task_creation_input {
-    font-size: 14px;
-    padding: 8px 0;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    min-height: 14px !important;
-    max-height: 150px !important;
-  }
-  
-  .task_creation_max_length_warning {
-    font-size: 10px;
-    top: -25px;
-    padding: 1px 4px;
-  }
-  
-  .task_creation_input::placeholder {
-    font-size: 14px;
-  }
-} */
+
 
 /* Extra small screens - screens smaller than 444px */
 @media (max-width: 444px) {
