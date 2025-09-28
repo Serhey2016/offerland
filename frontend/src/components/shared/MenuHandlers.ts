@@ -1,6 +1,6 @@
 // Menu event handlers - extracted from TaskTracker.tsx
-export type Category = 'Agenda' | 'Touchpoint' | 'Inbox' | 'Waiting' | 'Someday' | 'Projects' | 'Lockbook (Done)' | 'Archive'
-export type Subcategory = 'Contacts' | 'Favorites' | 'Orders' | 'Subscriptions' | 'Published' | 'Lockbook_Projects' | 'Lockbook_Tasks' | 'Archive_projects' | 'Archive_Tasks'
+export type Category = 'Agenda' | 'Touchpoint' | 'Inbox' | 'Backlog' | 'Waiting' | 'Someday' | 'Projects' | 'Lockbook (Done)' | 'Archive'
+export type Subcategory = 'Contacts' | 'Favorites' | 'Orders' | 'Subscriptions' | 'Published' | 'Lockbook_Projects' | 'Lockbook_Tasks' | 'Archive_projects' | 'Archive_Tasks' | 'Projects' | 'Tasks'
 
 export interface CategoryChangeEventDetail {
   category: Category
@@ -22,6 +22,7 @@ export const CATEGORIES = {
   AGENDA: 'Agenda',
   TOUCHPOINT: 'Touchpoint',
   INBOX: 'Inbox',
+  BACKLOG: 'Backlog',
   WAITING: 'Waiting',
   SOMEDAY: 'Someday',
   PROJECTS: 'Projects',
@@ -42,6 +43,10 @@ export const headerConfig: Partial<Record<Category, HeaderConfig>> = {
   'Inbox': {
     title: 'Inbox',
     subtitle: 'All your tasks in one place'
+  },
+  'Backlog': {
+    title: 'Backlog',
+    subtitle: 'Tasks planned for future execution'
   },
   'Waiting': {
     title: 'Waiting',
@@ -79,6 +84,7 @@ export const toggleSubmenus = (category: Category): void => {
     'Agenda': 'agenda-submenu',
     'Touchpoint': 'touchpoint-submenu',
     'Inbox': 'inbox-submenu',
+    'Backlog': 'backlog-submenu',
     'Waiting': 'waiting-submenu',
     'Someday': '',
     'Projects': '',

@@ -8,6 +8,10 @@ const categories = [
         subcategories: ['All', 'Favorites', 'Projects', 'Tasks', 'Time slots']
     },
     {
+        name: 'Backlog',
+        subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
+    },
+    {
         name: 'Agenda',
         subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
     },

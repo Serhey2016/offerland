@@ -2,6 +2,44 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/navigation_components.css' %}">
 
+<script>
+// Prevent page scrolling when touching navigation menu
+document.addEventListener('DOMContentLoaded', function() {
+    const navMenuContainer = document.querySelector('.nav_menu_container');
+    const navMenu = document.querySelector('.nav_menu');
+    
+    if (navMenuContainer) {
+        // Prevent all touch events that could cause scrolling
+        navMenuContainer.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        navMenuContainer.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        navMenuContainer.addEventListener('touchend', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    }
+    
+    if (navMenu) {
+        // Also prevent on the menu itself
+        navMenu.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        navMenu.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        navMenu.addEventListener('touchend', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    }
+});
+</script>
+
 <!-- Fixed Circle Menu -->
 <div class="fixed_circle_menu">
     <button class="fixed_circle main">

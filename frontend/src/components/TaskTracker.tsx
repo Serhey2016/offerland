@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import AgendaView from './views/AgendaView'
 import TouchpointView from './views/TouchpointView'
 import InboxView from './views/InboxView'
+import BacklogView from './views/BacklogView'
 import WaitingView from './views/WaitingView'
 import SomedayView from './views/SomedayView'
 import ProjectsView from './views/ProjectsView'
@@ -353,6 +354,7 @@ const TaskTracker = () => {
       [CATEGORIES.AGENDA]: <AgendaView />,
       [CATEGORIES.TOUCHPOINT]: <TouchpointView />,
       [CATEGORIES.INBOX]: <InboxView />,
+      [CATEGORIES.BACKLOG]: <BacklogView />,
       [CATEGORIES.WAITING]: <WaitingView />,
       [CATEGORIES.SOMEDAY]: <SomedayView />,
       [CATEGORIES.PROJECTS]: <ProjectsView />,

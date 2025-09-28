@@ -78,6 +78,20 @@
                 </div>
             </div>
             <div class="task_tracker_menu_item_container">
+                <button class="task_tracker_menu_item expandable" data-category="Backlog" data-target="backlog-submenu">
+                    <span class="task_tracker_menu_item_text">Backlog</span>
+                    <span class="task_tracker_menu_item_arrow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </button>
+                <div class="task_tracker_submenu" id="backlog-submenu">
+                    <div class="task_tracker_submenu_item" data-subcategory="Projects">Projects</div>
+                    <div class="task_tracker_submenu_item" data-subcategory="Tasks">Tasks</div>
+                </div>
+            </div>
+            <div class="task_tracker_menu_item_container">
                 <button class="task_tracker_menu_item expandable active" data-category="Agenda" data-target="agenda-submenu">
                     <span class="task_tracker_menu_item_text">Agenda</span>
                     <span class="task_tracker_menu_item_arrow">

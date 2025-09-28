@@ -1020,6 +1020,7 @@
 /* View Container Styles - Only for non-Agenda categories */
 .touchpoint-container,
 .inbox-container,
+.backlog-container,
 .waiting-container,
 .someday-container,
 .projects-container,
@@ -1082,8 +1083,9 @@
 /* Max length warning styles */
 .task_creation_max_length_warning {
     position: absolute;
-    bottom: -25px;
-    left: 0;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 12px;
     color: #e74c3c;
     font-weight: 500;
@@ -1093,6 +1095,8 @@
     border-radius: 4px;
     border: 1px solid rgba(231, 76, 60, 0.3);
     animation: fadeIn 0.3s ease-in;
+    white-space: nowrap;
+    z-index: 10;
 }
 
 @keyframes fadeIn {
@@ -1244,6 +1248,7 @@
 /* @media (max-width: 767px) {
   .touchpoint-container,
   .inbox-container,
+  .backlog-container,
   .waiting-container,
   .someday-container,
   .projects-container,
@@ -1316,7 +1321,7 @@
   
   .task_creation_max_length_warning {
     font-size: 10px;
-    bottom: -20px;
+    top: -25px;
     padding: 1px 4px;
   }
   
@@ -1358,7 +1363,7 @@
   
   .task_creation_max_length_warning {
     font-size: 9px;
-    bottom: -18px;
+    top: -22px;
     padding: 1px 3px;
   }
   
