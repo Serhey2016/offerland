@@ -1040,19 +1040,20 @@
 }
 
 .task_creation_input_container {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
+    display: block;
     background: #9EAEBE;
     border: 2px solid #282D3B;
     border-radius: 25px;
-    padding: 4px 15px;
+    padding: 10px 15px;
     min-height: 50px;
     position: relative;
+    transition: all 0.3s ease;
 }
 
 .task_creation_input {
-    flex: 1;
+    display: block;
+    padding: 0;
+    margin-top: 5px;
     background: transparent;
     border: none;
     outline: none;
@@ -1060,24 +1061,160 @@
     font-size: 42px;
     font-family: 'League Spartan', sans-serif;
     font-weight: 500;
-    padding: 0;
-    margin-top: 5px;
+    margin: 0;
     box-shadow: none;
     line-height: 1;
     min-height: 42px;
     max-height: 200px;
-    resize: none;
     overflow-y: auto; 
     word-wrap: break-word;
     white-space: pre-wrap; 
-    transition: height 0.1s ease;
     width: 100%;
     box-sizing: border-box;
+    /* ContentEditable specific styles */
+    -webkit-user-modify: read-write-plaintext-only;
+    -moz-user-modify: read-write;
+    user-modify: read-write;
+    position: relative;
 }
 
-.task_creation_input::placeholder {
-    color: #282D3B !important;
-    opacity: 0.7 !important;
+/* Create floating area for text wrapping around buttons */
+.task_creation_input::after {
+    content: '';
+    float: right;
+    width: 110px;
+    height: 48px;
+    shape-outside: inset(0);
+    -webkit-shape-outside: inset(0);
+    clear: none;
+    transition: all 0.3s ease;
+}
+
+/* Animation when text is entered - buttons move up */
+.task_creation_input_container.has-text .task_creation_confirm_btn {
+    transform: translateY(-65px) !important;
+    z-index: 10 !important;
+}
+
+.task_creation_input_container.has-text .task_creation_dropdown_btn {
+    transform: translateY(-65px) !important;
+    z-index: 10 !important;
+}
+
+/* Remove float area when buttons are moved up */
+.task_creation_input_container.has-text .task_creation_input::after {
+    display: none;
+}
+
+/* Optional: Add subtle shadow to buttons when they're floating */
+.task_creation_input_container.has-text .task_creation_confirm_btn,
+.task_creation_input_container.has-text .task_creation_dropdown_btn {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Chips Container Styles */
+.task_creation_chips_container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 5px 0;
+}
+
+.task_creation_chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 16px;
+    color: #282D3B;
+    font-size: 14px;
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 500;
+    cursor: default;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(40, 45, 59, 0.2);
+    user-select: none;
+}
+
+/* Only title and hashtag chips are clickable */
+.task_creation_chip[title="Remove"] {
+    cursor: pointer;
+}
+
+/* Hover effect only for clickable chips (title and hashtag chips) */
+.task_creation_chip[title="Remove"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chip_text {
+    margin-right: 6px;
+    white-space: nowrap;
+}
+
+.chip_remove_btn {
+    background: none;
+    border: none;
+    color: #282D3B;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.chip_remove_btn:hover {
+    background: rgba(40, 45, 59, 0.1);
+    color: #ff4444;
+}
+
+/* Message Display */
+.task_creation_message {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    font-family: 'League Spartan', sans-serif;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Adjust input container when chips are present */
+.task_creation_input_container:has(.task_creation_chips_container) {
+    padding-top: 15px;
+}
+
+/* Adjust input field when chips are present */
+.task_creation_input_container:has(.task_creation_chips_container) .task_creation_input {
+    margin-top: 0;
+}
+
+/* Add border to dropdown button when floating */
+.task_creation_input_container.has-text .task_creation_dropdown_btn {
+    border: 2px solid #282D3B !important;
+    background: #9EAEBE !important;
+}
+
+
+.task_creation_input[data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: #282D3B;
+    opacity: 0.7;
+    pointer-events: none;
+    position: absolute;
 }
 
 /* Max length warning styles */
@@ -1117,6 +1254,9 @@
 }
 
 .task_creation_confirm_btn {
+    position: absolute;
+    top: 8px;
+    right: 60px;
     background: #9EAEBE !important;
     border: 2px solid #282D3B !important;
     color: #282D3B !important;
@@ -1126,15 +1266,15 @@
     font-weight: 600 !important;
     font-size: 14px !important;
     height: 36px !important;
-    transition: all 0.2s ease !important;
-    margin-top: 3px !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform: translateY(0);
+    z-index: 2;
 }
 
 .task_creation_confirm_btn:hover {
     background: #8a9aab !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 2px 4px rgba(40, 45, 59, 0.2) !important;
-    margin-top: 4px !important;
 }
 
 .task_creation_confirm_btn:active {
@@ -1142,7 +1282,9 @@
 }
 
 .task_creation_dropdown_btn {
-    margin-top: 3px;
+    position: absolute;
+    top: 8px;
+    right: 15px;
     background: transparent;
     border: none;
     color: #282D3B;
@@ -1152,9 +1294,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
     padding: 0;
     min-width: 36px;
+    z-index: 2;
 }
 
 .task_creation_dropdown_btn:hover {
@@ -1247,6 +1391,44 @@
 
 
 
+/* Medium screens - tablets (445px to 768px) */
+@media (max-width: 768px) and (min-width: 445px) {
+  .task_creation_input {
+    font-size: 24px !important;
+    min-height: 28px !important;
+  }
+  
+  .task_creation_confirm_btn {
+    top: 6px !important;
+    right: 50px !important;
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+    height: 32px !important;
+  }
+  
+  .task_creation_dropdown_btn {
+    top: 6px !important;
+    right: 12px !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  /* Tablet animation - buttons move up */
+  .task_creation_input_container.has-text .task_creation_confirm_btn {
+    transform: translateY(-55px) !important;
+  }
+  
+  .task_creation_input_container.has-text .task_creation_dropdown_btn {
+    transform: translateY(-55px) !important;
+  }
+  
+  /* Float area for tablets */
+  .task_creation_input::after {
+    width: 95px;
+    height: 40px;
+  }
+}
+
 /* Extra small screens - screens smaller than 444px */
 @media (max-width: 444px) {
   .task_tracker_task_creation {
@@ -1257,7 +1439,7 @@
   .task_creation_input_container {
     padding: 4px 8px;
     gap: 4px;
-    min-height: 40px;
+    min-height: 32px;
   }
   
   .task_creation_confirm_btn {
@@ -1286,6 +1468,48 @@
   
   .task_creation_input::placeholder {
     font-size: 12px;
+  }
+  
+  /* Mobile styles for button animation */
+  .task_creation_confirm_btn {
+    top: 3px !important;
+    right: 45px !important;
+    font-size: 11px !important;
+    height: 24px !important;
+  }
+  
+  .task_creation_dropdown_btn {
+    top: 3px !important;
+    right: 8px !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  /* Mobile animation - buttons move up */
+  .task_creation_input_container.has-text .task_creation_confirm_btn {
+    transform: translateY(-35px) !important;
+    top: 3px !important;
+    right: 45px !important;
+  }
+  
+  .task_creation_input_container.has-text .task_creation_dropdown_btn {
+    transform: translateY(-35px) !important;
+    top: 3px !important;
+    right: 8px !important;
+  }
+  
+  /* Mobile input font size */
+  .task_creation_input {
+    font-size: 16px !important;
+    min-height: 16px !important;
+    margin-top: 3px;
+    line-height: 1.2;
+  }
+  
+  /* Float area for mobile */
+  .task_creation_input::after {
+    width: 75px;
+    height: 28px;
   }
 }
 

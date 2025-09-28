@@ -1,5 +1,5 @@
 ---
-alwaysApply: true
+alwaysApply: false
 ---
 - the project works only through a docker containerthe project works only through a docker container
 - Use **real PrimeReact components** with proper classes

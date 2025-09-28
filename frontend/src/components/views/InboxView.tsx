@@ -1,45 +1,268 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Button } from 'primereact/button'
 import { TieredMenu } from 'primereact/tieredmenu'
+import { Chips } from 'primereact/chips'
 import TaskDesign from '../TaskDesign'
 import '../../styles/priority-matrix-submenu.css'
+
+// Types for chip data
+interface ChipData {
+  id: string
+  type: 'title' | 'priority' | 'hashtag' | 'date'
+  value: string
+  displayValue: string
+  backgroundColor: string
+}
 
 const InboxView = () => {
   const [taskInput, setTaskInput] = useState('')
   const [selectedPriority, setSelectedPriority] = useState<string>('')
+  const [hasText, setHasText] = useState(false)
+  const [chips, setChips] = useState<ChipData[]>([])
+  const [currentInput, setCurrentInput] = useState('')
+  const [showMessage, setShowMessage] = useState('')
   const menuRef = useRef<TieredMenu>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const contentEditableRef = useRef<HTMLDivElement>(null)
 
-  // Функция для автоматического изменения высоты textarea
-  const adjustTextareaHeight = () => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.style.height = 'auto'
-      textarea.style.height = textarea.scrollHeight + 'px'
+  // Priority mappings
+  const priorityMap = {
+    'iu': { full: 'Important & Urgent', color: '#EF9A9A' },
+    'inu': { full: 'Important & Not Urgent', color: '#90CAF9' },
+    'niu': { full: 'Not Important & Urgent', color: '#FFCC80' },
+    'ninu': { full: 'Not Important & Not Urgent', color: '#E0E0E0' }
+  }
+
+  // Check if text is a priority abbreviation
+  const isPriorityAbbreviation = (text: string): boolean => {
+    return Object.keys(priorityMap).includes(text.toLowerCase())
+  }
+
+  // Check if text is a date abbreviation
+  const isDateAbbreviation = (text: string): boolean => {
+    return text.toLowerCase().startsWith('sd') || text.toLowerCase().startsWith('dd')
+  }
+
+  // Check if text is a hashtag
+  const isHashtag = (text: string): boolean => {
+    return text.startsWith('#')
+  }
+
+  // Process input and create chips
+  const processInput = (input: string) => {
+    console.log('Processing input:', input)
+    if (!input.trim()) return
+
+    const trimmedInput = input.trim()
+    console.log('Trimmed input:', trimmedInput)
+    
+    // Check for priority
+    if (isPriorityAbbreviation(trimmedInput)) {
+      console.log('Priority detected:', trimmedInput)
+      const priority = priorityMap[trimmedInput.toLowerCase() as keyof typeof priorityMap]
+      const existingPriority = chips.find(chip => chip.type === 'priority')
+      
+      if (existingPriority) {
+        setShowMessage('Priority already set. Remove existing priority to set a new one.')
+        setTimeout(() => setShowMessage(''), 3000)
+        return
+      }
+      
+      const newChip: ChipData = {
+        id: `priority-${Date.now()}`,
+        type: 'priority',
+        value: trimmedInput.toLowerCase(),
+        displayValue: priority.full,
+        backgroundColor: priority.color
+      }
+      
+      setChips(prev => [...prev, newChip])
+      setCurrentInput('')
+      return
+    }
+
+    // Check for date
+    if (isDateAbbreviation(trimmedInput)) {
+      console.log('Date abbreviation detected:', trimmedInput)
+      const dateMatch = trimmedInput.match(/^(sd|dd)(.+)$/i)
+      if (dateMatch) {
+        const [, prefix, date] = dateMatch
+        const dateType = prefix.toLowerCase() === 'sd' ? 'Start date' : 'Due date'
+        console.log('Date parts:', { prefix, date, dateType })
+        
+        // Validate date format (dd.mm.yyyy)
+        const dateRegex = /^\d{1,2}\.\d{1,2}\.\d{4}$/
+        if (!dateRegex.test(date.trim())) {
+          console.log('Invalid date format:', date.trim())
+          setShowMessage(`Invalid date format for ${dateType.toLowerCase()}. Please use format: ${prefix}dd.mm.yyyy (e.g., ${prefix}24.09.2025)`)
+          setTimeout(() => setShowMessage(''), 5000)
+          return
+        }
+        
+        // Additional validation for actual date
+        const dateParts = date.trim().split('.')
+        const day = parseInt(dateParts[0])
+        const month = parseInt(dateParts[1])
+        const year = parseInt(dateParts[2])
+        
+        // Check if date is valid
+        const dateObj = new Date(year, month - 1, day)
+        console.log('Date validation:', { day, month, year, dateObj: dateObj.toISOString() })
+        if (dateObj.getDate() !== day || dateObj.getMonth() !== month - 1 || dateObj.getFullYear() !== year) {
+          console.log('Invalid date values')
+          setShowMessage(`Invalid date for ${dateType.toLowerCase()}. Please check day, month, and year values.`)
+          setTimeout(() => setShowMessage(''), 5000)
+          return
+        }
+        
+        console.log('Date validation passed, creating chip')
+        
+        const newChip: ChipData = {
+          id: `date-${Date.now()}`,
+          type: 'date',
+          value: trimmedInput,
+          displayValue: `${dateType}: ${date.trim()}`,
+          backgroundColor: '#B3C3D4'
+        }
+        
+        setChips(prev => [...prev, newChip])
+        setCurrentInput('')
+        return
+      }
+    }
+
+    // Check for hashtag
+    if (isHashtag(trimmedInput)) {
+      console.log('Hashtag detected:', trimmedInput)
+      
+      // Remove the # symbol for processing
+      const hashtagText = trimmedInput.substring(1).trim()
+      
+      if (!hashtagText) {
+        setShowMessage('Hashtag cannot be empty. Please enter text after # symbol.')
+        setTimeout(() => setShowMessage(''), 3000)
+        return
+      }
+      
+      // Check for duplicate hashtags
+      const existingHashtag = chips.find(chip => 
+        chip.type === 'hashtag' && chip.value.toLowerCase() === trimmedInput.toLowerCase()
+      )
+      
+      if (existingHashtag) {
+        setShowMessage('This hashtag already exists.')
+        setTimeout(() => setShowMessage(''), 3000)
+        return
+      }
+      
+      const newChip: ChipData = {
+        id: `hashtag-${Date.now()}`,
+        type: 'hashtag',
+        value: trimmedInput,
+        displayValue: trimmedInput,
+        backgroundColor: '#B3C3D4'
+      }
+      
+      setChips(prev => [...prev, newChip])
+      setCurrentInput('')
+      return
+    }
+
+    // Check for title (if no existing title and text doesn't match any pattern)
+    const existingTitle = chips.find(chip => chip.type === 'title')
+    console.log('Existing title:', existingTitle)
+    console.log('Input length:', trimmedInput.length)
+    
+    if (!existingTitle && trimmedInput.length <= 120) {
+      console.log('Creating title chip for:', trimmedInput)
+      const newChip: ChipData = {
+        id: `title-${Date.now()}`,
+        type: 'title',
+        value: trimmedInput,
+        displayValue: `title: ${trimmedInput}`,
+        backgroundColor: '#AAC7E3'
+      }
+      
+      setChips(prev => [...prev, newChip])
+      setCurrentInput('')
+      return
+    } else if (existingTitle) {
+      console.log('Title already exists')
+      setShowMessage('Task title already set. Remove existing title to set a new one.')
+      setTimeout(() => setShowMessage(''), 3000)
+      return
+    }
+    
+    console.log('No pattern matched for input:', trimmedInput)
+  }
+
+  // Remove chip
+  const removeChip = (chipId: string) => {
+    setChips(prev => prev.filter(chip => chip.id !== chipId))
+  }
+
+  // Edit chip (convert back to input) - for title and hashtag chips
+  const editChip = (chip: ChipData) => {
+    if (chip.type === 'title' || chip.type === 'hashtag') {
+      // Remove the chip first
+      removeChip(chip.id)
+      
+      // Set the text back to input field
+      setCurrentInput(chip.value)
+      setTaskInput(chip.value)
+      
+      // Focus the input field and set cursor to end
+      setTimeout(() => {
+        if (contentEditableRef.current) {
+          contentEditableRef.current.textContent = chip.value
+          contentEditableRef.current.focus()
+          
+          // Set cursor to end of text
+          const range = document.createRange()
+          const selection = window.getSelection()
+          if (contentEditableRef.current.firstChild) {
+            range.selectNodeContents(contentEditableRef.current)
+            range.collapse(false) // false means collapse to end
+            selection?.removeAllRanges()
+            selection?.addRange(range)
+          }
+        }
+      }, 0)
     }
   }
 
-  // useEffect для настройки автоматического изменения высоты
+  // Функция для автоматического изменения высоты contenteditable
+  const adjustContentHeight = () => {
+    const element = contentEditableRef.current
+    if (element) {
+      // Auto-resize not needed for contenteditable, it grows naturally
+    }
+  }
+
+  // useEffect для настройки contenteditable
   useEffect(() => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.addEventListener('input', adjustTextareaHeight)
-      
-      // Очистка при размонтировании
-      return () => {
-        textarea.removeEventListener('input', adjustTextareaHeight)
+    const element = contentEditableRef.current
+    if (element) {
+      // Синхронизируем содержимое только при очистке
+      if (taskInput === '' && element.textContent !== '') {
+        element.textContent = ''
       }
     }
-  }, [])
+  }, [taskInput])
 
   const handleConfirm = () => {
-    if (taskInput.trim()) {
-      console.log('Creating task:', taskInput, 'with priority:', selectedPriority)
-      // TODO: Implement task creation logic
+    if (taskInput.trim() || chips.length > 0) {
+      console.log('Creating task with chips:', chips, 'and input:', taskInput)
+      // TODO: Implement task creation logic with chips data
       setTaskInput('')
+      setCurrentInput('')
       setSelectedPriority('')
-      // Сбрасываем высоту после очистки
-      setTimeout(adjustTextareaHeight, 0)
+      setHasText(false)
+      setChips([])
+      setShowMessage('')
+      // Очищаем contenteditable
+      if (contentEditableRef.current) {
+        contentEditableRef.current.textContent = ''
+      }
     }
   }
 
@@ -48,19 +271,93 @@ const InboxView = () => {
     console.log('Priority selected:', priority)
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleConfirm()
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      
+      // If there's text in the input, try to process it as a chip first
+      const element = e.currentTarget
+      const text = element.textContent || ''
+      
+      if (text.trim()) {
+        processInput(text.trim())
+        element.textContent = ''
+        setCurrentInput('')
+        setTaskInput('')
+        setHasText(chips.length > 0)
+      } else {
+        // If no text, confirm the task
+        handleConfirm()
+      }
     }
-    // Вызываем adjustTextareaHeight при любом изменении
-    setTimeout(adjustTextareaHeight, 0)
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value
-    if (value.length <= 120) {
-      setTaskInput(value)
-      setTimeout(adjustTextareaHeight, 0)
+  // Функции для работы с курсором
+  const saveCaretPosition = (element: HTMLElement) => {
+    const selection = window.getSelection()
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0)
+      if (element.contains(range.startContainer)) {
+        return range.startOffset
+      }
+    }
+    return 0
+  }
+
+  const restoreCaretPosition = (element: HTMLElement, position: number) => {
+    const range = document.createRange()
+    const selection = window.getSelection()
+    
+    if (element.firstChild) {
+      const textNode = element.firstChild
+      const maxPosition = textNode.textContent?.length || 0
+      const safePosition = Math.min(position, maxPosition)
+      
+      range.setStart(textNode, safePosition)
+      range.setEnd(textNode, safePosition)
+      
+      selection?.removeAllRanges()
+      selection?.addRange(range)
+    }
+  }
+
+  const handleInputChange = (e: React.FormEvent<HTMLDivElement>) => {
+    const element = e.currentTarget
+    const text = element.textContent || ''
+    const caretPosition = saveCaretPosition(element)
+    
+    // Check for comma separator at the end
+    if (text.endsWith(',')) {
+      const textWithoutComma = text.slice(0, -1).trim()
+      
+      if (textWithoutComma) {
+        processInput(textWithoutComma)
+        // Clear the input after processing
+        element.textContent = ''
+        setCurrentInput('')
+        setTaskInput('')
+        setHasText(chips.length > 0)
+        return
+      }
+    }
+    
+    setCurrentInput(text)
+    
+    if (text.length <= 120) {
+      setTaskInput(text)
+      setHasText(text.length > 0 || chips.length > 0)
+    } else {
+      // Prevent further input if max length reached
+      const truncatedText = text.substring(0, 120)
+      element.textContent = truncatedText
+      setTaskInput(truncatedText)
+      setCurrentInput(truncatedText)
+      setHasText(true)
+      
+      // Восстанавливаем позицию курсора
+      setTimeout(() => {
+        restoreCaretPosition(element, Math.min(caretPosition, 120))
+      }, 0)
     }
   }
 
@@ -127,18 +424,50 @@ const InboxView = () => {
       <div className="touchpoint-container">
         {/* Task Creation Block */}
         <div id="task-creation-block" className="task_tracker_task_creation">
-          <div id="task-creation-input-container" className="task_creation_input_container">
-            <textarea
-              ref={textareaRef}
+          <div id="task-creation-input-container" className={`task_creation_input_container ${hasText ? 'has-text' : ''}`}>
+            {/* Chips Display */}
+            {chips.length > 0 && (
+              <div className="task_creation_chips_container">
+                {chips.map((chip) => (
+                  <div
+                    key={chip.id}
+                    className="task_creation_chip"
+                    style={{ backgroundColor: chip.backgroundColor }}
+                    onClick={() => (chip.type === 'title' || chip.type === 'hashtag') ? editChip(chip) : undefined}
+                    title={(chip.type === 'title' || chip.type === 'hashtag') ? 'Remove' : ''}
+                  >
+                    <span className="chip_text">{chip.displayValue}</span>
+                    <button
+                      className="chip_remove_btn"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeChip(chip.id)
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* Message Display */}
+            {showMessage && (
+              <div className="task_creation_message">
+                {showMessage}
+              </div>
+            )}
+            
+            <div
+              ref={contentEditableRef}
               id="task-input-field"
-              value={taskInput}
-              onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
-              placeholder="Enter task..."
+              contentEditable
+              onInput={handleInputChange}
+              onKeyDown={handleKeyPress}
               className={`task_creation_input ${isMaxLength ? 'max-length-reached' : ''}`}
-              rows={1}
-              maxLength={120}
-            />
+              data-placeholder={chips.length > 0 ? "Add more details..." : "Enter task..."}
+              suppressContentEditableWarning={true}
+            ></div>
             {isMaxLength && (
               <div className="task_creation_max_length_warning">
                 Maximum length reached (120 characters)

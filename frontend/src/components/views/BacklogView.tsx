@@ -1,33 +1,33 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Button } from 'primereact/button'
 import { TieredMenu } from 'primereact/tieredmenu'
+import { Chips } from 'primereact/chips'
 import TaskDesign from '../TaskDesign'
 import '../../styles/priority-matrix-submenu.css'
 
 const BacklogView = () => {
   const [taskInput, setTaskInput] = useState('')
   const [selectedPriority, setSelectedPriority] = useState<string>('')
-  const menuRef = useRef<TieredMenu>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [hasText, setHasText] = useState(false)
 
-  // Функция для автоматического изменения высоты textarea
-  const adjustTextareaHeight = () => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.style.height = 'auto'
-      textarea.style.height = textarea.scrollHeight + 'px'
+  const menuRef = useRef<TieredMenu>(null)
+  const contentEditableRef = useRef<HTMLDivElement>(null)
+
+  // Функция для автоматического изменения высоты contenteditable
+  const adjustContentHeight = () => {
+    const element = contentEditableRef.current
+    if (element) {
+      // Auto-resize not needed for contenteditable, it grows naturally
     }
   }
 
-  // useEffect для настройки автоматического изменения высоты
+  // useEffect для настройки contenteditable
   useEffect(() => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.addEventListener('input', adjustTextareaHeight)
-      
-      // Очистка при размонтировании
-      return () => {
-        textarea.removeEventListener('input', adjustTextareaHeight)
+    const element = contentEditableRef.current
+    if (element) {
+      // Set initial content if needed
+      if (taskInput && element.textContent !== taskInput) {
+        element.textContent = taskInput
       }
     }
   }, [])
@@ -38,8 +38,11 @@ const BacklogView = () => {
       // TODO: Implement task creation logic
       setTaskInput('')
       setSelectedPriority('')
-      // Сбрасываем высоту после очистки
-      setTimeout(adjustTextareaHeight, 0)
+      setHasText(false)
+      // Очищаем contenteditable
+      if (contentEditableRef.current) {
+        contentEditableRef.current.textContent = ''
+      }
     }
   }
 
@@ -48,19 +51,24 @@ const BacklogView = () => {
     console.log('Priority selected:', priority)
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
       handleConfirm()
     }
-    // Вызываем adjustTextareaHeight при любом изменении
-    setTimeout(adjustTextareaHeight, 0)
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value
-    if (value.length <= 120) {
-      setTaskInput(value)
-      setTimeout(adjustTextareaHeight, 0)
+  const handleInputChange = (e: React.FormEvent<HTMLDivElement>) => {
+    const text = e.currentTarget.textContent || ''
+    
+    if (text.length <= 120) {
+      setTaskInput(text)
+      setHasText(text.length > 0) // Убираем debounce для тестирования
+    } else {
+      // Prevent further input if max length reached
+      e.currentTarget.textContent = text.substring(0, 120)
+      setTaskInput(text.substring(0, 120))
+      setHasText(true)
     }
   }
 
@@ -124,50 +132,6 @@ const BacklogView = () => {
   return (
     <div className="task_tracker_calendar_container">
       <div className="backlog-container">
-        {/* Task Creation Block */}
-        <div id="task-creation-block" className="task_tracker_task_creation">
-          <div id="task-creation-input-container" className="task_creation_input_container">
-            <textarea
-              ref={textareaRef}
-              id="task-input-field"
-              value={taskInput}
-              onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
-              placeholder="Enter backlog task..."
-              className={`task_creation_input ${isMaxLength ? 'max-length-reached' : ''}`}
-              rows={1}
-              maxLength={120}
-            />
-            {isMaxLength && (
-              <div className="task_creation_max_length_warning">
-                Maximum length reached (120 characters)
-              </div>
-            )}
-            <Button
-              id="task-confirm-button"
-              icon="pi pi-check"
-              onClick={handleConfirm}
-              className="task_creation_confirm_btn"
-              text
-            />
-            <Button
-              id="task-dropdown-button"
-              icon="pi pi-ellipsis-v"
-              onClick={toggleMenu}
-              className="task_creation_dropdown_btn"
-              text
-            />
-            <TieredMenu
-              id="task-dropdown-menu"
-              ref={menuRef}
-              model={dropdownMenuItems}
-              popup
-              className="task_creation_dropdown_menu"
-              popupAlignment="right"
-            />
-          </div>
-        </div>
-
         <div className="backlog-content">
           <TaskDesign
             title="Sample Backlog Task"
