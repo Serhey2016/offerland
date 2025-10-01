@@ -4,6 +4,7 @@ import { TieredMenu } from 'primereact/tieredmenu'
 // import { Chips } from 'primereact/chips' // Commented out - hashtag functionality disabled
 import TaskDesign from '../TaskDesign'
 import '../../styles/priority-matrix-submenu.css'
+import { taskApi, InboxTaskData } from '../../api/taskApi'
 
 // Types for chip data
 interface ChipData {
@@ -30,6 +31,48 @@ const InboxView = () => {
     'inu': { full: 'Important & Not Urgent', color: '#90CAF9' },
     'niu': { full: 'Not Important & Urgent', color: '#FFCC80' },
     'ninu': { full: 'Not Important & Not Urgent', color: '#E0E0E0' }
+  }
+
+  // Helper function to format date from dd.mm.yyyy to yyyy-mm-dd
+  const formatDateForBackend = (dateString: string): string => {
+    // Input format: dd.mm.yyyy
+    // Output format: yyyy-mm-dd
+    const parts = dateString.trim().split('.')
+    if (parts.length === 3) {
+      const [day, month, year] = parts
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    }
+    return dateString
+  }
+
+  // Helper function to extract start date from chips
+  const extractDateStart = (dateChips: ChipData[]): string | undefined => {
+    const startDateChip = dateChips.find(chip => 
+      chip.value.toLowerCase().startsWith('sd')
+    )
+    if (startDateChip) {
+      // Extract date part after 'sd'
+      const dateMatch = startDateChip.value.match(/^sd(.+)$/i)
+      if (dateMatch && dateMatch[1]) {
+        return formatDateForBackend(dateMatch[1].trim())
+      }
+    }
+    return undefined
+  }
+
+  // Helper function to extract end date from chips
+  const extractDateEnd = (dateChips: ChipData[]): string | undefined => {
+    const endDateChip = dateChips.find(chip => 
+      chip.value.toLowerCase().startsWith('dd')
+    )
+    if (endDateChip) {
+      // Extract date part after 'dd'
+      const dateMatch = endDateChip.value.match(/^dd(.+)$/i)
+      if (dateMatch && dateMatch[1]) {
+        return formatDateForBackend(dateMatch[1].trim())
+      }
+    }
+    return undefined
   }
 
   // Check if text is a priority abbreviation
@@ -276,19 +319,59 @@ const InboxView = () => {
     }
   }, [taskInput])
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (taskInput.trim() || chips.length > 0) {
       console.log('Creating task with chips:', chips, 'and input:', taskInput)
-      // TODO: Implement task creation logic with chips data
-      setTaskInput('')
-      // setCurrentInput('') // Commented out - hashtag functionality disabled
-      // setSelectedPriority('') // Commented out - not used
-      setHasText(false)
-      setChips([])
-      setShowMessage('')
-      // Очищаем contenteditable
-      if (contentEditableRef.current) {
-        contentEditableRef.current.textContent = ''
+      
+      try {
+        // Prepare task data
+        const titleChip = chips.find(chip => chip.type === 'title')
+        const priorityChip = chips.find(chip => chip.type === 'priority')
+        const dateChips = chips.filter(chip => chip.type === 'date')
+        
+        const taskData: InboxTaskData = {
+          title: titleChip?.value || taskInput.trim(),
+        }
+        
+        // Add optional fields if they exist
+        if (priorityChip) {
+          taskData.priority = priorityChip.value as 'iu' | 'inu' | 'niu' | 'ninu'
+        }
+        
+        const startDate = extractDateStart(dateChips)
+        if (startDate) {
+          taskData.date_start = startDate
+        }
+        
+        const endDate = extractDateEnd(dateChips)
+        if (endDate) {
+          taskData.date_end = endDate
+        }
+        
+        console.log('Sending task data to API:', taskData)
+        
+        // Call API to create task
+        const response = await taskApi.createInboxTask(taskData)
+        
+        console.log('Task created successfully:', response)
+        
+        // Show success message
+        setShowMessage('Task created successfully!')
+        setTimeout(() => setShowMessage(''), 3000)
+        
+        // Clear form
+        setTaskInput('')
+        setHasText(false)
+        setChips([])
+        
+        if (contentEditableRef.current) {
+          contentEditableRef.current.textContent = ''
+        }
+        
+      } catch (error) {
+        console.error('Error creating task:', error)
+        setShowMessage('Error creating task. Please try again.')
+        setTimeout(() => setShowMessage(''), 5000)
       }
     }
   }
@@ -296,6 +379,31 @@ const InboxView = () => {
   const handlePrioritySelect = (priority: string) => {
     // setSelectedPriority(priority) // Commented out - not used
     console.log('Priority selected:', priority)
+    
+    // Mapping from priority button names to abbreviations
+    const priorityMapping: { [key: string]: string } = {
+      'important-urgent': 'iu',
+      'important-not-urgent': 'inu',
+      'not-important-urgent': 'niu',
+      'not-important-not-urgent': 'ninu'
+    }
+    
+    // Get abbreviation
+    const abbr = priorityMapping[priority]
+    
+    if (abbr) {
+      // Use existing processInput logic to create chip
+      processInput(abbr)
+      
+      // Clear input field after processing
+      if (contentEditableRef.current) {
+        contentEditableRef.current.textContent = ''
+      }
+      setTaskInput('')
+      
+      // Close menu
+      menuRef.current?.hide()
+    }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -390,17 +498,42 @@ const InboxView = () => {
 
   const isMaxLength = taskInput.length >= 120
 
+  // Helper function to insert text into input field
+  const insertTextIntoInput = (text: string) => {
+    const element = contentEditableRef.current
+    if (element) {
+      element.textContent = text
+      setTaskInput(text)
+      setHasText(text.length > 0 || chips.length > 0)
+      element.focus()
+      
+      // Set cursor to end of text
+      setTimeout(() => {
+        const range = document.createRange()
+        const selection = window.getSelection()
+        if (element.firstChild) {
+          range.selectNodeContents(element)
+          range.collapse(false)
+          selection?.removeAllRanges()
+          selection?.addRange(range)
+        }
+      }, 0)
+      
+      // Close menu after insertion
+      menuRef.current?.hide()
+    }
+  }
 
   const dropdownMenuItems = [
     {
       id: 'start-date-option',
       label: 'Start date',
-      command: () => console.log('Start date selected')
+      command: () => insertTextIntoInput('sd')
     },
     {
       id: 'due-date-option',
       label: 'Due date',
-      command: () => console.log('Due date selected')
+      command: () => insertTextIntoInput('dd')
     },
     {
       id: 'add-subtask-option',

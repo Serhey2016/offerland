@@ -47,6 +47,7 @@ def create_task(request):
             note = none_if_empty(request.POST.get('note') or request.POST.get('comment'))
             finance_id = none_if_empty(request.POST.get('finance'))
             parent_id = none_if_empty(request.POST.get('parent') or request.POST.get('project-included'))
+            priority = none_if_empty(request.POST.get('priority'))
             category_id = none_if_empty(request.POST.get('category'))
             service_id = none_if_empty(request.POST.get('service'))
 
@@ -55,16 +56,15 @@ def create_task(request):
             if not title:
                 missing_fields.append('Title')
             
-            # Для задач типа "Job search" description не обязателен
+            # Для задач типа "Job search" и "my" (Inbox tasks) description не обязателен
             if not description and type_of_task_id:
                 try:
                     type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
-                    if type_of_task.type_of_task_name != 'Job search':
+                    if type_of_task.type_of_task_name not in ['Job search', 'my']:
                         missing_fields.append('Description')
                 except TypeOfTask.DoesNotExist:
                     missing_fields.append('Description')
-            elif not description:
-                missing_fields.append('Description')
+            # If no type_of_task_id provided (Inbox tasks), description is optional
                 
             if missing_fields:
                 return JsonResponse({
@@ -83,6 +83,7 @@ def create_task(request):
                 time_start=time_start,
                 time_end=time_end,
                 documents=documents,
+                priority=priority,
                 status_id=status_id,
                 is_private=is_private,
                 disclose_name=disclose_name,

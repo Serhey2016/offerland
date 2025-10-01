@@ -128,6 +128,13 @@ class Task(models.Model):
         ('archived', 'Archived'),
     ]
     
+    PRIORITY_CHOICES = [
+        ('iu', 'Important & Urgent'),
+        ('inu', 'Important & Not Urgent'),
+        ('niu', 'Not Important & Urgent'),
+        ('ninu', 'Not Important & Not Urgent'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
@@ -140,6 +147,7 @@ class Task(models.Model):
     time_start = models.TimeField(null=True, blank=True)
     time_end = models.TimeField(null=True, blank=True)
     documents = models.CharField(max_length=2000, blank=True, null=True)
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, null=True, blank=True, verbose_name='Priority')
     status = models.ForeignKey('TaskStatus', on_delete=models.SET_NULL, null=True)
     task_mode = models.CharField(max_length=10, choices=TASK_MODE_CHOICES, default='draft', verbose_name='Task mode')
     is_private = models.BooleanField(default=False)
@@ -323,7 +331,7 @@ class Advertising(models.Model):
     ]
     
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(default=lambda: uuid.uuid4(), unique=True, editable=False)
+    uuid = models.UUIDField(default=generate_uuid, unique=True, editable=False)
     slug = models.SlugField(max_length=255, blank=True, null=True)  # Removed unique=True initially
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000)

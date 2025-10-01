@@ -1112,6 +1112,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+
 /* Chips Container Styles */
 .task_creation_chips_container {
     display: flex;
@@ -1215,6 +1216,7 @@
     opacity: 0.7;
     pointer-events: none;
     position: absolute;
+    margin-top: 6px;
 }
 
 /* Max length warning styles */
@@ -1269,6 +1271,7 @@
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
     transform: translateY(0);
     z-index: 2;
+    margin-top: 8px;
 }
 
 .task_creation_confirm_btn:hover {
@@ -1299,11 +1302,23 @@
     padding: 0;
     min-width: 36px;
     z-index: 2;
+    margin-top: 8px;
 }
 
 .task_creation_dropdown_btn:hover {
     background: rgba(40, 45, 59, 0.1);
     transform: scale(1.05);
+}
+
+/* Mobile responsive margin for buttons */
+@media (max-width: 768px) {
+    .task_creation_confirm_btn {
+        margin-top: 3px;
+    }
+    
+    .task_creation_dropdown_btn {
+        margin-top: 3px;
+    }
 }
 
 .task_creation_dropdown_btn .p-button-icon {

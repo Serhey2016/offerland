@@ -41,6 +41,15 @@ export interface TaskFilters {
   search?: string
 }
 
+// Inbox Task Data Interface
+export interface InboxTaskData {
+  title: string
+  date_start?: string  // format: YYYY-MM-DD or DD.MM.YYYY
+  date_end?: string    // format: YYYY-MM-DD or DD.MM.YYYY
+  priority?: 'iu' | 'inu' | 'niu' | 'ninu'  // Important & Urgent, etc.
+  description?: string
+}
+
 // Task API функції
 export const taskApi = {
   // Отримати всі задачі
@@ -134,6 +143,44 @@ export const taskApi = {
       return response.data
     } catch (error) {
       console.error('Error fetching task stats:', error)
+      throw error
+    }
+  },
+
+  // Створити Inbox задачу
+  createInboxTask: async (taskData: InboxTaskData): Promise<any> => {
+    try {
+      // Prepare FormData for Django form submission
+      const formData = new FormData()
+      formData.append('title', taskData.title)
+      
+      if (taskData.date_start) {
+        formData.append('date_start', taskData.date_start)
+      }
+      
+      if (taskData.date_end) {
+        formData.append('date_end', taskData.date_end)
+      }
+      
+      if (taskData.priority) {
+        formData.append('priority', taskData.priority)
+      }
+      
+      // Description is optional for inbox tasks, send empty string if not provided
+      formData.append('description', taskData.description || '')
+      
+      // Type of task ID for inbox - use "my" type (ID: 1) for inbox tasks
+      formData.append('type_of_task', '1')  // "my" type for inbox tasks
+      
+      const response = await api.post('/services_and_projects/create_task/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error('Error creating inbox task:', error)
       throw error
     }
   }
