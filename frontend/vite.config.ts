@@ -16,6 +16,13 @@ export default defineConfig({
     port: 5173,
     hmr: false, // Отключаем HMR полностью
     https: false,
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-CSRFToken'
+    },
     fs: {
       allow: ['..']
     },

@@ -28,7 +28,7 @@ const categories = [
         subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
     },
     {
-        name: 'Lockbook (Done)',
+        name: 'Done',
         subcategories: ['All', 'Projects', 'Tasks', 'Time slots']
     },
     {

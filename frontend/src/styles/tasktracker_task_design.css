@@ -1,0 +1,274 @@
+/* Task Design Container */
+.task-design-container {
+    margin: 10px 0;
+}
+
+/* Task Tracker Task Container - New Design */
+.task_tracker_task_container {
+    display: block;
+    background: #9EAEBE;
+    border: 2px solid #282D3B;
+    border-radius: 25px;
+    padding: 15px 20px 15px 35px; /* Added left padding to avoid overlap with line */
+    margin: 10px 0;
+    position: relative;
+    transition: all 0.3s ease;
+    min-height: 80px;
+}
+
+/* Floating action icons */
+.task_tracker_floating_icons {
+    position: absolute;
+    top: -15px;
+    right: 10px;
+    display: flex !important;
+    gap: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+}
+
+.task_tracker_task_container:hover .task_tracker_floating_icons {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    visibility: visible !important;
+    display: flex !important;
+}
+
+.task_tracker_icon_btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: #282D3B !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: auto !important;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.task_tracker_icon_btn:hover {
+    background: #007bff !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+}
+
+.task_tracker_icon_btn:active {
+    transform: scale(0.95);
+}
+
+/* Left vertical bar */
+.task_tracker_task_container::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 12px;
+    background: #EF9A9A;
+    border-radius: 25px 0 0 25px;
+}
+
+/* Task metadata section */
+.task_tracker_task_metadata {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    gap: 15px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #282D3B;
+}
+
+.task_tracker_task_category {
+    font-weight: 600;
+    color: #282D3B;
+}
+
+.task_tracker_task_times {
+    color: #4E5F8C;
+    font-weight: 500;
+}
+
+.task_tracker_task_dates {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    justify-content: flex-start;
+}
+
+.task_tracker_task_date_item {
+    color: #282D3B;
+}
+
+.task_tracker_task_date_value {
+    color: #4E5F8C;
+    margin-left: 5px;
+}
+
+/* Task title */
+.task_tracker_task_title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #282D3B;
+    margin: 8px 0;
+    line-height: 1.3;
+}
+
+/* Task hashtags */
+.task_tracker_task_hashtags {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.task_tracker_task_hashtag_icon {
+    width: 16px;
+    height: 16px;
+    fill: #4E5F8C;
+}
+
+.task_tracker_task_hashtag_text {
+    color: #4E5F8C;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Mobile support for floating icons */
+@media (max-width: 768px) {
+    .task_tracker_floating_icons {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+    }
+    
+    .task_tracker_task_container:hover .task_tracker_floating_icons,
+    .task_tracker_task_container.mobile-tap .task_tracker_floating_icons {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        visibility: visible !important;
+        display: flex !important;
+    }
+    
+    .task_tracker_icon_btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .task_tracker_task_container {
+        padding: 12px 15px 12px 30px; /* Added left padding for mobile too */
+        margin: 8px 0;
+    }
+    
+    .task_tracker_task_metadata {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .task_tracker_task_dates {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .task_tracker_task_title {
+        font-size: 16px;
+    }
+}
+
+/* Task Dropdown Menu Styles */
+.task_tracker_task_dropdown_menu {
+    position: fixed !important;
+    z-index: 9999 !important;
+    background-color: white !important;
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    min-width: 160px !important;
+    padding: 4px 0 !important;
+    font-size: 14px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.task_tracker_task_dropdown_item {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+}
+
+.task_tracker_task_dropdown_item:last-child {
+    border-bottom: none;
+}
+
+.task_tracker_task_dropdown_item:hover {
+    background-color: #f5f5f5;
+    color: #007bff;
+}
+
+.task_tracker_task_dropdown_item:active {
+    background-color: #e9ecef;
+}
+
+/* Task Submenu Styles - Renamed to avoid conflicts with left menu */
+.task_tracker_task_submenu {
+    position: fixed !important;
+    z-index: 10000 !important;
+    background-color: white !important;
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    min-width: 160px !important;
+    padding: 4px 0 !important;
+    font-size: 14px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.task_tracker_task_submenu_item {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+}
+
+.task_tracker_task_submenu_item:last-child {
+    border-bottom: none;
+}
+
+.task_tracker_task_submenu_item:hover {
+    background-color: #f5f5f5;
+    color: #007bff;
+}
+
+.task_tracker_task_submenu_item:active {
+    background-color: #e9ecef;
+}
+
+/* Task Dropdown item with submenu */
+.task_tracker_task_dropdown_item_with_submenu:hover {
+    background-color: #f5f5f5;
+    color: #007bff;
+}
+
+.task_tracker_task_dropdown_item_with_submenu:hover .pi-chevron-right {
+    opacity: 1 !important;
+}

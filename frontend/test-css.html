@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Test - SubMenuSection Layout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Copy the relevant CSS styles */
+        .task_tracker_sub_menu_section {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0;
+            position: relative;
+            border: 2px solid #ddd;
+            margin: 20px 0;
+        }
+        
+        .task_tracker_sub_menu_filter_container {
+            flex-shrink: 0;
+        }
+        
+        .task_tracker_sub_menu_filter_btn {
+            background: #282d3b;
+            border: 2px solid #282d3b;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .task_tracker_sub_menu_scrollable_container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            z-index: 25;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .task_tracker_sub_menu_navigation_items {
+            display: flex;
+            gap: 10px;
+            padding: 0 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .task_tracker_sub_menu_nav_btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .task_tracker_sub_menu_nav_btn.active {
+            background: #f0f0f0;
+            border-color: #dc7e7e;
+        }
+        
+        .task_tracker_sub_menu_add_container {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .task_tracker_sub_menu_add_btn {
+            background: linear-gradient(135deg, #DC7E7E 0%, #C65A5A 100%);
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 50;
+            position: relative;
+            flex-shrink: 0;
+            margin-left: 15px;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .test-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>CSS Test - SubMenuSection Layout</h1>
+        <p>Testing horizontal layout of filter button, navigation buttons, and add button.</p>
+        
+        <div class="task_tracker_sub_menu_section">
+            <!-- Filter Button -->
+            <div class="task_tracker_sub_menu_filter_container">
+                <button class="task_tracker_sub_menu_filter_btn">🔍</button>
+            </div>
+            
+            <!-- Navigation Items -->
+            <div class="task_tracker_sub_menu_scrollable_container">
+                <div class="task_tracker_sub_menu_navigation_items">
+                    <button class="task_tracker_sub_menu_nav_btn active">Business support</button>
+                    <button class="task_tracker_sub_menu_nav_btn">Personal support</button>
+                </div>
+            </div>
+            
+            <!-- Add Button -->
+            <div class="task_tracker_sub_menu_add_container">
+                <button class="task_tracker_sub_menu_add_btn">+</button>
+            </div>
+        </div>
+        
+        <div class="test-info">
+            <h3>Expected Layout:</h3>
+            <ul>
+                <li>Filter button (🔍) on the left</li>
+                <li>Navigation buttons (Business support, Personal support) in the center</li>
+                <li>Add button (+) on the right</li>
+                <li>All elements should be in one horizontal line</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

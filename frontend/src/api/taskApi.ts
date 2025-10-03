@@ -169,8 +169,8 @@ export const taskApi = {
       // Description is optional for inbox tasks, send empty string if not provided
       formData.append('description', taskData.description || '')
       
-      // Type of task ID for inbox - use "my" type (ID: 1) for inbox tasks
-      formData.append('type_of_task', '1')  // "my" type for inbox tasks
+      // Type of task ID for inbox - use "Task" type (ID: 1) for inbox tasks
+      formData.append('type_of_task', '1')  // "Task" type for inbox tasks
       
       const response = await api.post('/services_and_projects/create_task/', formData, {
         headers: {

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Task, TypeOfTask, TaskStatus, Finance, ServicesCategory, Services, ServicesRelations, Advertising, TimeSlot, JobSearch
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from joblist.models import AllTags
 from .models import (
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations,
@@ -17,8 +18,16 @@ import json
 def none_if_empty(val):
     return val if val not in (None, '', 'None', 'null') else None
 
+@csrf_exempt
 def create_task(request):
     if request.method == 'POST':
+        # Check if user is authenticated
+        if not request.user.is_authenticated:
+            return JsonResponse({
+                'success': False,
+                'error': 'Authentication required'
+            }, status=401)
+            
         try:
             User = get_user_model()
             # Добавляем логирование для отладки
@@ -31,8 +40,14 @@ def create_task(request):
             
             # Получаем данные из формы
             type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
+            if isinstance(type_of_task_id, list):
+                type_of_task_id = type_of_task_id[0] if type_of_task_id else None
             title = none_if_empty(request.POST.get('title'))
+            if isinstance(title, list):
+                title = title[0] if title else None
             description = none_if_empty(request.POST.get('description'))
+            if isinstance(description, list):
+                description = description[0] if description else None
             photo_link = none_if_empty(request.POST.get('photo_link') or request.POST.get('photos-link'))
             date_start = none_if_empty(request.POST.get('date_start') or request.POST.get('date1'))
             date_end = none_if_empty(request.POST.get('date_end') or request.POST.get('date2'))
@@ -56,11 +71,11 @@ def create_task(request):
             if not title:
                 missing_fields.append('Title')
             
-            # Для задач типа "Job search" и "my" (Inbox tasks) description не обязателен
+            # Для задач типа "Job search" и "Task" (Inbox tasks) description не обязателен
             if not description and type_of_task_id:
                 try:
                     type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
-                    if type_of_task.type_of_task_name not in ['Job search', 'my']:
+                    if type_of_task.type_of_task_name not in ['Job search', 'Task']:
                         missing_fields.append('Description')
                 except TypeOfTask.DoesNotExist:
                     missing_fields.append('Description')

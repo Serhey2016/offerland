@@ -8,7 +8,7 @@ const CategorySelector = ({ selectedCategory, onCategoryChange }) => {
     { id: 'Waiting', name: 'Waiting', icon: '⏳' },
     { id: 'Someday', name: 'Someday', icon: '💭' },
     { id: 'Projects', name: 'Projects', icon: '📋' },
-    { id: 'Lockbook', name: 'Lockbook (Done)', icon: '✅' },
+    { id: 'Lockbook', name: 'Done', icon: '✅' },
     { id: 'Archive', name: 'Archive', icon: '📦' }
   ]
 

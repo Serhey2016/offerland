@@ -4,7 +4,7 @@ export type Category =
   | 'Touchpoint'
   | 'Agenda'
   | 'Waiting'
-  | 'Lockbook (Done)'
+  | 'Done'
   | 'Archive'
   | 'Inbox'
   | 'Someday'

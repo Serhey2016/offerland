@@ -3,8 +3,8 @@
 const JSX_PREAMBLE = <div></div>
 
 import React, { useState, useEffect, useRef } from 'react'
+import NavigationItems from './NavigationItems'
 import { Button } from 'primereact/button'
-import { Menu } from 'primereact/menu'
 import { SpeedDial } from 'primereact/speeddial'
 import { Category, Subcategory } from './shared/MenuHandlers'
 import '../styles/submenu-primereact.css'
@@ -22,12 +22,6 @@ export interface SubMenuAddEvent {
   itemType?: string
 }
 
-export interface SubMenuNavigationEvent {
-  type: 'navigation'
-  category: Category
-  item: string
-  itemId: string
-}
 
 // TypeScript interfaces for submenu functionality
 interface SubMenuSectionProps {
@@ -38,56 +32,58 @@ interface SubMenuSectionProps {
   onNavigationItemClick?: (item: string) => void
 }
 
-interface NavigationItem {
-  id: string
-  label: string
-  active?: boolean
-}
 
 const SubMenuSection: React.FC<SubMenuSectionProps> = ({
   selectedCategory,
   selectedSubcategory,
   onFilterClick,
   onAddClick,
-  onNavigationItemClick
+  onNavigationItemClick,
 }) => {
-  const [navigationItems, setNavigationItems] = useState<NavigationItem[]>([
-    { id: 'business-support', label: 'Business support', active: true },
-    { id: 'personal-support', label: 'Personal support', active: false }
-  ])
   
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState(0)
-  const [scrollStart, setScrollStart] = useState(0)
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const filterMenuRef = useRef<Menu>(null)
-
-  // PrimeReact menu items
-  const filterMenuItems = [
+  const [showFilterPopup, setShowFilterPopup] = useState(false)
+  const [filterPopupPosition, setFilterPopupPosition] = useState({ top: 0, left: 0 })
+  const filterPopupRef = useRef<HTMLDivElement>(null)
+  const filterItems = [
     {
       label: 'All Items',
       icon: 'pi pi-filter',
-      command: () => handleFilterMenuClick('all')
+      action: () => {
+        handleFilterMenuClick('all')
+        setShowFilterPopup(false)
+      }
     },
     {
       label: 'Tasks',
       icon: 'pi pi-check-circle',
-      command: () => handleFilterMenuClick('active')
+      action: () => {
+        handleFilterMenuClick('active')
+        setShowFilterPopup(false)
+      }
     },
     {
       label: 'Projects',
       icon: 'pi pi-briefcase',
-      command: () => handleFilterMenuClick('completed')
+      action: () => {
+        handleFilterMenuClick('completed')
+        setShowFilterPopup(false)
+      }
     },
     {
       label: 'Announcements',
       icon: 'pi pi-megaphone',
-      command: () => handleFilterMenuClick('high-priority')
+      action: () => {
+        handleFilterMenuClick('high-priority')
+        setShowFilterPopup(false)
+      }
     },
     {
       label: 'Time Slots',
       icon: 'pi pi-calendar-clock',
-      command: () => handleFilterMenuClick('high-priority')
+      action: () => {
+        handleFilterMenuClick('high-priority')
+        setShowFilterPopup(false)
+      }
     }
   ]
 
@@ -114,32 +110,6 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
     }
   ]
 
-  // Handle navigation item click
-  const handleNavigationClick = (itemId: string): void => {
-    const item = navigationItems.find(i => i.id === itemId)
-    if (!item) return
-    
-    setNavigationItems(prev => prev.map(navItem => ({
-      ...navItem,
-      active: navItem.id === itemId
-    })))
-    
-    // Dispatch custom event for navigation functionality
-    const navigationEvent: SubMenuNavigationEvent = {
-      type: 'navigation',
-      category: selectedCategory,
-      item: item.label,
-      itemId: item.id
-    }
-    
-    window.dispatchEvent(new CustomEvent('subMenuNavigation', {
-      detail: navigationEvent
-    }))
-    
-    if (onNavigationItemClick) {
-      onNavigationItemClick(item.label)
-    }
-  }
 
   // Handle filter menu item click
   const handleFilterMenuClick = (filterType: string): void => {
@@ -175,68 +145,43 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
     }
   }
 
-  // Handle filter button click (toggle menu)
-  const handleFilterClick = (): void => {
-    if (filterMenuRef.current) {
-      filterMenuRef.current.toggle(event)
+  // Handle filter button click (toggle popup)
+  const handleFilterClick = (event: React.MouseEvent): void => {
+    const button = event.currentTarget as HTMLElement
+    const rect = button.getBoundingClientRect()
+    
+    const top = rect.bottom + 4
+    const right = window.innerWidth - rect.right
+    
+    setFilterPopupPosition({ top, left: right })
+    setShowFilterPopup(!showFilterPopup)
+  }
+
+  // Close popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node
+      if (filterPopupRef.current && !filterPopupRef.current.contains(target)) {
+        setShowFilterPopup(false)
+      }
     }
-  }
+
+    if (showFilterPopup) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showFilterPopup])
 
 
-  // Mouse drag functionality for scrollable container
-  const handleMouseDown = (e: React.MouseEvent): void => {
-    if (!scrollContainerRef.current) return
-    
-    setIsDragging(true)
-    setDragStart(e.clientX)
-    setScrollStart(scrollContainerRef.current.scrollLeft)
-    
-    // Prevent text selection during drag
-    e.preventDefault()
-  }
-
-  const handleMouseMove = (e: React.MouseEvent): void => {
-    if (!isDragging || !scrollContainerRef.current) return
-    
-    const deltaX = e.clientX - dragStart
-    scrollContainerRef.current.scrollLeft = scrollStart - deltaX
-  }
-
-  const handleMouseUp = (): void => {
-    setIsDragging(false)
-  }
-
-  const handleMouseLeave = (): void => {
-    setIsDragging(false)
-  }
-
-  // Touch events for mobile support
-  const handleTouchStart = (e: React.TouchEvent): void => {
-    if (!scrollContainerRef.current) return
-    
-    setIsDragging(true)
-    setDragStart(e.touches[0].clientX)
-    setScrollStart(scrollContainerRef.current.scrollLeft)
-  }
-
-  const handleTouchMove = (e: React.TouchEvent): void => {
-    if (!isDragging || !scrollContainerRef.current) return
-    
-    const deltaX = e.touches[0].clientX - dragStart
-    scrollContainerRef.current.scrollLeft = scrollStart - deltaX
-  }
-
-  const handleTouchEnd = (): void => {
-    setIsDragging(false)
-  }
 
   // Navigation items are now static and independent of selected category
   // They always show "Business support" and "Personal support"
   // No useEffect needed as the initial state is already correct
 
+
   return (
     <div className="task_tracker_sub_menu_section">
-      {/* Filter Button with PrimeReact Menu */}
+      {/* Filter Button with Custom Popup */}
       <div className="task_tracker_sub_menu_filter_container">
         <Button
           className="task_tracker_sub_menu_filter_btn"
@@ -245,51 +190,69 @@ const SubMenuSection: React.FC<SubMenuSectionProps> = ({
           text
           aria-label="Filter options"
         />
-            <Menu
-              model={filterMenuItems}
-              popup
-              ref={filterMenuRef}
-              className="task_tracker_filter_menu"
-              hideOverlaysOnDocumentScrolling={false}
-            />
+        
+        {/* Custom Filter Popup */}
+        {showFilterPopup && (
+          <div
+            ref={filterPopupRef}
+            className="task_tracker_filter_popup"
+            style={{
+              position: 'fixed',
+              top: filterPopupPosition.top,
+              right: filterPopupPosition.left,
+              zIndex: 1000,
+              backgroundColor: 'white',
+              border: '1px solid #e5e7eb',
+              borderRadius: '8px',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+              minWidth: '160px',
+              padding: '4px 0'
+            }}
+          >
+            {filterItems.map((item, index) => (
+              <div
+                key={index}
+                className="task_tracker_filter_popup_item"
+                onClick={item.action}
+                style={{
+                  padding: '8px 16px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  borderBottom: index < filterItems.length - 1 ? '1px solid #f0f0f0' : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8f9fa'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                }}
+              >
+                <i className={item.icon} style={{ fontSize: '14px', opacity: 0.7 }}></i>
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Scrollable Navigation Container */}
-      <div className="task_tracker_sub_menu_scrollable_container">
-        <div 
-          ref={scrollContainerRef}
-          className={`task_tracker_sub_menu_navigation_items ${isDragging ? 'dragging' : ''}`}
-          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          {navigationItems.map((item) => (
-            <button
-              key={item.id}
-              className={`task_tracker_sub_menu_nav_btn ${item.active ? 'active' : ''}`}
-              onClick={() => handleNavigationClick(item.id)}
-              type="button"
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Navigation Items */}
+      <NavigationItems
+        selectedCategory={selectedCategory}
+        onNavigationItemClick={onNavigationItemClick}
+      />
+
 
       {/* Add Button with PrimeReact SpeedDial */}
       <div className="task_tracker_sub_menu_add_container">
         <SpeedDial
           model={speedDialItems}
           direction="left"
-          style={{ 
+          style={{
             position: 'relative',
             right: 0,
-            top: 'calc(50% - 2rem)',
+            top: 0,
             justifyContent: 'center',
             flexDirection: 'row-reverse'
           }}

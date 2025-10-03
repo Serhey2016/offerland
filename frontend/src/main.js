@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
           'Agenda': 'agenda-submenu',
           'Touchpoint': 'touchpoint-submenu',
           'Waiting': 'waiting-submenu',
-          'Lockbook (Done)': 'lockbook-submenu',
+          'Done': 'lockbook-submenu',
           'Archive': 'archive-submenu'
         }
         

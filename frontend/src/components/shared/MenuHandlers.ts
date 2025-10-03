@@ -1,5 +1,5 @@
 // Menu event handlers - extracted from TaskTracker.tsx
-export type Category = 'Agenda' | 'Touchpoint' | 'Inbox' | 'Backlog' | 'Waiting' | 'Someday' | 'Projects' | 'Lockbook (Done)' | 'Archive'
+export type Category = 'Agenda' | 'Touchpoint' | 'Inbox' | 'Backlog' | 'Waiting' | 'Someday' | 'Projects' | 'Done' | 'Archive'
 export type Subcategory = 'Contacts' | 'Favorites' | 'Orders' | 'Subscriptions' | 'Published' | 'Lockbook_Projects' | 'Lockbook_Tasks' | 'Archive_projects' | 'Archive_Tasks' | 'Projects' | 'Tasks'
 
 export interface CategoryChangeEventDetail {
@@ -26,7 +26,7 @@ export const CATEGORIES = {
   WAITING: 'Waiting',
   SOMEDAY: 'Someday',
   PROJECTS: 'Projects',
-  LOCKBOOK: 'Lockbook (Done)',
+  LOCKBOOK: 'Done',
   ARCHIVE: 'Archive'
 } as const
 
@@ -60,8 +60,8 @@ export const headerConfig: Partial<Record<Category, HeaderConfig>> = {
     title: 'Projects',
     subtitle: 'Your active projects'
   },
-  'Lockbook (Done)': {
-    title: 'Lockbook (Done)',
+  'Done': {
+    title: 'Done',
     subtitle: 'Completed tasks'
   },
   'Archive': {
@@ -88,7 +88,7 @@ export const toggleSubmenus = (category: Category): void => {
     'Waiting': 'waiting-submenu',
     'Someday': '',
     'Projects': '',
-    'Lockbook (Done)': 'lockbook-submenu',
+    'Done': 'lockbook-submenu',
     'Archive': 'archive-submenu'
   }
   
@@ -99,10 +99,19 @@ export const toggleSubmenus = (category: Category): void => {
   // Show submenu for selected category if it exists
   const submenuId = submenuMap[category]
   if (submenuId) {
-    const submenu = document.getElementById(submenuId)
-    const button = document.querySelector(`[data-category="${category}"]`)
-    submenu?.classList.add('show')
-    button?.classList.add('expanded')
+    // Add a small delay to ensure React has updated the DOM
+    setTimeout(() => {
+      const submenu = document.getElementById(submenuId)
+      const button = document.querySelector(`[data-category="${category}"]`)
+      
+      if (submenu) {
+        submenu.classList.add('show')
+      }
+      
+      if (button) {
+        button.classList.add('expanded')
+      }
+    }, 10)
   }
 }
 

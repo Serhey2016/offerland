@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
+import TaskTrackerLeftMenu from './views/task_tracker_left_menu'
+import SubMenuSection from './SubMenuSection'
+import NavigationItems from './NavigationItems'
+import SubcategoryDisplay from './SubcategoryDisplay'
 import AgendaView from './views/AgendaView'
 import TouchpointView from './views/TouchpointView'
 import InboxView from './views/InboxView'
@@ -27,6 +31,8 @@ import {
 const JSX_PREAMBLE = <div></div>
 
 const TaskTracker = () => {
+  // console.log('🚀 TaskTracker: Component rendering') // Disabled to reduce console spam
+  
   // Simple JSX to help Vite plugin detect React - must be at the top
   if (false) return <div>Loading...</div>
   
@@ -47,10 +53,11 @@ const TaskTracker = () => {
       'Agenda': 'agenda-submenu',
       'Touchpoint': 'touchpoint-submenu',
       'Inbox': 'inbox-submenu',
+      'Backlog': 'backlog-submenu',
       'Waiting': 'waiting-submenu',
       'Someday': '',
       'Projects': '',
-      'Lockbook (Done)': 'lockbook-submenu',
+      'Done': 'lockbook-submenu',
       'Archive': 'archive-submenu'
     }
 
@@ -365,11 +372,54 @@ const TaskTracker = () => {
     return viewComponents[selectedCategory] || <AgendaView />
   }
 
+  // Memoized callback functions to prevent infinite re-rendering
+  const handleCategoryChange = useCallback((category: string) => {
+    setSelectedCategory(category as Category)
+    setSelectedSubcategory('')
+  }, [])
+
+  const handleSubcategoryChange = useCallback((category: string, subcategory: string) => {
+    setSelectedCategory(category as Category)
+    setSelectedSubcategory(subcategory as Subcategory)
+  }, [])
+
+  const handleSubcategoryDisplayChange = useCallback((subcategory: string) => {
+    setSelectedSubcategory(subcategory as Subcategory)
+  }, [])
+
   return React.createElement('div', { 
     className: 'react-task-tracker',
     key: `task-tracker-${renderKey}`
   },
-    renderSubcategoryContent() || renderMainContent()
+    React.createElement('section', { className: 'container task_tracker_sides_separator' },
+      React.createElement(TaskTrackerLeftMenu, {
+        onCategoryChange: handleCategoryChange,
+        onSubcategoryChange: handleSubcategoryChange,
+        initialCategory: selectedCategory,
+        initialSubcategory: selectedSubcategory
+      }),
+      React.createElement('div', { className: 'task_tracker_right_side_section' },
+        React.createElement(SubMenuSection, {
+          onNavigationItemClick: (item) => console.log('SubMenu Navigation clicked:', item),
+          selectedCategory: selectedCategory,
+          selectedSubcategory: selectedSubcategory,
+          onFilterClick: () => console.log('SubMenu Filter clicked'),
+          onAddClick: () => console.log('SubMenu Add clicked'),
+        }),
+        React.createElement(NavigationItems, {
+          selectedCategory: selectedCategory,
+          onNavigationItemClick: (item) => console.log('Navigation clicked:', item)
+        }),
+        React.createElement(SubcategoryDisplay, {
+          selectedCategory: selectedCategory,
+          selectedSubcategory: selectedSubcategory,
+          onSubcategoryChange: handleSubcategoryDisplayChange
+        }),
+        React.createElement('div', { className: 'list_of_tasks_task_tracker task_tracker_tasks_sides_separator' },
+          renderSubcategoryContent() || renderMainContent()
+        )
+      )
+    )
   )
 }
 

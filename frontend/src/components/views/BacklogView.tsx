@@ -4,6 +4,7 @@ import { TieredMenu } from 'primereact/tieredmenu'
 import { Chips } from 'primereact/chips'
 import TaskDesign from '../TaskDesign'
 import '../../styles/priority-matrix-submenu.css'
+import '../../styles/tasktracker_task_design.css'
 
 const BacklogView = () => {
   const [taskInput, setTaskInput] = useState('')
@@ -139,36 +140,16 @@ const BacklogView = () => {
             timeRange="4 hours"
             category="Backlog"
             priority="medium"
-            dateAdded="Tomorrow"
-            onNotesClick={() => console.log('Notes clicked')}
-            onDropdownClick={() => console.log('Dropdown clicked')}
-            onMenuAction={(action: string, subAction?: string) => {
-              // Handle different menu actions here
-              switch (action) {
-                case 'start':
-                  console.log('Starting backlog task...')
-                  break
-                case 'edit':
-                  console.log('Editing backlog task...')
-                  break
-                case 'details':
-                  console.log('Showing backlog task details...')
-                  break
-                case 'delegate':
-                  console.log('Delegating backlog task...')
-                  break
-                case 'publish':
-                  console.log('Publishing backlog task...')
-                  break
-                case 'move':
-                  if (subAction) {
-                    console.log(`Moving backlog task to: ${subAction}`)
-                  }
-                  break
-                default:
-                  console.log('Unknown action:', action)
-              }
-            }}
+            dueDate="Tomorrow"
+            onCreateTask={() => console.log('Create task clicked')}
+            onSubTask={() => console.log('Sub task clicked')}
+            onNote={() => console.log('Note clicked')}
+            onStart={() => console.log('Start clicked')}
+            onEdit={() => console.log('Edit clicked')}
+            onDetails={() => console.log('Details clicked')}
+            onDelegate={() => console.log('Delegate clicked')}
+            onPublish={() => console.log('Publish clicked')}
+            onMoveTo={(destination) => console.log(`Move to: ${destination}`)}
           />
         </div>
       </div>

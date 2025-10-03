@@ -6,7 +6,7 @@ export type Category =
   | 'Waiting'
   | 'Someday'
   | 'Projects'
-  | 'Lockbook (Done)'
+  | 'Done'
   | 'Archive'
 
 export type Subcategory = 
