@@ -48,7 +48,7 @@ class TaskAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
         ('Даты и время', {
-            'fields': ('date_start', 'date_end', 'time_start', 'time_end'),
+            'fields': ('start_datetime', 'end_datetime'),
             'classes': ('collapse',)
         }),
         ('Связи', {

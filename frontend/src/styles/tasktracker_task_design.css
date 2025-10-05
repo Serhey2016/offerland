@@ -7,13 +7,28 @@
 .task_tracker_task_container {
     display: block;
     background: #9EAEBE;
-    border: 2px solid #282D3B;
-    border-radius: 25px;
-    padding: 15px 20px 15px 35px; /* Added left padding to avoid overlap with line */
+    border: 0px solid #282D3B;
+    border-radius: 10px;
+    padding: 8px 20px 8px 35px; /* Added left padding to avoid overlap with line */
     margin: 10px 0;
     position: relative;
-    transition: all 0.3s ease;
-    min-height: 80px;
+   
+ 
+}
+
+.task_tracker_task_container:hover {
+    border: 2px solid #323745;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+   
+}
+
+
+.task_tracker_task_container:hover .task_tracker_floating_icons {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    display: flex ;
+   
 }
 
 /* Floating action icons */
@@ -31,12 +46,7 @@
     pointer-events: auto !important;
 }
 
-.task_tracker_task_container:hover .task_tracker_floating_icons {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-    visibility: visible !important;
-    display: flex !important;
-}
+
 
 .task_tracker_icon_btn {
     width: 32px;
@@ -74,7 +84,7 @@
     bottom: 0;
     width: 12px;
     background: #EF9A9A;
-    border-radius: 25px 0 0 25px;
+    border-radius: 5px 0 0 5px;
 }
 
 /* Task metadata section */
@@ -108,6 +118,7 @@
 
 .task_tracker_task_date_item {
     color: #282D3B;
+    font-weight: 600;
 }
 
 .task_tracker_task_date_value {
@@ -117,12 +128,13 @@
 
 /* Task title */
 .task_tracker_task_title {
-    font-size: 18px;
+    font-size: 1.6rem;
     font-weight: 600;
     color: #282D3B;
-    margin: 8px 0;
-    line-height: 1.3;
+   
+    line-height: 0.5;
 }
+
 
 /* Task hashtags */
 .task_tracker_task_hashtags {
@@ -176,16 +188,15 @@
     
     .task_tracker_task_metadata {
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 3px;
     }
     
     .task_tracker_task_dates {
-        flex-direction: column;
-        gap: 5px;
+        gap: 10px;
     }
     
     .task_tracker_task_title {
-        font-size: 16px;
+        font-size: 1rem;
     }
 }
 
@@ -228,18 +239,18 @@
 
 /* Task Submenu Styles - Renamed to avoid conflicts with left menu */
 .task_tracker_task_submenu {
-    position: fixed !important;
-    z-index: 10000 !important;
-    background-color: white !important;
-    border: 1px solid #ddd !important;
-    border-radius: 6px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    min-width: 160px !important;
-    padding: 4px 0 !important;
-    font-size: 14px !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+    position: fixed;
+    z-index: 10000;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 160px;
+    padding: 4px 0;
+    font-size: 14px;
+    display: block;
+    visibility: visible;
+    opacity: 1;
 }
 
 .task_tracker_task_submenu_item {

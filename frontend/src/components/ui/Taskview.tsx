@@ -1,21 +1,41 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React from 'react'
 import { createPortal } from 'react-dom'
-import '../styles/tasktracker_task_design.css'
+import '../../styles/tasktracker_task_design.css'
 
-interface TaskDesignProps {
-title: string
-description?: string
-timeRange?: string
-category?: string
-priority?: 'low' | 'medium' | 'high'
-status?: 'pending' | 'in-progress' | 'completed'
-dueDate?: string
-assignedTo?: string
-tags?: string[]
+interface TaskviewProps {
+  // Task data
+  title: string
+  description?: string
+  timeRange?: string
+  category?: string
+  priority?: 'low' | 'medium' | 'high'
+  status?: 'pending' | 'in-progress' | 'completed'
+  dueDate?: string
+  assignedTo?: string
+  tags?: string[]
   startDate?: string
-onEdit?: () => void
-onDelete?: () => void
-onStatusChange?: (status: string) => void
+  
+  // UI states from hook
+  mobileTapped: boolean
+  showDropdown: boolean
+  showSubmenu: boolean
+  dropdownPosition: { top: number; left: number }
+  submenuPosition: { top: number; left: number }
+  
+  // Refs
+  dropdownRef: React.RefObject<HTMLDivElement>
+  submenuRef: React.RefObject<HTMLDivElement>
+  
+  // Event handlers from hook
+  handleTaskTap: (e: React.MouseEvent) => void
+  handleIconClick: (action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
+  handleDropdownItemClick: (action: string, event?: React.MouseEvent<HTMLDivElement>) => void
+  handleSubmenuItemClick: (action: string) => void
+  
+  // Optional callbacks (keep if not transferable to hook)
+  onEdit?: () => void
+  onDelete?: () => void
+  onStatusChange?: (status: string) => void
   onCreateTask?: () => void
   onSubTask?: () => void
   onNote?: () => void
@@ -26,192 +46,42 @@ onStatusChange?: (status: string) => void
   onMoveTo?: (destination: string) => void
 }
 
-const TaskDesign: React.FC<TaskDesignProps> = ({
-title,
-description,
-timeRange,
-category,
-priority = 'medium',
-status = 'pending',
-dueDate,
-assignedTo,
-tags = [],
+const Taskview: React.FC<TaskviewProps> = ({
+  title,
+  description,
+  timeRange,
+  category,
+  priority = 'medium',
+  status = 'pending',
+  dueDate,
+  assignedTo,
+  tags = [],
   startDate,
+  mobileTapped,
+  showDropdown,
+  showSubmenu,
+  dropdownPosition,
+  submenuPosition,
+  dropdownRef,
+  submenuRef,
+  handleTaskTap,
+  handleIconClick,
+  handleDropdownItemClick,
+  handleSubmenuItemClick,
+  onEdit,
+  onDelete,
+  onStatusChange,
   onCreateTask,
   onSubTask,
   onNote,
   onStart,
-onEdit,
   onDetails,
   onDelegate,
   onPublish,
   onMoveTo
 }) => {
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
-  const [showSubmenu, setShowSubmenu] = useState(false)
-  const [submenuPosition, setSubmenuPosition] = useState({ top: 0, left: 0 })
-  const [mobileTapped, setMobileTapped] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const submenuRef = useRef<HTMLDivElement>(null)
-
-  // Close dropdown when clicking outside
-useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node
-      if (dropdownRef.current && !dropdownRef.current.contains(target) &&
-          submenuRef.current && !submenuRef.current.contains(target)) {
-        setShowDropdown(false)
-        setShowSubmenu(false)
-      }
-    }
-
-    if (showDropdown || showSubmenu) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [showDropdown, showSubmenu])
-
-  // Handle dropdown positioning based on available screen space
-  const calculateDropdownPosition = (buttonElement: HTMLElement) => {
-    const rect = buttonElement.getBoundingClientRect()
-    const viewportWidth = window.innerWidth
-    const viewportHeight = window.innerHeight
-    const dropdownWidth = 160
-    const dropdownHeight = 200
-    
-    // Position dropdown to the right of the button
-    let top = rect.bottom + 5
-    let left = rect.right - dropdownWidth // Align right edge with button
-    
-    // If dropdown goes off the right edge, position it to the left of button
-    if (left + dropdownWidth > viewportWidth - 10) {
-      left = rect.left - dropdownWidth
-    }
-    
-    // If dropdown goes off the left edge, position it below button centered
-    if (left < 10) {
-      left = rect.left + (rect.width / 2) - (dropdownWidth / 2)
-      // Ensure it doesn't go off right edge
-      if (left + dropdownWidth > viewportWidth - 10) {
-        left = viewportWidth - dropdownWidth - 10
-      }
-    }
-    
-    // Check if dropdown would go off the bottom edge
-    if (top + dropdownHeight > viewportHeight - 10) {
-      top = rect.top - dropdownHeight - 5
-    }
-    
-    // Ensure dropdown doesn't go off the top edge
-    if (top < 10) {
-      top = 10
-    }
-    
-    return { top, left }
-  }
-
-  // Handle submenu positioning
-  const calculateSubmenuPosition = (parentElement: HTMLElement) => {
-    const rect = parentElement.getBoundingClientRect()
-    const viewportWidth = window.innerWidth
-    const submenuWidth = 160
-    
-    // Position submenu to the right of parent item
-    let top = rect.top
-    let left = rect.right + 5
-    
-    // If submenu goes off the right edge, position it to the left
-    if (left + submenuWidth > viewportWidth - 10) {
-      left = rect.left - submenuWidth - 5
-    }
-    
-    // Ensure submenu doesn't go off the top edge
-    if (top < 10) {
-      top = 10
-    }
-    
-    return { top, left }
-  }
-
-  // Handle submenu item clicks
-  const handleSubmenuItemClick = (action: string) => {
-    setShowSubmenu(false)
-    setShowDropdown(false)
-    onMoveTo?.(action)
-  }
-
-  // Handle mobile tap for floating icons
-  const handleTaskTap = (e: React.MouseEvent) => {
-    // Only handle tap on mobile devices
-    if (window.innerWidth <= 768) {
-      e.preventDefault()
-      setMobileTapped(!mobileTapped)
-    }
-  }
-
-  // Handle dropdown menu item clicks
-  const handleDropdownItemClick = (action: string, event?: React.MouseEvent<HTMLDivElement>) => {
-    if (action === 'move' && event) {
-      // Show submenu for Move to...
-      const position = calculateSubmenuPosition(event.currentTarget)
-      setSubmenuPosition(position)
-      setShowSubmenu(true)
-      return
-    }
-    
-    setShowDropdown(false)
-    
-    switch (action) {
-      case 'start':
-        onStart?.()
-        break
-      case 'edit':
-        onEdit?.()
-        break
-      case 'details':
-        onDetails?.()
-        break
-      case 'delegate':
-        onDelegate?.()
-        break
-      case 'publish':
-        onPublish?.()
-        break
-default:
-        break
-    }
-  }
-
-  // Handle icon button clicks
-  const handleIconClick = (action: string, event?: React.MouseEvent<HTMLButtonElement>) => {
-    if (action === 'more' && event) {
-      const position = calculateDropdownPosition(event.currentTarget)
-      setDropdownPosition(position)
-      setShowDropdown(!showDropdown)
-      return
-    }
-    
-    switch (action) {
-      case 'create':
-        onCreateTask?.()
-        break
-      case 'subtask':
-        onSubTask?.()
-        break
-      case 'note':
-        onNote?.()
-        break
-default:
-        break
-}
-}
-
-return (
-<div className="task-design-container">
+  return (
+    <div className="task-design-container">
       <div 
         className={`task_tracker_task_container ${mobileTapped ? 'mobile-tap' : ''}`}
         onClick={handleTaskTap}
@@ -412,7 +282,7 @@ return (
               }}
             >
               Some day
-</div>
+            </div>
             <div 
               className="task_tracker_task_submenu_item"
               onClick={() => handleSubmenuItemClick('project')}
@@ -423,7 +293,7 @@ return (
               }}
             >
               Convert to project
-</div>
+            </div>
             <div 
               className="task_tracker_task_submenu_item"
               onClick={() => handleSubmenuItemClick('done')}
@@ -444,7 +314,7 @@ return (
               }}
             >
               Archive
-</div>
+            </div>
           </div>,
           document.body
         )}
@@ -463,26 +333,26 @@ return (
             <div className="task_tracker_task_date_item">
               <span>Due date:</span>
               <span className="task_tracker_task_date_value">{dueDate || '20.09.2025'}</span>
-</div>
-</div>
-</div>
+            </div>
+          </div>
+        </div>
 
         {/* Task title */}
         <div className="task_tracker_task_title">{title}</div>
         
         {/* Task hashtags */}
-{tags.length > 0 && (
+        {tags.length > 0 && (
           <div className="task_tracker_task_hashtags">
             <svg className="task_tracker_task_hashtag_icon" viewBox="0 0 24 24">
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
               <line x1="7" y1="7" x2="7.01" y2="7"></line>
             </svg>
             <span className="task_tracker_task_hashtag_text">{tags.join(', ')}</span>
-</div>
-)}
-</div>
-</div>
-)
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
-export default TaskDesign
+export default Taskview

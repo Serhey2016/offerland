@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { taskApi, Task, TaskFilters } from '../api/taskApi'
 import { categoryApi, Category, Subcategory } from '../api/categoryApi'
+import { useToasts } from '../hooks/useToasts'
+import Toasts from './ui/Toasts'
 
 // Приклад інтеграції TaskTracker з Django API
 const TaskTrackerWithAPI: React.FC = () => {
@@ -10,6 +12,9 @@ const TaskTrackerWithAPI: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  
+  // Use toasts hook
+  const { toast, showError, showSuccess } = useToasts()
 
   // Завантаження категорій при ініціалізації
   useEffect(() => {
@@ -47,6 +52,7 @@ const TaskTrackerWithAPI: React.FC = () => {
       setTasks(tasksData)
     } catch (err) {
       setError('Помилка завантаження задач')
+      showError('Error loading tasks')
       console.error('Error loading tasks:', err)
     } finally {
       setLoading(false)
@@ -69,6 +75,7 @@ const TaskTrackerWithAPI: React.FC = () => {
       setTasks(prev => [...prev, newTask])
     } catch (err) {
       setError('Помилка створення задачі')
+      showError('Error creating task')
       console.error('Error creating task:', err)
     } finally {
       setLoading(false)
@@ -111,15 +118,26 @@ const TaskTrackerWithAPI: React.FC = () => {
   }
 
   if (loading) {
-    return <div>Завантаження...</div>
+    return (
+      <div>
+        <Toasts toastRef={toast} />
+        <div>Завантаження...</div>
+      </div>
+    )
   }
 
   if (error) {
-    return <div>Помилка: {error}</div>
+    return (
+      <div>
+        <Toasts toastRef={toast} />
+        <div>Помилка: {error}</div>
+      </div>
+    )
   }
 
   return (
     <div className="task-tracker-with-api">
+      <Toasts toastRef={toast} />
       <h2>Task Tracker з Django API</h2>
       
       {/* Категорії */}

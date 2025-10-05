@@ -176,18 +176,11 @@ ssh dev@192.168.0.146
 
 #### Django Backend (task_tracker/)
 - **Traditional Views**: Простые страницы используют Django templates
-  - `/task_tracker/` - главная страница
-  - `/task_tracker/tasks/` - список задач
-  - `/task_tracker/tasks/create/` - создание задачи
-  - `/task_tracker/dashboard-traditional/` - традиционный дашборд
+  - `/task_tracker/` - главная страница задач
+
   
 - **API Endpoints**: REST API для React компонентов
-  - `GET /task_tracker/api/tasks/` - получение всех задач
-  - `GET /task_tracker/api/tasks/<id>/` - получение конкретной задачи
-  - `POST /task_tracker/api/tasks/create/` - создание новой задачи
-  - `PUT /task_tracker/api/tasks/<id>/update/` - обновление задачи
-  - `DELETE /task_tracker/api/tasks/<id>/delete/` - удаление задачи
-  - `GET /task_tracker/api/dashboard/stats/` - статистика дашборда
+
 
 #### React Frontend (frontend/)
 - **TaskTracker Component**: Основной компонент с меню и навигацией

@@ -49,16 +49,60 @@ def create_task(request):
             if isinstance(description, list):
                 description = description[0] if description else None
             photo_link = none_if_empty(request.POST.get('photo_link') or request.POST.get('photos-link'))
+            # Handle datetime fields - combine date and time if provided
+            start_datetime = None
+            end_datetime = None
+            
+            # Start datetime
             date_start = none_if_empty(request.POST.get('date_start') or request.POST.get('date1'))
-            date_end = none_if_empty(request.POST.get('date_end') or request.POST.get('date2'))
             time_start = none_if_empty(request.POST.get('time_start') or request.POST.get('time1'))
+            if date_start and time_start:
+                from datetime import datetime
+                try:
+                    start_datetime = datetime.strptime(f"{date_start} {time_start}", "%Y-%m-%d %H:%M")
+                except ValueError:
+                    try:
+                        start_datetime = datetime.strptime(f"{date_start} {time_start}", "%d.%m.%Y %H:%M")
+                    except ValueError:
+                        pass
+            elif date_start:
+                from datetime import datetime
+                try:
+                    start_datetime = datetime.strptime(date_start, "%Y-%m-%d")
+                except ValueError:
+                    try:
+                        start_datetime = datetime.strptime(date_start, "%d.%m.%Y")
+                    except ValueError:
+                        pass
+            
+            # End datetime
+            date_end = none_if_empty(request.POST.get('date_end') or request.POST.get('date2'))
             time_end = none_if_empty(request.POST.get('time_end') or request.POST.get('time2'))
+            if date_end and time_end:
+                from datetime import datetime
+                try:
+                    end_datetime = datetime.strptime(f"{date_end} {time_end}", "%Y-%m-%d %H:%M")
+                except ValueError:
+                    try:
+                        end_datetime = datetime.strptime(f"{date_end} {time_end}", "%d.%m.%Y %H:%M")
+                    except ValueError:
+                        pass
+            elif date_end:
+                from datetime import datetime
+                try:
+                    end_datetime = datetime.strptime(date_end, "%Y-%m-%d")
+                except ValueError:
+                    try:
+                        end_datetime = datetime.strptime(date_end, "%d.%m.%Y")
+                    except ValueError:
+                        pass
             documents = none_if_empty(request.POST.get('documents'))
-            status_id = none_if_empty(request.POST.get('status'))
+            status = none_if_empty(request.POST.get('status')) or 'inbox'
             is_private = bool(request.POST.get('private'))
             disclose_name = bool(request.POST.get('disclose_name'))
             hidden = bool(request.POST.get('hidden'))
             is_published = False  # или по логике вашей кнопки
+            is_touchpoint = bool(request.POST.get('is_touchpoint'))
             note = none_if_empty(request.POST.get('note') or request.POST.get('comment'))
             finance_id = none_if_empty(request.POST.get('finance'))
             parent_id = none_if_empty(request.POST.get('parent') or request.POST.get('project-included'))
@@ -93,17 +137,16 @@ def create_task(request):
                 title=title,
                 description=description,
                 photo_link=photo_link,
-                date_start=date_start,
-                date_end=date_end,
-                time_start=time_start,
-                time_end=time_end,
+                start_datetime=start_datetime,
+                end_datetime=end_datetime,
                 documents=documents,
                 priority=priority,
-                status_id=status_id,
+                status=status,
                 is_private=is_private,
                 disclose_name=disclose_name,
                 hidden=hidden,
                 is_published=is_published,
+                is_touchpoint=is_touchpoint,
                 note=note,
                 finance_id=finance_id,
                 parent_id=parent_id
@@ -762,11 +805,9 @@ def create_activity_task(request, activity_id):
             )
             print(f"Type of task: {type_of_task} (created: {created})")
             
-            # Получаем статус задачи по умолчанию
-            default_status, created = TaskStatus.objects.get_or_create(
-                name='Saved (inbox)'
-            )
-            print(f"Default status: {default_status} (created: {created})")
+            # Статус задачи по умолчанию
+            default_status = 'inbox'
+            print(f"Default status: {default_status}")
             
             # Создаем таску
             print(f"Creating task with title: {title}, description: {description}")
@@ -778,7 +819,8 @@ def create_activity_task(request, activity_id):
                 is_private=False,
                 disclose_name=False,
                 hidden=False,
-                is_published=False
+                is_published=False,
+                is_touchpoint=False
             )
             print(f"Task created successfully with ID: {task.id}")
             

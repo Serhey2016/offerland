@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
-from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations
+from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations, TaskHashtagRelations
 from joblist.models import AllTags, Companies
 from django.utils import timezone
 import json
@@ -64,7 +64,7 @@ def testpage(request):
         })
     
     # Получаем все задачи для отображения в потоке
-    tasks_for_feed = Task.objects.select_related('type_of_task', 'status', 'finance').prefetch_related(
+    tasks_for_feed = Task.objects.select_related('type_of_task', 'finance').prefetch_related(
         'photos', 'hashtags', 'performers', 'services'
     ).order_by('-created_at')
     
@@ -602,6 +602,59 @@ def start_task(request, task_id):
 
 
 @login_required
+def user_tasks(request):
+    """
+    API endpoint to get tasks for authenticated user
+    """
+    try:
+        # Get tasks owned by the user through TaskOwnerRelations
+        user_tasks = Task.objects.filter(
+            taskownerrelations__user=request.user
+        ).select_related(
+            'type_of_task', 'status'
+        ).prefetch_related(
+            'hashtags__hashtag'
+        ).order_by('-created_at')
+        
+        # Convert to list with hashtags
+        tasks_data = []
+        for task in user_tasks:
+            # Get hashtags for this task
+            hashtag_relations = TaskHashtagRelations.objects.filter(task=task).select_related('hashtag')
+            hashtags = [
+                {
+                    'id': rel.hashtag.id,
+                    'tag_name': rel.hashtag.tag
+                }
+                for rel in hashtag_relations
+            ]
+            
+            task_data = {
+                'id': task.id,
+                'title': task.title,
+                'description': task.description,
+                'date_start': task.date_start.isoformat() if task.date_start else None,
+                'date_end': task.date_end.isoformat() if task.date_end else None,
+                'time_start': task.time_start.isoformat() if task.time_start else None,
+                'time_end': task.time_end.isoformat() if task.time_end else None,
+                'priority': task.priority,
+                'status': task.status,
+                'task_mode': task.task_mode,
+                'created_at': task.created_at.isoformat(),
+                'updated_at': task.updated_at.isoformat(),
+                'hashtags': hashtags
+            }
+            tasks_data.append(task_data)
+        
+        return JsonResponse(tasks_data, safe=False)
+        
+    except Exception as e:
+        return JsonResponse({
+            'error': f'Error fetching user tasks: {str(e)}'
+        }, status=500)
+
+
+@login_required
 def get_edit_data(request, form_type, item_id):
     """
     Получает данные для редактирования различных типов форм
@@ -647,7 +700,7 @@ def get_edit_data(request, form_type, item_id):
                 'description': task.description,
                 'category': category_id,
                 'service': service_id,
-                'status': task.status.id if task.status else None,
+                'status': task.status,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
                 'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
@@ -679,7 +732,7 @@ def get_edit_data(request, form_type, item_id):
                 'description': task.description,
                 'category': category_id,
                 'service': service_id,
-                'status': task.status.id if task.status else None,
+                'status': task.status,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
                 'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
@@ -709,7 +762,7 @@ def get_edit_data(request, form_type, item_id):
                 'description': task.description,
                 'category': category_id,
                 'service': service_id,
-                'status': task.status.id if task.status else None,
+                'status': task.status,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
                 'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],

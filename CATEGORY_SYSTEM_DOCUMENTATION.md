@@ -9,30 +9,32 @@
 ### Основные категории:
 - **Touchpoint** - может сосуществовать с другими категориями
 - **Inbox** - входящие задачи
+- **Backlog** - задачи что будут выполнятся в ближайшее время
 - **Agenda** - задачи в расписании
 - **Waiting** - ожидающие задачи
 - **Someday** - когда-нибудь
 - **Projects** - проекты (может сосуществовать с Touchpoint)
-- **Lock book (Done)** - выполненные задачи
+- **Done** - выполненные задачи
 - **Archive** - архив
 - **Business support** - бизнес поддержка
 - **Personal support** - личная поддержка
 
 ### Подкатегории:
 - **Touchpoint**: Contacts
-- **Inbox**: Tasks, Projects, Favorites
-- **Waiting**: In progress, Orders, Subscriptions, Published
-- **Lock book (Done)**: Projects, Tasks
+- **Inbox**: Favorites
+- **Backlog**: Projects, Tasks
+- **Waiting**:  Orders, Subscriptions, Published
+- **Done**: Projects, Tasks
 - **Archive**: Projects, Tasks
 
 ## Бизнес-правила
 
 ### Где задачи могут быть одновременно:
-1. **Touchpoint** + одна из: Inbox, Agenda, Waiting, Someday, Projects, Lock book (Done), Archive
+1. **Touchpoint** + одна из: Inbox, Agenda, Waiting, Someday, Projects, Done, Archive
 2. **Projects** + Touchpoint (но не с Done/Archive)
 
-### Где задачи могут быть только в одном экземпляре:
-- Inbox, Agenda, Waiting, Someday, Lock book (Done), Archive
+### Где задачи могут быть только в одном экземпляре между категориями:
+- Inbox, Backlog, Agenda, Waiting, Someday, Done, Archive
 
 ### Специальные правила для проектов:
 - Projects могут быть в Touchpoint + Projects

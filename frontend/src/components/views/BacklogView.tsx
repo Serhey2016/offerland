@@ -2,12 +2,16 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Button } from 'primereact/button'
 import { TieredMenu } from 'primereact/tieredmenu'
 import { Chips } from 'primereact/chips'
-import TaskDesign from '../TaskDesign'
+import Taskview from '../ui/Taskview'
+import { useTasks } from '../../hooks/useTasks'
 import '../../styles/priority-matrix-submenu.css'
 import '../../styles/tasktracker_task_design.css'
 
 const BacklogView = () => {
   const [taskInput, setTaskInput] = useState('')
+  
+  // Use tasks hook for UI logic
+  const tasksHook = useTasks()
   const [selectedPriority, setSelectedPriority] = useState<string>('')
   const [hasText, setHasText] = useState(false)
 
@@ -134,13 +138,26 @@ const BacklogView = () => {
     <div className="task_tracker_calendar_container">
       <div className="backlog-container">
         <div className="backlog-content">
-          <TaskDesign
+          <Taskview
             title="Sample Backlog Task"
             description="This is a sample task in the backlog"
             timeRange="4 hours"
             category="Backlog"
             priority="medium"
             dueDate="Tomorrow"
+            // UI states from hook
+            mobileTapped={tasksHook.mobileTapped}
+            showDropdown={tasksHook.showDropdown}
+            showSubmenu={tasksHook.showSubmenu}
+            dropdownPosition={tasksHook.dropdownPosition}
+            submenuPosition={tasksHook.submenuPosition}
+            dropdownRef={tasksHook.dropdownRef}
+            submenuRef={tasksHook.submenuRef}
+            handleTaskTap={tasksHook.handleTaskTap}
+            handleIconClick={tasksHook.handleIconClick}
+            handleDropdownItemClick={tasksHook.handleDropdownItemClick}
+            handleSubmenuItemClick={tasksHook.handleSubmenuItemClick}
+            // Callbacks
             onCreateTask={() => console.log('Create task clicked')}
             onSubTask={() => console.log('Sub task clicked')}
             onNote={() => console.log('Note clicked')}

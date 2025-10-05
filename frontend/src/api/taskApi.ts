@@ -16,6 +16,26 @@ export interface Task {
   tags?: string[]
 }
 
+// Django Task Model Interface
+export interface DjangoTask {
+  id: number
+  title: string
+  description?: string
+  date_start?: string
+  date_end?: string
+  time_start?: string
+  time_end?: string
+  priority?: 'iu' | 'inu' | 'niu' | 'ninu'
+  status?: number
+  task_mode: 'draft' | 'published' | 'archived'
+  created_at: string
+  updated_at: string
+  hashtags?: Array<{
+    id: number
+    tag_name: string
+  }>
+}
+
 export interface CreateTaskData {
   title: string
   description?: string
@@ -181,6 +201,17 @@ export const taskApi = {
       return response.data
     } catch (error) {
       console.error('Error creating inbox task:', error)
+      throw error
+    }
+  },
+
+  // Отримати задачі авторизованого користувача
+  getUserTasks: async (): Promise<DjangoTask[]> => {
+    try {
+      const response = await api.get('/services_and_projects/user_tasks/')
+      return response.data
+    } catch (error) {
+      console.error('Error fetching user tasks:', error)
       throw error
     }
   }

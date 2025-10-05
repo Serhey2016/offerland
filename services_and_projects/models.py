@@ -140,6 +140,17 @@ class Task(models.Model):
         ('ninu', 'Not Important & Not Urgent'),
     ]
     
+    STATUS_CHOICES = [
+        ('inbox', 'Inbox'),
+        ('backlog', 'Backlog'),
+        ('agenda', 'Agenda'),
+        ('waiting', 'Waiting'),
+        ('someday', 'Someday'),
+        ('projects', 'Projects'),
+        ('done', 'Done'),
+        ('canceled', 'Canceled'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
@@ -147,18 +158,17 @@ class Task(models.Model):
     photo_link = models.CharField(max_length=2000, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    date_start = models.DateField(null=True, blank=True)
-    date_end = models.DateField(null=True, blank=True)
-    time_start = models.TimeField(null=True, blank=True)
-    time_end = models.TimeField(null=True, blank=True)
+    start_datetime = models.DateTimeField(null=True, blank=True, verbose_name='Start Date & Time')
+    end_datetime = models.DateTimeField(null=True, blank=True, verbose_name='End Date & Time')
     documents = models.CharField(max_length=2000, blank=True, null=True)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, null=True, blank=True, verbose_name='Priority')
-    status = models.ForeignKey('TaskStatus', on_delete=models.SET_NULL, null=True)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='inbox', verbose_name='Status')
     task_mode = models.CharField(max_length=15, choices=TASK_MODE_CHOICES, default='draft', verbose_name='Task mode')
     is_private = models.BooleanField(default=False)
     disclose_name = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
+    is_touchpoint = models.BooleanField(default=False)
     note = models.TextField(max_length=10000, blank=True, null=True)
     finance = models.ForeignKey('Finance', on_delete=models.SET_NULL, null=True, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subtasks')
