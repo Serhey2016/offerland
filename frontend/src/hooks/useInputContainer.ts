@@ -213,12 +213,7 @@ export const useInputContainer = ({
       return
     } else if (existingTitle) {
       console.log('Title already exists')
-      toastRef.current?.show({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'Task title already set. Remove existing title to set a new one.',
-        life: 3000
-      })
+      showWarning('Task title already set. Remove existing title to set a new one.')
       return
     }
     
@@ -296,21 +291,21 @@ export const useInputContainer = ({
         
         await onSubmit(taskData)
         
-        toastRef.current?.show({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Task created successfully!',
-          life: 3000
-        })
+        // Show success message
+        showSuccess('Task created successfully!', 'Task Saved', 4000)
         
-        // Clear form
+        // Clear form - do this immediately after successful submission
         setTaskInput('')
         setHasText(false)
         setChips([])
         
+        // Clear the contenteditable element
         if (contentEditableRef.current) {
           contentEditableRef.current.textContent = ''
+          contentEditableRef.current.focus()
         }
+        
+        console.log('Form cleared after task creation')
         
         // Call optional callback
         onTaskCreated?.()
@@ -320,7 +315,7 @@ export const useInputContainer = ({
         showError('Error creating task. Please try again.')
       }
     }
-  }, [taskInput, chips, onSubmit, showError, onTaskCreated])
+  }, [taskInput, chips, onSubmit, showError, showSuccess, onTaskCreated])
 
   // Handle priority select
   const handlePrioritySelect = useCallback((priority: string) => {

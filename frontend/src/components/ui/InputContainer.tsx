@@ -151,7 +151,16 @@ const InputContainer: React.FC<InputContainerProps> = ({
         <Button
           id="task-confirm-button"
           icon="pi pi-check"
-          onClick={handleConfirm}
+          onClick={async () => {
+            console.log('🔘 Confirm button clicked')
+            try {
+              await handleConfirm()
+              console.log('✅ handleConfirm completed successfully')
+            } catch (error) {
+              console.error('❌ Error in handleConfirm:', error)
+              // Error handling is done in the hook, but we catch it here to prevent unhandled promise rejection
+            }
+          }}
           className="task_creation_confirm_btn"
           text
         />

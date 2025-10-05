@@ -1,5 +1,6 @@
 import React from 'react'
 import { Toast } from 'primereact/toast'
+import './Toasts.css'
 
 interface ToastsProps {
   toastRef: React.RefObject<Toast>
@@ -13,7 +14,12 @@ const Toasts: React.FC<ToastsProps> = ({
   return (
     <Toast 
       ref={toastRef} 
-      position={position} 
+      position={position}
+      className="custom-toast"
+      style={{
+        zIndex: 9999,
+        fontSize: '14px'
+      }}
     />
   )
 }

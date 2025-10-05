@@ -1,0 +1,54 @@
+/* Custom Toast Styles */
+.custom-toast {
+  z-index: 9999 !important;
+}
+
+.custom-toast .p-toast {
+  z-index: 9999 !important;
+}
+
+.custom-toast .p-toast-message {
+  margin: 10px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.custom-toast .p-toast-message-success {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.custom-toast .p-toast-message-success .p-toast-message-icon {
+  color: #28a745;
+}
+
+.custom-toast .p-toast-message-error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+.custom-toast .p-toast-message-error .p-toast-message-icon {
+  color: #dc3545;
+}
+
+.custom-toast .p-toast-message-warn {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+}
+
+.custom-toast .p-toast-message-warn .p-toast-message-icon {
+  color: #ffc107;
+}
+
+.custom-toast .p-toast-message-info {
+  background-color: #d1ecf1;
+  border: 1px solid #bee5eb;
+  color: #0c5460;
+}
+
+.custom-toast .p-toast-message-info .p-toast-message-icon {
+  color: #17a2b8;
+}

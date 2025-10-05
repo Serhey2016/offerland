@@ -12,12 +12,14 @@ export const useToasts = () => {
   const toast = useRef<Toast>(null)
 
   // Show success toast
-  const showSuccess = useCallback((message: string, summary: string = 'Success', life: number = 3000) => {
+  const showSuccess = useCallback((message: string, summary: string = 'Success', life: number = 4000) => {
     toast.current?.show({
       severity: 'success',
       summary,
       detail: message,
-      life
+      life,
+      closable: true,
+      sticky: false
     })
   }, [])
 

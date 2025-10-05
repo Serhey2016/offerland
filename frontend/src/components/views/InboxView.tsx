@@ -18,8 +18,8 @@ const InboxView = () => {
   // Handle task creation
   const handleCreateTask = async (taskData: InboxTaskData) => {
     await taskApi.createInboxTask(taskData)
-    // Reload tasks after creation
-    loadUserTasks()
+    // Reload tasks after creation (but don't show error if reload fails)
+    await loadUserTasks(false)
   }
 
   // Use toasts hook
@@ -40,14 +40,14 @@ const InboxView = () => {
   }, [])
 
   // Load user tasks from API
-  const loadUserTasks = async () => {
+  const loadUserTasks = async (showErrorOnFailure: boolean = true) => {
     try {
       setLoadingTasks(true)
       const tasks = await taskApi.getUserTasks()
       setUserTasks(tasks)
     } catch (error) {
       console.error('Error loading user tasks:', error)
-      if (!hasShownError) {
+      if (showErrorOnFailure && !hasShownError) {
         setHasShownError(true)
         showError('Error loading tasks')
       }
