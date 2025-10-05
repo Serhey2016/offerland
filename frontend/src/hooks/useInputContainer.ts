@@ -59,6 +59,9 @@ export const useInputContainer = ({
   // Use toasts hook (fallback if no external toastRef provided)
   const { toast: fallbackToast, showError, showSuccess, showWarning } = useToasts()
   const toast = toastRef || fallbackToast
+  
+  // Debug toast ref
+  console.log('🔍 useInputContainer toast ref:', { toastRef, fallbackToast, finalToast: toast })
   // States
   const [taskInput, setTaskInput] = useState('')
   const [hasText, setHasText] = useState(false)

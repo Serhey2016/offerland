@@ -75,7 +75,7 @@ export const taskApi = {
   // Отримати всі задачі
   getTasks: async (filters?: TaskFilters): Promise<Task[]> => {
     try {
-      const response = await api.get('/tasks/', { params: filters })
+      const response = await api.get('/services_and_projects/user_tasks/', { params: filters })
       return response.data
     } catch (error) {
       console.error('Error fetching tasks:', error)
@@ -141,7 +141,7 @@ export const taskApi = {
   // Отримати задачі по категорії
   getTasksByCategory: async (category: string): Promise<Task[]> => {
     try {
-      const response = await api.get('/tasks/', { params: { category } })
+      const response = await api.get('/services_and_projects/user_tasks/', { params: { category } })
       return response.data
     } catch (error) {
       console.error(`Error fetching tasks for category ${category}:`, error)

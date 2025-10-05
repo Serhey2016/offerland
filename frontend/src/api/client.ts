@@ -41,7 +41,8 @@ api.interceptors.response.use(
     // Обробка різних типів помилок
     if (error.response?.status === 401) {
       console.error('Unauthorized - redirect to login')
-      // Тут можна додати логіку перенаправлення на сторінку входу
+      // Redirect to login page
+      window.location.href = '/accounts/login/'
     } else if (error.response?.status === 403) {
       console.error('Forbidden - insufficient permissions')
     } else if (error.response?.status === 404) {
