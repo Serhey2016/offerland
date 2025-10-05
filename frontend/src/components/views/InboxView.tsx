@@ -23,7 +23,7 @@ const InboxView = () => {
   }
 
   // Use toasts hook
-  const { toast, showError } = useToasts()
+  const { toast, showError, showSuccess } = useToasts()
 
   // Use input container hook
   const inputContainerProps = useInputContainer({

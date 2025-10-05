@@ -17,8 +17,8 @@ const Toasts: React.FC<ToastsProps> = ({
       position={position}
       className="custom-toast"
       style={{
-        zIndex: 9999,
-        fontSize: '14px'
+        zIndex: 99999,
+        fontSize: '16px'
       }}
     />
   )

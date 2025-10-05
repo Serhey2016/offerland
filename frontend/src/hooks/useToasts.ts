@@ -13,14 +13,21 @@ export const useToasts = () => {
 
   // Show success toast
   const showSuccess = useCallback((message: string, summary: string = 'Success', life: number = 4000) => {
-    toast.current?.show({
-      severity: 'success',
-      summary,
-      detail: message,
-      life,
-      closable: true,
-      sticky: false
-    })
+    console.log('🎉 Showing success toast:', { message, summary, life })
+    if (toast.current) {
+      console.log('✅ Toast ref exists, showing toast')
+      toast.current.show({
+        severity: 'success',
+        summary,
+        detail: message,
+        life,
+        closable: true,
+        sticky: false
+      })
+      console.log('🎯 Toast.show() called')
+    } else {
+      console.error('❌ Toast ref is null!')
+    }
   }, [])
 
   // Show error toast

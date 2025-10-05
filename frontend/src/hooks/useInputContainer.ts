@@ -289,10 +289,14 @@ export const useInputContainer = ({
         
         console.log('Sending task data to API:', taskData)
         
+        console.log('📤 Calling onSubmit with taskData:', taskData)
         await onSubmit(taskData)
+        console.log('✅ onSubmit completed successfully')
         
         // Show success message
+        console.log('🎉 About to show success message')
         showSuccess('Task created successfully!', 'Task Saved', 4000)
+        console.log('🎯 Success message function called')
         
         // Clear form - do this immediately after successful submission
         setTaskInput('')
