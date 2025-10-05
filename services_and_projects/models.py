@@ -124,8 +124,13 @@ class Finance(models.Model):
 class Task(models.Model):
     TASK_MODE_CHOICES = [
         ('draft', 'Draft'),
+        ('moderation', 'Moderation'),
         ('published', 'Published'),
-        ('archived', 'Archived'),
+        ('in_progress', 'In Progress'),
+        ('in_review', 'In Review'),
+        ('completed', 'Completed'),
+        ('rejected', 'Rejected'),
+        ('canceled', 'Canceled'),
     ]
     
     PRIORITY_CHOICES = [
@@ -149,7 +154,7 @@ class Task(models.Model):
     documents = models.CharField(max_length=2000, blank=True, null=True)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, null=True, blank=True, verbose_name='Priority')
     status = models.ForeignKey('TaskStatus', on_delete=models.SET_NULL, null=True)
-    task_mode = models.CharField(max_length=10, choices=TASK_MODE_CHOICES, default='draft', verbose_name='Task mode')
+    task_mode = models.CharField(max_length=15, choices=TASK_MODE_CHOICES, default='draft', verbose_name='Task mode')
     is_private = models.BooleanField(default=False)
     disclose_name = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
