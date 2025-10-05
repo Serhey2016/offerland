@@ -15,6 +15,7 @@ export interface ChipData {
 interface UseInputContainerProps {
   onSubmit: (taskData: InboxTaskData) => Promise<void>
   onTaskCreated?: () => void
+  toastRef?: React.RefObject<any>
 }
 
 interface UseInputContainerReturn {
@@ -52,10 +53,12 @@ const priorityMap = {
 
 export const useInputContainer = ({ 
   onSubmit, 
-  onTaskCreated 
+  onTaskCreated,
+  toastRef
 }: UseInputContainerProps): UseInputContainerReturn => {
-  // Use toasts hook
-  const { toast, showError, showSuccess, showWarning } = useToasts()
+  // Use toasts hook (fallback if no external toastRef provided)
+  const { toast: fallbackToast, showError, showSuccess, showWarning } = useToasts()
+  const toast = toastRef || fallbackToast
   // States
   const [taskInput, setTaskInput] = useState('')
   const [hasText, setHasText] = useState(false)

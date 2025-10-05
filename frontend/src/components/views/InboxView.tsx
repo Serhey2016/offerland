@@ -28,7 +28,8 @@ const InboxView = () => {
   // Use input container hook
   const inputContainerProps = useInputContainer({
     onSubmit: handleCreateTask,
-    onTaskCreated: () => loadUserTasks()
+    onTaskCreated: () => loadUserTasks(),
+    toastRef: toast
   })
 
   // Use tasks hook for UI logic
