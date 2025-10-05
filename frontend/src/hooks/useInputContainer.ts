@@ -57,8 +57,50 @@ export const useInputContainer = ({
   toastRef
 }: UseInputContainerProps): UseInputContainerReturn => {
   // Use toasts hook (fallback if no external toastRef provided)
-  const { toast: fallbackToast, showError, showSuccess, showWarning } = useToasts()
+  const { toast: fallbackToast, showError: fallbackShowError, showSuccess: fallbackShowSuccess, showWarning: fallbackShowWarning } = useToasts()
   const toast = toastRef || fallbackToast
+  
+  // Use external toastRef if provided, otherwise use fallback functions
+  const showError = useCallback((message: string, summary?: string, life?: number) => {
+    if (toastRef?.current) {
+      toastRef.current.show({
+        severity: 'error',
+        summary: summary || 'Error',
+        detail: message,
+        life: life || 3000
+      })
+    } else {
+      fallbackShowError(message, summary, life)
+    }
+  }, [toastRef, fallbackShowError])
+  
+  const showSuccess = useCallback((message: string, summary?: string, life?: number) => {
+    if (toastRef?.current) {
+      toastRef.current.show({
+        severity: 'success',
+        summary: summary || 'Success',
+        detail: message,
+        life: life || 4000,
+        closable: true,
+        sticky: false
+      })
+    } else {
+      fallbackShowSuccess(message, summary, life)
+    }
+  }, [toastRef, fallbackShowSuccess])
+  
+  const showWarning = useCallback((message: string, summary?: string, life?: number) => {
+    if (toastRef?.current) {
+      toastRef.current.show({
+        severity: 'warn',
+        summary: summary || 'Warning',
+        detail: message,
+        life: life || 3000
+      })
+    } else {
+      fallbackShowWarning(message, summary, life)
+    }
+  }, [toastRef, fallbackShowWarning])
   // States
   const [taskInput, setTaskInput] = useState('')
   const [hasText, setHasText] = useState(false)
