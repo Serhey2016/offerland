@@ -611,7 +611,7 @@ def user_tasks(request):
         user_tasks = Task.objects.filter(
             taskownerrelations__user=request.user
         ).select_related(
-            'type_of_task', 'status'
+            'type_of_task'
         ).prefetch_related(
             'hashtags__hashtag'
         ).order_by('-created_at')
@@ -633,10 +633,10 @@ def user_tasks(request):
                 'id': task.id,
                 'title': task.title,
                 'description': task.description,
-                'date_start': task.date_start.isoformat() if task.date_start else None,
-                'date_end': task.date_end.isoformat() if task.date_end else None,
-                'time_start': task.time_start.isoformat() if task.time_start else None,
-                'time_end': task.time_end.isoformat() if task.time_end else None,
+                'date_start': task.start_datetime.isoformat() if task.start_datetime else None,
+                'date_end': task.end_datetime.isoformat() if task.end_datetime else None,
+                'time_start': task.start_datetime.isoformat() if task.start_datetime else None,
+                'time_end': task.end_datetime.isoformat() if task.end_datetime else None,
                 'priority': task.priority,
                 'status': task.status,
                 'task_mode': task.task_mode,

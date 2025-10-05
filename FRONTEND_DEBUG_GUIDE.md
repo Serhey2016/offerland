@@ -60,6 +60,13 @@
 - **USE CONDITIONAL** - Wrap in debug flags when needed
 - **NEVER COMMIT** - Don't leave logs in production code
 
+### ⚠️ GIT COMMIT RULES
+- **NEVER AUTO-COMMIT** - Never add files to git or commit without explicit user permission
+- **ALWAYS ASK FIRST** - "Can I commit these changes?" or "Should I save these changes?"
+- **USER CONTROLS GIT** - Only the user decides when to commit and push changes
+- **NO AUTOMATIC SAVING** - Don't assume user wants changes saved to git
+- **EXPLICIT PERMISSION REQUIRED** - Wait for user to explicitly request git operations
+
 ### Phase 1: Pre-Debug Setup
 1. **Check Docker Status**
    ```bash
@@ -447,6 +454,7 @@ Browser: [Browser version]
 - ✅ **Debug incrementally** - Make small changes to existing code
 - ✅ **Ask before adding console.log** - Get permission first
 - ✅ **Remove debug logs immediately** - Clean up after debugging
+- ✅ **Ask before git operations** - "Can I commit these changes?" or "Should I save these changes?"
 
 ## 📋 Console.log Rules (LAST RESORT ONLY)
 

@@ -26,7 +26,15 @@
 - Use proper error handling
 - **NEVER create unnecessary files or components** - check existing codebase first
 - **Respect existing React components** - don't create duplicates or unnecessary additions
-- **For errors: Always keep console.error** - error logs are essential for debugging
+- **For errors: Remove console.log but keep console.error** - error logs are essential for debugging
+
+### Git Operations
+- **NEVER AUTO-COMMIT** - Never add files to git or commit without explicit user permission
+- **ALWAYS ASK FIRST** - "Can I commit these changes?" or "Should I save these changes?"
+- **USER CONTROLS GIT** - Only the user decides when to commit and push changes
+- **NO AUTOMATIC SAVING** - Don't assume user wants changes saved to git
+- **EXPLICIT PERMISSION REQUIRED** - Wait for user to explicitly request git operations
+- **ASK BEFORE GIT OPERATIONS** - Always ask "Can I commit these changes?" before any git add/commit/push
 
 ### CSS and Styling Rules
 - **NEVER use inline styles** (`style="..."`)

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Toast } from 'primereact/toast'
-import './Toasts.css'
 
 interface ToastsProps {
   toastRef: React.RefObject<Toast>

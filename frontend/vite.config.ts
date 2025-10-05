@@ -6,10 +6,7 @@ export default defineConfig({
     fastRefresh: false,
     include: "**/*.{jsx,tsx}",
     jsxRuntime: 'automatic',
-    jsxImportSource: 'react',
-    babel: {
-      plugins: []
-    }
+    jsxImportSource: 'react'
   })],
   server: {
     host: '0.0.0.0',
@@ -17,7 +14,6 @@ export default defineConfig({
     hmr: false, // Отключаем HMR полностью
     https: false,
     headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
       'Cross-Origin-Embedder-Policy': 'unsafe-none',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',

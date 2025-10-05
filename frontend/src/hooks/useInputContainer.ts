@@ -163,15 +163,12 @@ export const useInputContainer = ({
 
   // Process input and create chips
   const processInput = useCallback((input: string) => {
-    console.log('Processing input:', input)
     if (!input.trim()) return
 
     const trimmedInput = input.trim()
-    console.log('Trimmed input:', trimmedInput)
     
     // Check for priority
     if (isPriorityAbbreviation(trimmedInput)) {
-      console.log('Priority detected:', trimmedInput)
       const priority = priorityMap[trimmedInput.toLowerCase() as keyof typeof priorityMap]
       const existingPriority = chips.find(chip => chip.type === 'priority')
       
@@ -241,11 +238,8 @@ export const useInputContainer = ({
 
     // Check for title (if no existing title and text doesn't match any pattern)
     const existingTitle = chips.find(chip => chip.type === 'title')
-    console.log('Existing title:', existingTitle)
-    console.log('Input length:', trimmedInput.length)
     
     if (!existingTitle && trimmedInput.length <= MAX_LENGTH) {
-      console.log('Creating title chip for:', trimmedInput)
       const newChip: ChipData = {
         id: `title-${Date.now()}`,
         type: 'title',
@@ -307,7 +301,6 @@ export const useInputContainer = ({
   // Handle confirm - create task
   const handleConfirm = useCallback(async () => {
     if (taskInput.trim() || chips.length > 0) {
-      console.log('Creating task with chips:', chips, 'and input:', taskInput)
       
       try {
         const titleChip = chips.find(chip => chip.type === 'title')
@@ -332,16 +325,11 @@ export const useInputContainer = ({
           taskData.date_end = endDate
         }
         
-        console.log('Sending task data to API:', taskData)
         
-        console.log('📤 Calling onSubmit with taskData:', taskData)
         await onSubmit(taskData)
-        console.log('✅ onSubmit completed successfully')
         
         // Show success message
-        console.log('🎉 About to show success message')
         showSuccess('Task created successfully!', 'Task Saved', 4000)
-        console.log('🎯 Success message function called')
         
         // Clear form - do this immediately after successful submission
         setTaskInput('')
@@ -354,7 +342,6 @@ export const useInputContainer = ({
           contentEditableRef.current.focus()
         }
         
-        console.log('Form cleared after task creation')
         
         // Call optional callback
         onTaskCreated?.()
@@ -368,7 +355,6 @@ export const useInputContainer = ({
 
   // Handle priority select
   const handlePrioritySelect = useCallback((priority: string) => {
-    console.log('Priority selected:', priority)
     
     const priorityMapping: { [key: string]: string } = {
       'important-urgent': 'iu',
