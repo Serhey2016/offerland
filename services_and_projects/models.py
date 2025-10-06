@@ -130,7 +130,7 @@ class Task(models.Model):
         ('in_review', 'In Review'),
         ('completed', 'Completed'),
         ('rejected', 'Rejected'),
-        ('canceled', 'Canceled'),
+        ('canceled', 'Сanceled'),
     ]
     
     PRIORITY_CHOICES = [
@@ -148,7 +148,7 @@ class Task(models.Model):
         ('someday', 'Someday'),
         ('projects', 'Projects'),
         ('done', 'Done'),
-        ('canceled', 'Canceled'),
+        ('archive', 'Archive'),
     ]
     
     id = models.AutoField(primary_key=True)
@@ -523,7 +523,7 @@ class Activities(models.Model):
     STATUS_CHOICES = [
         ('successful', 'Successful'),
         ('unsuccessful', 'Unsuccessful'),
-        ('canceled', 'Canceled'),
+        ('canceled', 'Archive'),
     ]
     status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='unsuccessful', blank=True)
     

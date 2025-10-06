@@ -7,7 +7,7 @@ import NavigationItems from './NavigationItems'
 import { Button } from 'primereact/button'
 import { SpeedDial } from 'primereact/speeddial'
 import { Category, Subcategory } from './shared/MenuHandlers'
-import '../styles/submenu-primereact.css'
+// CSS moved to static/css/ directory - loaded via Django template
 
 // Additional event interfaces for submenu integration
 export interface SubMenuFilterEvent {

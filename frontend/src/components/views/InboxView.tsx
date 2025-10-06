@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import '../../styles/priority-matrix-submenu.css'
-import '../../styles/tasktracker_task_design.css'
+// CSS moved to static/css/ directory - loaded via Django template
 import { taskApi, InboxTaskData, DjangoTask } from '../../api/taskApi'
 import Taskview from '../ui/Taskview'
 import InputContainer from '../ui/InputContainer'

@@ -4,8 +4,7 @@ import { TieredMenu } from 'primereact/tieredmenu'
 import { Chips } from 'primereact/chips'
 import Taskview from '../ui/Taskview'
 import { useTasks } from '../../hooks/useTasks'
-import '../../styles/priority-matrix-submenu.css'
-import '../../styles/tasktracker_task_design.css'
+// CSS moved to static/css/ directory - loaded via Django template
 
 const BacklogView = () => {
   const [taskInput, setTaskInput] = useState('')

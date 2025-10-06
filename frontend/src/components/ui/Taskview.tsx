@@ -1,6 +1,6 @@
 import React from 'react'
 import { createPortal } from 'react-dom'
-import '../../styles/tasktracker_task_design.css'
+// CSS moved to static/css/ directory - loaded via Django template
 
 interface TaskviewProps {
   // Task data

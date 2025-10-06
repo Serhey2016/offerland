@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Calendar as BigCalendar, momentLocalizer, Views } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import '../styles/task_tracker_infinity_cal.css'
+// CSS moved to static/css/ directory - loaded via Django template
 
 // Setup the localizer by providing the moment (or globalize) Object
 const localizer = momentLocalizer(moment)
@@ -37,6 +37,7 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
   const [isLoading, setIsLoading] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
+  const loadingRef = useRef(false)
 
   // Generate initial days starting from TODAY
   useEffect(() => {
@@ -60,30 +61,47 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
   }, [currentDate, daysToShow])
 
   const loadMoreDays = useCallback(() => {
-    if (isLoading) {
+    if (isLoading || loadingRef.current) {
       return
     }
 
-    // Use functional update to get the latest state
+    loadingRef.current = true
+    setIsLoading(true)
+
+    // Get current visible days and calculate next day
     setVisibleDays(currentVisibleDays => {
       if (currentVisibleDays.length === 0) {
+        setIsLoading(false)
+        loadingRef.current = false
         return currentVisibleDays
       }
 
-      setIsLoading(true)
       const lastDay = currentVisibleDays[currentVisibleDays.length - 1]
       const nextDay = new Date(lastDay)
       nextDay.setDate(lastDay.getDate() + 1)
 
-      // Load only 1 day at a time
-      const newDays: Date[] = [nextDay]
+      // Check if this day already exists to prevent duplicates
+      const dayAlreadyExists = currentVisibleDays.some(day => 
+        day.toDateString() === nextDay.toDateString()
+      )
 
+      if (dayAlreadyExists) {
+        // Don't add duplicate day, just reset loading state
+        setTimeout(() => {
+          setIsLoading(false)
+          loadingRef.current = false
+        }, 500)
+        return currentVisibleDays
+      }
+
+      // Add new day immediately and reset loading state
       setTimeout(() => {
-        setVisibleDays(prev => [...prev, ...newDays])
         setIsLoading(false)
+        loadingRef.current = false
       }, 500)
 
-      return currentVisibleDays
+      // Return updated days with new day added
+      return [...currentVisibleDays, nextDay]
     })
   }, [isLoading])
 
@@ -92,14 +110,22 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.target.classList.contains('loading-trigger')) {
-            loadMoreDays()
+          if (entry.isIntersecting && 
+              entry.target.classList.contains('loading-trigger') && 
+              !isLoading && 
+              !loadingRef.current) {
+            // Add a small delay to prevent rapid firing
+            setTimeout(() => {
+              if (!isLoading && !loadingRef.current) {
+                loadMoreDays()
+              }
+            }, 100)
           }
         })
       },
       { 
         threshold: 0.1,
-        rootMargin: '50px' // Start loading when element is 50px away from viewport
+        rootMargin: '100px' // Increase margin to reduce sensitivity
       }
     )
 
@@ -110,7 +136,7 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
         observerRef.current.disconnect()
       }
     }
-  }, [loadMoreDays])
+  }, [loadMoreDays, isLoading])
 
   // Format day header
   const formatDayHeader = (date: Date) => {
