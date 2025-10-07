@@ -21,6 +21,9 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const submenuRef = useRef<HTMLDivElement>(null)
 
+  // UI state for task creation block visibility
+  const [showTaskCreation, setShowTaskCreation] = useState(false)
+
   // Завантаження задач
   const loadTasks = useCallback(async (newFilters?: TaskFilters) => {
     try {
@@ -292,6 +295,21 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     }
   }, [calculateDropdownPosition, showDropdown])
 
+  // Handle task creation toggle (for Add Note button in SpeedDial)
+  const toggleTaskCreation = useCallback(() => {
+    setShowTaskCreation(prev => !prev)
+  }, [])
+
+  // Show task creation block
+  const showTaskCreationBlock = useCallback(() => {
+    setShowTaskCreation(true)
+  }, [])
+
+  // Hide task creation block
+  const hideTaskCreationBlock = useCallback(() => {
+    setShowTaskCreation(false)
+  }, [])
+
   return {
     // Дані
     tasks,
@@ -308,6 +326,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     mobileTapped,
     dropdownRef,
     submenuRef,
+    showTaskCreation,
     
     // Дії
     createTask,
@@ -323,6 +342,9 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     handleIconClick,
     handleDropdownItemClick,
     handleSubmenuItemClick,
+    toggleTaskCreation,
+    showTaskCreationBlock,
+    hideTaskCreationBlock,
     
     // Утиліти
     setTasks

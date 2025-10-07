@@ -39,6 +39,21 @@ const InboxView = () => {
     loadUserTasks()
   }, [])
 
+  // Listen for Add Note button click from SubMenuSection
+  useEffect(() => {
+    const handleAddNote = (event: Event) => {
+      const customEvent = event as CustomEvent
+      if (customEvent.detail?.itemType === 'note') {
+        tasksHook.toggleTaskCreation()
+      }
+    }
+
+    window.addEventListener('subMenuAdd', handleAddNote)
+    return () => {
+      window.removeEventListener('subMenuAdd', handleAddNote)
+    }
+  }, [tasksHook.toggleTaskCreation])
+
   // Load user tasks from API
   const loadUserTasks = async (showErrorOnFailure: boolean = true) => {
     try {
@@ -91,9 +106,11 @@ const InboxView = () => {
       <Toasts toastRef={toast} />
       <div className="touchpoint-container">
         {/* Task Creation Block - New component */}
-        <InputContainer
-          {...inputContainerProps}
-        />
+        {tasksHook.showTaskCreation && (
+          <InputContainer
+            {...inputContainerProps}
+          />
+        )}
 
       </div>
 
