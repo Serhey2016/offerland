@@ -6,14 +6,8 @@ import SubcategoryDisplay from './SubcategoryDisplay'
 import AgendaView from './views/AgendaView'
 import TouchpointView from './views/TouchpointView'
 import InboxView from './views/InboxView'
-import BacklogView from './views/BacklogView'
-import WaitingView from './views/WaitingView'
-import SomedayView from './views/SomedayView'
-import ProjectsView from './views/ProjectsView'
-import LockbookView from './views/LockbookView'
-import ArchiveView from './views/ArchiveView'
+import GenericView from './views/GenericView'
 import ContactsView from './views/subcategories/ContactsView'
-import FavoritesView from './views/subcategories/FavoritesView'
 import {
   Category,
   Subcategory,
@@ -349,10 +343,42 @@ const TaskTracker = () => {
     
     // Inbox subcategories
     if (selectedCategory === CATEGORIES.INBOX && selectedSubcategory === 'Favorites') {
-      return <FavoritesView />
+      return <GenericView category="Inbox" subcategory="Favorites" displayName="Favorites" />
     }
     
-    // TODO: Add more subcategory views as needed
+    // Waiting subcategories
+    if (selectedCategory === CATEGORIES.WAITING) {
+      if (selectedSubcategory === 'Orders') {
+        return <GenericView category="Waiting" subcategory="Orders" displayName="Orders" />
+      }
+      if (selectedSubcategory === 'Subscriptions') {
+        return <GenericView category="Waiting" subcategory="Subscriptions" displayName="Subscriptions" />
+      }
+      if (selectedSubcategory === 'Published') {
+        return <GenericView category="Waiting" subcategory="Published" displayName="Published" />
+      }
+    }
+    
+    // Done (Lockbook) subcategories
+    if (selectedCategory === CATEGORIES.LOCKBOOK) {
+      if (selectedSubcategory === 'Lockbook_Projects') {
+        return <GenericView category="Done" subcategory="Lockbook_Projects" displayName="Projects" />
+      }
+      if (selectedSubcategory === 'Lockbook_Tasks') {
+        return <GenericView category="Done" subcategory="Lockbook_Tasks" displayName="Tasks" />
+      }
+    }
+    
+    // Archive subcategories
+    if (selectedCategory === CATEGORIES.ARCHIVE) {
+      if (selectedSubcategory === 'Archive_projects') {
+        return <GenericView category="Archive" subcategory="Archive_projects" displayName="Projects" />
+      }
+      if (selectedSubcategory === 'Archive_Tasks') {
+        return <GenericView category="Archive" subcategory="Archive_Tasks" displayName="Tasks" />
+      }
+    }
+    
     return null
   }
 
@@ -361,12 +387,12 @@ const TaskTracker = () => {
       [CATEGORIES.AGENDA]: <AgendaView />,
       [CATEGORIES.TOUCHPOINT]: <TouchpointView />,
       [CATEGORIES.INBOX]: <InboxView />,
-      [CATEGORIES.BACKLOG]: <BacklogView />,
-      [CATEGORIES.WAITING]: <WaitingView />,
-      [CATEGORIES.SOMEDAY]: <SomedayView />,
-      [CATEGORIES.PROJECTS]: <ProjectsView />,
-      [CATEGORIES.LOCKBOOK]: <LockbookView />,
-      [CATEGORIES.ARCHIVE]: <ArchiveView />
+      [CATEGORIES.BACKLOG]: <GenericView category="Backlog" displayName="Backlog" />,
+      [CATEGORIES.WAITING]: <GenericView category="Waiting" displayName="Waiting" />,
+      [CATEGORIES.SOMEDAY]: <GenericView category="Someday" displayName="Someday" />,
+      [CATEGORIES.PROJECTS]: <GenericView category="Projects" displayName="Projects" />,
+      [CATEGORIES.LOCKBOOK]: <GenericView category="Done" displayName="Done" />,
+      [CATEGORIES.ARCHIVE]: <GenericView category="Archive" displayName="Archive" />
     }
     
     return viewComponents[selectedCategory] || <AgendaView />
