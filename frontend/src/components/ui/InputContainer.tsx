@@ -9,6 +9,7 @@ interface InputContainerProps {
   hasText: boolean
   chips: ChipData[]
   isMaxLength: boolean
+  label?: string
   
   // Refs
   contentEditableRef: React.RefObject<HTMLDivElement>
@@ -30,6 +31,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
   hasText,
   chips,
   isMaxLength,
+  label = 'Task',
   contentEditableRef,
   menuRef,
   handleInputChange,
@@ -126,7 +128,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
           className="task_creation_left_btn"
           text
         />
-        <span className="task_creation_left_btn_label">Task</span>
+        <span className="task_creation_left_btn_label">{label}</span>
         
         {/* Input Field */}
         <div

@@ -39,18 +39,28 @@ const InboxView = () => {
     loadUserTasks()
   }, [])
 
-  // Listen for Add Note button click from SubMenuSection
+  // Listen for SpeedDial button clicks from SubMenuSection
   useEffect(() => {
-    const handleAddNote = (event: Event) => {
+    const handleSpeedDialClick = (event: Event) => {
       const customEvent = event as CustomEvent
-      if (customEvent.detail?.itemType === 'note') {
-        tasksHook.toggleTaskCreation()
+      const itemType = customEvent.detail?.itemType
+      
+      // Map item types to labels
+      const labelMap: Record<string, string> = {
+        'task': 'Time slot',
+        'project': 'Announcement',
+        'contact': 'Project',
+        'note': 'Task'
+      }
+      
+      if (itemType && labelMap[itemType]) {
+        tasksHook.toggleTaskCreation(labelMap[itemType])
       }
     }
 
-    window.addEventListener('subMenuAdd', handleAddNote)
+    window.addEventListener('subMenuAdd', handleSpeedDialClick)
     return () => {
-      window.removeEventListener('subMenuAdd', handleAddNote)
+      window.removeEventListener('subMenuAdd', handleSpeedDialClick)
     }
   }, [tasksHook.toggleTaskCreation])
 
@@ -109,6 +119,7 @@ const InboxView = () => {
         {tasksHook.showTaskCreation && (
           <InputContainer
             {...inputContainerProps}
+            label={tasksHook.taskCreationType}
           />
         )}
 

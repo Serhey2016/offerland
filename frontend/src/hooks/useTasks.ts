@@ -23,6 +23,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
 
   // UI state for task creation block visibility
   const [showTaskCreation, setShowTaskCreation] = useState(false)
+  const [taskCreationType, setTaskCreationType] = useState<string>('Task')
 
   // Завантаження задач
   const loadTasks = useCallback(async (newFilters?: TaskFilters) => {
@@ -296,12 +297,21 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   }, [calculateDropdownPosition, showDropdown])
 
   // Handle task creation toggle (for Add Note button in SpeedDial)
-  const toggleTaskCreation = useCallback(() => {
-    setShowTaskCreation(prev => !prev)
+  const toggleTaskCreation = useCallback((type: string = 'Task') => {
+    setShowTaskCreation(prev => {
+      // If already showing, just hide it
+      if (prev) {
+        return false
+      }
+      // If not showing, show it and set the type
+      setTaskCreationType(type)
+      return true
+    })
   }, [])
 
   // Show task creation block
-  const showTaskCreationBlock = useCallback(() => {
+  const showTaskCreationBlock = useCallback((type: string = 'Task') => {
+    setTaskCreationType(type)
     setShowTaskCreation(true)
   }, [])
 
@@ -327,6 +337,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     dropdownRef,
     submenuRef,
     showTaskCreation,
+    taskCreationType,
     
     // Дії
     createTask,
