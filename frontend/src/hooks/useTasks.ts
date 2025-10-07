@@ -300,16 +300,16 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   // Handle task creation toggle (for Add Note button in SpeedDial)
   const toggleTaskCreation = useCallback((type: string = 'Task', icon: string = 'pi pi-check-circle') => {
     setShowTaskCreation(prev => {
-      // If already showing, just hide it
-      if (prev) {
+      // If already showing with the same type, hide it
+      if (prev && taskCreationType === type) {
         return false
       }
-      // If not showing, show it and set the type and icon
+      // If not showing or showing different type, show it with new type and icon
       setTaskCreationType(type)
       setTaskCreationIcon(icon)
       return true
     })
-  }, [])
+  }, [taskCreationType])
 
   // Show task creation block
   const showTaskCreationBlock = useCallback((type: string = 'Task', icon: string = 'pi pi-check-circle') => {
