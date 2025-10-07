@@ -10,6 +10,7 @@ interface InputContainerProps {
   chips: ChipData[]
   isMaxLength: boolean
   label?: string
+  icon?: string
   
   // Refs
   contentEditableRef: React.RefObject<HTMLDivElement>
@@ -32,6 +33,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
   chips,
   isMaxLength,
   label = 'Task',
+  icon = 'pi pi-check-circle',
   contentEditableRef,
   menuRef,
   handleInputChange,
@@ -123,7 +125,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
         {/* Left Button */}
         <Button
           id="task-left-button"
-          icon="pi pi-check-circle"
+          icon={icon}
           onClick={() => {}}
           className="task_creation_left_btn"
           text

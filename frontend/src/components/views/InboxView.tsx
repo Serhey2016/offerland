@@ -45,16 +45,16 @@ const InboxView = () => {
       const customEvent = event as CustomEvent
       const itemType = customEvent.detail?.itemType
       
-      // Map item types to labels
-      const labelMap: Record<string, string> = {
-        'task': 'Time slot',
-        'project': 'Announcement',
-        'contact': 'Project',
-        'note': 'Task'
+      // Map item types to labels and icons
+      const typeMap: Record<string, { label: string, icon: string }> = {
+        'task': { label: 'Time slot', icon: 'pi pi-calendar-clock' },
+        'project': { label: 'Announcement', icon: 'pi pi-megaphone' },
+        'contact': { label: 'Project', icon: 'pi pi-briefcase' },
+        'note': { label: 'Task', icon: 'pi pi-check-circle' }
       }
       
-      if (itemType && labelMap[itemType]) {
-        tasksHook.toggleTaskCreation(labelMap[itemType])
+      if (itemType && typeMap[itemType]) {
+        tasksHook.toggleTaskCreation(typeMap[itemType].label, typeMap[itemType].icon)
       }
     }
 
@@ -120,6 +120,7 @@ const InboxView = () => {
           <InputContainer
             {...inputContainerProps}
             label={tasksHook.taskCreationType}
+            icon={tasksHook.taskCreationIcon}
           />
         )}
 

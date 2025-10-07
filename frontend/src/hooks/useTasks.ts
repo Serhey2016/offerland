@@ -24,6 +24,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   // UI state for task creation block visibility
   const [showTaskCreation, setShowTaskCreation] = useState(false)
   const [taskCreationType, setTaskCreationType] = useState<string>('Task')
+  const [taskCreationIcon, setTaskCreationIcon] = useState<string>('pi pi-check-circle')
 
   // Завантаження задач
   const loadTasks = useCallback(async (newFilters?: TaskFilters) => {
@@ -297,21 +298,23 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   }, [calculateDropdownPosition, showDropdown])
 
   // Handle task creation toggle (for Add Note button in SpeedDial)
-  const toggleTaskCreation = useCallback((type: string = 'Task') => {
+  const toggleTaskCreation = useCallback((type: string = 'Task', icon: string = 'pi pi-check-circle') => {
     setShowTaskCreation(prev => {
       // If already showing, just hide it
       if (prev) {
         return false
       }
-      // If not showing, show it and set the type
+      // If not showing, show it and set the type and icon
       setTaskCreationType(type)
+      setTaskCreationIcon(icon)
       return true
     })
   }, [])
 
   // Show task creation block
-  const showTaskCreationBlock = useCallback((type: string = 'Task') => {
+  const showTaskCreationBlock = useCallback((type: string = 'Task', icon: string = 'pi pi-check-circle') => {
     setTaskCreationType(type)
+    setTaskCreationIcon(icon)
     setShowTaskCreation(true)
   }, [])
 
@@ -338,6 +341,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     submenuRef,
     showTaskCreation,
     taskCreationType,
+    taskCreationIcon,
     
     // Дії
     createTask,
