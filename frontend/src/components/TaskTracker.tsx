@@ -5,7 +5,6 @@ import NavigationItems from './NavigationItems'
 import SubcategoryDisplay from './SubcategoryDisplay'
 import AgendaView from './views/AgendaView'
 import TouchpointView from './views/TouchpointView'
-import InboxView from './views/InboxView'
 import GenericView from './views/GenericView'
 import ContactsView from './views/subcategories/ContactsView'
 import {
@@ -386,7 +385,7 @@ const TaskTracker = () => {
     const viewComponents = {
       [CATEGORIES.AGENDA]: <AgendaView />,
       [CATEGORIES.TOUCHPOINT]: <TouchpointView />,
-      [CATEGORIES.INBOX]: <InboxView />,
+      [CATEGORIES.INBOX]: <GenericView category="Inbox" displayName="Inbox" />,
       [CATEGORIES.BACKLOG]: <GenericView category="Backlog" displayName="Backlog" />,
       [CATEGORIES.WAITING]: <GenericView category="Waiting" displayName="Waiting" />,
       [CATEGORIES.SOMEDAY]: <GenericView category="Someday" displayName="Someday" />,
