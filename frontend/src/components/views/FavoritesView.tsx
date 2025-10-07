@@ -1,16 +1,8 @@
 import React from 'react'
+import GenericView from './GenericView'
 
-const FavoritesView = () => {
-  return (
-    <div className="task_tracker_calendar_container">
-      <div className="touchpoint-container">
-        <div className="touchpoint-content">
-          <h3>FavoritesView View (Loading...)</h3>
-          <p>FavoritesView functionality will be implemented here.</p>
-        </div>
-      </div>
-    </div>
-  )
+const FavoritesView: React.FC = () => {
+  return <GenericView category="Inbox" subcategory="Favorites" displayName="Favorites" />
 }
 
 export default FavoritesView

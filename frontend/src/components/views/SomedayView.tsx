@@ -1,20 +1,8 @@
-// @refresh reset
-// JSX preamble for Vite plugin detection
-const JSX_PREAMBLE = <div></div>
-
 import React from 'react'
+import GenericView from './GenericView'
 
 const SomedayView: React.FC = () => {
-  return (
-    <div className="task_tracker_calendar_container">
-      <div className="touchpoint-container">
-        <div className="touchpoint-content">
-          <h3>Someday View (Loading...)</h3>
-          <p>Someday functionality will be implemented here.</p>
-        </div>
-      </div>
-    </div>
-  )
+  return <GenericView category="Someday" displayName="Someday" />
 }
 
 export default SomedayView

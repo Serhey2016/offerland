@@ -1,16 +1,8 @@
 import React from 'react'
+import GenericView from './GenericView'
 
-const SubscriptionsView = () => {
-  return (
-    <div className="task_tracker_calendar_container">
-      <div className="touchpoint-container">
-        <div className="touchpoint-content">
-          <h3>SubscriptionsView View (Loading...)</h3>
-          <p>SubscriptionsView functionality will be implemented here.</p>
-        </div>
-      </div>
-    </div>
-  )
+const SubscriptionsView: React.FC = () => {
+  return <GenericView category="Waiting" subcategory="Subscriptions" displayName="Subscriptions" />
 }
 
 export default SubscriptionsView

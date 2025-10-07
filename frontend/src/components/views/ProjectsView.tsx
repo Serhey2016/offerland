@@ -1,16 +1,8 @@
 import React from 'react'
+import GenericView from './GenericView'
 
 const ProjectsView: React.FC = () => {
-  return (
-    <div className="task_tracker_calendar_container">
-      <div className="touchpoint-container">
-        <div className="touchpoint-content">
-          <h3>Projects View (Loading...)</h3>
-          <p>Projects functionality will be implemented here.</p>
-        </div>
-      </div>
-    </div>
-  )
+  return <GenericView category="Projects" displayName="Projects" />
 }
 
 export default ProjectsView
