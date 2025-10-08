@@ -605,8 +605,12 @@ def start_task(request, task_id):
 def user_tasks(request):
     """
     API endpoint to get tasks for authenticated user
+    Filters tasks by status field based on category parameter
     """
     try:
+        # Get category/status filter from query params
+        category = request.GET.get('category', '').lower()
+        
         # Get tasks owned by the user through TaskOwnerRelations
         user_tasks = Task.objects.filter(
             taskownerrelations__user=request.user
@@ -614,7 +618,25 @@ def user_tasks(request):
             'type_of_task'
         ).prefetch_related(
             'hashtags__hashtag'
-        ).order_by('-created_at')
+        )
+        
+        # Filter by status if category is provided and matches a valid status
+        # Map category names to status values
+        status_mapping = {
+            'inbox': 'inbox',
+            'backlog': 'backlog',
+            'agenda': 'agenda',
+            'waiting': 'waiting',
+            'someday': 'someday',
+            'projects': 'projects',
+            'done': 'done',
+            'archive': 'archive'
+        }
+        
+        if category in status_mapping:
+            user_tasks = user_tasks.filter(status=status_mapping[category])
+        
+        user_tasks = user_tasks.order_by('-created_at')
         
         # Convert to list with hashtags
         tasks_data = []

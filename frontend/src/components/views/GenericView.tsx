@@ -40,10 +40,10 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   // Use tasks hook for UI logic
   const tasksHook = useTasks()
 
-  // Load user tasks on component mount
+  // Load user tasks on component mount and when category changes
   useEffect(() => {
     loadUserTasks()
-  }, [])
+  }, [category])
 
   // Listen for SpeedDial button clicks from SubMenuSection
   useEffect(() => {
@@ -70,11 +70,11 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
     }
   }, [tasksHook.toggleTaskCreation])
 
-  // Load user tasks from API
+  // Load user tasks from API filtered by category
   const loadUserTasks = async (showErrorOnFailure: boolean = true) => {
     try {
       setLoadingTasks(true)
-      const tasks = await taskApi.getUserTasks()
+      const tasks = await taskApi.getTasksByCategory(category)
       setUserTasks(tasks)
     } catch (error) {
       console.error('Error loading user tasks:', error)
