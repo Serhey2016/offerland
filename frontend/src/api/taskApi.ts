@@ -26,7 +26,7 @@ export interface DjangoTask {
   time_start?: string
   time_end?: string
   priority?: 'iu' | 'inu' | 'niu' | 'ninu'
-  status?: number
+  status?: string
   task_mode: 'draft' | 'published' | 'archived'
   created_at: string
   updated_at: string

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Calendar as BigCalendar, momentLocalizer, Views } from 'react-big-calendar'
+import { createPortal } from 'react-dom'
+import { Calendar as BigCalendar, momentLocalizer, Views, Components, EventProps } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 // CSS moved to static/css/ directory - loaded via Django template
@@ -7,11 +8,291 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 // Setup the localizer by providing the moment (or globalize) Object
 const localizer = momentLocalizer(moment)
 
+// Custom TimeGutterHeader component to show "All day" label
+const TimeGutterHeader = () => {
+  return (
+    <div className="rbc-label rbc-time-header-gutter" style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      fontSize: '14px',
+      fontWeight: 500,
+      color: '#495057'
+    }}>
+      All day
+    </div>
+  )
+}
+
+// Custom Event component with floating action buttons
+const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
+  const [isTapped, setIsTapped] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
+  const [showSubmenu, setShowSubmenu] = useState(false)
+  const [submenuPosition, setSubmenuPosition] = useState({ top: 0, left: 0 })
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const submenuRef = useRef<HTMLDivElement>(null)
+
+  const handleTap = (e: React.MouseEvent) => {
+    // Toggle tap state for mobile
+    if (window.innerWidth <= 768) {
+      e.stopPropagation()
+      setIsTapped(!isTapped)
+    }
+  }
+
+  const handleButtonClick = (action: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    
+    if (action === 'more') {
+      const rect = (e.target as HTMLElement).closest('.agenda_icon_btn')?.getBoundingClientRect()
+      if (rect) {
+        setDropdownPosition({
+          top: rect.bottom + 5,
+          left: rect.left - 150
+        })
+        setShowDropdown(!showDropdown)
+      }
+    } else {
+      console.log(`Action clicked: ${action}`, event)
+      // TODO: Implement actual actions
+    }
+  }
+
+  const handleDropdownItemClick = (action: string) => {
+    console.log(`Dropdown action: ${action}`, event)
+    setShowDropdown(false)
+    // TODO: Implement actual actions
+  }
+
+  const handleMoveToHover = (e: React.MouseEvent) => {
+    // Desktop: show submenu on hover
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    setSubmenuPosition({
+      top: rect.top,
+      left: rect.right + 5
+    })
+    setShowSubmenu(true)
+    console.log('Move to hover - submenu should show', { showSubmenu: true, position: { top: rect.top, left: rect.right + 5 }})
+  }
+
+  const handleMoveToLeave = () => {
+    // Desktop: delay before closing to allow moving to submenu
+    setTimeout(() => {
+      // Check if mouse is over submenu before closing
+      const submenuElement = document.querySelector('.agenda_submenu')
+      const isHoveringSubmenu = submenuElement && submenuElement.matches(':hover')
+      
+      if (!isHoveringSubmenu) {
+        setShowSubmenu(false)
+        console.log('Move to leave - submenu should hide')
+      } else {
+        console.log('Move to leave - keeping submenu open (hovering)')
+      }
+    }, 300)
+  }
+
+  const handleMoveToClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    setSubmenuPosition({
+      top: rect.top,
+      left: rect.right + 5
+    })
+    // Toggle submenu for both desktop and mobile
+    const newState = !showSubmenu
+    setShowSubmenu(newState)
+    console.log('Move to clicked - submenu toggle', { showSubmenu: newState, position: { top: rect.top, left: rect.right + 5 }})
+  }
+
+  const handleSubmenuItemClick = (category: string) => {
+    console.log(`Move to: ${category}`, event)
+    setShowSubmenu(false)
+    setShowDropdown(false)
+    // TODO: Implement actual move action
+  }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false)
+        setShowSubmenu(false)
+      }
+    }
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showDropdown])
+
+  // Debug: log submenu state changes
+  useEffect(() => {
+    console.log('Submenu state changed:', showSubmenu)
+  }, [showSubmenu])
+
+  return (
+    <>
+      <div 
+        className={`agenda-calendar-event ${isTapped ? 'mobile-tap' : ''}`}
+        onClick={handleTap}
+      >
+        <div className="agenda-event-title">{title}</div>
+        <div className="agenda_floating_icons">
+          <button 
+            className="agenda_icon_btn" 
+            title="Create task"
+            onClick={(e) => handleButtonClick('create', e)}
+          >
+            <i className="pi pi-check-circle"></i>
+          </button>
+          <button 
+            className="agenda_icon_btn" 
+            title="Sub Task"
+            onClick={(e) => handleButtonClick('subtask', e)}
+          >
+            <i className="pi pi-reply"></i>
+          </button>
+          <button 
+            className="agenda_icon_btn" 
+            title="Note"
+            onClick={(e) => handleButtonClick('note', e)}
+          >
+            <i className="pi pi-clipboard"></i>
+          </button>
+          <button 
+            className="agenda_icon_btn" 
+            title="More options"
+            onClick={(e) => handleButtonClick('more', e)}
+          >
+            <i className="pi pi-ellipsis-v"></i>
+          </button>
+        </div>
+      </div>
+
+      {/* Dropdown Menu */}
+      {showDropdown && createPortal(
+        <div 
+          ref={dropdownRef}
+          className="agenda_dropdown_menu"
+          style={{
+            position: 'fixed',
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
+            zIndex: 9999
+          }}
+        >
+          <div 
+            className="agenda_dropdown_item"
+            onClick={() => handleDropdownItemClick('start')}
+          >
+            Start
+          </div>
+          <div 
+            className="agenda_dropdown_item"
+            onClick={() => handleDropdownItemClick('edit')}
+          >
+            Edit
+          </div>
+          <div 
+            className="agenda_dropdown_item"
+            onClick={() => handleDropdownItemClick('details')}
+          >
+            Details
+          </div>
+          <div 
+            className="agenda_dropdown_item"
+            onClick={() => handleDropdownItemClick('delegate')}
+          >
+            Delegate
+          </div>
+          <div 
+            className="agenda_dropdown_item"
+            onClick={() => handleDropdownItemClick('publish')}
+          >
+            Publish
+          </div>
+          <div 
+            className="agenda_dropdown_item agenda_dropdown_item_with_submenu"
+            onClick={handleMoveToClick}
+            onMouseEnter={handleMoveToHover}
+            onMouseLeave={handleMoveToLeave}
+          >
+            <span>Move to...</span>
+            <i className="pi pi-chevron-right"></i>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Submenu - SEPARATE portal */}
+      {showSubmenu && createPortal(
+        <div 
+          ref={submenuRef}
+          className="agenda_submenu"
+          style={{
+            position: 'fixed',
+            top: submenuPosition.top,
+            left: submenuPosition.left,
+            zIndex: 10000
+          }}
+          onMouseEnter={() => {
+            // Keep submenu open when hovering over it
+            setShowSubmenu(true)
+            console.log('Submenu mouseenter - keeping open')
+          }}
+          onMouseLeave={() => {
+            // Close submenu when leaving it with delay
+            setTimeout(() => {
+              // Check if mouse returned to "Move to..." item
+              const moveToElement = document.querySelector('.agenda_dropdown_item_with_submenu')
+              const isHoveringMoveToItem = moveToElement && moveToElement.matches(':hover')
+              
+              if (!isHoveringMoveToItem) {
+                setShowSubmenu(false)
+                console.log('Submenu mouseleave - closing')
+              } else {
+                console.log('Submenu mouseleave - keeping open (hovering Move to...)')
+              }
+            }, 200)
+          }}
+        >
+          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Agenda')}>
+            Agenda
+          </div>
+          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Backlog')}>
+            Backlog
+          </div>
+          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Waiting')}>
+            Waiting
+          </div>
+          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Someday')}>
+            Some day
+          </div>
+          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Projects')}>
+            Convert to project
+          </div>
+          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Done')}>
+            Done
+          </div>
+          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Archive')}>
+            Archive
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
+  )
+}
+
 interface Event {
   id: string
   title: string
   start: Date
   end: Date
+  allDay?: boolean
   resource?: any
 }
 
@@ -255,6 +536,11 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
                   // Hour format
                   formats={{
                     timeGutterFormat: 'HH:mm'
+                  }}
+                  // Custom components
+                  components={{
+                    timeGutterHeader: TimeGutterHeader,
+                    event: CustomEvent
                   }}
                 />
               </div>
