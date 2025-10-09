@@ -483,9 +483,10 @@
     cursor: pointer;
 }
 
-/* Done task background color */
-.agenda-calendar-event.done {
+/* Done task background color - apply to rbc-event parent */
+.rbc-event:has(.agenda-calendar-event.done) {
     background-color: #5DD155 !important;
+    border-color: #5DD155 !important;
 }
 
 .agenda-event-title {
