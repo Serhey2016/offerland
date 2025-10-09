@@ -37,7 +37,7 @@ const categories = [
     }
 ];
 
-let currentCategoryIndex = 0;
+let currentCategoryIndex = 3; // Default to 'Agenda'
 
 document.addEventListener('DOMContentLoaded', () => {
     // Навигационные стрелки
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM-элементы для названия категории и подкатегории
     const categoryNameElement = document.querySelector('.nav_menu_category_name');
     const navMenuContainer = document.querySelector('.nav_menu_container');
-    let currentCategoryIndex = 0;
+    let currentCategoryIndex = 3; // Default to 'Agenda'
 
 
 
