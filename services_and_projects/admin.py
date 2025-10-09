@@ -29,8 +29,8 @@ class ServicesRelationsInline(admin.TabularInline):
     extra = 1
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'type_of_task', 'task_mode', 'status', 'created_at', 'is_published')
-    list_filter = ('task_mode', 'status', 'type_of_task', 'is_published', 'created_at')
+    list_display = ('id', 'title', 'type_of_task', 'task_mode', 'status', 'created_at', 'is_published', 'is_touchpoint', 'is_agenda')
+    list_filter = ('task_mode', 'status', 'type_of_task', 'is_published', 'is_touchpoint', 'is_agenda', 'created_at')
     search_fields = ('title', 'description')
     readonly_fields = ('created_at', 'updated_at')
     date_hierarchy = 'created_at'
@@ -44,7 +44,7 @@ class TaskAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
         ('Настройки', {
-            'fields': ('is_private', 'disclose_name', 'hidden', 'is_published'),
+            'fields': ('is_private', 'disclose_name', 'hidden', 'is_published', 'is_touchpoint', 'is_agenda'),
             'classes': ('collapse',)
         }),
         ('Даты и время', {
