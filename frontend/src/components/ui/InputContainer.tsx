@@ -131,6 +131,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
           text
         />
         <span className="task_creation_left_btn_label">{label}</span>
+        <span className="task_creation_left_btn_label job_search_label">Job search</span>
         
         {/* Input Field */}
         <div

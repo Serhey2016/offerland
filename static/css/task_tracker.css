@@ -1308,6 +1308,12 @@
     transition: all 0.3s ease;
     z-index: 10;
     white-space: nowrap;
+    cursor: pointer;
+}
+
+/* Job search label positioned next to Project */
+.task_creation_left_btn_label.job_search_label {
+    left: 170px;
 }
 
 .task_creation_confirm_btn {
