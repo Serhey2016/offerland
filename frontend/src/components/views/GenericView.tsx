@@ -60,7 +60,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       }
       
       if (itemType && typeMap[itemType]) {
-        tasksHook.toggleTaskCreation(typeMap[itemType].label, typeMap[itemType].icon)
+        tasksHook.toggleTaskCreation(typeMap[itemType].label, typeMap[itemType].icon, itemType)
       }
     }
 
@@ -127,6 +127,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             {...inputContainerProps}
             label={tasksHook.taskCreationType}
             icon={tasksHook.taskCreationIcon}
+            itemType={tasksHook.taskCreationItemType}
           />
         )}
 

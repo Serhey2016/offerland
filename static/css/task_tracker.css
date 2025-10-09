@@ -1302,13 +1302,18 @@
     font-family: 'League Spartan', sans-serif;
     font-size: 1.7rem;
     font-weight: 200;
-    text-decoration: underline;
+    text-decoration: none;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
     z-index: 10;
     white-space: nowrap;
     cursor: pointer;
+}
+
+/* Active label gets underline */
+.task_creation_left_btn_label.active {
+    text-decoration: underline;
 }
 
 /* Job search label positioned next to Project */

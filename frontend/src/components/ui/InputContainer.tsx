@@ -11,6 +11,7 @@ interface InputContainerProps {
   isMaxLength: boolean
   label?: string
   icon?: string
+  itemType?: string
   
   // Refs
   contentEditableRef: React.RefObject<HTMLDivElement>
@@ -34,6 +35,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
   isMaxLength,
   label = 'Task',
   icon = 'pi pi-check-circle',
+  itemType = 'note',
   contentEditableRef,
   menuRef,
   handleInputChange,
@@ -45,6 +47,12 @@ const InputContainer: React.FC<InputContainerProps> = ({
   dropdownMenuItems,
   handlePrioritySelect
 }) => {
+  // State to track active label (Project or Job search)
+  const [activeLabel, setActiveLabel] = React.useState<'project' | 'jobsearch'>('project')
+  
+  // Show Job search only for 'contact' itemType
+  const showJobSearch = itemType === 'contact'
+
   // Priority matrix template - moved from hook
   const priorityMatrixTemplate = () => (
     <div className="priority-matrix-grid">
@@ -130,8 +138,20 @@ const InputContainer: React.FC<InputContainerProps> = ({
           className="task_creation_left_btn"
           text
         />
-        <span className="task_creation_left_btn_label">{label}</span>
-        <span className="task_creation_left_btn_label job_search_label">Job search</span>
+        <span 
+          className={`task_creation_left_btn_label ${!showJobSearch || activeLabel === 'project' ? 'active' : ''}`}
+          onClick={() => showJobSearch && setActiveLabel('project')}
+        >
+          {label}
+        </span>
+        {showJobSearch && (
+          <span 
+            className={`task_creation_left_btn_label job_search_label ${activeLabel === 'jobsearch' ? 'active' : ''}`}
+            onClick={() => setActiveLabel('jobsearch')}
+          >
+            Job search
+          </span>
+        )}
         
         {/* Input Field */}
         <div
