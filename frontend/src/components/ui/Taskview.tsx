@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 
 interface TaskviewProps {
   // Task data
+  taskId?: number
   title: string
   description?: string
   timeRange?: string
@@ -36,6 +37,7 @@ interface TaskviewProps {
   onEdit?: () => void
   onDelete?: () => void
   onStatusChange?: (status: string) => void
+  onDone?: () => void
   onCreateTask?: () => void
   onSubTask?: () => void
   onNote?: () => void
@@ -47,6 +49,7 @@ interface TaskviewProps {
 }
 
 const Taskview: React.FC<TaskviewProps> = ({
+  taskId,
   title,
   description,
   timeRange,
@@ -71,6 +74,7 @@ const Taskview: React.FC<TaskviewProps> = ({
   onEdit,
   onDelete,
   onStatusChange,
+  onDone,
   onCreateTask,
   onSubTask,
   onNote,
@@ -90,10 +94,12 @@ const Taskview: React.FC<TaskviewProps> = ({
         <div className="task_tracker_floating_icons">
           <button 
             className="task_tracker_icon_btn" 
-            title="Create task"
+            title="Done"
             onClick={(e) => {
               e.stopPropagation()
-              handleIconClick('create', e)
+              if (onDone) {
+                onDone()
+              }
             }}
           >
             <i className="pi pi-check-circle"></i>

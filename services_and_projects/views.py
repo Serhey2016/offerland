@@ -3,7 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.http import urlencode
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations, TaskHashtagRelations
 from joblist.models import AllTags, Companies
@@ -936,4 +936,63 @@ def remove_advertising_photo(request, advertising_id, photo_id):
     except Exception as e:
         print(f"DEBUG: Exception occurred: {str(e)}")
         return JsonResponse({'success': False, 'error': str(e)})
+
+
+@login_required
+@require_http_methods(["PATCH"])
+@csrf_exempt
+def update_task_status(request, task_id):
+    """Update task status via PATCH request"""
+    try:
+        import json
+        task = Task.objects.get(id=task_id)
+        
+        # Check if user has permission to update this task
+        owner_rel = TaskOwnerRelations.objects.filter(task=task, user=request.user).first()
+        if not owner_rel:
+            return JsonResponse({
+                'success': False,
+                'error': 'You do not have permission to update this task'
+            }, status=403)
+        
+        # Get data from request body
+        data = json.loads(request.body)
+        new_status = data.get('status')
+        
+        # Validate status
+        valid_statuses = ['inbox', 'backlog', 'agenda', 'waiting', 'someday', 'projects', 'done', 'archive']
+        if new_status not in valid_statuses:
+            return JsonResponse({
+                'success': False,
+                'error': f'Invalid status. Must be one of: {", ".join(valid_statuses)}'
+            }, status=400)
+        
+        # Update task status
+        task.status = new_status
+        task.save()
+        
+        return JsonResponse({
+            'success': True,
+            'status': new_status,
+            'message': f'Task status changed to {new_status} successfully'
+        })
+        
+    except Task.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Task not found'
+        }, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        import traceback
+        print(f"Error updating task status: {e}")
+        print(f"Traceback: {traceback.format_exc()}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
 

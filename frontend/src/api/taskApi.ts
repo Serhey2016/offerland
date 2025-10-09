@@ -130,7 +130,7 @@ export const taskApi = {
   // Оновити статус задачі
   updateTaskStatus: async (id: number, status: string): Promise<Task> => {
     try {
-      const response = await api.patch(`/tasks/${id}/`, { status })
+      const response = await api.patch(`/services_and_projects/tasks/${id}/`, { status })
       return response.data
     } catch (error) {
       console.error(`Error updating task ${id} status:`, error)

@@ -117,6 +117,19 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
     // TODO: Implement move task logic
   }
 
+  // Handle marking task as done
+  const handleMarkTaskDone = async (taskId: number) => {
+    try {
+      await tasksHook.updateTaskStatus(taskId, 'done')
+      showSuccess('Task marked as done')
+      // Reload tasks to reflect the change
+      await loadUserTasks(false)
+    } catch (error) {
+      console.error('Error marking task as done:', error)
+      showError('Error updating task status')
+    }
+  }
+
   return (
     <div className="task_tracker_calendar_container">
       <Toasts toastRef={toast} />
@@ -144,6 +157,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           userTasks.map((task) => (
             <Taskview
               key={task.id}
+              taskId={task.id}
               title={task.title}
               description={task.description}
               startDate={task.date_start ? formatDateForDisplay(task.date_start) : undefined}
@@ -165,6 +179,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
               handleDropdownItemClick={tasksHook.handleDropdownItemClick}
               handleSubmenuItemClick={tasksHook.handleSubmenuItemClick}
               // Callbacks
+              onDone={() => handleMarkTaskDone(task.id)}
               onCreateTask={() => handleTaskAction('create', task.id)}
               onSubTask={() => handleTaskAction('subtask', task.id)}
               onNote={() => handleTaskAction('note', task.id)}

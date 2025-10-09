@@ -169,6 +169,7 @@ class Task(models.Model):
     hidden = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
     is_touchpoint = models.BooleanField(default=False)
+    is_agenda = models.BooleanField(default=False)
     note = models.TextField(max_length=10000, blank=True, null=True)
     finance = models.ForeignKey('Finance', on_delete=models.SET_NULL, null=True, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subtasks')
