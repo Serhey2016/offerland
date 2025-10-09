@@ -634,7 +634,12 @@ def user_tasks(request):
         }
         
         if category in status_mapping:
-            user_tasks = user_tasks.filter(status=status_mapping[category])
+            # Special handling for agenda - show tasks with status='agenda' OR is_agenda=True
+            if category == 'agenda':
+                from django.db.models import Q
+                user_tasks = user_tasks.filter(Q(status='agenda') | Q(is_agenda=True))
+            else:
+                user_tasks = user_tasks.filter(status=status_mapping[category])
         
         user_tasks = user_tasks.order_by('-created_at')
         

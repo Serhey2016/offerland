@@ -54,6 +54,13 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
         })
         setShowDropdown(!showDropdown)
       }
+    } else if (action === 'done') {
+      // Handle done action
+      const taskId = event.resource?.taskId
+      const onTaskDone = event.resource?.onTaskDone
+      if (taskId && onTaskDone) {
+        onTaskDone(taskId)
+      }
     } else {
       console.log(`Action clicked: ${action}`, event)
       // TODO: Implement actual actions
@@ -69,12 +76,48 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
   const handleMoveToHover = (e: React.MouseEvent) => {
     // Desktop: show submenu on hover
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    
+    // Calculate optimal position considering viewport height and width
+    const viewportHeight = window.innerHeight
+    const viewportWidth = window.innerWidth
+    const submenuHeight = 300 // Approximate submenu height (7 items * ~40px)
+    const submenuWidth = 180 // Approximate submenu width
+    
+    let topPosition = rect.top
+    let leftPosition = rect.right + 5
+    
+    // Check if submenu would overflow bottom of screen
+    if (topPosition + submenuHeight > viewportHeight) {
+      // Position submenu so it ends at the bottom of viewport with some padding
+      topPosition = viewportHeight - submenuHeight - 20
+      
+      // Make sure it doesn't go above the top of viewport
+      if (topPosition < 20) {
+        topPosition = 20
+      }
+    }
+    
+    // Check if submenu would overflow right of screen
+    if (leftPosition + submenuWidth > viewportWidth) {
+      // Position submenu to the left of "Move to..." item
+      leftPosition = rect.left - submenuWidth - 5
+      
+      // If still doesn't fit, center it on screen
+      if (leftPosition < 20) {
+        leftPosition = (viewportWidth - submenuWidth) / 2
+        // Make sure it's not negative
+        if (leftPosition < 20) {
+          leftPosition = 20
+        }
+      }
+    }
+    
     setSubmenuPosition({
-      top: rect.top,
-      left: rect.right + 5
+      top: topPosition,
+      left: leftPosition
     })
     setShowSubmenu(true)
-    console.log('Move to hover - submenu should show', { showSubmenu: true, position: { top: rect.top, left: rect.right + 5 }})
+    console.log('Move to hover - submenu should show', { showSubmenu: true, position: { top: topPosition, left: leftPosition }})
   }
 
   const handleMoveToLeave = () => {
@@ -96,14 +139,50 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
   const handleMoveToClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    
+    // Calculate optimal position considering viewport height and width
+    const viewportHeight = window.innerHeight
+    const viewportWidth = window.innerWidth
+    const submenuHeight = 300 // Approximate submenu height (7 items * ~40px)
+    const submenuWidth = 180 // Approximate submenu width
+    
+    let topPosition = rect.top
+    let leftPosition = rect.right + 5
+    
+    // Check if submenu would overflow bottom of screen
+    if (topPosition + submenuHeight > viewportHeight) {
+      // Position submenu so it ends at the bottom of viewport with some padding
+      topPosition = viewportHeight - submenuHeight - 20
+      
+      // Make sure it doesn't go above the top of viewport
+      if (topPosition < 20) {
+        topPosition = 20
+      }
+    }
+    
+    // Check if submenu would overflow right of screen
+    if (leftPosition + submenuWidth > viewportWidth) {
+      // Position submenu to the left of "Move to..." item
+      leftPosition = rect.left - submenuWidth - 5
+      
+      // If still doesn't fit, center it on screen
+      if (leftPosition < 20) {
+        leftPosition = (viewportWidth - submenuWidth) / 2
+        // Make sure it's not negative
+        if (leftPosition < 20) {
+          leftPosition = 20
+        }
+      }
+    }
+    
     setSubmenuPosition({
-      top: rect.top,
-      left: rect.right + 5
+      top: topPosition,
+      left: leftPosition
     })
     // Toggle submenu for both desktop and mobile
     const newState = !showSubmenu
     setShowSubmenu(newState)
-    console.log('Move to clicked - submenu toggle', { showSubmenu: newState, position: { top: rect.top, left: rect.right + 5 }})
+    console.log('Move to clicked - submenu toggle', { showSubmenu: newState, position: { top: topPosition, left: leftPosition }})
   }
 
   const handleSubmenuItemClick = (category: string) => {
@@ -136,15 +215,15 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
   return (
     <>
       <div 
-        className={`agenda-calendar-event ${isTapped ? 'mobile-tap' : ''}`}
+        className={`agenda-calendar-event ${isTapped ? 'mobile-tap' : ''} ${event.resource?.status === 'done' ? 'done' : ''}`}
         onClick={handleTap}
       >
         <div className="agenda-event-title">{title}</div>
         <div className="agenda_floating_icons">
           <button 
             className="agenda_icon_btn" 
-            title="Create task"
-            onClick={(e) => handleButtonClick('create', e)}
+            title="Done"
+            onClick={(e) => handleButtonClick('done', e)}
           >
             <i className="pi pi-check-circle"></i>
           </button>
