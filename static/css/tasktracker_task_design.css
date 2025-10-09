@@ -251,6 +251,36 @@
     display: block;
     visibility: visible;
     opacity: 1;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Custom scrollbar for submenu */
+.task_tracker_task_submenu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.task_tracker_task_submenu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+.task_tracker_task_submenu::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.3);
+    border-radius: 3px;
+}
+
+.task_tracker_task_submenu::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.5);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .task_tracker_task_submenu {
+        max-width: calc(100vw - 20px);
+        max-height: calc(100vh - 60px);
+    }
 }
 
 .task_tracker_task_submenu_item {

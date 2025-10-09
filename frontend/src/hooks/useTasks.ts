@@ -204,20 +204,55 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   const calculateSubmenuPosition = useCallback((parentElement: HTMLElement) => {
     const rect = parentElement.getBoundingClientRect()
     const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
     const submenuWidth = 160
+    const estimatedSubmenuHeight = 300 // Approximate height with all items
+    const isMobile = viewportWidth <= 768
     
-    // Position submenu to the right of parent item
+    // Position submenu to the right of parent item by default
     let top = rect.top
     let left = rect.right + 5
     
-    // If submenu goes off the right edge, position it to the left
-    if (left + submenuWidth > viewportWidth - 10) {
-      left = rect.left - submenuWidth - 5
+    // Mobile-specific positioning
+    if (isMobile) {
+      // On mobile, try to keep it within viewport
+      // If there's not enough space on the right, show on the left
+      if (left + submenuWidth > viewportWidth - 10) {
+        left = rect.left - submenuWidth - 5
+      }
+      
+      // If still not enough space on the left, center it with padding
+      if (left < 10) {
+        left = 10
+      }
+      
+      // Ensure it doesn't extend beyond viewport width
+      if (left + submenuWidth > viewportWidth - 10) {
+        left = viewportWidth - submenuWidth - 10
+      }
+    } else {
+      // Desktop positioning
+      // If submenu goes off the right edge, position it to the left
+      if (left + submenuWidth > viewportWidth - 10) {
+        left = rect.left - submenuWidth - 5
+      }
+    }
+    
+    // Handle vertical positioning
+    // Check if submenu would go off the bottom
+    if (top + estimatedSubmenuHeight > viewportHeight - 20) {
+      // Try to position it higher, aligning bottom with viewport
+      top = viewportHeight - estimatedSubmenuHeight - 20
     }
     
     // Ensure submenu doesn't go off the top edge
     if (top < 10) {
       top = 10
+    }
+    
+    // Final safety check for left edge
+    if (left < 10) {
+      left = 10
     }
     
     return { top, left }
