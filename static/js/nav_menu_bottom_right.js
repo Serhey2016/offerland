@@ -277,10 +277,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Вертикальный свайп
                 if (dy > 30) {
                     // Свайп вниз
-                    downArrow.click();
+                    upArrow.click();
                 } else if (dy < -30) {
                     // Свайп вверх
-                    upArrow.click();
+                    downArrow.click();
                 }
             }
         }
