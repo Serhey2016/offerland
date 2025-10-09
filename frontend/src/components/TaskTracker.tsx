@@ -3,6 +3,7 @@ import TaskTrackerLeftMenu from './views/task_tracker_left_menu'
 import SubMenuSection from './SubMenuSection'
 import NavigationItems from './NavigationItems'
 import SubcategoryDisplay from './SubcategoryDisplay'
+import NavigationMenu from './NavigationMenu'
 import AgendaView from './views/AgendaView'
 import TouchpointView from './views/TouchpointView'
 import GenericView from './views/GenericView'
@@ -444,7 +445,11 @@ const TaskTracker = () => {
           renderSubcategoryContent() || renderMainContent()
         )
       )
-    )
+    ),
+    React.createElement(NavigationMenu, {
+      onCategoryChange: handleCategoryChange,
+      initialCategory: selectedCategory
+    })
   )
 }
 

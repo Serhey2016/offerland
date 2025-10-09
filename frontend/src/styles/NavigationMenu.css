@@ -1,0 +1,187 @@
+/* Task Tracker Navigation Menu Styles */
+
+/* Navigation Menu Container */
+.task_tracker_nav_menu_container {
+  position: fixed;
+  bottom: 10px;
+  right: 70px;
+  z-index: 85;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Completely prevent touch scrolling */
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Decorative Lines */
+.task_tracker_nav_decorative_lines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.task_tracker_nav_decorative_lines_top {
+  margin-bottom: 8px;
+}
+
+.task_tracker_nav_decorative_lines_bottom {
+  margin-top: 8px;
+}
+
+.task_tracker_nav_line {
+  height: 2px;
+  background-color: #DC7E7E;
+  border-radius: 1px;
+  transition: background-color 0.3s ease;
+}
+
+/* Top lines - bottom line longer */
+.task_tracker_nav_line_top_1 {
+  width: 40px;
+}
+
+.task_tracker_nav_line_top_2 {
+  width: 60px;
+}
+
+/* Bottom lines - top line longer */
+.task_tracker_nav_line_bottom_1 {
+  width: 60px;
+}
+
+.task_tracker_nav_line_bottom_2 {
+  width: 40px;
+}
+
+/* Active states for lines */
+.task_tracker_nav_menu_container.task_tracker_nav-up-active .task_tracker_nav_decorative_lines_top .task_tracker_nav_line {
+  background-color: #DC7E7E;
+}
+
+.task_tracker_nav_menu_container.task_tracker_nav-up-active .task_tracker_nav_decorative_lines_bottom .task_tracker_nav_line {
+  background-color: #999;
+}
+
+.task_tracker_nav_menu_container.task_tracker_nav-down-active .task_tracker_nav_decorative_lines_top .task_tracker_nav_line {
+  background-color: #999;
+}
+
+.task_tracker_nav_menu_container.task_tracker_nav-down-active .task_tracker_nav_decorative_lines_bottom .task_tracker_nav_line {
+  background-color: #DC7E7E;
+}
+
+/* Navigation Menu */
+.task_tracker_nav_menu {
+  position: relative;
+  z-index: 85;
+  min-width: 250px;
+  height: 50px;
+  border-radius: 10px;
+  background-color: #DC7E7E;
+  color: white;
+  padding: 7px;
+  border: 3px solid #282d3b;
+  align-items: center;
+  will-change: transform;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  /* Completely prevent touch scrolling */
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.task_tracker_nav_menu_content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.task_tracker_nav_menu_category_name {
+  position: absolute;
+  font-size: 1.4em;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.task_tracker_nav_menu_sub_category_name {
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Navigation Arrows */
+.task_tracker_nav-arrow {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.task_tracker_nav-arrow-up {
+  top: -10px;
+  right: -7%;
+  transform: translateX(50%);
+}
+
+.task_tracker_nav-arrow-down {
+  bottom: -10px;
+  right: -7%;
+  transform: translateX(50%);
+}
+
+.task_tracker_nav-arrow:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.task_tracker_nav-arrow:active {
+  transform: translateX(50%) scale(0.95);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 470px) {
+  .task_tracker_nav-arrow {
+    display: none;
+  }
+
+  .task_tracker_nav_menu_container {
+    bottom: 5px;
+    right: 20px;
+  }
+
+  .task_tracker_nav_menu_content {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
