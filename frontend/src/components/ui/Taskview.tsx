@@ -9,7 +9,7 @@ interface TaskviewProps {
   description?: string
   timeRange?: string
   category?: string
-  priority?: 'low' | 'medium' | 'high'
+  priority?: 'iu' | 'inu' | 'niu' | 'ninu' | null
   status?: 'pending' | 'in-progress' | 'completed'
   dueDate?: string
   assignedTo?: string
@@ -54,7 +54,7 @@ const Taskview: React.FC<TaskviewProps> = ({
   description,
   timeRange,
   category,
-  priority = 'medium',
+  priority = null,
   status = 'pending',
   dueDate,
   assignedTo,
@@ -84,10 +84,16 @@ const Taskview: React.FC<TaskviewProps> = ({
   onPublish,
   onMoveTo
 }) => {
+  // Determine priority class for the color bar
+  const getPriorityClass = () => {
+    if (!priority) return 'priority-none'
+    return `priority-${priority}`
+  }
+
   return (
     <div className="task-design-container">
       <div 
-        className={`task_tracker_task_container ${mobileTapped ? 'mobile-tap' : ''}`}
+        className={`task_tracker_task_container ${getPriorityClass()} ${mobileTapped ? 'mobile-tap' : ''}`}
         onClick={handleTaskTap}
       >
         {/* Floating action icons */}

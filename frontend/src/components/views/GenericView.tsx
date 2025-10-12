@@ -172,7 +172,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
               dueDate={task.date_end ? formatDateForDisplay(task.date_end) : undefined}
               tags={task.hashtags?.map(h => h.tag_name) || []}
               category={displayName || category}
-              priority={task.priority === 'iu' ? 'high' : task.priority === 'inu' ? 'medium' : 'low'}
+              priority={task.priority || null}
               status={task.task_mode === 'published' ? 'in-progress' : 'pending'}
               // UI states from hook
               mobileTapped={tasksHook.mobileTapped}

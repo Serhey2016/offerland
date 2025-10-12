@@ -87,6 +87,27 @@
     border-radius: 5px 0 0 5px;
 }
 
+/* Priority-based color classes */
+.task_tracker_task_container.priority-iu::before {
+    background: #EF9A9A; /* Important & Urgent - Red */
+}
+
+.task_tracker_task_container.priority-inu::before {
+    background: #90CAF9; /* Important & Not Urgent - Blue */
+}
+
+.task_tracker_task_container.priority-niu::before {
+    background: #FFCC80; /* Not Important & Urgent - Orange */
+}
+
+.task_tracker_task_container.priority-ninu::before {
+    background: #E0E0E0; /* Not Important & Not Urgent - Gray */
+}
+
+.task_tracker_task_container.priority-none::before {
+    background: #FFFF0D; /* No priority set - Yellow */
+}
+
 /* Task metadata section */
 .task_tracker_task_metadata {
     display: flex;
