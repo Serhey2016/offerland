@@ -1131,12 +1131,11 @@
     padding: 6px 12px;
     border-radius: 16px;
     color: #282D3B;
-    font-size: 14px;
+    font-size: 16px;
     font-family: 'League Spartan', sans-serif;
     font-weight: 500;
     cursor: default;
     transition: all 0.2s ease;
-    border: 1px solid rgba(40, 45, 59, 0.2);
     user-select: none;
 }
 
@@ -1154,6 +1153,35 @@
 .chip_text {
     margin-right: 6px;
     white-space: nowrap;
+}
+
+/* Chip type-specific background colors */
+.task_creation_chip.chip_type_title {
+    background-color: #9EAEBE;
+}
+
+.task_creation_chip.chip_type_priority_iu {
+    background-color: #EF9A9A;
+}
+
+.task_creation_chip.chip_type_priority_inu {
+    background-color: #90CAF9;
+}
+
+.task_creation_chip.chip_type_priority_niu {
+    background-color: #FFCC80;
+}
+
+.task_creation_chip.chip_type_priority_ninu {
+    background-color: #E0E0E0;
+}
+
+.task_creation_chip.chip_type_date {
+    background-color: #B3C3D4;
+}
+
+.task_creation_chip.chip_type_hashtag {
+    background-color: #C8E6C9;
 }
 
 .chip_remove_btn {

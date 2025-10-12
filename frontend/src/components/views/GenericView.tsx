@@ -90,10 +90,18 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   // Helper function to format date from yyyy-mm-dd to dd.mm.yyyy
   const formatDateForDisplay = (dateString: string): string => {
     if (!dateString) return ''
-    const parts = dateString.split('-')
+    
+    // Remove time part if ISO format (e.g., "2025-09-10T00:00:00+00:00" -> "2025-09-10")
+    let dateOnly = dateString.split('T')[0]
+    
+    // Split by dash to get date parts
+    const parts = dateOnly.split('-')
     if (parts.length === 3) {
+      // yyyy-mm-dd -> dd.mm.yyyy
       return `${parts[2]}.${parts[1]}.${parts[0]}`
     }
+    
+    // Return original if format is unexpected
     return dateString
   }
 

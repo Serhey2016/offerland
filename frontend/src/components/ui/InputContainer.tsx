@@ -53,6 +53,23 @@ const InputContainer: React.FC<InputContainerProps> = ({
   // Show Job search only for 'contact' itemType
   const showJobSearch = itemType === 'contact'
 
+  // Helper function to get chip CSS class based on type
+  const getChipClassName = (chip: ChipData): string => {
+    const baseClass = 'task_creation_chip'
+    switch (chip.type) {
+      case 'title':
+        return `${baseClass} chip_type_title`
+      case 'priority':
+        return `${baseClass} chip_type_priority_${chip.value}`
+      case 'date':
+        return `${baseClass} chip_type_date`
+      case 'hashtag':
+        return `${baseClass} chip_type_hashtag`
+      default:
+        return baseClass
+    }
+  }
+
   // Priority matrix template - moved from hook
   const priorityMatrixTemplate = () => (
     <div className="priority-matrix-grid">
@@ -109,8 +126,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
             {chips.map((chip) => (
               <div
                 key={chip.id}
-                className="task_creation_chip"
-                style={{ backgroundColor: chip.backgroundColor }}
+                className={getChipClassName(chip)}
                 onClick={() => chip.type === 'title' ? editChip(chip) : undefined}
                 title={chip.type === 'title' ? 'Click to edit' : ''}
               >

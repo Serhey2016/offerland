@@ -656,12 +656,20 @@ def user_tasks(request):
                 for rel in hashtag_relations
             ]
             
+            # Format dates properly - extract date part only
+            date_start_str = None
+            date_end_str = None
+            if task.start_datetime:
+                date_start_str = task.start_datetime.date().isoformat() if hasattr(task.start_datetime, 'date') else str(task.start_datetime).split('T')[0]
+            if task.end_datetime:
+                date_end_str = task.end_datetime.date().isoformat() if hasattr(task.end_datetime, 'date') else str(task.end_datetime).split('T')[0]
+            
             task_data = {
                 'id': task.id,
                 'title': task.title,
                 'description': task.description,
-                'date_start': task.start_datetime.isoformat() if task.start_datetime else None,
-                'date_end': task.end_datetime.isoformat() if task.end_datetime else None,
+                'date_start': date_start_str,
+                'date_end': date_end_str,
                 'time_start': task.start_datetime.isoformat() if task.start_datetime else None,
                 'time_end': task.end_datetime.isoformat() if task.end_datetime else None,
                 'priority': task.priority,

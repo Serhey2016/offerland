@@ -9,7 +9,6 @@ export interface ChipData {
   type: 'title' | 'priority' | 'hashtag' | 'date'
   value: string
   displayValue: string
-  backgroundColor: string
 }
 
 interface UseInputContainerProps {
@@ -181,8 +180,7 @@ export const useInputContainer = ({
         id: `priority-${Date.now()}`,
         type: 'priority',
         value: trimmedInput.toLowerCase(),
-        displayValue: priority.full,
-        backgroundColor: priority.color
+        displayValue: priority.full
       }
       
       setChips(prev => [...prev, newChip])
@@ -227,8 +225,7 @@ export const useInputContainer = ({
           id: `date-${Date.now()}`,
           type: 'date',
           value: trimmedInput,
-          displayValue: `${dateType}: ${date.trim()}`,
-          backgroundColor: '#B3C3D4'
+          displayValue: `${dateType}: ${date.trim()}`
         }
         
         setChips(prev => [...prev, newChip])
@@ -244,8 +241,7 @@ export const useInputContainer = ({
         id: `title-${Date.now()}`,
         type: 'title',
         value: trimmedInput,
-        displayValue: `title: ${trimmedInput}`,
-        backgroundColor: '#AAC7E3'
+        displayValue: `title: ${trimmedInput}`
       }
       
       setChips(prev => [...prev, newChip])
