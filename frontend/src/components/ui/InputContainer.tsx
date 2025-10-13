@@ -9,6 +9,9 @@ interface InputContainerProps {
   hasText: boolean
   chips: ChipData[]
   isMaxLength: boolean
+  isSubtaskMode: boolean
+  parentTaskChips: ChipData[]
+  subtasks: Array<{chips: ChipData[]}>
   label?: string
   icon?: string
   itemType?: string
@@ -33,6 +36,9 @@ const InputContainer: React.FC<InputContainerProps> = ({
   hasText,
   chips,
   isMaxLength,
+  isSubtaskMode,
+  parentTaskChips,
+  subtasks,
   label = 'Task',
   icon = 'pi pi-check-circle',
   itemType = 'note',
@@ -118,31 +124,98 @@ const InputContainer: React.FC<InputContainerProps> = ({
     <div id="task-creation-block" className="task_tracker_task_creation">
       <div 
         id="task-creation-input-container" 
-        className={`task_creation_input_container ${hasText ? 'has-text' : ''}`}
+        className={`task_creation_input_container ${hasText ? 'has-text' : ''} ${isSubtaskMode ? 'subtask-mode' : ''}`}
       >
-        {/* Chips Display */}
-        {chips.length > 0 && (
-          <div className="task_creation_chips_container">
-            {chips.map((chip) => (
-              <div
-                key={chip.id}
-                className={getChipClassName(chip)}
-                onClick={() => chip.type === 'title' ? editChip(chip) : undefined}
-                title={chip.type === 'title' ? 'Click to edit' : ''}
-              >
-                <span className="chip_text">{chip.displayValue}</span>
-                <button
-                  className="chip_remove_btn"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    removeChip(chip.id)
-                  }}
-                >
-                  ×
-                </button>
+        {/* Chips Display - Different rendering for subtask mode */}
+        {isSubtaskMode ? (
+          <>
+            {/* Parent Task Chips */}
+            {parentTaskChips.length > 0 && (
+              <div className="task_creation_parent_chips">
+                {parentTaskChips.map((chip) => (
+                  <div
+                    key={chip.id}
+                    className={getChipClassName(chip)}
+                    title={chip.type === 'title' ? 'Parent task' : ''}
+                  >
+                    <span className="chip_text">{chip.displayValue}</span>
+                  </div>
+                ))}
               </div>
+            )}
+            
+            {/* Separator Line after parent */}
+            <div className="task_creation_subtask_separator"></div>
+            
+            {/* Display all queued subtasks with separator lines */}
+            {subtasks.length > 0 && subtasks.map((subtask, index) => (
+              <React.Fragment key={`queued-subtask-${index}`}>
+                <div className="task_creation_subtask_chips">
+                  {subtask.chips.map((chip) => (
+                    <div
+                      key={chip.id}
+                      className={getChipClassName(chip)}
+                      title="Queued subtask"
+                    >
+                      <span className="chip_text">{chip.displayValue}</span>
+                    </div>
+                  ))}
+                </div>
+                {/* Separator line after each queued subtask */}
+                <div className="task_creation_subtask_separator"></div>
+              </React.Fragment>
             ))}
-          </div>
+            
+            {/* Current Subtask Chips being edited */}
+            {chips.length > 0 && (
+              <div className="task_creation_subtask_chips">
+                {chips.map((chip) => (
+                  <div
+                    key={chip.id}
+                    className={getChipClassName(chip)}
+                    onClick={() => chip.type === 'title' ? editChip(chip) : undefined}
+                    title={chip.type === 'title' ? 'Click to edit' : ''}
+                  >
+                    <span className="chip_text">{chip.displayValue}</span>
+                    <button
+                      className="chip_remove_btn"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeChip(chip.id)
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          /* Normal mode - Single chips container */
+          chips.length > 0 && (
+            <div className="task_creation_chips_container">
+              {chips.map((chip) => (
+                <div
+                  key={chip.id}
+                  className={getChipClassName(chip)}
+                  onClick={() => chip.type === 'title' ? editChip(chip) : undefined}
+                  title={chip.type === 'title' ? 'Click to edit' : ''}
+                >
+                  <span className="chip_text">{chip.displayValue}</span>
+                  <button
+                    className="chip_remove_btn"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeChip(chip.id)
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )
         )}
         
         
@@ -176,8 +249,8 @@ const InputContainer: React.FC<InputContainerProps> = ({
           contentEditable
           onInput={handleInputChange}
           onKeyDown={handleKeyPress}
-          className={`task_creation_input ${isMaxLength ? 'max-length-reached' : ''}`}
-          data-placeholder={chips.length > 0 ? "Add more details..." : "Enter task..."}
+          className={`task_creation_input ${isMaxLength ? 'max-length-reached' : ''} ${isSubtaskMode ? 'subtask-mode' : ''}`}
+          data-placeholder={isSubtaskMode ? "Enter subtask..." : (chips.length > 0 ? "Add more details..." : "Enter task...")}
           suppressContentEditableWarning={true}
         ></div>
         

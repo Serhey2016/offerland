@@ -23,6 +23,9 @@ interface UseInputContainerReturn {
   hasText: boolean
   chips: ChipData[]
   isMaxLength: boolean
+  isSubtaskMode: boolean
+  parentTaskChips: ChipData[]
+  subtasks: Array<{chips: ChipData[]}>
   
   // Refs
   contentEditableRef: React.RefObject<HTMLDivElement>
@@ -104,6 +107,11 @@ export const useInputContainer = ({
   const [taskInput, setTaskInput] = useState('')
   const [hasText, setHasText] = useState(false)
   const [chips, setChips] = useState<ChipData[]>([])
+  
+  // Subtask states
+  const [isSubtaskMode, setIsSubtaskMode] = useState(false)
+  const [subtasks, setSubtasks] = useState<Array<{chips: ChipData[]}>>([])
+  const [parentTaskChips, setParentTaskChips] = useState<ChipData[]>([])
   
   // Refs
   const contentEditableRef = useRef<HTMLDivElement>(null)
@@ -246,14 +254,15 @@ export const useInputContainer = ({
       
       setChips(prev => [...prev, newChip])
       return
-    } else if (existingTitle) {
+    } else if (existingTitle && !isSubtaskMode) {
+      // Only show duplicate title warning if NOT in subtask mode
       console.log('Title already exists')
       showWarning('Task title already set. Remove existing title to set a new one.')
       return
     }
     
     console.log('No pattern matched for input:', trimmedInput)
-  }, [chips, showError, showWarning])
+  }, [chips, showError, showWarning, isSubtaskMode])
 
   // Remove chip
   const removeChip = useCallback((chipId: string) => {
@@ -294,50 +303,169 @@ export const useInputContainer = ({
     }
   }, [taskInput])
 
+  // Add subtask to queue
+  const addSubtaskToQueue = useCallback(() => {
+    if (chips.length > 0) {
+      setSubtasks(prev => [...prev, { chips: [...chips] }])
+      setChips([])
+      setTaskInput('')
+      if (contentEditableRef.current) {
+        contentEditableRef.current.textContent = ''
+      }
+    }
+  }, [chips])
+
+  // Exit subtask mode and reset state
+  const exitSubtaskMode = useCallback(() => {
+    setIsSubtaskMode(false)
+    setSubtasks([])
+    setParentTaskChips([])
+    setChips([])
+    setTaskInput('')
+    setHasText(false)
+    if (contentEditableRef.current) {
+      contentEditableRef.current.textContent = ''
+    }
+  }, [])
+
+  // Enter subtask mode
+  const enterSubtaskMode = useCallback(() => {
+    // If already in subtask mode, queue current subtask and prepare for next one
+    if (isSubtaskMode) {
+      const titleChip = chips.find(chip => chip.type === 'title')
+      if (titleChip) {
+        // Add current subtask to queue
+        addSubtaskToQueue()
+      }
+      // Clear input for next subtask but keep parent chips and stay in subtask mode
+      setChips([])
+      setTaskInput('')
+      if (contentEditableRef.current) {
+        contentEditableRef.current.textContent = ''
+        contentEditableRef.current.focus()
+      }
+      menuRef.current?.hide()
+      return
+    }
+    
+    // First time entering subtask mode
+    const titleChip = chips.find(chip => chip.type === 'title')
+    
+    if (!titleChip) {
+      showWarning('Please add a task title before creating subtasks.')
+      return
+    }
+    
+    // Store current chips as parent task chips
+    setParentTaskChips([...chips])
+    setIsSubtaskMode(true)
+    setChips([])
+    setTaskInput('')
+    setHasText(true)  // Keep has-text class active
+    
+    // Clear and focus input
+    if (contentEditableRef.current) {
+      contentEditableRef.current.textContent = ''
+      contentEditableRef.current.focus()
+    }
+    
+    menuRef.current?.hide()
+  }, [chips, showWarning, isSubtaskMode, addSubtaskToQueue])
+
   // Handle confirm - create task
   const handleConfirm = useCallback(async () => {
-    if (taskInput.trim() || chips.length > 0) {
+    if (taskInput.trim() || chips.length > 0 || parentTaskChips.length > 0) {
       
       try {
-        const titleChip = chips.find(chip => chip.type === 'title')
-        const priorityChip = chips.find(chip => chip.type === 'priority')
-        const dateChips = chips.filter(chip => chip.type === 'date')
+        // If in subtask mode with current chips, add to queue
+        if (isSubtaskMode && chips.length > 0) {
+          const titleChip = chips.find(chip => chip.type === 'title')
+          if (titleChip) {
+            addSubtaskToQueue()
+          }
+        }
         
-        const taskData: InboxTaskData = {
+        // Determine which chips to use for parent task
+        const parentChips = isSubtaskMode ? parentTaskChips : chips
+        const titleChip = parentChips.find(chip => chip.type === 'title')
+        const priorityChip = parentChips.find(chip => chip.type === 'priority')
+        const dateChips = parentChips.filter(chip => chip.type === 'date')
+        
+        // Create parent task data
+        const parentTaskData: InboxTaskData = {
           title: titleChip?.value || taskInput.trim(),
         }
         
         if (priorityChip) {
-          taskData.priority = priorityChip.value as 'iu' | 'inu' | 'niu' | 'ninu'
+          parentTaskData.priority = priorityChip.value as 'iu' | 'inu' | 'niu' | 'ninu'
         }
         
         const startDate = extractDateStart(dateChips)
         if (startDate) {
-          taskData.date_start = startDate
+          parentTaskData.date_start = startDate
         }
         
         const endDate = extractDateEnd(dateChips)
         if (endDate) {
-          taskData.date_end = endDate
+          parentTaskData.date_end = endDate
         }
         
+        // Create parent task first
+        const parentResponse = await onSubmit(parentTaskData)
+        const parentTaskId = parentResponse?.task?.id || parentResponse?.id
         
-        await onSubmit(taskData)
+        console.log('Parent task created with ID:', parentTaskId)
         
-        // Show success message
-        showSuccess('Task created successfully!', 'Task Saved', 4000)
+        // If we have subtasks, create them sequentially
+        if (isSubtaskMode && subtasks.length > 0 && parentTaskId) {
+          for (const subtask of subtasks) {
+            const subtaskTitleChip = subtask.chips.find(chip => chip.type === 'title')
+            const subtaskPriorityChip = subtask.chips.find(chip => chip.type === 'priority')
+            const subtaskDateChips = subtask.chips.filter(chip => chip.type === 'date')
+            
+            if (!subtaskTitleChip) continue // Skip subtasks without title
+            
+            const subtaskData: InboxTaskData = {
+              title: subtaskTitleChip.value,
+              parent_id: parentTaskId
+            }
+            
+            if (subtaskPriorityChip) {
+              subtaskData.priority = subtaskPriorityChip.value as 'iu' | 'inu' | 'niu' | 'ninu'
+            }
+            
+            const subtaskStartDate = extractDateStart(subtaskDateChips)
+            if (subtaskStartDate) {
+              subtaskData.date_start = subtaskStartDate
+            }
+            
+            const subtaskEndDate = extractDateEnd(subtaskDateChips)
+            if (subtaskEndDate) {
+              subtaskData.date_end = subtaskEndDate
+            }
+            
+            await onSubmit(subtaskData)
+            console.log('Subtask created:', subtaskData.title)
+          }
+          
+          showSuccess(`Task and ${subtasks.length} subtask(s) created successfully!`, 'Tasks Saved', 4000)
+        } else {
+          showSuccess('Task created successfully!', 'Task Saved', 4000)
+        }
         
-        // Clear form - do this immediately after successful submission
+        // Clear all state after successful submission
         setTaskInput('')
         setHasText(false)
         setChips([])
+        setIsSubtaskMode(false)
+        setSubtasks([])
+        setParentTaskChips([])
         
         // Clear the contenteditable element
         if (contentEditableRef.current) {
           contentEditableRef.current.textContent = ''
           contentEditableRef.current.focus()
         }
-        
         
         // Call optional callback
         onTaskCreated?.()
@@ -347,7 +475,7 @@ export const useInputContainer = ({
         showError('Error creating task. Please try again.')
       }
     }
-  }, [taskInput, chips, onSubmit, showError, showSuccess, onTaskCreated])
+  }, [taskInput, chips, parentTaskChips, isSubtaskMode, subtasks, onSubmit, showError, showSuccess, onTaskCreated, addSubtaskToQueue, extractDateStart, extractDateEnd])
 
   // Handle priority select
   const handlePrioritySelect = useCallback((priority: string) => {
@@ -494,7 +622,7 @@ export const useInputContainer = ({
     {
       id: 'add-subtask-option',
       label: 'Add subtask',
-      command: () => console.log('Add subtask selected')
+      command: () => enterSubtaskMode()
     },
     {
       id: 'priority-option',
@@ -525,6 +653,9 @@ export const useInputContainer = ({
     hasText,
     chips,
     isMaxLength,
+    isSubtaskMode,
+    parentTaskChips,
+    subtasks,
     
     // Refs
     contentEditableRef,

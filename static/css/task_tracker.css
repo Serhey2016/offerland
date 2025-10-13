@@ -1079,6 +1079,16 @@
     transition: all 0.3s ease;
 }
 
+/* Subtask mode styling - add left indent */
+.task_creation_input.subtask-mode {
+    padding-left: 20px;
+}
+
+/* Subtask mode container styling */
+.task_creation_input_container.subtask-mode {
+    /* Additional styles for subtask mode container if needed */
+}
+
 /* Animation when text is entered - buttons move up */
 .task_creation_input_container.has-text .task_creation_left_btn {
     opacity: 1 !important;
@@ -1123,6 +1133,33 @@
     gap: 8px;
     margin-bottom: 10px;
     padding: 5px 0;
+}
+
+/* Parent Task Chips Container */
+.task_creation_parent_chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 5px;
+    padding: 5px 0;
+}
+
+/* Subtask Chips Container */
+.task_creation_subtask_chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 5px 0;
+    margin-left: 20px;
+}
+
+/* Subtask Separator Line */
+.task_creation_subtask_separator {
+    border-top: 2px solid #B3C3D4;
+    max-width: 30%;
+    margin: 10px 0;
+    display: block;
 }
 
 .task_creation_chip {

@@ -68,6 +68,7 @@ export interface InboxTaskData {
   date_end?: string    // format: YYYY-MM-DD or DD.MM.YYYY
   priority?: 'iu' | 'inu' | 'niu' | 'ninu'  // Important & Urgent, etc.
   description?: string
+  parent_id?: number  // Parent task ID for subtasks
 }
 
 // Task API функції
@@ -188,6 +189,11 @@ export const taskApi = {
       
       // Description is optional for inbox tasks, send empty string if not provided
       formData.append('description', taskData.description || '')
+      
+      // Parent task ID for subtasks
+      if (taskData.parent_id) {
+        formData.append('parent_id', taskData.parent_id.toString())
+      }
       
       // Type of task ID for inbox - use "Task" type (ID: 1) for inbox tasks
       formData.append('type_of_task', '1')  // "Task" type for inbox tasks
