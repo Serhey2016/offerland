@@ -168,11 +168,78 @@ export const useInputContainer = ({
     return text.toLowerCase().startsWith('sd') || text.toLowerCase().startsWith('dd')
   }
 
+  // Check if text is a subtask abbreviation
+  const isSubtaskAbbreviation = (text: string): boolean => {
+    return text.toLowerCase() === 'subt'
+  }
+
+  // Add subtask to queue
+  const addSubtaskToQueue = useCallback(() => {
+    if (chips.length > 0) {
+      setSubtasks(prev => [...prev, { chips: [...chips] }])
+      setChips([])
+      setTaskInput('')
+      if (contentEditableRef.current) {
+        contentEditableRef.current.textContent = ''
+      }
+    }
+  }, [chips])
+
+  // Enter subtask mode
+  const enterSubtaskMode = useCallback(() => {
+    // If already in subtask mode, queue current subtask and prepare for next one
+    if (isSubtaskMode) {
+      const titleChip = chips.find(chip => chip.type === 'title')
+      if (titleChip) {
+        // Add current subtask to queue
+        addSubtaskToQueue()
+      }
+      // Clear input for next subtask but keep parent chips and stay in subtask mode
+      setChips([])
+      setTaskInput('')
+      if (contentEditableRef.current) {
+        contentEditableRef.current.textContent = ''
+        contentEditableRef.current.focus()
+      }
+      menuRef.current?.hide()
+      return
+    }
+    
+    // First time entering subtask mode
+    const titleChip = chips.find(chip => chip.type === 'title')
+    
+    if (!titleChip) {
+      showWarning('Please add a task title before creating subtasks.')
+      return
+    }
+    
+    // Store current chips as parent task chips
+    setParentTaskChips([...chips])
+    setIsSubtaskMode(true)
+    setChips([])
+    setTaskInput('')
+    setHasText(true)  // Keep has-text class active
+    
+    // Clear and focus input
+    if (contentEditableRef.current) {
+      contentEditableRef.current.textContent = ''
+      contentEditableRef.current.focus()
+    }
+    
+    menuRef.current?.hide()
+  }, [chips, showWarning, isSubtaskMode, addSubtaskToQueue])
+
   // Process input and create chips
   const processInput = useCallback((input: string) => {
     if (!input.trim()) return
 
     const trimmedInput = input.trim()
+    
+    // Check for subtask abbreviation
+    if (isSubtaskAbbreviation(trimmedInput)) {
+      enterSubtaskMode()
+      return
+    }
     
     // Check for priority
     if (isPriorityAbbreviation(trimmedInput)) {
@@ -262,7 +329,7 @@ export const useInputContainer = ({
     }
     
     console.log('No pattern matched for input:', trimmedInput)
-  }, [chips, showError, showWarning, isSubtaskMode])
+  }, [chips, showError, showWarning, isSubtaskMode, enterSubtaskMode])
 
   // Remove chip
   const removeChip = useCallback((chipId: string) => {
@@ -303,18 +370,6 @@ export const useInputContainer = ({
     }
   }, [taskInput])
 
-  // Add subtask to queue
-  const addSubtaskToQueue = useCallback(() => {
-    if (chips.length > 0) {
-      setSubtasks(prev => [...prev, { chips: [...chips] }])
-      setChips([])
-      setTaskInput('')
-      if (contentEditableRef.current) {
-        contentEditableRef.current.textContent = ''
-      }
-    }
-  }, [chips])
-
   // Exit subtask mode and reset state
   const exitSubtaskMode = useCallback(() => {
     setIsSubtaskMode(false)
@@ -327,50 +382,6 @@ export const useInputContainer = ({
       contentEditableRef.current.textContent = ''
     }
   }, [])
-
-  // Enter subtask mode
-  const enterSubtaskMode = useCallback(() => {
-    // If already in subtask mode, queue current subtask and prepare for next one
-    if (isSubtaskMode) {
-      const titleChip = chips.find(chip => chip.type === 'title')
-      if (titleChip) {
-        // Add current subtask to queue
-        addSubtaskToQueue()
-      }
-      // Clear input for next subtask but keep parent chips and stay in subtask mode
-      setChips([])
-      setTaskInput('')
-      if (contentEditableRef.current) {
-        contentEditableRef.current.textContent = ''
-        contentEditableRef.current.focus()
-      }
-      menuRef.current?.hide()
-      return
-    }
-    
-    // First time entering subtask mode
-    const titleChip = chips.find(chip => chip.type === 'title')
-    
-    if (!titleChip) {
-      showWarning('Please add a task title before creating subtasks.')
-      return
-    }
-    
-    // Store current chips as parent task chips
-    setParentTaskChips([...chips])
-    setIsSubtaskMode(true)
-    setChips([])
-    setTaskInput('')
-    setHasText(true)  // Keep has-text class active
-    
-    // Clear and focus input
-    if (contentEditableRef.current) {
-      contentEditableRef.current.textContent = ''
-      contentEditableRef.current.focus()
-    }
-    
-    menuRef.current?.hide()
-  }, [chips, showWarning, isSubtaskMode, addSubtaskToQueue])
 
   // Handle confirm - create task
   const handleConfirm = useCallback(async () => {
