@@ -201,6 +201,14 @@ export const useInputContainer = ({
 
   // Enter description mode
   const enterDescriptionMode = useCallback(() => {
+    // Check if description already exists
+    const existingDescription = chips.find(chip => chip.type === 'description')
+    
+    if (existingDescription) {
+      showWarning('Description already added. Remove description or click on it to edit.')
+      return
+    }
+    
     setIsDescriptionMode(true)
     setTaskInput('')
     
@@ -211,7 +219,7 @@ export const useInputContainer = ({
     }
     
     menuRef.current?.hide()
-  }, [])
+  }, [chips, showWarning])
 
   // Enter subtask mode
   const enterSubtaskMode = useCallback(() => {
@@ -409,11 +417,31 @@ export const useInputContainer = ({
     setChips(prev => prev.filter(chip => chip.id !== chipId))
   }, [])
 
-  // Edit chip (convert back to input) - for title chips only
+  // Edit chip (convert back to input) - for title and description chips
   const editChip = useCallback((chip: ChipData) => {
     if (chip.type === 'title') {
       removeChip(chip.id)
       setTaskInput(chip.value)
+      
+      setTimeout(() => {
+        if (contentEditableRef.current) {
+          contentEditableRef.current.textContent = chip.value
+          contentEditableRef.current.focus()
+          
+          const range = document.createRange()
+          const selection = window.getSelection()
+          if (contentEditableRef.current.firstChild) {
+            range.selectNodeContents(contentEditableRef.current)
+            range.collapse(false)
+            selection?.removeAllRanges()
+            selection?.addRange(range)
+          }
+        }
+      }, 0)
+    } else if (chip.type === 'description') {
+      removeChip(chip.id)
+      setTaskInput(chip.value)
+      setIsDescriptionMode(true)
       
       setTimeout(() => {
         if (contentEditableRef.current) {
@@ -610,11 +638,10 @@ export const useInputContainer = ({
         element.textContent = ''
         setTaskInput('')
         setHasText(chips.length > 0)
-      } else {
-        handleConfirm()
       }
+      // Empty Enter does nothing - save only via confirm button or 'mem' abbreviation
     }
-  }, [processInput, chips, handleConfirm])
+  }, [processInput, chips])
 
   // Functions for cursor management
   const saveCaretPosition = (element: HTMLElement) => {

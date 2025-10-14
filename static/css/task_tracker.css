@@ -1186,13 +1186,15 @@
     user-select: none;
 }
 
-/* Only title chips are clickable (hashtag functionality commented out) */
-.task_creation_chip[title="Remove"] {
+/* Only title and description chips are clickable */
+.task_creation_chip.chip_type_title,
+.task_creation_chip.chip_type_description {
     cursor: pointer;
 }
 
-/* Hover effect only for clickable chips (title chips only) */
-.task_creation_chip[title="Remove"]:hover {
+/* Hover effect for clickable chips (title and description chips) */
+.task_creation_chip.chip_type_title:hover,
+.task_creation_chip.chip_type_description:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

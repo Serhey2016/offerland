@@ -177,8 +177,8 @@ const InputContainer: React.FC<InputContainerProps> = ({
                   <div
                     key={chip.id}
                     className={getChipClassName(chip)}
-                    onClick={() => chip.type === 'title' ? editChip(chip) : undefined}
-                    title={chip.type === 'title' ? 'Click to edit' : ''}
+                    onClick={() => (chip.type === 'title' || chip.type === 'description') ? editChip(chip) : undefined}
+                    title={chip.type === 'title' ? 'Click to edit' : (chip.type === 'description' ? `Click to edit: ${chip.value}` : '')}
                   >
                     <span className="chip_text">{chip.displayValue}</span>
                     <button
@@ -203,8 +203,8 @@ const InputContainer: React.FC<InputContainerProps> = ({
                 <div
                   key={chip.id}
                   className={getChipClassName(chip)}
-                  onClick={() => chip.type === 'title' ? editChip(chip) : undefined}
-                  title={chip.type === 'title' ? 'Click to edit' : (chip.type === 'description' ? chip.value : '')}
+                  onClick={() => (chip.type === 'title' || chip.type === 'description') ? editChip(chip) : undefined}
+                  title={chip.type === 'title' ? 'Click to edit' : (chip.type === 'description' ? `Click to edit: ${chip.value}` : '')}
                 >
                   <span className="chip_text">{chip.displayValue}</span>
                   <button
