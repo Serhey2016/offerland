@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { taskApi, InboxTaskData, DjangoTask } from '../../api/taskApi'
 import Taskview from '../ui/Taskview'
 import InputContainer from '../ui/InputContainer'
+import EditTaskDialog, { EditTaskFormData } from '../ui/EditTaskDialog'
 import { useInputContainer } from '../../hooks/useInputContainer'
 import { useTasks } from '../../hooks/useTasks'
 import { useToasts } from '../../hooks/useToasts'
@@ -19,6 +20,10 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   const [userTasks, setUserTasks] = useState<DjangoTask[]>([])
   const [loadingTasks, setLoadingTasks] = useState(false)
   const [hasShownError, setHasShownError] = useState(false)
+  
+  // Edit task dialog state
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [selectedTask, setSelectedTask] = useState<DjangoTask | null>(null)
 
   // Handle task creation
   const handleCreateTask = async (taskData: InboxTaskData) => {
@@ -111,11 +116,40 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
     console.log(`Task action: ${action}`, taskId ? `for task ${taskId}` : '')
     switch (action) {
       case 'start': console.log('Start task clicked'); break
-      case 'edit': console.log('Edit task clicked'); break
+      case 'edit': 
+        if (taskId) {
+          const task = userTasks.find(t => t.id === taskId)
+          if (task) {
+            setSelectedTask(task)
+            setShowEditDialog(true)
+          }
+        }
+        break
       case 'details': console.log('Details clicked'); break
       case 'delegate': console.log('Delegate clicked'); break
       case 'publish': console.log('Publish clicked'); break
       default: break
+    }
+  }
+  
+  // Handle save edited task
+  const handleSaveTask = async (taskData: EditTaskFormData) => {
+    try {
+      await taskApi.updateInboxTask(taskData.id, {
+        title: taskData.title,
+        description: taskData.description,
+        priority: taskData.priority || undefined,
+        date_start: taskData.date_start,
+        date_end: taskData.date_end
+      })
+      showSuccess('Task updated successfully')
+      // Reload tasks to reflect the changes
+      await loadUserTasks(false)
+      setShowEditDialog(false)
+      setSelectedTask(null)
+    } catch (error) {
+      console.error('Error updating task:', error)
+      showError('Error updating task')
     }
   }
 
@@ -141,6 +175,18 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   return (
     <div className="task_tracker_calendar_container">
       <Toasts toastRef={toast} />
+      
+      {/* Edit Task Dialog */}
+      <EditTaskDialog
+        visible={showEditDialog}
+        task={selectedTask}
+        onHide={() => {
+          setShowEditDialog(false)
+          setSelectedTask(null)
+        }}
+        onSave={handleSaveTask}
+      />
+      
       <div className="touchpoint-container">
         {/* Task Creation Block - New component */}
         {tasksHook.showTaskCreation && (

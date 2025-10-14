@@ -220,6 +220,51 @@ export const taskApi = {
       console.error('Error fetching user tasks:', error)
       throw error
     }
+  },
+
+  // Оновити Inbox задачу
+  updateInboxTask: async (taskId: number, taskData: Partial<InboxTaskData>): Promise<any> => {
+    try {
+      // Prepare FormData for Django form submission
+      const formData = new FormData()
+      
+      if (taskData.title) {
+        formData.append('title', taskData.title)
+      }
+      
+      if (taskData.date_start !== undefined) {
+        formData.append('date_start', taskData.date_start)
+      }
+      
+      if (taskData.date_end !== undefined) {
+        formData.append('date_end', taskData.date_end)
+      }
+      
+      if (taskData.priority !== undefined) {
+        formData.append('priority', taskData.priority)
+      }
+      
+      if (taskData.description !== undefined) {
+        formData.append('description', taskData.description)
+      }
+      
+      // Edit item ID
+      formData.append('edit_item_id', taskId.toString())
+      
+      // Type of task ID - use "Task" type (ID: 1)
+      formData.append('type_of_task', '1')
+      
+      const response = await api.post('/services_and_projects/update_form/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error(`Error updating inbox task ${taskId}:`, error)
+      throw error
+    }
   }
 }
 
