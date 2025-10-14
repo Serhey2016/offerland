@@ -1075,6 +1075,7 @@ def update_task(request, task_id):
     """Обновление задачи"""
     try:
         import logging
+        from datetime import datetime
         logger = logging.getLogger(__name__)
         
         task = Task.objects.get(id=task_id)
@@ -1086,6 +1087,11 @@ def update_task(request, task_id):
         # Получаем данные из формы
         title = request.POST.get('title', '').strip()
         description = request.POST.get('description', '').strip()
+        priority = request.POST.get('priority', '').strip()
+        date_start = request.POST.get('date_start', '').strip()
+        date_end = request.POST.get('date_end', '').strip()
+        
+        logger.info(f"Updating task {task_id}: title={title}, priority={priority}, date_start={date_start}, date_end={date_end}")
         
         # Валидация
         if not title:
@@ -1093,9 +1099,41 @@ def update_task(request, task_id):
         
         # Обновляем поля
         task.title = title
-        if description:
-            task.description = description
+        task.description = description if description else ''
+        
+        # Обновляем priority
+        if priority:
+            if priority in ['iu', 'inu', 'niu', 'ninu']:
+                task.priority = priority
+            else:
+                logger.warning(f"Invalid priority value: {priority}")
+        else:
+            task.priority = None
+        
+        # Обновляем date_start
+        if date_start:
+            try:
+                # Преобразуем строку даты в datetime
+                task.start_datetime = datetime.strptime(date_start, '%Y-%m-%d')
+                logger.info(f"Set start_datetime to {task.start_datetime}")
+            except ValueError as e:
+                logger.warning(f"Invalid date_start format: {date_start}, error: {e}")
+        else:
+            task.start_datetime = None
+        
+        # Обновляем date_end
+        if date_end:
+            try:
+                # Преобразуем строку даты в datetime
+                task.end_datetime = datetime.strptime(date_end, '%Y-%m-%d')
+                logger.info(f"Set end_datetime to {task.end_datetime}")
+            except ValueError as e:
+                logger.warning(f"Invalid date_end format: {date_end}, error: {e}")
+        else:
+            task.end_datetime = None
+        
         task.save()
+        logger.info(f"Task {task_id} updated successfully")
         
         return JsonResponse({
             'success': True,

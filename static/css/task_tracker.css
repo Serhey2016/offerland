@@ -3394,6 +3394,7 @@ dl, ol, ul {
   background: var(--accent-color);
   border: 1px solid var(--accent-color);
   color: white;
+  margin-left: 10px;
 }
 
 .edit-task-dialog .p-button:not(.p-button-text):hover {

@@ -13,11 +13,11 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   const { toast, showError, showSuccess } = useToasts()
 
   // UI states for task actions (moved from TaskDesign)
-  const [showDropdown, setShowDropdown] = useState(false)
+  const [openDropdownTaskId, setOpenDropdownTaskId] = useState<number | null>(null)
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
   const [showSubmenu, setShowSubmenu] = useState(false)
   const [submenuPosition, setSubmenuPosition] = useState({ top: 0, left: 0 })
-  const [mobileTapped, setMobileTapped] = useState(false)
+  const [tappedTaskId, setTappedTaskId] = useState<number | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const submenuRef = useRef<HTMLDivElement>(null)
 
@@ -148,19 +148,19 @@ export const useTasks = (initialFilters?: TaskFilters) => {
       const target = event.target as Node
       if (dropdownRef.current && !dropdownRef.current.contains(target) &&
           submenuRef.current && !submenuRef.current.contains(target)) {
-        setShowDropdown(false)
+        setOpenDropdownTaskId(null)
         setShowSubmenu(false)
       }
     }
 
-    if (showDropdown || showSubmenu) {
+    if (openDropdownTaskId !== null || showSubmenu) {
       document.addEventListener('mousedown', handleClickOutside)
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [showDropdown, showSubmenu])
+  }, [openDropdownTaskId, showSubmenu])
 
   // Handle dropdown positioning based on available screen space (moved from TaskDesign)
   const calculateDropdownPosition = useCallback((buttonElement: HTMLElement) => {
@@ -268,13 +268,13 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   }, [])
 
   // Handle mobile tap for floating icons (moved from TaskDesign)
-  const handleTaskTap = useCallback((e: React.MouseEvent) => {
+  const handleTaskTap = useCallback((taskId: number, e: React.MouseEvent) => {
     // Only handle tap on mobile devices
     if (window.innerWidth <= 768) {
       e.preventDefault()
-      setMobileTapped(!mobileTapped)
+      setTappedTaskId(prevId => prevId === taskId ? null : taskId)
     }
-  }, [mobileTapped])
+  }, [])
 
   // Handle dropdown menu item clicks (moved from TaskDesign)
   const handleDropdownItemClick = useCallback((action: string, event?: React.MouseEvent<HTMLDivElement>) => {
@@ -286,7 +286,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
       return
     }
     
-    setShowDropdown(false)
+    setOpenDropdownTaskId(null)
     
     switch (action) {
       case 'start':
@@ -310,11 +310,11 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   }, [calculateSubmenuPosition])
 
   // Handle icon button clicks (moved from TaskDesign)
-  const handleIconClick = useCallback((action: string, event?: React.MouseEvent<HTMLButtonElement>) => {
+  const handleIconClick = useCallback((taskId: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => {
     if (action === 'more' && event) {
       const position = calculateDropdownPosition(event.currentTarget)
       setDropdownPosition(position)
-      setShowDropdown(!showDropdown)
+      setOpenDropdownTaskId(prevId => prevId === taskId ? null : taskId)
       return
     }
     
@@ -331,7 +331,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
       default:
         break
     }
-  }, [calculateDropdownPosition, showDropdown])
+  }, [calculateDropdownPosition])
 
   // Handle task creation toggle (for Add Note button in SpeedDial)
   const toggleTaskCreation = useCallback((type: string = 'Task', icon: string = 'pi pi-check-circle', itemType: string = 'note') => {
@@ -369,11 +369,11 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     toast,
     
     // UI states (moved from TaskDesign)
-    showDropdown,
+    openDropdownTaskId,
     dropdownPosition,
     showSubmenu,
     submenuPosition,
-    mobileTapped,
+    tappedTaskId,
     dropdownRef,
     submenuRef,
     showTaskCreation,

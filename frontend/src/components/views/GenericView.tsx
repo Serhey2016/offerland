@@ -138,7 +138,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       await taskApi.updateInboxTask(taskData.id, {
         title: taskData.title,
         description: taskData.description,
-        priority: taskData.priority || undefined,
+        priority: taskData.priority,
         date_start: taskData.date_start,
         date_end: taskData.date_end
       })
@@ -222,8 +222,8 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
               priority={task.priority || null}
               status={task.task_mode === 'published' ? 'in-progress' : 'pending'}
               // UI states from hook
-              mobileTapped={tasksHook.mobileTapped}
-              showDropdown={tasksHook.showDropdown}
+              tappedTaskId={tasksHook.tappedTaskId}
+              openDropdownTaskId={tasksHook.openDropdownTaskId}
               showSubmenu={tasksHook.showSubmenu}
               dropdownPosition={tasksHook.dropdownPosition}
               submenuPosition={tasksHook.submenuPosition}

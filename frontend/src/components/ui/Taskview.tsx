@@ -17,8 +17,8 @@ interface TaskviewProps {
   startDate?: string
   
   // UI states from hook
-  mobileTapped: boolean
-  showDropdown: boolean
+  tappedTaskId: number | null
+  openDropdownTaskId: number | null
   showSubmenu: boolean
   dropdownPosition: { top: number; left: number }
   submenuPosition: { top: number; left: number }
@@ -28,8 +28,8 @@ interface TaskviewProps {
   submenuRef: React.RefObject<HTMLDivElement>
   
   // Event handlers from hook
-  handleTaskTap: (e: React.MouseEvent) => void
-  handleIconClick: (action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
+  handleTaskTap: (taskId: number, e: React.MouseEvent) => void
+  handleIconClick: (taskId: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
   handleDropdownItemClick: (action: string, event?: React.MouseEvent<HTMLDivElement>) => void
   handleSubmenuItemClick: (action: string) => void
   
@@ -60,8 +60,8 @@ const Taskview: React.FC<TaskviewProps> = ({
   assignedTo,
   tags = [],
   startDate,
-  mobileTapped,
-  showDropdown,
+  tappedTaskId,
+  openDropdownTaskId,
   showSubmenu,
   dropdownPosition,
   submenuPosition,
@@ -90,11 +90,17 @@ const Taskview: React.FC<TaskviewProps> = ({
     return `priority-${priority}`
   }
 
+  const isTapped = taskId !== undefined && tappedTaskId === taskId
+
   return (
     <div className="task-design-container">
       <div 
-        className={`task_tracker_task_container ${getPriorityClass()} ${mobileTapped ? 'mobile-tap' : ''}`}
-        onClick={handleTaskTap}
+        className={`task_tracker_task_container ${getPriorityClass()} ${isTapped ? 'mobile-tap' : ''}`}
+        onClick={(e) => {
+          if (taskId !== undefined) {
+            handleTaskTap(taskId, e)
+          }
+        }}
       >
         {/* Floating action icons */}
         <div className="task_tracker_floating_icons">
@@ -115,7 +121,9 @@ const Taskview: React.FC<TaskviewProps> = ({
             title="Sub Task"
             onClick={(e) => {
               e.stopPropagation()
-              handleIconClick('subtask', e)
+              if (taskId !== undefined) {
+                handleIconClick(taskId, 'subtask', e)
+              }
             }}
           >
             <i className="pi pi-reply"></i>
@@ -125,7 +133,9 @@ const Taskview: React.FC<TaskviewProps> = ({
             title="Note"
             onClick={(e) => {
               e.stopPropagation()
-              handleIconClick('note', e)
+              if (taskId !== undefined) {
+                handleIconClick(taskId, 'note', e)
+              }
             }}
           >
             <i className="pi pi-clipboard"></i>
@@ -135,7 +145,9 @@ const Taskview: React.FC<TaskviewProps> = ({
             title="More options"
             onClick={(e) => {
               e.stopPropagation()
-              handleIconClick('more', e)
+              if (taskId !== undefined) {
+                handleIconClick(taskId, 'more', e)
+              }
             }}
           >
             <i className="pi pi-ellipsis-v"></i>
@@ -143,7 +155,7 @@ const Taskview: React.FC<TaskviewProps> = ({
         </div>
         
         {/* Dropdown Menu */}
-        {showDropdown && createPortal(
+        {taskId !== undefined && openDropdownTaskId === taskId && createPortal(
           <div 
             ref={dropdownRef}
             className="task_tracker_task_dropdown_menu"
