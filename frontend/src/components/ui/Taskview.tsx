@@ -133,8 +133,8 @@ const Taskview: React.FC<TaskviewProps> = ({
             title="Note"
             onClick={(e) => {
               e.stopPropagation()
-              if (taskId !== undefined) {
-                handleIconClick(taskId, 'note', e)
+              if (onNote) {
+                onNote()
               }
             }}
           >
@@ -175,6 +175,20 @@ const Taskview: React.FC<TaskviewProps> = ({
             <div 
               className="task_tracker_task_dropdown_item"
               onClick={() => {
+                handleDropdownItemClick('details')
+                if (onDetails) onDetails()
+              }}
+              style={{
+                padding: '8px 16px',
+                cursor: 'pointer',
+                borderBottom: '1px solid #f0f0f0'
+              }}
+            >
+              Details
+            </div>
+            <div 
+              className="task_tracker_task_dropdown_item"
+              onClick={() => {
                 handleDropdownItemClick('start')
                 if (onStart) onStart()
               }}
@@ -199,20 +213,6 @@ const Taskview: React.FC<TaskviewProps> = ({
               }}
             >
               Edit
-            </div>
-            <div 
-              className="task_tracker_task_dropdown_item"
-              onClick={() => {
-                handleDropdownItemClick('details')
-                if (onDetails) onDetails()
-              }}
-              style={{
-                padding: '8px 16px',
-                cursor: 'pointer',
-                borderBottom: '1px solid #f0f0f0'
-              }}
-            >
-              Details
             </div>
             <div 
               className="task_tracker_task_dropdown_item"

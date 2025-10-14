@@ -61,6 +61,13 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
       if (taskId && onTaskDone) {
         onTaskDone(taskId)
       }
+    } else if (action === 'note') {
+      // Handle note action
+      const taskId = event.resource?.taskId
+      const onTaskNote = event.resource?.onTaskNote
+      if (taskId && onTaskNote) {
+        onTaskNote(taskId)
+      }
     } else {
       console.log(`Action clicked: ${action}`, event)
       // TODO: Implement actual actions

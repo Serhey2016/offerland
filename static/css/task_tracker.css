@@ -3436,6 +3436,7 @@ dl, ol, ul {
   
   .edit-task-dialog .form-actions {
     flex-direction: column;
+    align-items: center;
   }
   
   .edit-task-dialog .p-button {

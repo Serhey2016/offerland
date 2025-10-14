@@ -5,6 +5,9 @@ const JSX_PREAMBLE = <div></div>
 import { useState, useEffect } from 'react'
 import InfiniteDailyCalendar from '../InfiniteDailyCalendar'
 import { taskApi, DjangoTask } from '../../api/taskApi'
+import TaskNotesDialog from '../ui/TaskNotesDialog'
+import Toasts from '../ui/Toasts'
+import { useToasts } from '../../hooks/useToasts'
 // CSS styles moved to task_tracker.css
 
 interface CalendarEvent {
@@ -17,24 +20,59 @@ interface CalendarEvent {
     priority?: string
     status?: string
     description?: string
+    note?: string
     taskId?: number
     onTaskDone?: (taskId: number) => void
+    onTaskNote?: (taskId: number) => void
   }
 }
 
 const AgendaView = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([])
   const [loading, setLoading] = useState(true)
+  const [tasks, setTasks] = useState<DjangoTask[]>([])
+  
+  // Notes dialog state
+  const [showNotesDialog, setShowNotesDialog] = useState(false)
+  const [selectedTaskForNotes, setSelectedTaskForNotes] = useState<DjangoTask | null>(null)
+  
+  // Use toasts hook
+  const { toast, showError, showSuccess } = useToasts()
 
   // Handle marking task as done
   const handleTaskDone = async (taskId: number) => {
     try {
       await taskApi.updateTaskStatus(taskId, 'done')
-      console.log(`Task ${taskId} marked as done`)
+      showSuccess('Task marked as done')
       // Reload tasks to reflect the change
       await loadAgendaTasks()
     } catch (error) {
       console.error('Error marking task as done:', error)
+      showError('Error updating task status')
+    }
+  }
+
+  // Handle opening notes dialog
+  const handleTaskNote = (taskId: number) => {
+    const task = tasks.find(t => t.id === taskId)
+    if (task) {
+      setSelectedTaskForNotes(task)
+      setShowNotesDialog(true)
+    }
+  }
+
+  // Handle save task notes
+  const handleSaveNotes = async (taskId: number, notes: string) => {
+    try {
+      await taskApi.saveTaskNotes(taskId, notes)
+      showSuccess('Notes saved successfully')
+      // Reload tasks to reflect the changes
+      await loadAgendaTasks()
+      setShowNotesDialog(false)
+      setSelectedTaskForNotes(null)
+    } catch (error) {
+      console.error('Error saving notes:', error)
+      showError('Error saving notes')
     }
   }
 
@@ -42,12 +80,13 @@ const AgendaView = () => {
   const loadAgendaTasks = async () => {
     try {
       setLoading(true)
-      const tasks = await taskApi.getTasksByCategory('agenda')
+      const loadedTasks = await taskApi.getTasksByCategory('agenda')
       
-      console.log('Loaded agenda tasks:', tasks)
+      console.log('Loaded agenda tasks:', loadedTasks)
+      setTasks(loadedTasks)
       
       // Transform tasks to calendar events
-      const calendarEvents: CalendarEvent[] = tasks.map((task: DjangoTask) => {
+      const calendarEvents: CalendarEvent[] = loadedTasks.map((task: DjangoTask) => {
         // Get today's date for tasks without specific dates
         const today = new Date()
         today.setHours(0, 0, 0, 0)
@@ -81,8 +120,10 @@ const AgendaView = () => {
             priority: task.priority,
             status: task.status,
             description: task.description,
+            note: task.note,
             taskId: task.id,
-            onTaskDone: handleTaskDone
+            onTaskDone: handleTaskDone,
+            onTaskNote: handleTaskNote
           }
         }
       })
@@ -126,6 +167,21 @@ const AgendaView = () => {
 
   return (
     <div className="agenda-view-container">
+      <Toasts toastRef={toast} />
+      
+      {/* Task Notes Dialog */}
+      <TaskNotesDialog
+        visible={showNotesDialog}
+        taskId={selectedTaskForNotes?.id || null}
+        taskTitle={selectedTaskForNotes?.title}
+        initialNotes={selectedTaskForNotes?.note || ''}
+        onHide={() => {
+          setShowNotesDialog(false)
+          setSelectedTaskForNotes(null)
+        }}
+        onSave={handleSaveNotes}
+      />
+      
       <InfiniteDailyCalendar
         events={events}
         onSelectEvent={handleSelectEvent}

@@ -675,6 +675,7 @@ def user_tasks(request):
                 'priority': task.priority,
                 'status': task.status,
                 'task_mode': task.task_mode,
+                'note': task.note,
                 'created_at': task.created_at.isoformat(),
                 'updated_at': task.updated_at.isoformat(),
                 'hashtags': hashtags

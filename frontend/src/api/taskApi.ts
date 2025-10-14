@@ -30,6 +30,7 @@ export interface DjangoTask {
   task_mode: 'draft' | 'published' | 'archived'
   created_at: string
   updated_at: string
+  note?: string
   hashtags?: Array<{
     id: number
     tag_name: string
@@ -263,6 +264,25 @@ export const taskApi = {
       return response.data
     } catch (error) {
       console.error(`Error updating inbox task ${taskId}:`, error)
+      throw error
+    }
+  },
+
+  // Зберегти нотатки задачі
+  saveTaskNotes: async (taskId: number, notes: string): Promise<any> => {
+    try {
+      const formData = new FormData()
+      formData.append('notes', notes)
+      
+      const response = await api.post(`/services_and_projects/save_task_notes/${taskId}/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error(`Error saving task notes for task ${taskId}:`, error)
       throw error
     }
   }

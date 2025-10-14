@@ -4,6 +4,7 @@ import { taskApi, InboxTaskData, DjangoTask } from '../../api/taskApi'
 import Taskview from '../ui/Taskview'
 import InputContainer from '../ui/InputContainer'
 import EditTaskDialog, { EditTaskFormData } from '../ui/EditTaskDialog'
+import TaskNotesDialog from '../ui/TaskNotesDialog'
 import { useInputContainer } from '../../hooks/useInputContainer'
 import { useTasks } from '../../hooks/useTasks'
 import { useToasts } from '../../hooks/useToasts'
@@ -24,6 +25,10 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   // Edit task dialog state
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [selectedTask, setSelectedTask] = useState<DjangoTask | null>(null)
+  
+  // Notes dialog state
+  const [showNotesDialog, setShowNotesDialog] = useState(false)
+  const [selectedTaskForNotes, setSelectedTaskForNotes] = useState<DjangoTask | null>(null)
 
   // Handle task creation
   const handleCreateTask = async (taskData: InboxTaskData) => {
@@ -125,6 +130,15 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           }
         }
         break
+      case 'note':
+        if (taskId) {
+          const task = userTasks.find(t => t.id === taskId)
+          if (task) {
+            setSelectedTaskForNotes(task)
+            setShowNotesDialog(true)
+          }
+        }
+        break
       case 'details': console.log('Details clicked'); break
       case 'delegate': console.log('Delegate clicked'); break
       case 'publish': console.log('Publish clicked'); break
@@ -150,6 +164,21 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
     } catch (error) {
       console.error('Error updating task:', error)
       showError('Error updating task')
+    }
+  }
+
+  // Handle save task notes
+  const handleSaveNotes = async (taskId: number, notes: string) => {
+    try {
+      await taskApi.saveTaskNotes(taskId, notes)
+      showSuccess('Notes saved successfully')
+      // Reload tasks to reflect the changes
+      await loadUserTasks(false)
+      setShowNotesDialog(false)
+      setSelectedTaskForNotes(null)
+    } catch (error) {
+      console.error('Error saving notes:', error)
+      showError('Error saving notes')
     }
   }
 
@@ -185,6 +214,19 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           setSelectedTask(null)
         }}
         onSave={handleSaveTask}
+      />
+
+      {/* Task Notes Dialog */}
+      <TaskNotesDialog
+        visible={showNotesDialog}
+        taskId={selectedTaskForNotes?.id || null}
+        taskTitle={selectedTaskForNotes?.title}
+        initialNotes={selectedTaskForNotes?.note || ''}
+        onHide={() => {
+          setShowNotesDialog(false)
+          setSelectedTaskForNotes(null)
+        }}
+        onSave={handleSaveNotes}
       />
       
       <div className="touchpoint-container">
