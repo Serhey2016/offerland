@@ -3400,6 +3400,7 @@ dl, ol, ul {
   background: #c96d6d;
   border-color: #c96d6d;
   box-shadow: 0 2px 8px rgba(220, 126, 126, 0.3);
+  margin-left: 13px;
 }
 
 .edit-task-dialog .p-button:disabled {
