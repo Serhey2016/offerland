@@ -10,6 +10,7 @@ interface InputContainerProps {
   chips: ChipData[]
   isMaxLength: boolean
   isSubtaskMode: boolean
+  isDescriptionMode?: boolean
   parentTaskChips: ChipData[]
   subtasks: Array<{chips: ChipData[]}>
   label?: string
@@ -37,6 +38,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
   chips,
   isMaxLength,
   isSubtaskMode,
+  isDescriptionMode = false,
   parentTaskChips,
   subtasks,
   label = 'Task',
@@ -71,6 +73,8 @@ const InputContainer: React.FC<InputContainerProps> = ({
         return `${baseClass} chip_type_date`
       case 'hashtag':
         return `${baseClass} chip_type_hashtag`
+      case 'description':
+        return `${baseClass} chip_type_description`
       default:
         return baseClass
     }
@@ -200,7 +204,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
                   key={chip.id}
                   className={getChipClassName(chip)}
                   onClick={() => chip.type === 'title' ? editChip(chip) : undefined}
-                  title={chip.type === 'title' ? 'Click to edit' : ''}
+                  title={chip.type === 'title' ? 'Click to edit' : (chip.type === 'description' ? chip.value : '')}
                 >
                   <span className="chip_text">{chip.displayValue}</span>
                   <button
@@ -216,6 +220,13 @@ const InputContainer: React.FC<InputContainerProps> = ({
               ))}
             </div>
           )
+        )}
+        
+        {/* Description Mode Indicator */}
+        {isDescriptionMode && (
+          <div className="task_creation_description_indicator">
+            Description
+          </div>
         )}
         
         
@@ -249,13 +260,13 @@ const InputContainer: React.FC<InputContainerProps> = ({
           contentEditable
           onInput={handleInputChange}
           onKeyDown={handleKeyPress}
-          className={`task_creation_input ${isMaxLength ? 'max-length-reached' : ''} ${isSubtaskMode ? 'subtask-mode' : ''}`}
-          data-placeholder={isSubtaskMode ? "Enter subtask..." : (chips.length > 0 ? "Add more details..." : "Enter task...")}
+          className={`task_creation_input ${isMaxLength ? 'max-length-reached' : ''} ${isSubtaskMode ? 'subtask-mode' : ''} ${isDescriptionMode ? 'description-mode' : ''}`}
+          data-placeholder={isDescriptionMode ? "Enter description..." : (isSubtaskMode ? "Enter subtask..." : (chips.length > 0 ? "Add more details..." : "Enter task..."))}
           suppressContentEditableWarning={true}
         ></div>
         
         {/* Max Length Warning */}
-        {isMaxLength && (
+        {isMaxLength && !isDescriptionMode && (
           <div className="task_creation_max_length_warning">
             Maximum length reached (120 characters)
           </div>

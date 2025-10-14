@@ -1162,6 +1162,16 @@
     display: block;
 }
 
+/* Description Mode Indicator */
+.task_creation_description_indicator {
+    color: #282D3B;
+    font-size: 18px;
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 500;
+    margin: 10px 0;
+    padding-left: 5px;
+}
+
 .task_creation_chip {
     display: inline-flex;
     align-items: center;
@@ -1219,6 +1229,11 @@
 
 .task_creation_chip.chip_type_hashtag {
     background-color: #C8E6C9;
+}
+
+.task_creation_chip.chip_type_description {
+    background-color: #D1C4E9;
+    max-width: 400px;
 }
 
 .chip_remove_btn {

@@ -149,6 +149,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             label={tasksHook.taskCreationType}
             icon={tasksHook.taskCreationIcon}
             itemType={tasksHook.taskCreationItemType}
+            isDescriptionMode={inputContainerProps.isDescriptionMode}
           />
         )}
 

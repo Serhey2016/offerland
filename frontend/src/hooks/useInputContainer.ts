@@ -6,7 +6,7 @@ import { taskApi, InboxTaskData } from '../api/taskApi'
 // Types for chip data
 export interface ChipData {
   id: string
-  type: 'title' | 'priority' | 'hashtag' | 'date'
+  type: 'title' | 'priority' | 'hashtag' | 'date' | 'description'
   value: string
   displayValue: string
 }
@@ -24,6 +24,7 @@ interface UseInputContainerReturn {
   chips: ChipData[]
   isMaxLength: boolean
   isSubtaskMode: boolean
+  isDescriptionMode: boolean
   parentTaskChips: ChipData[]
   subtasks: Array<{chips: ChipData[]}>
   
@@ -113,6 +114,9 @@ export const useInputContainer = ({
   const [subtasks, setSubtasks] = useState<Array<{chips: ChipData[]}>>([])
   const [parentTaskChips, setParentTaskChips] = useState<ChipData[]>([])
   
+  // Description mode state
+  const [isDescriptionMode, setIsDescriptionMode] = useState(false)
+  
   // Refs
   const contentEditableRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<TieredMenu>(null)
@@ -173,6 +177,16 @@ export const useInputContainer = ({
     return text.toLowerCase() === 'subt'
   }
 
+  // Check if text is a mem abbreviation
+  const isMemAbbreviation = (text: string): boolean => {
+    return text.toLowerCase() === 'mem'
+  }
+
+  // Check if text is a description abbreviation
+  const isDescriptionAbbreviation = (text: string): boolean => {
+    return text.toLowerCase() === 'descr'
+  }
+
   // Add subtask to queue
   const addSubtaskToQueue = useCallback(() => {
     if (chips.length > 0) {
@@ -184,6 +198,20 @@ export const useInputContainer = ({
       }
     }
   }, [chips])
+
+  // Enter description mode
+  const enterDescriptionMode = useCallback(() => {
+    setIsDescriptionMode(true)
+    setTaskInput('')
+    
+    // Clear and focus input
+    if (contentEditableRef.current) {
+      contentEditableRef.current.textContent = ''
+      contentEditableRef.current.focus()
+    }
+    
+    menuRef.current?.hide()
+  }, [])
 
   // Enter subtask mode
   const enterSubtaskMode = useCallback(() => {
@@ -234,6 +262,50 @@ export const useInputContainer = ({
     if (!input.trim()) return
 
     const trimmedInput = input.trim()
+    
+    // If in description mode, create description chip
+    if (isDescriptionMode) {
+      const existingDescription = chips.find(chip => chip.type === 'description')
+      
+      if (existingDescription) {
+        showWarning('Description already set. Remove existing description to set a new one.')
+        return
+      }
+      
+      // Create description chip with truncated display value
+      const displayValue = trimmedInput.length > 25 
+        ? `${trimmedInput.substring(0, 25)}...` 
+        : trimmedInput
+      
+      const newChip: ChipData = {
+        id: `description-${Date.now()}`,
+        type: 'description',
+        value: trimmedInput, // Store full text
+        displayValue: displayValue // Display truncated text
+      }
+      
+      setChips(prev => [...prev, newChip])
+      setIsDescriptionMode(false) // Exit description mode after creating chip
+      return
+    }
+    
+    // Check for mem abbreviation (save/memorize)
+    if (isMemAbbreviation(trimmedInput)) {
+      // Clear the input first
+      if (contentEditableRef.current) {
+        contentEditableRef.current.textContent = ''
+      }
+      setTaskInput('')
+      // Trigger save
+      handleConfirm()
+      return
+    }
+    
+    // Check for description abbreviation
+    if (isDescriptionAbbreviation(trimmedInput)) {
+      enterDescriptionMode()
+      return
+    }
     
     // Check for subtask abbreviation
     if (isSubtaskAbbreviation(trimmedInput)) {
@@ -329,7 +401,8 @@ export const useInputContainer = ({
     }
     
     console.log('No pattern matched for input:', trimmedInput)
-  }, [chips, showError, showWarning, isSubtaskMode, enterSubtaskMode])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chips, showError, showWarning, isSubtaskMode, isDescriptionMode, enterSubtaskMode, enterDescriptionMode])
 
   // Remove chip
   const removeChip = useCallback((chipId: string) => {
@@ -378,6 +451,7 @@ export const useInputContainer = ({
     setChips([])
     setTaskInput('')
     setHasText(false)
+    setIsDescriptionMode(false)
     if (contentEditableRef.current) {
       contentEditableRef.current.textContent = ''
     }
@@ -401,6 +475,7 @@ export const useInputContainer = ({
         const titleChip = parentChips.find(chip => chip.type === 'title')
         const priorityChip = parentChips.find(chip => chip.type === 'priority')
         const dateChips = parentChips.filter(chip => chip.type === 'date')
+        const descriptionChip = parentChips.find(chip => chip.type === 'description')
         
         // Create parent task data
         const parentTaskData: InboxTaskData = {
@@ -409,6 +484,10 @@ export const useInputContainer = ({
         
         if (priorityChip) {
           parentTaskData.priority = priorityChip.value as 'iu' | 'inu' | 'niu' | 'ninu'
+        }
+        
+        if (descriptionChip) {
+          parentTaskData.description = descriptionChip.value
         }
         
         const startDate = extractDateStart(dateChips)
@@ -433,6 +512,7 @@ export const useInputContainer = ({
             const subtaskTitleChip = subtask.chips.find(chip => chip.type === 'title')
             const subtaskPriorityChip = subtask.chips.find(chip => chip.type === 'priority')
             const subtaskDateChips = subtask.chips.filter(chip => chip.type === 'date')
+            const subtaskDescriptionChip = subtask.chips.find(chip => chip.type === 'description')
             
             if (!subtaskTitleChip) continue // Skip subtasks without title
             
@@ -443,6 +523,10 @@ export const useInputContainer = ({
             
             if (subtaskPriorityChip) {
               subtaskData.priority = subtaskPriorityChip.value as 'iu' | 'inu' | 'niu' | 'ninu'
+            }
+            
+            if (subtaskDescriptionChip) {
+              subtaskData.description = subtaskDescriptionChip.value
             }
             
             const subtaskStartDate = extractDateStart(subtaskDateChips)
@@ -471,6 +555,7 @@ export const useInputContainer = ({
         setIsSubtaskMode(false)
         setSubtasks([])
         setParentTaskChips([])
+        setIsDescriptionMode(false)
         
         // Clear the contenteditable element
         if (contentEditableRef.current) {
@@ -566,8 +651,8 @@ export const useInputContainer = ({
     const text = element.textContent || ''
     const caretPosition = saveCaretPosition(element)
     
-    // Check for comma separator at the end
-    if (text.endsWith(',')) {
+    // Check for comma separator at the end (but NOT in description mode)
+    if (text.endsWith(',') && !isDescriptionMode) {
       const textWithoutComma = text.slice(0, -1).trim()
       
       if (textWithoutComma) {
@@ -579,20 +664,23 @@ export const useInputContainer = ({
       }
     }
     
-    if (text.length <= MAX_LENGTH) {
+    // In description mode, allow up to 5000 characters
+    const maxLen = isDescriptionMode ? 5000 : MAX_LENGTH
+    
+    if (text.length <= maxLen) {
       setTaskInput(text)
       setHasText(text.length > 0 || chips.length > 0)
     } else {
-      const truncatedText = text.substring(0, MAX_LENGTH)
+      const truncatedText = text.substring(0, maxLen)
       element.textContent = truncatedText
       setTaskInput(truncatedText)
       setHasText(true)
       
       setTimeout(() => {
-        restoreCaretPosition(element, Math.min(caretPosition, MAX_LENGTH))
+        restoreCaretPosition(element, Math.min(caretPosition, maxLen))
       }, 0)
     }
-  }, [processInput, chips])
+  }, [processInput, chips, isDescriptionMode])
 
   // Helper function to insert text into input field
   const insertTextIntoInput = useCallback((text: string) => {
@@ -631,6 +719,11 @@ export const useInputContainer = ({
       command: () => insertTextIntoInput('dd')
     },
     {
+      id: 'add-description-option',
+      label: 'Add description',
+      command: () => enterDescriptionMode()
+    },
+    {
       id: 'add-subtask-option',
       label: 'Add subtask',
       command: () => enterSubtaskMode()
@@ -665,6 +758,7 @@ export const useInputContainer = ({
     chips,
     isMaxLength,
     isSubtaskMode,
+    isDescriptionMode,
     parentTaskChips,
     subtasks,
     
