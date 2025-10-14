@@ -162,7 +162,10 @@ const Taskview: React.FC<TaskviewProps> = ({
           >
             <div 
               className="task_tracker_task_dropdown_item"
-              onClick={() => handleDropdownItemClick('start')}
+              onClick={() => {
+                handleDropdownItemClick('start')
+                if (onStart) onStart()
+              }}
               style={{
                 padding: '8px 16px',
                 cursor: 'pointer',
@@ -173,7 +176,10 @@ const Taskview: React.FC<TaskviewProps> = ({
             </div>
             <div 
               className="task_tracker_task_dropdown_item"
-              onClick={() => handleDropdownItemClick('edit')}
+              onClick={() => {
+                handleDropdownItemClick('edit')
+                if (onEdit) onEdit()
+              }}
               style={{
                 padding: '8px 16px',
                 cursor: 'pointer',
@@ -184,7 +190,10 @@ const Taskview: React.FC<TaskviewProps> = ({
             </div>
             <div 
               className="task_tracker_task_dropdown_item"
-              onClick={() => handleDropdownItemClick('details')}
+              onClick={() => {
+                handleDropdownItemClick('details')
+                if (onDetails) onDetails()
+              }}
               style={{
                 padding: '8px 16px',
                 cursor: 'pointer',
@@ -195,7 +204,10 @@ const Taskview: React.FC<TaskviewProps> = ({
             </div>
             <div 
               className="task_tracker_task_dropdown_item"
-              onClick={() => handleDropdownItemClick('delegate')}
+              onClick={() => {
+                handleDropdownItemClick('delegate')
+                if (onDelegate) onDelegate()
+              }}
               style={{
                 padding: '8px 16px',
                 cursor: 'pointer',
@@ -206,7 +218,10 @@ const Taskview: React.FC<TaskviewProps> = ({
             </div>
             <div 
               className="task_tracker_task_dropdown_item"
-              onClick={() => handleDropdownItemClick('publish')}
+              onClick={() => {
+                handleDropdownItemClick('publish')
+                if (onPublish) onPublish()
+              }}
               style={{
                 padding: '8px 16px',
                 cursor: 'pointer',
