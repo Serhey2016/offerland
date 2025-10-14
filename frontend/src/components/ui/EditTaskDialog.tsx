@@ -190,6 +190,7 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
             onChange={(e) => handleDateChange('date_start', e.value as Date | null)}
             dateFormat="dd.mm.yy"
             showIcon
+            icon="pi pi-calendar"
             className="w-full"
             placeholder="Select start date"
           />
@@ -206,6 +207,7 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
             onChange={(e) => handleDateChange('date_end', e.value as Date | null)}
             dateFormat="dd.mm.yy"
             showIcon
+            icon="pi pi-calendar"
             className="w-full"
             placeholder="Select due date"
           />
