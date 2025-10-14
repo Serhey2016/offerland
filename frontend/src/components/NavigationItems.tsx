@@ -21,7 +21,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   onNavigationItemClick
 }) => {
   const [navigationItems, setNavigationItems] = useState<NavigationItem[]>([
-    { id: 'business-support', label: 'Business support', active: true },
+    { id: 'business-support', label: 'Business support', active: false },
     { id: 'personal-support', label: 'Personal support', active: false }
   ])
   
@@ -30,30 +30,35 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   const [scrollStart, setScrollStart] = useState(0)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  // Handle navigation item click
+  // Handle navigation item click with toggle functionality
   const handleNavigationClick = (itemId: string): void => {
     const item = navigationItems.find(i => i.id === itemId)
     if (!item) return
     
+    // Toggle logic: if clicking the already active item, deactivate it
+    const shouldActivate = !item.active
+    
     setNavigationItems(prev => prev.map(navItem => ({
       ...navItem,
-      active: navItem.id === itemId
+      active: navItem.id === itemId ? shouldActivate : false
     })))
     
-    // Dispatch custom event for navigation functionality
-    const navigationEvent = {
-      type: 'navigation',
-      category: selectedCategory,
-      item: item.label,
-      itemId: item.id
-    }
-    
-    window.dispatchEvent(new CustomEvent('subMenuNavigation', {
-      detail: navigationEvent
-    }))
-    
-    if (onNavigationItemClick) {
-      onNavigationItemClick(item.label)
+    // Only dispatch event if activating (not when deactivating)
+    if (shouldActivate) {
+      const navigationEvent = {
+        type: 'navigation',
+        category: selectedCategory,
+        item: item.label,
+        itemId: item.id
+      }
+      
+      window.dispatchEvent(new CustomEvent('subMenuNavigation', {
+        detail: navigationEvent
+      }))
+      
+      if (onNavigationItemClick) {
+        onNavigationItemClick(item.label)
+      }
     }
   }
 
