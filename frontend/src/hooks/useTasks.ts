@@ -263,7 +263,6 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   const handleSubmenuItemClick = useCallback((action: string) => {
     setShowSubmenu(false)
     setShowDropdown(false)
-    console.log(`Move to: ${action}`)
     // TODO: Implement move task logic
   }, [])
 
@@ -290,19 +289,14 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     
     switch (action) {
       case 'start':
-        console.log('Start clicked')
         break
       case 'edit':
-        console.log('Edit clicked')
         break
       case 'details':
-        console.log('Details clicked')
         break
       case 'delegate':
-        console.log('Delegate clicked')
         break
       case 'publish':
-        console.log('Publish clicked')
         break
       default:
         break
@@ -320,13 +314,10 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     
     switch (action) {
       case 'create':
-        console.log('Create task clicked')
         break
       case 'subtask':
-        console.log('Sub task clicked')
         break
       case 'note':
-        console.log('Note clicked')
         break
       default:
         break

@@ -16,6 +16,7 @@ interface InputContainerProps {
   label?: string
   icon?: string
   itemType?: string
+  activeLabel: 'project' | 'jobsearch'
   
   // Refs
   contentEditableRef: React.RefObject<HTMLDivElement>
@@ -30,6 +31,7 @@ interface InputContainerProps {
   toggleMenu: (event: React.MouseEvent) => void
   dropdownMenuItems: any[]
   handlePrioritySelect: (priority: string) => void
+  setActiveLabel: (label: 'project' | 'jobsearch') => void
 }
 
 const InputContainer: React.FC<InputContainerProps> = ({
@@ -44,6 +46,7 @@ const InputContainer: React.FC<InputContainerProps> = ({
   label = 'Task',
   icon = 'pi pi-check-circle',
   itemType = 'note',
+  activeLabel,
   contentEditableRef,
   menuRef,
   handleInputChange,
@@ -53,11 +56,9 @@ const InputContainer: React.FC<InputContainerProps> = ({
   editChip,
   toggleMenu,
   dropdownMenuItems,
-  handlePrioritySelect
+  handlePrioritySelect,
+  setActiveLabel
 }) => {
-  // State to track active label (Project or Job search)
-  const [activeLabel, setActiveLabel] = React.useState<'project' | 'jobsearch'>('project')
-  
   // Show Job search only for 'contact' itemType
   const showJobSearch = itemType === 'contact'
 
@@ -306,8 +307,6 @@ const InputContainer: React.FC<InputContainerProps> = ({
           className="task_creation_dropdown_menu"
           popupAlignment="right"
           hideOverlaysOnDocumentScrolling={false}
-          onShow={() => console.log('Menu shown')}
-          onHide={() => console.log('Menu hidden')}
         />
       </div>
     </div>

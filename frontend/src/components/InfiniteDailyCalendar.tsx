@@ -214,11 +214,6 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
     }
   }, [showDropdown])
 
-  // Debug: log submenu state changes
-  useEffect(() => {
-    console.log('Submenu state changed:', showSubmenu)
-  }, [showSubmenu])
-
   return (
     <>
       <div 

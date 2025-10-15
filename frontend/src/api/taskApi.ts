@@ -196,8 +196,8 @@ export const taskApi = {
         formData.append('parent_id', taskData.parent_id.toString())
       }
       
-      // Type of task ID for inbox - use "Task" type (ID: 1) for inbox tasks
-      formData.append('type_of_task', '1')  // "Task" type for inbox tasks
+      // Type of task - use "task" string value (not ID)
+      formData.append('type_of_task', 'task')
       
       const response = await api.post('/services_and_projects/create_task/', formData, {
         headers: {
@@ -252,8 +252,8 @@ export const taskApi = {
       // Edit item ID
       formData.append('edit_item_id', taskId.toString())
       
-      // Type of task ID - use "Task" type (ID: 1)
-      formData.append('type_of_task', '1')
+      // Type of task - use "task" string value (not ID)
+      formData.append('type_of_task', 'task')
       
       const response = await api.post('/services_and_projects/update_form/', formData, {
         headers: {
@@ -283,6 +283,76 @@ export const taskApi = {
       return response.data
     } catch (error) {
       console.error(`Error saving task notes for task ${taskId}:`, error)
+      throw error
+    }
+  },
+
+  // Створити Job Search
+  createJobSearch: async (title: string, startDate?: string, notes?: string): Promise<any> => {
+    try {
+      const formData = new FormData()
+      formData.append('title', title)
+      
+      if (startDate) {
+        formData.append('start_date', startDate)
+      }
+      
+      if (notes) {
+        formData.append('notes', notes)
+      }
+      
+      const response = await api.post('/services_and_projects/create_job_search/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error('Error creating job search:', error)
+      throw error
+    }
+  },
+
+  // Створити Project (Task with type_of_task='project')
+  createProject: async (taskData: InboxTaskData): Promise<any> => {
+    try {
+      // Prepare FormData for Django form submission
+      const formData = new FormData()
+      formData.append('title', taskData.title)
+      
+      if (taskData.date_start) {
+        formData.append('date_start', taskData.date_start)
+      }
+      
+      if (taskData.date_end) {
+        formData.append('date_end', taskData.date_end)
+      }
+      
+      if (taskData.priority) {
+        formData.append('priority', taskData.priority)
+      }
+      
+      // Description is optional
+      formData.append('description', taskData.description || '')
+      
+      // Parent task ID for subtasks
+      if (taskData.parent_id) {
+        formData.append('parent_id', taskData.parent_id.toString())
+      }
+      
+      // Type of task - use 'project' type
+      formData.append('type_of_task', 'project')
+      
+      const response = await api.post('/services_and_projects/create_task/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error('Error creating project:', error)
       throw error
     }
   }

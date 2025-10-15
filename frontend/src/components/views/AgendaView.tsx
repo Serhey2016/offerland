@@ -82,7 +82,6 @@ const AgendaView = () => {
       setLoading(true)
       const loadedTasks = await taskApi.getTasksByCategory('agenda')
       
-      console.log('Loaded agenda tasks:', loadedTasks)
       setTasks(loadedTasks)
       
       // Transform tasks to calendar events
@@ -128,7 +127,6 @@ const AgendaView = () => {
         }
       })
       
-      console.log('Transformed calendar events:', calendarEvents)
       setEvents(calendarEvents)
     } catch (error) {
       console.error('Error loading agenda tasks:', error)

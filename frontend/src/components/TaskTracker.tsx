@@ -251,21 +251,18 @@ const TaskTracker = () => {
   // Handle submenu filter events
   const handleSubMenuFilter = (event: CustomEvent): void => {
     const { category, filters } = event.detail
-    console.log('SubMenu Filter:', { category, filters })
     // TODO: Implement filter logic based on selected filters
   }
 
   // Handle submenu add events
   const handleSubMenuAdd = (event: CustomEvent): void => {
     const { category, itemType } = event.detail
-    console.log('SubMenu Add:', { category, itemType })
     // TODO: Implement add logic based on item type
   }
 
   // Handle submenu navigation events
   const handleSubMenuNavigation = (event: CustomEvent): void => {
     const { category, item, itemId } = event.detail
-    console.log('SubMenu Navigation:', { category, item, itemId })
     // TODO: Implement navigation logic
   }
 
@@ -426,15 +423,15 @@ const TaskTracker = () => {
       }),
       React.createElement('div', { className: 'task_tracker_right_side_section' },
         React.createElement(SubMenuSection, {
-          onNavigationItemClick: (item) => console.log('SubMenu Navigation clicked:', item),
+          onNavigationItemClick: (item) => {},
           selectedCategory: selectedCategory,
           selectedSubcategory: selectedSubcategory,
-          onFilterClick: () => console.log('SubMenu Filter clicked'),
-          onAddClick: () => console.log('SubMenu Add clicked'),
+          onFilterClick: () => {},
+          onAddClick: () => {},
         }),
         React.createElement(NavigationItems, {
           selectedCategory: selectedCategory,
-          onNavigationItemClick: (item) => console.log('Navigation clicked:', item)
+          onNavigationItemClick: (item) => {}
         }),
         React.createElement(SubcategoryDisplay, {
           selectedCategory: selectedCategory,

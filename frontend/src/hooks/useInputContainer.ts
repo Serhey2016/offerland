@@ -15,6 +15,7 @@ interface UseInputContainerProps {
   onSubmit: (taskData: InboxTaskData) => Promise<void>
   onTaskCreated?: () => void
   toastRef?: React.RefObject<any>
+  itemType?: string
 }
 
 interface UseInputContainerReturn {
@@ -27,6 +28,7 @@ interface UseInputContainerReturn {
   isDescriptionMode: boolean
   parentTaskChips: ChipData[]
   subtasks: Array<{chips: ChipData[]}>
+  activeLabel: 'project' | 'jobsearch'
   
   // Refs
   contentEditableRef: React.RefObject<HTMLDivElement>
@@ -42,6 +44,7 @@ interface UseInputContainerReturn {
   insertTextIntoInput: (text: string) => void
   toggleMenu: (event: React.MouseEvent) => void
   dropdownMenuItems: any[]
+  setActiveLabel: (label: 'project' | 'jobsearch') => void
 }
 
 // Constants
@@ -57,7 +60,8 @@ const priorityMap = {
 export const useInputContainer = ({ 
   onSubmit, 
   onTaskCreated,
-  toastRef
+  toastRef,
+  itemType
 }: UseInputContainerProps): UseInputContainerReturn => {
   // Use toasts hook (fallback if no external toastRef provided)
   const { toast: fallbackToast, showError: fallbackShowError, showSuccess: fallbackShowSuccess, showWarning: fallbackShowWarning } = useToasts()
@@ -117,12 +121,22 @@ export const useInputContainer = ({
   // Description mode state
   const [isDescriptionMode, setIsDescriptionMode] = useState(false)
   
+  // Active label state (Project or Job search)
+  const [activeLabel, setActiveLabel] = useState<'project' | 'jobsearch'>('project')
+  
   // Refs
   const contentEditableRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<TieredMenu>(null)
   
   // Computed state
   const isMaxLength = taskInput.length >= MAX_LENGTH
+
+  // Reset activeLabel when itemType changes
+  useEffect(() => {
+    if (itemType !== 'contact') {
+      setActiveLabel('project')
+    }
+  }, [itemType])
 
   // Helper function to format date from dd.mm.yyyy to yyyy-mm-dd
   const formatDateForBackend = (dateString: string): string => {
@@ -487,48 +501,148 @@ export const useInputContainer = ({
 
   // Handle confirm - create task
   const handleConfirm = useCallback(async () => {
-    if (taskInput.trim() || chips.length > 0 || parentTaskChips.length > 0) {
+    // Check if we have any input to save
+    if (!taskInput.trim() && chips.length === 0 && parentTaskChips.length === 0) {
+      showWarning('Please enter a title before saving.')
+      return
+    }
+    
+    try {
+      // If in subtask mode with current chips, add to queue
+      if (isSubtaskMode && chips.length > 0) {
+        const titleChip = chips.find(chip => chip.type === 'title')
+        if (titleChip) {
+          addSubtaskToQueue()
+        }
+      }
       
-      try {
-        // If in subtask mode with current chips, add to queue
-        if (isSubtaskMode && chips.length > 0) {
-          const titleChip = chips.find(chip => chip.type === 'title')
-          if (titleChip) {
-            addSubtaskToQueue()
-          }
-        }
-        
-        // Determine which chips to use for parent task
-        const parentChips = isSubtaskMode ? parentTaskChips : chips
-        const titleChip = parentChips.find(chip => chip.type === 'title')
-        const priorityChip = parentChips.find(chip => chip.type === 'priority')
-        const dateChips = parentChips.filter(chip => chip.type === 'date')
-        const descriptionChip = parentChips.find(chip => chip.type === 'description')
-        
-        // Create parent task data
+      // Determine which chips to use for parent task
+      const parentChips = isSubtaskMode ? parentTaskChips : chips
+      const titleChip = parentChips.find(chip => chip.type === 'title')
+      const priorityChip = parentChips.find(chip => chip.type === 'priority')
+      const dateChips = parentChips.filter(chip => chip.type === 'date')
+      const descriptionChip = parentChips.find(chip => chip.type === 'description')
+      
+      // Get title from chip OR directly from input (without converting to chip)
+      const title = titleChip?.value || taskInput.trim()
+      
+      // Validate title
+      if (!title) {
+        showWarning('Please enter a title before saving.')
+        return
+      }
+      
+      const startDate = extractDateStart(dateChips)
+      const endDate = extractDateEnd(dateChips)
+      const description = descriptionChip?.value
+      const priority = priorityChip?.value as 'iu' | 'inu' | 'niu' | 'ninu' | undefined
+      
+      // Check if this is Project/Job Search mode (itemType='contact')
+      if (itemType === 'contact') {
+        // For briefcase icon - create Project or Job Search based on activeLabel
+        if (activeLabel === 'jobsearch') {
+          // Create Job Search entry
+          const parentResponse = await taskApi.createJobSearch(
+            title,
+            startDate,
+            description // using description as notes
+          )
+          
+          console.log('Job Search created:', parentResponse)
+          showSuccess('Job Search created successfully!', 'Job Search Saved', 4000)
+        } else {
+          // Create Project (Task with type_of_task='project')
         const parentTaskData: InboxTaskData = {
-          title: titleChip?.value || taskInput.trim(),
+          title,
         }
         
-        if (priorityChip) {
-          parentTaskData.priority = priorityChip.value as 'iu' | 'inu' | 'niu' | 'ninu'
+        if (priority) {
+          parentTaskData.priority = priority
         }
         
-        if (descriptionChip) {
-          parentTaskData.description = descriptionChip.value
+        if (description) {
+          parentTaskData.description = description
         }
         
-        const startDate = extractDateStart(dateChips)
         if (startDate) {
           parentTaskData.date_start = startDate
         }
         
-        const endDate = extractDateEnd(dateChips)
         if (endDate) {
           parentTaskData.date_end = endDate
         }
         
-        // Create parent task first
+        // Create parent project first
+        const parentResponse = await taskApi.createProject(parentTaskData)
+        const parentTaskId = parentResponse?.task?.id || parentResponse?.id
+        
+        console.log('Parent project created with ID:', parentTaskId)
+        
+        // If we have subtasks, create them sequentially
+        if (isSubtaskMode && subtasks.length > 0 && parentTaskId) {
+          for (const subtask of subtasks) {
+            const subtaskTitleChip = subtask.chips.find(chip => chip.type === 'title')
+            const subtaskPriorityChip = subtask.chips.find(chip => chip.type === 'priority')
+            const subtaskDateChips = subtask.chips.filter(chip => chip.type === 'date')
+            const subtaskDescriptionChip = subtask.chips.find(chip => chip.type === 'description')
+            
+            if (!subtaskTitleChip) continue // Skip subtasks without title
+            
+            const subtaskData: InboxTaskData = {
+              title: subtaskTitleChip.value,
+              parent_id: parentTaskId
+            }
+            
+            if (subtaskPriorityChip) {
+              subtaskData.priority = subtaskPriorityChip.value as 'iu' | 'inu' | 'niu' | 'ninu'
+            }
+            
+            if (subtaskDescriptionChip) {
+              subtaskData.description = subtaskDescriptionChip.value
+            }
+            
+            const subtaskStartDate = extractDateStart(subtaskDateChips)
+            if (subtaskStartDate) {
+              subtaskData.date_start = subtaskStartDate
+            }
+            
+            const subtaskEndDate = extractDateEnd(subtaskDateChips)
+            if (subtaskEndDate) {
+              subtaskData.date_end = subtaskEndDate
+            }
+            
+            await taskApi.createProject(subtaskData)
+            console.log('Subtask created:', subtaskData.title)
+          }
+          
+          showSuccess(`Project and ${subtasks.length} subtask(s) created successfully!`, 'Projects Saved', 4000)
+          } else {
+            showSuccess('Project created successfully!', 'Project Saved', 4000)
+          }
+        }
+      } else {
+        // For all other item types (Task, etc.) - use onSubmit callback
+        const parentTaskData: InboxTaskData = {
+          title,
+        }
+        
+        if (priority) {
+          parentTaskData.priority = priority
+        }
+        
+        if (description) {
+          parentTaskData.description = description
+        }
+        
+        if (startDate) {
+          parentTaskData.date_start = startDate
+        }
+        
+        if (endDate) {
+          parentTaskData.date_end = endDate
+        }
+        
+        // Create parent task first using provided onSubmit
         const parentResponse = await onSubmit(parentTaskData)
         const parentTaskId = parentResponse?.task?.id || parentResponse?.id
         
@@ -575,31 +689,34 @@ export const useInputContainer = ({
         } else {
           showSuccess('Task created successfully!', 'Task Saved', 4000)
         }
-        
-        // Clear all state after successful submission
-        setTaskInput('')
-        setHasText(false)
-        setChips([])
-        setIsSubtaskMode(false)
-        setSubtasks([])
-        setParentTaskChips([])
-        setIsDescriptionMode(false)
-        
-        // Clear the contenteditable element
-        if (contentEditableRef.current) {
-          contentEditableRef.current.textContent = ''
-          contentEditableRef.current.focus()
-        }
-        
-        // Call optional callback
-        onTaskCreated?.()
-        
-      } catch (error) {
-        console.error('Error creating task:', error)
-        showError('Error creating task. Please try again.')
       }
+      
+      // Clear all state after successful submission
+      setTaskInput('')
+      setHasText(false)
+      setChips([])
+      setIsSubtaskMode(false)
+      setSubtasks([])
+      setParentTaskChips([])
+      setIsDescriptionMode(false)
+      
+      // Clear the contenteditable element
+      if (contentEditableRef.current) {
+        contentEditableRef.current.textContent = ''
+        contentEditableRef.current.focus()
+      }
+      
+      // Call optional callback
+      onTaskCreated?.()
+      
+    } catch (error) {
+      console.error('Error creating task:', error)
+      const errorType = itemType === 'contact' 
+        ? (activeLabel === 'jobsearch' ? 'job search' : 'project') 
+        : 'task'
+      showError(`Error creating ${errorType}. Please try again.`)
     }
-  }, [taskInput, chips, parentTaskChips, isSubtaskMode, subtasks, onSubmit, showError, showSuccess, onTaskCreated, addSubtaskToQueue, extractDateStart, extractDateEnd])
+  }, [taskInput, chips, parentTaskChips, isSubtaskMode, subtasks, activeLabel, itemType, showError, showSuccess, showWarning, onTaskCreated, onSubmit, addSubtaskToQueue, extractDateStart, extractDateEnd])
 
   // Handle priority select
   const handlePrioritySelect = useCallback((priority: string) => {
@@ -769,8 +886,6 @@ export const useInputContainer = ({
 
   // Toggle menu
   const toggleMenu = useCallback((event: React.MouseEvent) => {
-    console.log('Toggle menu clicked, menuRef:', menuRef.current)
-    
     if (menuRef.current) {
       menuRef.current.toggle(event)
     } else {
@@ -788,6 +903,7 @@ export const useInputContainer = ({
     isDescriptionMode,
     parentTaskChips,
     subtasks,
+    activeLabel,
     
     // Refs
     contentEditableRef,
@@ -802,7 +918,8 @@ export const useInputContainer = ({
     editChip,
     insertTextIntoInput,
     toggleMenu,
-    dropdownMenuItems
+    dropdownMenuItems,
+    setActiveLabel
   }
 }
 

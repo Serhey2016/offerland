@@ -40,15 +40,16 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   // Use toasts hook
   const { toast, showError, showSuccess } = useToasts()
 
+  // Use tasks hook for UI logic
+  const tasksHook = useTasks()
+
   // Use input container hook
   const inputContainerProps = useInputContainer({
     onSubmit: handleCreateTask,
     onTaskCreated: () => loadUserTasks(),
-    toastRef: toast
+    toastRef: toast,
+    itemType: tasksHook.taskCreationItemType
   })
-
-  // Use tasks hook for UI logic
-  const tasksHook = useTasks()
 
   // Load user tasks on component mount and when category changes
   useEffect(() => {
@@ -118,9 +119,8 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
 
   // Handle task actions from TaskDesign component
   const handleTaskAction = (action: string, taskId?: number) => {
-    console.log(`Task action: ${action}`, taskId ? `for task ${taskId}` : '')
     switch (action) {
-      case 'start': console.log('Start task clicked'); break
+      case 'start': break
       case 'edit': 
         if (taskId) {
           const task = userTasks.find(t => t.id === taskId)
@@ -139,9 +139,9 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           }
         }
         break
-      case 'details': console.log('Details clicked'); break
-      case 'delegate': console.log('Delegate clicked'); break
-      case 'publish': console.log('Publish clicked'); break
+      case 'details': break
+      case 'delegate': break
+      case 'publish': break
       default: break
     }
   }
@@ -184,7 +184,6 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
 
   // Handle move task action
   const handleMoveTask = (destination: string, taskId?: number) => {
-    console.log(`Move task ${taskId} to: ${destination}`)
     // TODO: Implement move task logic
   }
 
@@ -238,6 +237,8 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             icon={tasksHook.taskCreationIcon}
             itemType={tasksHook.taskCreationItemType}
             isDescriptionMode={inputContainerProps.isDescriptionMode}
+            activeLabel={inputContainerProps.activeLabel}
+            setActiveLabel={inputContainerProps.setActiveLabel}
           />
         )}
 
