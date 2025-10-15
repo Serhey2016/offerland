@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    TypeOfTask, Comment, TaskStatus, ServicesCategory, PhotoRelations, Services, Finance, Task,
+    Comment, TaskStatus, ServicesCategory, PhotoRelations, Services, Finance, Task,
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations, 
     PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
     TimeSlot, Advertising, TaskClientRelations, TimeSlotPerformersRelations, CommentTimeSlotRelations,
@@ -122,7 +122,6 @@ class JobSearchActivitiesRelationsAdmin(admin.ModelAdmin):
     get_vacancy_link.short_description = 'Vacancy Link'
     get_vacancy_link.allow_tags = True
 
-admin.site.register(TypeOfTask)
 admin.site.register(Comment)
 admin.site.register(TaskStatus)
 admin.site.register(ServicesCategory)

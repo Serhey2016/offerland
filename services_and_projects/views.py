@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from .models import TypeOfTask, ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations, TaskHashtagRelations
+from .models import ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations, TaskHashtagRelations
 from joblist.models import AllTags, Companies
 from django.utils import timezone
 import json
@@ -17,7 +17,8 @@ def testpage(request):
     status_filter = request.GET.get('status', 'all')
     category_filter = request.GET.get('category', 'all')
     
-    types = TypeOfTask.objects.all()
+    # Get type of task choices from Task model
+    types = Task.TYPE_OF_TASK_CHOICES
     categories = ServicesCategory.objects.all()
     services = Services.objects.all()
     statuses = TaskStatus.objects.all()
@@ -34,7 +35,7 @@ def testpage(request):
     
     # --- Динамический блок social_feed ---
     # Получаем все элементы Advertising с их владельцами
-    advertisings = Advertising.objects.select_related('services', 'type_of_task').prefetch_related('photos', 'hashtags').order_by('-creation_date')
+    advertisings = Advertising.objects.select_related('services').prefetch_related('photos', 'hashtags').order_by('-creation_date')
     
     # Apply status filter for advertising
     if status_filter == 'draft':
@@ -64,7 +65,7 @@ def testpage(request):
         })
     
     # Получаем все задачи для отображения в потоке
-    tasks_for_feed = Task.objects.select_related('type_of_task', 'finance').prefetch_related(
+    tasks_for_feed = Task.objects.select_related('finance').prefetch_related(
         'photos', 'hashtags', 'performers', 'services'
     ).order_by('-created_at')
     
@@ -94,7 +95,7 @@ def testpage(request):
         job_searches_for_feed = job_searches_for_feed.filter(js_mode='draft')
     
     # Получаем все TimeSlot для отображения в потоке
-    time_slots_for_feed = TimeSlot.objects.select_related('type_of_task', 'services').prefetch_related(
+    time_slots_for_feed = TimeSlot.objects.select_related('services').prefetch_related(
         'hashtags', 'performers', 'photos'
     ).order_by('-date_start')
     
@@ -614,8 +615,6 @@ def user_tasks(request):
         # Get tasks owned by the user through TaskOwnerRelations
         user_tasks = Task.objects.filter(
             taskownerrelations__user=request.user
-        ).select_related(
-            'type_of_task'
         ).prefetch_related(
             'hashtags__hashtag'
         )
@@ -708,13 +707,11 @@ def get_edit_data(request, form_type, item_id):
         if form_type == 'my-list':
             print(f"DEBUG: Processing my-list form type for item {item_id}")
             # Получаем данные задачи
-            task = Task.objects.select_related(
-                'type_of_task', 'status'
-            ).prefetch_related(
+            task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
             ).get(id=item_id)
             
-            print(f"DEBUG: Found task: {task.title}, type: {task.type_of_task.type_of_task_name}")
+            print(f"DEBUG: Found task: {task.title}, type: {task.type_of_task}")
             
             # Проверяем права доступа (только владелец может редактировать)
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -748,11 +745,9 @@ def get_edit_data(request, form_type, item_id):
             
         elif form_type == 'tender':
             # Получаем данные тендера (используем модель Task с типом 'tender')
-            task = Task.objects.select_related(
-                'type_of_task', 'status'
-            ).prefetch_related(
+            task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
-            ).get(id=item_id, type_of_task__type_of_task_name='tender')
+            ).get(id=item_id, type_of_task='tender')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -778,11 +773,9 @@ def get_edit_data(request, form_type, item_id):
             
         elif form_type == 'project':
             # Получаем данные проекта (используем модель Task с типом 'project')
-            task = Task.objects.select_related(
-                'type_of_task', 'status'
-            ).prefetch_related(
+            task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
-            ).get(id=item_id, type_of_task__type_of_task_name='project')
+            ).get(id=item_id, type_of_task='project')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -810,7 +803,7 @@ def get_edit_data(request, form_type, item_id):
             print(f"DEBUG: Processing advertising form type for item {item_id}")
             # Получаем данные рекламы
             advertising = Advertising.objects.select_related(
-                'type_of_task', 'services', 'services__category_name'
+                'services', 'services__category_name'
             ).prefetch_related(
                 'hashtags', 'photos'
             ).get(id=item_id)

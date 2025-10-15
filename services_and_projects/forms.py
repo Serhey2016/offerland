@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Task, TypeOfTask, TaskStatus, Finance, ServicesCategory, Services, ServicesRelations, Advertising, TimeSlot, JobSearch
+from .models import Task, TaskStatus, Finance, ServicesCategory, Services, ServicesRelations, Advertising, TimeSlot, JobSearch
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -115,13 +115,14 @@ def create_task(request):
             if not title:
                 missing_fields.append('Title')
             
-            # Для задач типа "Job search" и "Task" (Inbox tasks) description не обязателен
+            # Для задач типа "Job search", "Task" (Inbox tasks) и "Project" description не обязателен
             if not description and type_of_task_id:
                 try:
-                    type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
-                    if type_of_task.type_of_task_name not in ['Job search', 'Task']:
+                    # type_of_task_id is now a string value, not an ID
+                    # Check if it's not in the list of types where description is optional
+                    if type_of_task_id not in ['job_search', 'task', 'project']:
                         missing_fields.append('Description')
-                except TypeOfTask.DoesNotExist:
+                except Exception:
                     missing_fields.append('Description')
             # If no type_of_task_id provided (Inbox tasks), description is optional
                 
@@ -133,7 +134,7 @@ def create_task(request):
 
             # ЭТАП 1: Создаём основную запись Task
             task = Task.objects.create(
-                type_of_task_id=type_of_task_id,
+                type_of_task=type_of_task_id if type_of_task_id else 'task',
                 title=title,
                 description=description,
                 photo_link=photo_link,
@@ -711,16 +712,11 @@ def handle_form_submission(request):
                 logger.error("Type of task is required but not provided")
                 return JsonResponse({'success': False, 'error': 'Type of task is required'}, status=400)
             
-            # Получаем объект TypeOfTask для определения типа
-            try:
-                type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
-                type_name = type_of_task.type_of_task_name.lower()
-                logger.info(f"Type of task: {type_name} (ID: {type_of_task_id})")
-                logger.info(f"Type name contains 'time slot': {'time slot' in type_name}")
-                logger.info(f"Type name contains 'timeslot': {'timeslot' in type_name}")
-            except TypeOfTask.DoesNotExist:
-                logger.error(f"Invalid type of task ID: {type_of_task_id}")
-                return JsonResponse({'success': False, 'error': 'Invalid type of task'}, status=400)
+            # type_of_task_id is now a string value directly
+            type_name = type_of_task_id.lower() if type_of_task_id else ''
+            logger.info(f"Type of task: {type_name}")
+            logger.info(f"Type name contains 'time slot': {'time slot' in type_name}")
+            logger.info(f"Type name contains 'timeslot': {'timeslot' in type_name}")
             
             # Направляем на соответствующую функцию в зависимости от типа
             # Учитываем возможную опечатку "adversting" вместо "advertising"
@@ -730,11 +726,11 @@ def handle_form_submission(request):
             elif 'time slot' in type_name or 'timeslot' in type_name or 'time' in type_name:
                 logger.info("Calling create_time_slot")
                 return create_time_slot(request)
-            elif 'job search' in type_name:
+            elif 'job' in type_name and 'search' in type_name:
                 logger.info("Calling create_job_search")
                 return create_job_search(request)
-            elif type_of_task_id == '5':  # Принудительно для TimeSlot
-                logger.info(f"Type ID is 5, forcing create_time_slot call")
+            elif type_of_task_id == 'orders':  # Orders is also a time slot
+                logger.info(f"Type is orders, calling create_time_slot")
                 return create_time_slot(request)
             else:
                 # Для остальных типов (My list, Tender, Project) используем create_task
@@ -763,7 +759,7 @@ def create_activity_task(request, activity_id):
     
     if request.method == 'POST':
         try:
-            from .models import Activities, ActivitiesTaskRelations, Task, TaskStatus, JobSearchActivitiesRelations, TypeOfTask
+            from .models import Activities, ActivitiesTaskRelations, Task, TaskStatus, JobSearchActivitiesRelations
             
             # Получаем активность
             activity = Activities.objects.get(id=activity_id)
@@ -799,11 +795,9 @@ def create_activity_task(request, activity_id):
                     'error': 'Title is required'
                 }, status=400)
             
-            # Получаем тип задачи по умолчанию (Job search) или создаем новый
-            type_of_task, created = TypeOfTask.objects.get_or_create(
-                type_of_task_name='Job search'
-            )
-            print(f"Type of task: {type_of_task} (created: {created})")
+            # Тип задачи по умолчанию - 'job_search'
+            type_of_task = 'job_search'
+            print(f"Type of task: {type_of_task}")
             
             # Статус задачи по умолчанию
             default_status = 'inbox'
@@ -897,25 +891,20 @@ def update_form(request):
                 logger.error("Type of task ID is missing")
                 return JsonResponse({'success': False, 'error': 'Type of task is required'}, status=400)
             
-            # Определяем тип публикации
-            try:
-                type_of_task = TypeOfTask.objects.get(id=type_of_task_id)
-                type_name = type_of_task.type_of_task_name.lower()
-                logger.info(f"Found type of task: {type_of_task.type_of_task_name} (ID: {type_of_task_id})")
-                logger.info(f"Updating {type_name} with ID: {edit_item_id}")
-            except TypeOfTask.DoesNotExist:
-                logger.error(f"TypeOfTask with ID {type_of_task_id} not found")
-                return JsonResponse({'success': False, 'error': 'Invalid type of task'}, status=400)
+            # Определяем тип публикации (теперь type_of_task_id - это строковое значение)
+            type_name = type_of_task_id.lower() if type_of_task_id else ''
+            logger.info(f"Type of task: {type_name}")
+            logger.info(f"Updating {type_name} with ID: {edit_item_id}")
             
             # Направляем на соответствующую функцию обновления
             logger.info(f"Routing to update function for type: {type_name}")
             if 'advertising' in type_name:
                 logger.info("Routing to update_advertising")
                 return update_advertising(request, edit_item_id)
-            elif 'time slot' in type_name or 'timeslot' in type_name or 'orders' in type_name or type_of_task_id == '5':
+            elif 'time slot' in type_name or 'timeslot' in type_name or 'orders' in type_name:
                 logger.info("Routing to update_time_slot")
                 return update_time_slot(request, edit_item_id)
-            elif 'job search' in type_name:
+            elif 'job' in type_name and 'search' in type_name:
                 logger.info("Routing to update_job_search")
                 return update_job_search(request, edit_item_id)
             else:

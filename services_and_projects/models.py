@@ -11,19 +11,6 @@ def generate_uuid():
 
 User = get_user_model()
 
-class TypeOfTask(models.Model):
-    id = models.AutoField(primary_key=True)
-    type_of_task_name = models.CharField(max_length=15, unique=True)
-
-    def __str__(self):
-        return self.type_of_task_name
-
-    class Meta:
-        verbose_name = "Type of task"
-        verbose_name_plural = "Type of tasks"
-
-
-
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
@@ -151,8 +138,17 @@ class Task(models.Model):
         ('archive', 'Archive'),
     ]
     
+    TYPE_OF_TASK_CHOICES = [
+        ('tender', 'Tender'),
+        ('project', 'Project'),
+        ('advertising', 'Advertising'),
+        ('orders', 'Orders'),
+        ('job_search', 'Job Search'),
+        ('task', 'Task'),
+    ]
+    
     id = models.AutoField(primary_key=True)
-    type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)
+    type_of_task = models.CharField(max_length=15, choices=TYPE_OF_TASK_CHOICES, default='task', verbose_name='Type of task')
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000, blank=True, null=True)
     photo_link = models.CharField(max_length=2000, blank=True, null=True)
@@ -299,7 +295,16 @@ class TimeSlot(models.Model):
     start_location = models.CharField(max_length=100)  # Почтовый индекс
     cost_of_1_hour_of_work = models.DecimalField(max_digits=10, decimal_places=2)  # В центах
     minimum_time_slot = models.CharField(max_length=50)  # Изменено на CharField
-    type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)  # Добавлена связь с TypeOfTask
+    
+    TYPE_OF_TASK_CHOICES = [
+        ('tender', 'Tender'),
+        ('project', 'Project'),
+        ('advertising', 'Advertising'),
+        ('orders', 'Orders'),
+        ('job_search', 'Job Search'),
+        ('task', 'Task'),
+    ]
+    type_of_task = models.CharField(max_length=15, choices=TYPE_OF_TASK_CHOICES, default='task', verbose_name='Type of task')
     services = models.ForeignKey('Services', on_delete=models.CASCADE)
     ts_mode = models.CharField(max_length=10, choices=TS_MODE_CHOICES, default='draft', verbose_name='Time slot mode')
     
@@ -353,7 +358,16 @@ class Advertising(models.Model):
     description = models.TextField(max_length=5000)
     hashtags = models.ManyToManyField('joblist.AllTags', through='AdvertisingHashtagRelations', blank=True)
     services = models.ForeignKey('Services', on_delete=models.CASCADE, null=True, blank=True)
-    type_of_task = models.ForeignKey('TypeOfTask', on_delete=models.CASCADE)  # Добавлена связь с TypeOfTask
+    
+    TYPE_OF_TASK_CHOICES = [
+        ('tender', 'Tender'),
+        ('project', 'Project'),
+        ('advertising', 'Advertising'),
+        ('orders', 'Orders'),
+        ('job_search', 'Job Search'),
+        ('task', 'Task'),
+    ]
+    type_of_task = models.CharField(max_length=15, choices=TYPE_OF_TASK_CHOICES, default='task', verbose_name='Type of task')
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='advertisings')
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Creation date')
     publication_date = models.DateTimeField(auto_now_add=True, verbose_name='Publication date')
