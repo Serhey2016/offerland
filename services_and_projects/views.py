@@ -619,9 +619,9 @@ def user_tasks(request):
             'hashtags__hashtag'
         )
         
-        # Filter by status if category is provided and matches a valid status
-        # Map category names to status values
-        status_mapping = {
+        # Filter by element_position if category is provided and matches a valid position
+        # Map category names to element_position values
+        position_mapping = {
             'inbox': 'inbox',
             'backlog': 'backlog',
             'agenda': 'agenda',
@@ -632,13 +632,13 @@ def user_tasks(request):
             'archive': 'archive'
         }
         
-        if category in status_mapping:
-            # Special handling for agenda - show tasks with status='agenda' OR is_agenda=True
+        if category in position_mapping:
+            # Special handling for agenda - show tasks with element_position='agenda' OR is_agenda=True
             if category == 'agenda':
                 from django.db.models import Q
-                user_tasks = user_tasks.filter(Q(status='agenda') | Q(is_agenda=True))
+                user_tasks = user_tasks.filter(Q(element_position__name='agenda') | Q(is_agenda=True))
             else:
-                user_tasks = user_tasks.filter(status=status_mapping[category])
+                user_tasks = user_tasks.filter(element_position__name=position_mapping[category])
         
         user_tasks = user_tasks.order_by('-created_at')
         
@@ -672,7 +672,7 @@ def user_tasks(request):
                 'time_start': task.start_datetime.isoformat() if task.start_datetime else None,
                 'time_end': task.end_datetime.isoformat() if task.end_datetime else None,
                 'priority': task.priority,
-                'status': task.status,
+                'status': task.element_position.name if task.element_position else None,
                 'task_mode': task.task_mode,
                 'note': task.note,
                 'created_at': task.created_at.isoformat(),
@@ -733,7 +733,7 @@ def get_edit_data(request, form_type, item_id):
                 'description': task.description,
                 'category': category_id,
                 'service': service_id,
-                'status': task.status,
+                'status': task.element_position.name if task.element_position else None,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
                 'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
@@ -763,7 +763,7 @@ def get_edit_data(request, form_type, item_id):
                 'description': task.description,
                 'category': category_id,
                 'service': service_id,
-                'status': task.status,
+                'status': task.element_position.name if task.element_position else None,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
                 'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
@@ -791,7 +791,7 @@ def get_edit_data(request, form_type, item_id):
                 'description': task.description,
                 'category': category_id,
                 'service': service_id,
-                'status': task.status,
+                'status': task.element_position.name if task.element_position else None,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
                 'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
@@ -974,8 +974,8 @@ def update_task_status(request, task_id):
                 'error': f'Invalid status. Must be one of: {", ".join(valid_statuses)}'
             }, status=400)
         
-        # Update task status
-        task.status = new_status
+        # Update task element_position
+        task.element_position_id = new_status
         task.save()
         
         return JsonResponse({

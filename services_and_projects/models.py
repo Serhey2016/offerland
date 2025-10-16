@@ -58,6 +58,31 @@ class TaskStatus(models.Model):
         verbose_name_plural = "Task Statuses"
 
 
+class ElementPosition(models.Model):
+    """Unified position/status for all elements (Task, JobSearch, TimeSlot, etc.)"""
+    POSITION_CHOICES = [
+        ('inbox', 'Inbox'),
+        ('backlog', 'Backlog'),
+        ('agenda', 'Agenda'),
+        ('waiting', 'Waiting'),
+        ('someday', 'Someday'),
+        ('projects', 'Projects'),
+        ('done', 'Done'),
+        ('archive', 'Archive'),
+    ]
+    
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=15, choices=POSITION_CHOICES, unique=True)
+    
+    def __str__(self):
+        return self.get_name_display()
+    
+    class Meta:
+        db_table = 'element_position'
+        verbose_name = "Element Position"
+        verbose_name_plural = "Element Positions"
+
+
 class ServicesCategory(models.Model):
     id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=100, unique=True)
@@ -127,17 +152,6 @@ class Task(models.Model):
         ('ninu', 'Not Important & Not Urgent'),
     ]
     
-    STATUS_CHOICES = [
-        ('inbox', 'Inbox'),
-        ('backlog', 'Backlog'),
-        ('agenda', 'Agenda'),
-        ('waiting', 'Waiting'),
-        ('someday', 'Someday'),
-        ('projects', 'Projects'),
-        ('done', 'Done'),
-        ('archive', 'Archive'),
-    ]
-    
     TYPE_OF_TASK_CHOICES = [
         ('tender', 'Tender'),
         ('project', 'Project'),
@@ -158,7 +172,7 @@ class Task(models.Model):
     end_datetime = models.DateTimeField(null=True, blank=True, verbose_name='End Date & Time')
     documents = models.CharField(max_length=2000, blank=True, null=True)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, null=True, blank=True, verbose_name='Priority')
-    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='inbox', verbose_name='Status')
+    element_position = models.ForeignKey('ElementPosition', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Position', to_field='name', db_column='element_position')
     task_mode = models.CharField(max_length=15, choices=TASK_MODE_CHOICES, default='draft', verbose_name='Task mode')
     is_private = models.BooleanField(default=False)
     disclose_name = models.BooleanField(default=False)
@@ -306,6 +320,7 @@ class TimeSlot(models.Model):
     ]
     type_of_task = models.CharField(max_length=15, choices=TYPE_OF_TASK_CHOICES, default='task', verbose_name='Type of task')
     services = models.ForeignKey('Services', on_delete=models.CASCADE)
+    element_position = models.ForeignKey('ElementPosition', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Position', to_field='name', db_column='element_position')
     ts_mode = models.CharField(max_length=10, choices=TS_MODE_CHOICES, default='draft', verbose_name='Time slot mode')
     
     # Добавляем связи многие ко многим через промежуточные таблицы
@@ -512,9 +527,11 @@ class JobSearch(models.Model):
         ('find_job', 'Find job'),
         ('not_find', 'Not find'),
     ]
+    
     result_of_task = models.CharField(max_length=10, choices=RESULT_CHOICES, default='not_find')
     js_mode = models.CharField(max_length=10, choices=JS_MODE_CHOICES, default='draft', verbose_name='Job search mode')
     post_type = models.CharField(max_length=20, choices=POST_TYPE_CHOICES, default='job_search', verbose_name='Post type')
+    element_position = models.ForeignKey('ElementPosition', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Position', to_field='name', db_column='element_position')
     
     # Связь многие ко многим с Activities через промежуточную таблицу
     activities = models.ManyToManyField('Activities', through='JobSearchActivitiesRelations', blank=True)

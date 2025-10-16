@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    Comment, TaskStatus, ServicesCategory, PhotoRelations, Services, Finance, Task,
+    Comment, TaskStatus, ElementPosition, ServicesCategory, PhotoRelations, Services, Finance, Task,
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations, 
     PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
     TimeSlot, Advertising, TaskClientRelations, TimeSlotPerformersRelations, CommentTimeSlotRelations,
@@ -29,15 +29,15 @@ class ServicesRelationsInline(admin.TabularInline):
     extra = 1
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'type_of_task', 'task_mode', 'status', 'priority', 'created_at', 'is_published', 'is_touchpoint', 'is_agenda')
-    list_filter = ('task_mode', 'status', 'priority', 'type_of_task', 'is_published', 'is_touchpoint', 'is_agenda', 'created_at')
+    list_display = ('id', 'title', 'type_of_task', 'task_mode', 'element_position', 'priority', 'created_at', 'is_published', 'is_touchpoint', 'is_agenda')
+    list_filter = ('task_mode', 'element_position', 'priority', 'type_of_task', 'is_published', 'is_touchpoint', 'is_agenda', 'created_at')
     search_fields = ('title', 'description')
     readonly_fields = ('created_at', 'updated_at')
     date_hierarchy = 'created_at'
     
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'description', 'type_of_task', 'task_mode', 'status', 'priority')
+            'fields': ('title', 'description', 'type_of_task', 'task_mode', 'element_position', 'priority')
         }),
         ('Дополнительная информация', {
             'fields': ('photo_link', 'documents', 'note', 'finance'),
@@ -124,6 +124,7 @@ class JobSearchActivitiesRelationsAdmin(admin.ModelAdmin):
 
 admin.site.register(Comment)
 admin.site.register(TaskStatus)
+admin.site.register(ElementPosition)
 admin.site.register(ServicesCategory)
 admin.site.register(PhotoRelations)
 admin.site.register(Services)

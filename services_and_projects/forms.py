@@ -97,7 +97,14 @@ def create_task(request):
                     except ValueError:
                         pass
             documents = none_if_empty(request.POST.get('documents'))
-            status = none_if_empty(request.POST.get('status')) or 'inbox'
+            # Set element_position based on type_of_task
+            element_position = none_if_empty(request.POST.get('element_position'))
+            if not element_position:
+                # If type_of_task is 'project', set element_position to 'projects'
+                if type_of_task_id and type_of_task_id.lower() == 'project':
+                    element_position = 'projects'
+                else:
+                    element_position = 'inbox'
             is_private = bool(request.POST.get('private'))
             disclose_name = bool(request.POST.get('disclose_name'))
             hidden = bool(request.POST.get('hidden'))
@@ -142,7 +149,7 @@ def create_task(request):
                 end_datetime=end_datetime,
                 documents=documents,
                 priority=priority,
-                status=status,
+                element_position_id=element_position,
                 is_private=is_private,
                 disclose_name=disclose_name,
                 hidden=hidden,
@@ -540,7 +547,8 @@ def create_time_slot(request):
                 cost_of_1_hour_of_work=cost_in_cents or Decimal('0'),
                 minimum_time_slot=str(minimum_time_slot) if minimum_time_slot else '60',
                 type_of_task_id=type_of_task_id,
-                services_id=services_id
+                services_id=services_id,
+                element_position_id='inbox'
             )
             
             logger.info(f"TimeSlot created successfully with ID: {time_slot.id}")
@@ -669,7 +677,8 @@ def create_job_search(request):
             # Всегда создаем новую запись JobSearch
             job_search = JobSearch.objects.create(
                 user=request.user,
-                title=title
+                title=title,
+                element_position_id='projects'
                 # start_date остается пустым
                 # last_update заполнится автоматически
             )
@@ -797,9 +806,9 @@ def create_activity_task(request, activity_id):
             type_of_task = 'job_search'
             print(f"Type of task: {type_of_task}")
             
-            # Статус задачи по умолчанию
-            default_status = 'inbox'
-            print(f"Default status: {default_status}")
+            # Element position по умолчанию
+            default_element_position = 'inbox'
+            print(f"Default element_position: {default_element_position}")
             
             # Создаем таску
             print(f"Creating task with title: {title}, description: {description}")
@@ -807,7 +816,7 @@ def create_activity_task(request, activity_id):
                 type_of_task=type_of_task,
                 title=title,
                 description=description,
-                status=default_status,
+                element_position_id=default_element_position,
                 is_private=False,
                 disclose_name=False,
                 hidden=False,
