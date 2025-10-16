@@ -615,6 +615,8 @@ def user_tasks(request):
         # Get tasks owned by the user through TaskOwnerRelations
         user_tasks = Task.objects.filter(
             taskownerrelations__user=request.user
+        ).select_related(
+            'element_position'
         ).prefetch_related(
             'hashtags__hashtag'
         )
