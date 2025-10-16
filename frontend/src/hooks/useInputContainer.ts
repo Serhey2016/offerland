@@ -138,6 +138,14 @@ export const useInputContainer = ({
     }
   }, [itemType])
 
+  // Initialize hasText to true when task creation block is shown
+  // This ensures the left button and label are visible immediately when a speed dial item is clicked
+  useEffect(() => {
+    if (itemType) {
+      setHasText(true)
+    }
+  }, [itemType])
+
   // Helper function to format date from dd.mm.yyyy to yyyy-mm-dd
   const formatDateForBackend = (dateString: string): string => {
     const parts = dateString.trim().split('.')
@@ -537,8 +545,77 @@ export const useInputContainer = ({
       const description = descriptionChip?.value
       const priority = priorityChip?.value as 'iu' | 'inu' | 'niu' | 'ninu' | undefined
       
-      // Check if this is Project/Job Search mode (itemType='contact')
-      if (itemType === 'contact') {
+      // Check itemType and route to appropriate save method
+      if (itemType === 'project') {
+        // For megaphone icon - create Advertising/Announcement
+        const advertisingData: InboxTaskData = {
+          title,
+        }
+        
+        if (priority) {
+          advertisingData.priority = priority
+        }
+        
+        if (description) {
+          advertisingData.description = description
+        }
+        
+        if (startDate) {
+          advertisingData.date_start = startDate
+        }
+        
+        if (endDate) {
+          advertisingData.date_end = endDate
+        }
+        
+        // Create advertising first
+        const parentResponse = await taskApi.createAdvertising(advertisingData)
+        const parentTaskId = parentResponse?.advertising?.id || parentResponse?.id
+        
+        console.log('Advertising created with ID:', parentTaskId)
+        
+        // If we have subtasks, create them sequentially
+        if (isSubtaskMode && subtasks.length > 0 && parentTaskId) {
+          for (const subtask of subtasks) {
+            const subtaskTitleChip = subtask.chips.find(chip => chip.type === 'title')
+            const subtaskPriorityChip = subtask.chips.find(chip => chip.type === 'priority')
+            const subtaskDateChips = subtask.chips.filter(chip => chip.type === 'date')
+            const subtaskDescriptionChip = subtask.chips.find(chip => chip.type === 'description')
+            
+            if (!subtaskTitleChip) continue // Skip subtasks without title
+            
+            const subtaskData: InboxTaskData = {
+              title: subtaskTitleChip.value,
+              parent_id: parentTaskId
+            }
+            
+            if (subtaskPriorityChip) {
+              subtaskData.priority = subtaskPriorityChip.value as 'iu' | 'inu' | 'niu' | 'ninu'
+            }
+            
+            if (subtaskDescriptionChip) {
+              subtaskData.description = subtaskDescriptionChip.value
+            }
+            
+            const subtaskStartDate = extractDateStart(subtaskDateChips)
+            if (subtaskStartDate) {
+              subtaskData.date_start = subtaskStartDate
+            }
+            
+            const subtaskEndDate = extractDateEnd(subtaskDateChips)
+            if (subtaskEndDate) {
+              subtaskData.date_end = subtaskEndDate
+            }
+            
+            await taskApi.createAdvertising(subtaskData)
+            console.log('Advertising subtask created:', subtaskData.title)
+          }
+          
+          showSuccess(`Announcement and ${subtasks.length} subtask(s) created successfully!`, 'Announcements Saved', 4000)
+        } else {
+          showSuccess('Announcement created successfully!', 'Announcement Saved', 4000)
+        }
+      } else if (itemType === 'contact') {
         // For briefcase icon - create Project or Job Search based on activeLabel
         if (activeLabel === 'jobsearch') {
           // Create Job Search entry
@@ -754,7 +831,8 @@ export const useInputContainer = ({
         processInput(text.trim())
         element.textContent = ''
         setTaskInput('')
-        setHasText(chips.length > 0)
+        // Keep hasText true to maintain button visibility
+        setHasText(true)
       }
       // Empty Enter does nothing - save only via confirm button or 'mem' abbreviation
     }
@@ -803,7 +881,8 @@ export const useInputContainer = ({
         processInput(textWithoutComma)
         element.textContent = ''
         setTaskInput('')
-        setHasText(chips.length > 0)
+        // Keep hasText true to maintain button visibility
+        setHasText(true)
         return
       }
     }
@@ -813,7 +892,9 @@ export const useInputContainer = ({
     
     if (text.length <= maxLen) {
       setTaskInput(text)
-      setHasText(text.length > 0 || chips.length > 0)
+      // Always keep hasText true when in active task creation mode (itemType is set)
+      // This ensures the left button and label remain visible even when text is deleted
+      setHasText(true)
     } else {
       const truncatedText = text.substring(0, maxLen)
       element.textContent = truncatedText
@@ -832,7 +913,8 @@ export const useInputContainer = ({
     if (element) {
       element.textContent = text
       setTaskInput(text)
-      setHasText(text.length > 0 || chips.length > 0)
+      // Keep hasText true to maintain button visibility
+      setHasText(true)
       element.focus()
       
       setTimeout(() => {

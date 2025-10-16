@@ -5,6 +5,8 @@ import Taskview from '../ui/Taskview'
 import InputContainer from '../ui/InputContainer'
 import EditTaskDialog, { EditTaskFormData } from '../ui/EditTaskDialog'
 import TaskNotesDialog from '../ui/TaskNotesDialog'
+import TimeSlotDialog, { TimeSlotFormData } from '../ui/TimeSlotDialog'
+import AdvertisingDialog, { AdvertisingFormData } from '../ui/AdvertisingDialog'
 import { useInputContainer } from '../../hooks/useInputContainer'
 import { useTasks } from '../../hooks/useTasks'
 import { useToasts } from '../../hooks/useToasts'
@@ -29,12 +31,42 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   // Notes dialog state
   const [showNotesDialog, setShowNotesDialog] = useState(false)
   const [selectedTaskForNotes, setSelectedTaskForNotes] = useState<DjangoTask | null>(null)
+  
+  // Time Slot dialog state
+  const [showTimeSlotDialog, setShowTimeSlotDialog] = useState(false)
+  
+  // Advertising dialog state
+  const [showAdvertisingDialog, setShowAdvertisingDialog] = useState(false)
 
   // Handle task creation
   const handleCreateTask = async (taskData: InboxTaskData) => {
     await taskApi.createInboxTask(taskData)
     // Reload tasks after creation (but don't show error if reload fails)
     await loadUserTasks(false)
+  }
+
+  // Handle Time Slot creation
+  const handleCreateTimeSlot = async (timeSlotData: TimeSlotFormData) => {
+    try {
+      await taskApi.createTimeSlot(timeSlotData)
+      showSuccess('Time slot created successfully!', 'Time Slot Saved', 4000)
+      await loadUserTasks(false)
+    } catch (error) {
+      showError('Error creating time slot. Please try again.')
+      throw error
+    }
+  }
+
+  // Handle Advertising creation
+  const handleCreateAdvertising = async (advertisingData: AdvertisingFormData) => {
+    try {
+      await taskApi.createAdvertisingForm(advertisingData)
+      showSuccess('Announcement created successfully!', 'Announcement Saved', 4000)
+      await loadUserTasks(false)
+    } catch (error) {
+      showError('Error creating announcement. Please try again.')
+      throw error
+    }
   }
 
   // Use toasts hook
@@ -62,10 +94,20 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       const customEvent = event as CustomEvent
       const itemType = customEvent.detail?.itemType
       
-      // Map item types to labels and icons
+      // For 'task' itemType, show TimeSlotDialog instead of InputContainer
+      if (itemType === 'task') {
+        setShowTimeSlotDialog(true)
+        return
+      }
+      
+      // For 'project' itemType, show AdvertisingDialog instead of InputContainer
+      if (itemType === 'project') {
+        setShowAdvertisingDialog(true)
+        return
+      }
+      
+      // Map item types to labels and icons for other types
       const typeMap: Record<string, { label: string, icon: string }> = {
-        'task': { label: 'Time slot', icon: 'pi pi-calendar-clock' },
-        'project': { label: 'Announcement', icon: 'pi pi-megaphone' },
         'contact': { label: 'Project', icon: 'pi pi-briefcase' },
         'note': { label: 'Task', icon: 'pi pi-check-circle' }
       }
@@ -226,6 +268,20 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           setSelectedTaskForNotes(null)
         }}
         onSave={handleSaveNotes}
+      />
+
+      {/* Time Slot Dialog */}
+      <TimeSlotDialog
+        visible={showTimeSlotDialog}
+        onHide={() => setShowTimeSlotDialog(false)}
+        onSave={handleCreateTimeSlot}
+      />
+
+      {/* Advertising Dialog */}
+      <AdvertisingDialog
+        visible={showAdvertisingDialog}
+        onHide={() => setShowAdvertisingDialog(false)}
+        onSave={handleCreateAdvertising}
       />
       
       <div className="touchpoint-container">

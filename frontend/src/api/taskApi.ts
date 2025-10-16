@@ -355,6 +355,146 @@ export const taskApi = {
       console.error('Error creating project:', error)
       throw error
     }
+  },
+
+  // Створити Advertising/Announcement (from InputContainer)
+  createAdvertising: async (taskData: InboxTaskData): Promise<any> => {
+    try {
+      // Prepare FormData for Django form submission
+      const formData = new FormData()
+      formData.append('title', taskData.title)
+      
+      // Description is optional for advertising
+      formData.append('description', taskData.description || '')
+      
+      if (taskData.date_start) {
+        formData.append('date_start', taskData.date_start)
+      }
+      
+      if (taskData.date_end) {
+        formData.append('date_end', taskData.date_end)
+      }
+      
+      if (taskData.priority) {
+        formData.append('priority', taskData.priority)
+      }
+      
+      // Parent task ID for subtasks
+      if (taskData.parent_id) {
+        formData.append('parent_id', taskData.parent_id.toString())
+      }
+      
+      // Type of task - use 'advertising' type
+      formData.append('type_of_task', 'advertising')
+      
+      const response = await api.post('/services_and_projects/create_advertising/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error('Error creating advertising:', error)
+      throw error
+    }
+  },
+
+  // Створити Advertising/Announcement (from form dialog)
+  createAdvertisingForm: async (advertisingData: { title: string, description: string, photos?: File[] }): Promise<any> => {
+    try {
+      // Prepare FormData for Django form submission
+      const formData = new FormData()
+      formData.append('title', advertisingData.title)
+      formData.append('description', advertisingData.description)
+      
+      // Add photos if provided
+      if (advertisingData.photos && advertisingData.photos.length > 0) {
+        advertisingData.photos.forEach((photo) => {
+          formData.append('photos', photo)
+        })
+      }
+      
+      // Type of task - use 'advertising' type
+      formData.append('type_of_task', 'advertising')
+      
+      const response = await api.post('/services_and_projects/create_advertising/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error('Error creating advertising from form:', error)
+      throw error
+    }
+  },
+
+  // Створити Time Slot
+  createTimeSlot: async (timeSlotData: any): Promise<any> => {
+    try {
+      // Prepare FormData for Django form submission
+      const formData = new FormData()
+      
+      if (timeSlotData.category) {
+        formData.append('category', timeSlotData.category.toString())
+      }
+      
+      if (timeSlotData.service) {
+        formData.append('services', timeSlotData.service.toString())
+      }
+      
+      if (timeSlotData.date_start) {
+        formData.append('date_start', timeSlotData.date_start)
+      }
+      
+      if (timeSlotData.date_end) {
+        formData.append('date_end', timeSlotData.date_end)
+      }
+      
+      if (timeSlotData.time_start) {
+        formData.append('time_start', timeSlotData.time_start)
+      }
+      
+      if (timeSlotData.time_end) {
+        formData.append('time_end', timeSlotData.time_end)
+      }
+      
+      if (timeSlotData.reserved_time_on_road) {
+        formData.append('reserved_time_on_road', timeSlotData.reserved_time_on_road.toString())
+      }
+      
+      if (timeSlotData.start_location) {
+        formData.append('start_location', timeSlotData.start_location)
+      }
+      
+      if (timeSlotData.cost_of_1_hour_of_work) {
+        formData.append('cost_of_1_hour_of_work', timeSlotData.cost_of_1_hour_of_work.toString())
+      }
+      
+      if (timeSlotData.minimum_time_slot) {
+        formData.append('minimum_time_slot', timeSlotData.minimum_time_slot)
+      }
+      
+      if (timeSlotData.hashtags) {
+        formData.append('hashtags', timeSlotData.hashtags)
+      }
+      
+      // Type of task for time slot
+      formData.append('type_of_task', 'time slot')
+      
+      const response = await api.post('/services_and_projects/create_time_slot/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error('Error creating time slot:', error)
+      throw error
+    }
   }
 }
 

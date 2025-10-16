@@ -300,12 +300,10 @@ def create_advertising(request):
 
             logger.info(f"Creating advertising with title: {title}")
 
-            # Валидация обязательных полей (service_id не обязателен)
+            # Валидация обязательных полей (только title обязателен)
             missing_fields = []
             if not title:
                 missing_fields.append('Title')
-            if not description:
-                missing_fields.append('Description')
             if missing_fields:
                 return JsonResponse({
                     'success': False,
@@ -316,7 +314,7 @@ def create_advertising(request):
             advertising = Advertising.objects.create(
                 title=title,
                 description=description,
-                type_of_task_id=type_of_task_id,
+                type_of_task=type_of_task_id if type_of_task_id else 'advertising',
                 services_id=service_id
             )
             

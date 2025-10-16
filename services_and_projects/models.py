@@ -355,7 +355,7 @@ class Advertising(models.Model):
     uuid = models.UUIDField(default=generate_uuid, unique=True, editable=False)
     slug = models.SlugField(max_length=255, blank=True, null=True)  # Removed unique=True initially
     title = models.CharField(max_length=120)
-    description = models.TextField(max_length=5000)
+    description = models.TextField(max_length=5000, blank=True, null=True, default='')
     hashtags = models.ManyToManyField('joblist.AllTags', through='AdvertisingHashtagRelations', blank=True)
     services = models.ForeignKey('Services', on_delete=models.CASCADE, null=True, blank=True)
     
