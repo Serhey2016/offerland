@@ -488,6 +488,8 @@ class JobSearch(models.Model):
     ]
     
     id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(default=generate_uuid, unique=True, editable=False)
+    slug = models.SlugField(max_length=255, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_searches')
     title = models.CharField(max_length=60)
     start_date = models.DateTimeField(blank=True, null=True)
@@ -519,6 +521,19 @@ class JobSearch(models.Model):
 
     def __str__(self):
         return f"Job Search: {self.title} by {self.user}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # Generate slug based on title and UUID
+            from django.utils.text import slugify
+            self.slug = slugify(f"jobsearch-{self.title}-{self.uuid.hex[:8]}")
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return f"/post/jobsearch/{self.slug}/"
+
+    def get_uuid_short(self):
+        return str(self.uuid)[:8]
 
     class Meta:
         db_table = 'job_search'

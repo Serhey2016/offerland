@@ -17,10 +17,12 @@ services:
       POSTGRES_PASSWORD: offerland_django123
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
+      UMASK: 0002
     env_file:
       - .env
     command: >
       sh -c "python manage.py migrate &&
+             chown -R 1000:1000 /app/services_and_projects/migrations/ 2>/dev/null || true &&
              python manage.py runserver 0.0.0.0:8000"
 
   db:
