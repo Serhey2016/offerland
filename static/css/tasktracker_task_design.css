@@ -79,12 +79,12 @@
 .task_tracker_task_container::before {
     content: '';
     position: absolute;
-    left: 10px;
+    left: 0;
     top: 0;
     bottom: 0;
     width: 12px;
     background: #EF9A9A;
-    border-radius: 5px 0 0 5px;
+    border-radius: 10px 0 0 10px;
 }
 
 /* Priority-based color classes */

@@ -51,8 +51,35 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       await taskApi.createTimeSlot(timeSlotData)
       showSuccess('Time slot created successfully!', 'Time Slot Saved', 4000)
       await loadUserTasks(false)
-    } catch (error) {
-      showError('Error creating time slot. Please try again.')
+    } catch (error: any) {
+      // Extract error message from response
+      let errorMessage = 'Error creating time slot. Please try again.'
+      
+      if (error.response?.data) {
+        if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data
+        } else if (error.response.data.error) {
+          errorMessage = error.response.data.error
+          // Add traceback if available for debugging
+          if (error.response.data.traceback) {
+            console.error('Server traceback:', error.response.data.traceback)
+            // Show first line of traceback in error message for clarity
+            const tracebackLines = error.response.data.traceback.split('\n')
+            const relevantLine = tracebackLines.find((line: string) => line.includes('strftime') || line.includes('Error'))
+            if (relevantLine) {
+              errorMessage += '\n' + relevantLine.trim()
+            }
+          }
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message
+        } else if (error.response.data.detail) {
+          errorMessage = error.response.data.detail
+        }
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      
+      showError(errorMessage)
       throw error
     }
   }
@@ -121,7 +148,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
     return () => {
       window.removeEventListener('subMenuAdd', handleSpeedDialClick)
     }
-  }, [tasksHook.toggleTaskCreation])
+  }, [])
 
   // Load user tasks from API filtered by category
   const loadUserTasks = async (showErrorOnFailure: boolean = true) => {
@@ -326,12 +353,14 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
               showSubmenu={tasksHook.showSubmenu}
               dropdownPosition={tasksHook.dropdownPosition}
               submenuPosition={tasksHook.submenuPosition}
+              detailsPopupTaskId={tasksHook.detailsPopupTaskId}
               dropdownRef={tasksHook.dropdownRef}
               submenuRef={tasksHook.submenuRef}
               handleTaskTap={tasksHook.handleTaskTap}
               handleIconClick={tasksHook.handleIconClick}
               handleDropdownItemClick={tasksHook.handleDropdownItemClick}
               handleSubmenuItemClick={tasksHook.handleSubmenuItemClick}
+              closeDetailsPopup={tasksHook.closeDetailsPopup}
               // Callbacks
               onDone={() => handleMarkTaskDone(task.id)}
               onCreateTask={() => handleTaskAction('create', task.id)}

@@ -288,19 +288,8 @@ export const taskApi = {
   },
 
   // Створити Job Search
-  createJobSearch: async (title: string, startDate?: string, notes?: string): Promise<any> => {
+  createJobSearch: async (formData: FormData): Promise<any> => {
     try {
-      const formData = new FormData()
-      formData.append('title', title)
-      
-      if (startDate) {
-        formData.append('start_date', startDate)
-      }
-      
-      if (notes) {
-        formData.append('notes', notes)
-      }
-      
       const response = await api.post('/services_and_projects/create_job_search/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -481,8 +470,8 @@ export const taskApi = {
         formData.append('hashtags', timeSlotData.hashtags)
       }
       
-      // Type of task for time slot
-      formData.append('type_of_task', 'time slot')
+      // Type of task for time slot - must be 'task' (from model choices)
+      formData.append('type_of_task', 'task')
       
       const response = await api.post('/services_and_projects/create_time_slot/', formData, {
         headers: {
@@ -493,6 +482,21 @@ export const taskApi = {
       return response.data
     } catch (error) {
       console.error('Error creating time slot:', error)
+      throw error
+    }
+  },
+
+  // Create task with FormData (for new React dialogs)
+  createTaskWithFormData: async (formData: FormData): Promise<any> => {
+    try {
+      const response = await api.post('/services_and_projects/create_task/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error creating task:', error)
       throw error
     }
   }

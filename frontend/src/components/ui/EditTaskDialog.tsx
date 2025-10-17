@@ -12,6 +12,7 @@ interface EditTaskDialogProps {
   task: DjangoTask | null
   onHide: () => void
   onSave: (taskData: EditTaskFormData) => Promise<void>
+  mode?: 'create' | 'edit'
 }
 
 export interface EditTaskFormData {
@@ -27,7 +28,8 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
   visible,
   task,
   onHide,
-  onSave
+  onSave,
+  mode = 'edit'
 }) => {
   const [formData, setFormData] = useState<EditTaskFormData>({
     id: 0,
@@ -48,19 +50,32 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
     { label: 'Not Important & Not Urgent', value: 'ninu' }
   ]
 
-  // Load task data when dialog opens
+  // Load task data when dialog opens or reset for create mode
   useEffect(() => {
-    if (task && visible) {
-      setFormData({
-        id: task.id,
-        title: task.title || '',
-        description: task.description || '',
-        priority: task.priority || '',
-        date_start: task.date_start || '',
-        date_end: task.date_end || ''
-      })
+    if (visible) {
+      if (mode === 'create') {
+        // Reset form for create mode
+        setFormData({
+          id: 0,
+          title: '',
+          description: '',
+          priority: '',
+          date_start: '',
+          date_end: ''
+        })
+      } else if (task) {
+        // Load task data for edit mode
+        setFormData({
+          id: task.id,
+          title: task.title || '',
+          description: task.description || '',
+          priority: task.priority || '',
+          date_start: task.date_start || '',
+          date_end: task.date_end || ''
+        })
+      }
     }
-  }, [task, visible])
+  }, [task, visible, mode])
 
   // Convert date string (YYYY-MM-DD or DD.MM.YYYY) to Date object
   const parseDate = (dateStr: string): Date | null => {
@@ -117,7 +132,9 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
 
   const headerContent = (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-      <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>Edit Task</h2>
+      <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>
+        {mode === 'create' ? 'Create Task' : 'Edit Task'}
+      </h2>
     </div>
   )
 

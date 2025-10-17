@@ -18,6 +18,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   const [showSubmenu, setShowSubmenu] = useState(false)
   const [submenuPosition, setSubmenuPosition] = useState({ top: 0, left: 0 })
   const [tappedTaskId, setTappedTaskId] = useState<number | null>(null)
+  const [detailsPopupTaskId, setDetailsPopupTaskId] = useState<number | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const submenuRef = useRef<HTMLDivElement>(null)
 
@@ -276,7 +277,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   }, [])
 
   // Handle dropdown menu item clicks (moved from TaskDesign)
-  const handleDropdownItemClick = useCallback((action: string, event?: React.MouseEvent<HTMLDivElement>) => {
+  const handleDropdownItemClick = useCallback((action: string, taskId?: number, event?: React.MouseEvent<HTMLDivElement>) => {
     if (action === 'move' && event) {
       // Show submenu for Move to...
       const position = calculateSubmenuPosition(event.currentTarget)
@@ -293,6 +294,9 @@ export const useTasks = (initialFilters?: TaskFilters) => {
       case 'edit':
         break
       case 'details':
+        if (taskId) {
+          setDetailsPopupTaskId(taskId)
+        }
         break
       case 'delegate':
         break
@@ -302,6 +306,11 @@ export const useTasks = (initialFilters?: TaskFilters) => {
         break
     }
   }, [calculateSubmenuPosition])
+  
+  // Handle closing details popup
+  const closeDetailsPopup = useCallback(() => {
+    setDetailsPopupTaskId(null)
+  }, [])
 
   // Handle icon button clicks (moved from TaskDesign)
   const handleIconClick = useCallback((taskId: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => {
@@ -365,6 +374,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     showSubmenu,
     submenuPosition,
     tappedTaskId,
+    detailsPopupTaskId,
     dropdownRef,
     submenuRef,
     showTaskCreation,
@@ -386,6 +396,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
     handleIconClick,
     handleDropdownItemClick,
     handleSubmenuItemClick,
+    closeDetailsPopup,
     toggleTaskCreation,
     showTaskCreationBlock,
     hideTaskCreationBlock,

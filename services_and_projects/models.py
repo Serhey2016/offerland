@@ -335,9 +335,23 @@ class TimeSlot(models.Model):
         if not self.slug:
             # Генерируем slug на основе даты и времени
             from django.utils.text import slugify
-            from datetime import datetime
-            date_str = self.date_start.strftime('%Y-%m-%d')
-            time_str = self.time_start.strftime('%H-%M')
+            from datetime import datetime, date, time
+            
+            # Convert to date/time objects if they are strings
+            if isinstance(self.date_start, str):
+                from django.utils.dateparse import parse_date
+                date_obj = parse_date(self.date_start)
+                date_str = date_obj.strftime('%Y-%m-%d') if date_obj else self.date_start
+            else:
+                date_str = self.date_start.strftime('%Y-%m-%d')
+            
+            if isinstance(self.time_start, str):
+                from django.utils.dateparse import parse_time
+                time_obj = parse_time(self.time_start)
+                time_str = time_obj.strftime('%H-%M') if time_obj else self.time_start.replace(':', '-')
+            else:
+                time_str = self.time_start.strftime('%H-%M')
+            
             self.slug = slugify(f"timeslot-{date_str}-{time_str}-{self.uuid.hex[:8]}")
         super().save(*args, **kwargs)
 

@@ -33,3 +33,4 @@ postgres_data/
 
 user_data/services_photos/
 media/
+node_modules

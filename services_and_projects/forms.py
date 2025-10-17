@@ -462,8 +462,8 @@ def create_time_slot(request):
             logger.info(f"cost_of_1_hour_of_work: {cost_of_1_hour_of_work}")
             minimum_time_slot = none_if_empty(request.POST.get('minimum_time_slot'))
             logger.info(f"minimum_time_slot: {minimum_time_slot}")
-            type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
-            logger.info(f"type_of_task_id: {type_of_task_id}")
+            type_of_task = none_if_empty(request.POST.get('type_of_task'))
+            logger.info(f"type_of_task: {type_of_task}")
             services_id = none_if_empty(request.POST.get('services'))
             logger.info(f"services_id: {services_id}")
             category_id = none_if_empty(request.POST.get('category'))
@@ -534,7 +534,7 @@ def create_time_slot(request):
             logger.info(f"start_location: {start_location}")
             logger.info(f"cost_of_1_hour_of_work: {cost_in_cents}")
             logger.info(f"minimum_time_slot: {minimum_time_slot}")
-            logger.info(f"type_of_task_id: {type_of_task_id}")
+            logger.info(f"type_of_task: {type_of_task}")
             logger.info(f"services_id: {services_id}")
             
             time_slot = TimeSlot.objects.create(
@@ -546,7 +546,7 @@ def create_time_slot(request):
                 start_location=start_location or '',
                 cost_of_1_hour_of_work=cost_in_cents or Decimal('0'),
                 minimum_time_slot=str(minimum_time_slot) if minimum_time_slot else '60',
-                type_of_task_id=type_of_task_id,
+                type_of_task=type_of_task or 'task',
                 services_id=services_id,
                 element_position_id='inbox'
             )
@@ -650,7 +650,14 @@ def create_time_slot(request):
             logger.error(f"Traceback: {traceback.format_exc()}")
             print('Error in create_time_slot:', e)
             traceback.print_exc()
-            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+            
+            # Get detailed error message with traceback
+            error_details = f"{str(e)}\n\nDetails: {traceback.format_exc()}"
+            return JsonResponse({
+                'success': False, 
+                'error': str(e),
+                'traceback': traceback.format_exc()
+            }, status=500)
     return JsonResponse({'error': 'Only POST allowed'}, status=405)
 
 def create_job_search(request):

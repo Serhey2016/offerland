@@ -107,12 +107,22 @@ const TimeSlotDialog: React.FC<TimeSlotDialogProps> = ({ visible, onHide, onSave
     try {
       setLoading(true)
       
-      // Validate required fields
-      if (!formData.category || !formData.service || !formData.date_start || 
-          !formData.date_end || !formData.time_start || !formData.time_end ||
-          !formData.reserved_time_on_road || !formData.start_location ||
-          !formData.cost_of_1_hour_of_work || !formData.minimum_time_slot) {
-        alert('Please fill in all required fields')
+      // Validate required fields and collect missing field names
+      const missingFields: string[] = []
+      
+      if (!formData.category) missingFields.push('Category')
+      if (!formData.service) missingFields.push('Service')
+      if (!formData.date_start) missingFields.push('Start Date')
+      if (!formData.date_end) missingFields.push('End Date')
+      if (!formData.time_start) missingFields.push('Start Time')
+      if (!formData.time_end) missingFields.push('End Time')
+      if (!formData.reserved_time_on_road) missingFields.push('Reserved time on road')
+      if (!formData.start_location) missingFields.push('Start location')
+      if (!formData.cost_of_1_hour_of_work) missingFields.push('Cost of one hour')
+      if (!formData.minimum_time_slot) missingFields.push('Minimum slot')
+      
+      if (missingFields.length > 0) {
+        alert('Please fill in the following required fields:\n- ' + missingFields.join('\n- '))
         return
       }
 
@@ -126,6 +136,7 @@ const TimeSlotDialog: React.FC<TimeSlotDialogProps> = ({ visible, onHide, onSave
       onHide()
     } catch (error) {
       console.error('Error saving time slot:', error)
+      // Error will be handled by parent component
     } finally {
       setLoading(false)
     }

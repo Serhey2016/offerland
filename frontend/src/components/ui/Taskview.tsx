@@ -22,6 +22,7 @@ interface TaskviewProps {
   showSubmenu: boolean
   dropdownPosition: { top: number; left: number }
   submenuPosition: { top: number; left: number }
+  detailsPopupTaskId: number | null
   
   // Refs
   dropdownRef: React.RefObject<HTMLDivElement>
@@ -30,8 +31,9 @@ interface TaskviewProps {
   // Event handlers from hook
   handleTaskTap: (taskId: number, e: React.MouseEvent) => void
   handleIconClick: (taskId: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
-  handleDropdownItemClick: (action: string, event?: React.MouseEvent<HTMLDivElement>) => void
+  handleDropdownItemClick: (action: string, taskId?: number, event?: React.MouseEvent<HTMLDivElement>) => void
   handleSubmenuItemClick: (action: string) => void
+  closeDetailsPopup: () => void
   
   // Optional callbacks (keep if not transferable to hook)
   onEdit?: () => void
@@ -65,12 +67,14 @@ const Taskview: React.FC<TaskviewProps> = ({
   showSubmenu,
   dropdownPosition,
   submenuPosition,
+  detailsPopupTaskId,
   dropdownRef,
   submenuRef,
   handleTaskTap,
   handleIconClick,
   handleDropdownItemClick,
   handleSubmenuItemClick,
+  closeDetailsPopup,
   onEdit,
   onDelete,
   onStatusChange,
@@ -175,7 +179,7 @@ const Taskview: React.FC<TaskviewProps> = ({
             <div 
               className="task_tracker_task_dropdown_item"
               onClick={() => {
-                handleDropdownItemClick('details')
+                handleDropdownItemClick('details', taskId)
                 if (onDetails) onDetails()
               }}
               style={{
@@ -353,6 +357,101 @@ const Taskview: React.FC<TaskviewProps> = ({
               }}
             >
               Archive
+            </div>
+          </div>,
+          document.body
+        )}
+        
+        {/* Task Details Popup */}
+        {taskId !== undefined && detailsPopupTaskId === taskId && createPortal(
+          <div 
+            className="task_details_popup_overlay"
+            id="task-details-popup-overlay"
+          >
+            <div 
+              className="task_details_popup_container"
+              id="task-details-popup"
+            >
+              <div className="task_details_popup_header">
+                <span 
+                  className="task_details_close_icon" 
+                  id="task-details-close-btn"
+                  onClick={closeDetailsPopup}
+                >
+                  ✕
+                </span>
+              </div>
+              
+              <div className="task_details_dates_priority_row">
+                <div className="task_details_date_block">
+                  <div className="task_details_date_label">Start date</div>
+                  <div className="task_details_date_value">{startDate || '10.09.2025'}</div>
+                </div>
+                
+                <div className="task_details_date_block">
+                  <div className="task_details_date_label">Due date</div>
+                  <div className="task_details_date_value">{dueDate || '10.10.2025'}</div>
+                </div>
+                
+
+              </div>
+              
+              <div className="task_details_priority_label">
+                  {priority === 'iu' ? 'important & urgent' : 
+                   priority === 'inu' ? 'important & not urgent' : 
+                   priority === 'niu' ? 'not important & urgent' : 
+                   priority === 'ninu' ? 'not important & not urgent' : 'no priority'}
+                </div>
+
+              <div className="task_details_title">
+                {title}
+              </div>
+              
+              <div className="task_details_description">
+                {description || 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)'}
+              </div>
+              
+              <div className="task_details_section_heading">
+                Notes:
+              </div>
+              
+              <div className="task_details_notes_content">
+                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using
+              </div>
+              
+              <div className="task_details_section_heading">
+                Sub tasks:
+              </div>
+              
+              <div className="task_details_subtasks_container">
+                <div className="task_details_subtask_item">
+                  <div className="task_details_subtask_status_bar"></div>
+                  <div className="task_details_subtask_check_icon">
+                    <i className="pi pi-check"></i>
+                  </div>
+                  <div className="task_details_subtask_content">
+                    <span className="task_details_subtask_title">Send resume</span>
+                    <span className="task_details_subtask_date">03.23.2025</span>
+                  </div>
+                  <button className="task_details_subtask_more_btn">
+                    <i className="pi pi-ellipsis-v"></i>
+                  </button>
+                </div>
+                
+                <div className="task_details_subtask_item">
+                  <div className="task_details_subtask_status_bar"></div>
+                  <div className="task_details_subtask_check_icon">
+                    <i className="pi pi-check"></i>
+                  </div>
+                  <div className="task_details_subtask_content">
+                    <span className="task_details_subtask_title">Called to Vanessa ...</span>
+                    <span className="task_details_subtask_date">03.23.2025</span>
+                  </div>
+                  <button className="task_details_subtask_more_btn">
+                    <i className="pi pi-ellipsis-v"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>,
           document.body

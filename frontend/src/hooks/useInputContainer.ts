@@ -29,6 +29,9 @@ interface UseInputContainerReturn {
   parentTaskChips: ChipData[]
   subtasks: Array<{chips: ChipData[]}>
   activeLabel: 'project' | 'jobsearch'
+  showCreateTaskDialog: boolean
+  showCreateProjectDialog: boolean
+  showCreateJobSearchDialog: boolean
   
   // Refs
   contentEditableRef: React.RefObject<HTMLDivElement>
@@ -45,6 +48,15 @@ interface UseInputContainerReturn {
   toggleMenu: (event: React.MouseEvent) => void
   dropdownMenuItems: any[]
   setActiveLabel: (label: 'project' | 'jobsearch') => void
+  handleOpenCreateTaskDialog: () => void
+  handleCloseCreateTaskDialog: () => void
+  handleSaveCreateTask: (taskData: any) => Promise<void>
+  handleOpenCreateProjectDialog: () => void
+  handleCloseCreateProjectDialog: () => void
+  handleSaveCreateProject: (projectData: any) => Promise<void>
+  handleOpenCreateJobSearchDialog: () => void
+  handleCloseCreateJobSearchDialog: () => void
+  handleSaveCreateJobSearch: (jobSearchData: any) => Promise<void>
 }
 
 // Constants
@@ -123,6 +135,15 @@ export const useInputContainer = ({
   
   // Active label state (Project or Job search)
   const [activeLabel, setActiveLabel] = useState<'project' | 'jobsearch'>('project')
+  
+  // Create task dialog state
+  const [showCreateTaskDialog, setShowCreateTaskDialog] = useState(false)
+  
+  // Create project dialog state
+  const [showCreateProjectDialog, setShowCreateProjectDialog] = useState(false)
+  
+  // Create job search dialog state
+  const [showCreateJobSearchDialog, setShowCreateJobSearchDialog] = useState(false)
   
   // Refs
   const contentEditableRef = useRef<HTMLDivElement>(null)
@@ -975,6 +996,123 @@ export const useInputContainer = ({
     }
   }, [])
 
+  // Create task dialog handlers
+  const handleOpenCreateTaskDialog = useCallback(() => {
+    setShowCreateTaskDialog(true)
+  }, [])
+
+  const handleCloseCreateTaskDialog = useCallback(() => {
+    setShowCreateTaskDialog(false)
+  }, [])
+
+  const handleSaveCreateTask = useCallback(async (taskData: any) => {
+    try {
+      // Create FormData for the request
+      const formData = new FormData()
+      formData.append('type_of_task', 'task')
+      formData.append('title', taskData.title || '')
+      formData.append('description', taskData.description || '')
+      formData.append('priority', taskData.priority || '')
+      formData.append('date_start', taskData.date_start || '')
+      formData.append('date_end', taskData.date_end || '')
+      formData.append('element_position', 'inbox')
+
+      // Call the correct endpoint
+      const response = await taskApi.createTaskWithFormData(formData)
+
+      if (response.success) {
+        showSuccess('Task created successfully')
+        setShowCreateTaskDialog(false)
+        
+        // Call onTaskCreated callback if provided
+        if (onTaskCreated) {
+          onTaskCreated()
+        }
+      } else {
+        showError('Failed to create task')
+      }
+    } catch (error) {
+      console.error('Error creating task:', error)
+      showError('Error creating task')
+    }
+  }, [showSuccess, showError, onTaskCreated])
+
+  // Create project dialog handlers
+  const handleOpenCreateProjectDialog = useCallback(() => {
+    setShowCreateProjectDialog(true)
+  }, [])
+
+  const handleCloseCreateProjectDialog = useCallback(() => {
+    setShowCreateProjectDialog(false)
+  }, [])
+
+  const handleSaveCreateProject = useCallback(async (projectData: any) => {
+    try {
+      // Create FormData for the request
+      const formData = new FormData()
+      formData.append('type_of_task', 'project')
+      formData.append('title', projectData.title || '')
+      formData.append('description', projectData.description || '')
+      formData.append('priority', projectData.priority || '')
+      formData.append('date_start', projectData.date_start || '')
+      formData.append('date_end', projectData.date_end || '')
+      formData.append('element_position', 'projects')
+
+      // Call the correct endpoint
+      const response = await taskApi.createTaskWithFormData(formData)
+
+      if (response.success) {
+        showSuccess('Project created successfully')
+        setShowCreateProjectDialog(false)
+        
+        // Call onTaskCreated callback if provided
+        if (onTaskCreated) {
+          onTaskCreated()
+        }
+      } else {
+        showError('Failed to create project')
+      }
+    } catch (error) {
+      console.error('Error creating project:', error)
+      showError('Error creating project')
+    }
+  }, [showSuccess, showError, onTaskCreated])
+
+  // Create job search dialog handlers
+  const handleOpenCreateJobSearchDialog = useCallback(() => {
+    setShowCreateJobSearchDialog(true)
+  }, [])
+
+  const handleCloseCreateJobSearchDialog = useCallback(() => {
+    setShowCreateJobSearchDialog(false)
+  }, [])
+
+  const handleSaveCreateJobSearch = useCallback(async (jobSearchData: any) => {
+    try {
+      // Create FormData for the request
+      const formData = new FormData()
+      formData.append('title', jobSearchData.title || '')
+
+      // Call the correct endpoint for job search
+      const response = await taskApi.createJobSearch(formData)
+
+      if (response.success) {
+        showSuccess('Job search created successfully')
+        setShowCreateJobSearchDialog(false)
+        
+        // Call onTaskCreated callback if provided
+        if (onTaskCreated) {
+          onTaskCreated()
+        }
+      } else {
+        showError('Failed to create job search')
+      }
+    } catch (error) {
+      console.error('Error creating job search:', error)
+      showError('Error creating job search')
+    }
+  }, [showSuccess, showError, onTaskCreated])
+
   return {
     // States
     taskInput,
@@ -986,6 +1124,9 @@ export const useInputContainer = ({
     parentTaskChips,
     subtasks,
     activeLabel,
+    showCreateTaskDialog,
+    showCreateProjectDialog,
+    showCreateJobSearchDialog,
     
     // Refs
     contentEditableRef,
@@ -1001,7 +1142,16 @@ export const useInputContainer = ({
     insertTextIntoInput,
     toggleMenu,
     dropdownMenuItems,
-    setActiveLabel
+    setActiveLabel,
+    handleOpenCreateTaskDialog,
+    handleCloseCreateTaskDialog,
+    handleSaveCreateTask,
+    handleOpenCreateProjectDialog,
+    handleCloseCreateProjectDialog,
+    handleSaveCreateProject,
+    handleOpenCreateJobSearchDialog,
+    handleCloseCreateJobSearchDialog,
+    handleSaveCreateJobSearch
   }
 }
 

@@ -2,6 +2,9 @@ import React from 'react'
 import { Button } from 'primereact/button'
 import { TieredMenu } from 'primereact/tieredmenu'
 import { ChipData } from '../../hooks/useInputContainer'
+import EditTaskDialog from './EditTaskDialog'
+import CreateProjectDialog from './CreateProjectDialog'
+import CreateJobSearchDialog from './CreateJobSearchDialog'
 
 interface InputContainerProps {
   // States
@@ -17,6 +20,9 @@ interface InputContainerProps {
   icon?: string
   itemType?: string
   activeLabel: 'project' | 'jobsearch'
+  showCreateTaskDialog: boolean
+  showCreateProjectDialog: boolean
+  showCreateJobSearchDialog: boolean
   
   // Refs
   contentEditableRef: React.RefObject<HTMLDivElement>
@@ -32,6 +38,15 @@ interface InputContainerProps {
   dropdownMenuItems: any[]
   handlePrioritySelect: (priority: string) => void
   setActiveLabel: (label: 'project' | 'jobsearch') => void
+  handleOpenCreateTaskDialog: () => void
+  handleCloseCreateTaskDialog: () => void
+  handleSaveCreateTask: (taskData: any) => Promise<void>
+  handleOpenCreateProjectDialog: () => void
+  handleCloseCreateProjectDialog: () => void
+  handleSaveCreateProject: (projectData: any) => Promise<void>
+  handleOpenCreateJobSearchDialog: () => void
+  handleCloseCreateJobSearchDialog: () => void
+  handleSaveCreateJobSearch: (jobSearchData: any) => Promise<void>
 }
 
 const InputContainer: React.FC<InputContainerProps> = ({
@@ -47,6 +62,9 @@ const InputContainer: React.FC<InputContainerProps> = ({
   icon = 'pi pi-check-circle',
   itemType = 'note',
   activeLabel,
+  showCreateTaskDialog,
+  showCreateProjectDialog,
+  showCreateJobSearchDialog,
   contentEditableRef,
   menuRef,
   handleInputChange,
@@ -57,7 +75,16 @@ const InputContainer: React.FC<InputContainerProps> = ({
   toggleMenu,
   dropdownMenuItems,
   handlePrioritySelect,
-  setActiveLabel
+  setActiveLabel,
+  handleOpenCreateTaskDialog,
+  handleCloseCreateTaskDialog,
+  handleSaveCreateTask,
+  handleOpenCreateProjectDialog,
+  handleCloseCreateProjectDialog,
+  handleSaveCreateProject,
+  handleOpenCreateJobSearchDialog,
+  handleCloseCreateJobSearchDialog,
+  handleSaveCreateJobSearch
 }) => {
   // Show Job search only for 'contact' itemType
   const showJobSearch = itemType === 'contact'
@@ -235,7 +262,20 @@ const InputContainer: React.FC<InputContainerProps> = ({
         <Button
           id="task-left-button"
           icon={icon}
-          onClick={() => {}}
+          onClick={() => {
+            // Open dialog based on itemType and activeLabel
+            if (itemType === 'note') {
+              // Task type
+              handleOpenCreateTaskDialog()
+            } else if (itemType === 'contact') {
+              // Project or Job search type
+              if (activeLabel === 'project') {
+                handleOpenCreateProjectDialog()
+              } else if (activeLabel === 'jobsearch') {
+                handleOpenCreateJobSearchDialog()
+              }
+            }
+          }}
           className="task_creation_left_btn"
           text
         />
@@ -289,13 +329,14 @@ const InputContainer: React.FC<InputContainerProps> = ({
           text
         />
         
-        {/* Dropdown Button */}
+        {/* Dropdown Button - Hidden when Job search is selected */}
         <Button
           id="task-dropdown-button"
           icon="pi pi-ellipsis-v"
           onClick={toggleMenu}
           className="task_creation_dropdown_btn"
           text
+          style={{ display: activeLabel === 'jobsearch' ? 'none' : '' }}
         />
         
         {/* TieredMenu */}
@@ -309,6 +350,35 @@ const InputContainer: React.FC<InputContainerProps> = ({
           hideOverlaysOnDocumentScrolling={false}
         />
       </div>
+      
+      {/* Create Task Dialog - Only for 'note' itemType */}
+      {itemType === 'note' && (
+        <EditTaskDialog
+          visible={showCreateTaskDialog}
+          task={null}
+          onHide={handleCloseCreateTaskDialog}
+          onSave={handleSaveCreateTask}
+          mode="create"
+        />
+      )}
+      
+      {/* Create Project Dialog - For 'contact' itemType with 'project' activeLabel */}
+      {itemType === 'contact' && (
+        <CreateProjectDialog
+          visible={showCreateProjectDialog}
+          onHide={handleCloseCreateProjectDialog}
+          onSave={handleSaveCreateProject}
+        />
+      )}
+      
+      {/* Create Job Search Dialog - For 'contact' itemType with 'jobsearch' activeLabel */}
+      {itemType === 'contact' && (
+        <CreateJobSearchDialog
+          visible={showCreateJobSearchDialog}
+          onHide={handleCloseCreateJobSearchDialog}
+          onSave={handleSaveCreateJobSearch}
+        />
+      )}
     </div>
   )
 }

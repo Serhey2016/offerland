@@ -3,7 +3,7 @@ import { Dialog } from 'primereact/dialog'
 import { Button } from 'primereact/button'
 import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
-import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload'
+import { FileUpload } from 'primereact/fileupload'
 
 interface AdvertisingDialogProps {
   visible: boolean
@@ -30,7 +30,7 @@ const AdvertisingDialog: React.FC<AdvertisingDialogProps> = ({ visible, onHide, 
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  const handleFileSelect = (event: FileUploadHandlerEvent) => {
+  const handleFileSelect = (event: any) => {
     const files = event.files as File[]
     setPhotos(files)
   }
@@ -106,7 +106,7 @@ const AdvertisingDialog: React.FC<AdvertisingDialogProps> = ({ visible, onHide, 
       visible={visible}
       onHide={handleDialogHide}
       footer={dialogFooter}
-      style={{ width: '600px' }}
+      style={{ width: '600px', zIndex: 10000 }}
       modal
       dismissableMask={false}
     >
@@ -143,9 +143,8 @@ const AdvertisingDialog: React.FC<AdvertisingDialogProps> = ({ visible, onHide, 
               name="photos"
               multiple
               accept="image/*"
-              customUpload
-              uploadHandler={handleFileSelect}
-              auto={false}
+              onSelect={handleFileSelect}
+              auto
               chooseLabel="Select Photos"
               uploadLabel="Upload"
               cancelLabel="Clear"
