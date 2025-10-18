@@ -2,8 +2,8 @@ import React from 'react'
 import { createPortal } from 'react-dom'
 // CSS moved to static/css/ directory - loaded via Django template
 
-interface TaskviewProps {
-  // Task data
+interface AnnouncementViewProps {
+  // Announcement data
   taskId?: number
   title: string
   description?: string
@@ -35,7 +35,7 @@ interface TaskviewProps {
   handleSubmenuItemClick: (action: string) => void
   closeDetailsPopup: () => void
   
-  // Optional callbacks (keep if not transferable to hook)
+  // Optional callbacks
   onEdit?: () => void
   onDelete?: () => void
   onStatusChange?: (status: string) => void
@@ -50,7 +50,7 @@ interface TaskviewProps {
   onMoveTo?: (destination: string) => void
 }
 
-const Taskview: React.FC<TaskviewProps> = ({
+const AnnouncementView: React.FC<AnnouncementViewProps> = ({
   taskId,
   title,
   description,
@@ -459,7 +459,7 @@ const Taskview: React.FC<TaskviewProps> = ({
         {/* Task metadata */}
         <div className="task_tracker_task_metadata">
           <div>
-            <span className="task_tracker_task_category">{category || 'Agenda'}: </span>
+            <span className="task_tracker_task_category">{category || 'Inbox'}: </span>
             <span className="task_tracker_task_times">{timeRange || '6:00 am 7:00 am'}</span>
           </div>
           <div className="task_tracker_task_dates">
@@ -491,4 +491,5 @@ const Taskview: React.FC<TaskviewProps> = ({
   )
 }
 
-export default Taskview
+export default AnnouncementView
+

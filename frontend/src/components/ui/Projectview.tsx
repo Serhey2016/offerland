@@ -1,8 +1,9 @@
 import React from 'react'
 import { createPortal } from 'react-dom'
 // CSS moved to static/css/ directory - loaded via Django template
+// Uses the same CSS classes as Taskview but with different HTML structure
 
-interface TaskviewProps {
+interface ProjectviewProps {
   // Task data
   taskId?: number
   title: string
@@ -35,7 +36,7 @@ interface TaskviewProps {
   handleSubmenuItemClick: (action: string) => void
   closeDetailsPopup: () => void
   
-  // Optional callbacks (keep if not transferable to hook)
+  // Optional callbacks
   onEdit?: () => void
   onDelete?: () => void
   onStatusChange?: (status: string) => void
@@ -50,7 +51,7 @@ interface TaskviewProps {
   onMoveTo?: (destination: string) => void
 }
 
-const Taskview: React.FC<TaskviewProps> = ({
+const Projectview: React.FC<ProjectviewProps> = ({
   taskId,
   title,
   description,
@@ -105,6 +106,12 @@ const Taskview: React.FC<TaskviewProps> = ({
         }
       }}
     >
+        {/* PROJECT STRUCTURE: Title first with briefcase icon */}
+        <div className="task_tracker_task_title">
+          <i className="pi pi-briefcase" style={{ fontSize: '1.3rem', marginRight: '10px' }}></i>
+          {title}
+        </div>
+        
         {/* Floating action icons */}
         <div className="task_tracker_floating_icons">
           <button 
@@ -327,14 +334,14 @@ const Taskview: React.FC<TaskviewProps> = ({
             </div>
             <div 
               className="task_tracker_task_submenu_item"
-              onClick={() => handleSubmenuItemClick('project')}
+              onClick={() => handleSubmenuItemClick('task')}
               style={{
                 padding: '8px 16px',
                 cursor: 'pointer',
                 borderBottom: '1px solid #f0f0f0'
               }}
             >
-              Convert to project
+              Convert to task
             </div>
             <div 
               className="task_tracker_task_submenu_item"
@@ -391,8 +398,6 @@ const Taskview: React.FC<TaskviewProps> = ({
                   <div className="task_details_date_label">Due date</div>
                   <div className="task_details_date_value">{dueDate || '10.10.2025'}</div>
                 </div>
-                
-
               </div>
               
               <div className="task_details_priority_label">
@@ -403,6 +408,7 @@ const Taskview: React.FC<TaskviewProps> = ({
                 </div>
 
               <div className="task_details_title">
+                <i className="pi pi-briefcase" style={{ fontSize: '1.3rem', marginRight: '10px' }}></i>
                 {title}
               </div>
               
@@ -455,29 +461,8 @@ const Taskview: React.FC<TaskviewProps> = ({
           </div>,
           document.body
         )}
-        
-        {/* Task metadata */}
-        <div className="task_tracker_task_metadata">
-          <div>
-            <span className="task_tracker_task_category">{category || 'Agenda'}: </span>
-            <span className="task_tracker_task_times">{timeRange || '6:00 am 7:00 am'}</span>
-          </div>
-          <div className="task_tracker_task_dates">
-            <div className="task_tracker_task_date_item">
-              <span>Start date:</span>
-              <span className="task_tracker_task_date_value">{startDate || '20.09.2025'}</span>
-            </div>
-            <div className="task_tracker_task_date_item">
-              <span>Due date:</span>
-              <span className="task_tracker_task_date_value">{dueDate || '20.09.2025'}</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Task title */}
-        <div className="task_tracker_task_title">{title}</div>
-        
-        {/* Task hashtags */}
+        {/* Task hashtags - last position */}
         {tags.length > 0 && (
           <div className="task_tracker_task_hashtags">
             <svg className="task_tracker_task_hashtag_icon" viewBox="0 0 24 24">
@@ -491,4 +476,5 @@ const Taskview: React.FC<TaskviewProps> = ({
   )
 }
 
-export default Taskview
+export default Projectview
+

@@ -2,8 +2,8 @@ import React from 'react'
 import { createPortal } from 'react-dom'
 // CSS moved to static/css/ directory - loaded via Django template
 
-interface TaskviewProps {
-  // Task data
+interface JobSearchViewProps {
+  // Job Search data
   taskId?: number
   title: string
   description?: string
@@ -35,7 +35,7 @@ interface TaskviewProps {
   handleSubmenuItemClick: (action: string) => void
   closeDetailsPopup: () => void
   
-  // Optional callbacks (keep if not transferable to hook)
+  // Optional callbacks
   onEdit?: () => void
   onDelete?: () => void
   onStatusChange?: (status: string) => void
@@ -50,7 +50,7 @@ interface TaskviewProps {
   onMoveTo?: (destination: string) => void
 }
 
-const Taskview: React.FC<TaskviewProps> = ({
+const JobSearchView: React.FC<JobSearchViewProps> = ({
   taskId,
   title,
   description,
@@ -456,24 +456,6 @@ const Taskview: React.FC<TaskviewProps> = ({
           document.body
         )}
         
-        {/* Task metadata */}
-        <div className="task_tracker_task_metadata">
-          <div>
-            <span className="task_tracker_task_category">{category || 'Agenda'}: </span>
-            <span className="task_tracker_task_times">{timeRange || '6:00 am 7:00 am'}</span>
-          </div>
-          <div className="task_tracker_task_dates">
-            <div className="task_tracker_task_date_item">
-              <span>Start date:</span>
-              <span className="task_tracker_task_date_value">{startDate || '20.09.2025'}</span>
-            </div>
-            <div className="task_tracker_task_date_item">
-              <span>Due date:</span>
-              <span className="task_tracker_task_date_value">{dueDate || '20.09.2025'}</span>
-            </div>
-          </div>
-        </div>
-
         {/* Task title */}
         <div className="task_tracker_task_title">{title}</div>
         
@@ -491,4 +473,5 @@ const Taskview: React.FC<TaskviewProps> = ({
   )
 }
 
-export default Taskview
+export default JobSearchView
+

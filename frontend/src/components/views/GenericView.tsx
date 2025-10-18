@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 // CSS moved to static/css/ directory - loaded via Django template
 import { taskApi, InboxTaskData, DjangoTask } from '../../api/taskApi'
 import Taskview from '../ui/Taskview'
+import Projectview from '../ui/Projectview'
+import TimeSlotView from '../ui/TimeSlotView'
+import AnnouncementView from '../ui/AnnouncementView'
+import JobSearchView from '../ui/JobSearchView'
 import InputContainer from '../ui/InputContainer'
 import EditTaskDialog, { EditTaskFormData } from '../ui/EditTaskDialog'
 import TaskNotesDialog from '../ui/TaskNotesDialog'
@@ -154,7 +158,10 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   const loadUserTasks = async (showErrorOnFailure: boolean = true) => {
     try {
       setLoadingTasks(true)
-      const tasks = await taskApi.getTasksByCategory(category)
+      // Use inbox items endpoint for Inbox category to get all types
+      const tasks = category.toLowerCase() === 'inbox' 
+        ? await taskApi.getInboxItems(category)
+        : await taskApi.getTasksByCategory(category)
       setUserTasks(tasks)
     } catch (error) {
       console.error('Error loading user tasks:', error)
@@ -335,45 +342,116 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             <p>Loading tasks...</p>
           </div>
         ) : userTasks.length > 0 ? (
-          userTasks.map((task) => (
-            <Taskview
-              key={task.id}
-              taskId={task.id}
-              title={task.title}
-              description={task.description}
-              startDate={task.date_start ? formatDateForDisplay(task.date_start) : undefined}
-              dueDate={task.date_end ? formatDateForDisplay(task.date_end) : undefined}
-              tags={task.hashtags?.map(h => h.tag_name) || []}
-              category={displayName || category}
-              priority={task.priority || null}
-              status={task.task_mode === 'published' ? 'in-progress' : 'pending'}
-              // UI states from hook
-              tappedTaskId={tasksHook.tappedTaskId}
-              openDropdownTaskId={tasksHook.openDropdownTaskId}
-              showSubmenu={tasksHook.showSubmenu}
-              dropdownPosition={tasksHook.dropdownPosition}
-              submenuPosition={tasksHook.submenuPosition}
-              detailsPopupTaskId={tasksHook.detailsPopupTaskId}
-              dropdownRef={tasksHook.dropdownRef}
-              submenuRef={tasksHook.submenuRef}
-              handleTaskTap={tasksHook.handleTaskTap}
-              handleIconClick={tasksHook.handleIconClick}
-              handleDropdownItemClick={tasksHook.handleDropdownItemClick}
-              handleSubmenuItemClick={tasksHook.handleSubmenuItemClick}
-              closeDetailsPopup={tasksHook.closeDetailsPopup}
-              // Callbacks
-              onDone={() => handleMarkTaskDone(task.id)}
-              onCreateTask={() => handleTaskAction('create', task.id)}
-              onSubTask={() => handleTaskAction('subtask', task.id)}
-              onNote={() => handleTaskAction('note', task.id)}
-              onStart={() => handleTaskAction('start', task.id)}
-              onEdit={() => handleTaskAction('edit', task.id)}
-              onDetails={() => handleTaskAction('details', task.id)}
-              onDelegate={() => handleTaskAction('delegate', task.id)}
-              onPublish={() => handleTaskAction('publish', task.id)}
-              onMoveTo={(destination) => handleMoveTask(destination, task.id)}
-            />
-          ))
+          (() => {
+            // Group tasks by type_of_view
+            const groupedTasks: Record<string, DjangoTask[]> = {}
+            userTasks.forEach((task) => {
+              const typeOfView = task.type_of_view || 'task'
+              if (!groupedTasks[typeOfView]) {
+                groupedTasks[typeOfView] = []
+              }
+              groupedTasks[typeOfView].push(task)
+            })
+
+            // Map type_of_view to display names
+            const typeDisplayNames: Record<string, string> = {
+              'task': 'Tasks',
+              'project': 'Projects',
+              'orders': 'Time Slots',
+              'timeslot': 'Time Slots',
+              'advertising': 'Announcements',
+              'tender': 'Tenders',
+              'job_search': 'Job Searches'
+            }
+
+            // Define order of groups
+            const groupOrder = ['task', 'project', 'orders', 'timeslot', 'advertising', 'tender', 'job_search']
+
+            return (
+              <>
+                {groupOrder.map((typeKey) => {
+                  const tasks = groupedTasks[typeKey]
+                  if (!tasks || tasks.length === 0) return null
+
+                  return (
+                    <div key={typeKey} className="inbox-group">
+                      <div className="inbox-group-header">
+                        <h3>{typeDisplayNames[typeKey] || typeKey}</h3>
+                      </div>
+                      <div className="inbox-group-content">
+                        <div className="task-design-container">
+                          {tasks.map((task) => {
+                          // Select appropriate view component based on type_of_view
+                          let ViewComponent
+                          switch (task.type_of_view) {
+                            case 'project':
+                              ViewComponent = Projectview
+                              break
+                            case 'orders':
+                            case 'timeslot':
+                              ViewComponent = TimeSlotView
+                              break
+                            case 'advertising':
+                              ViewComponent = AnnouncementView
+                              break
+                            case 'job_search':
+                              ViewComponent = JobSearchView
+                              break
+                            case 'task':
+                            case 'tender':
+                            default:
+                              ViewComponent = Taskview
+                              break
+                          }
+                          
+                          return (
+                            <ViewComponent
+                              key={task.id}
+                              taskId={task.id}
+                              title={task.title}
+                              description={task.description}
+                              startDate={task.date_start ? formatDateForDisplay(task.date_start) : undefined}
+                              dueDate={task.date_end ? formatDateForDisplay(task.date_end) : undefined}
+                              tags={task.hashtags?.map(h => h.tag_name) || []}
+                              category={displayName || category}
+                              priority={task.priority || null}
+                              status={task.task_mode === 'published' ? 'in-progress' : 'pending'}
+                              // UI states from hook
+                              tappedTaskId={tasksHook.tappedTaskId}
+                              openDropdownTaskId={tasksHook.openDropdownTaskId}
+                              showSubmenu={tasksHook.showSubmenu}
+                              dropdownPosition={tasksHook.dropdownPosition}
+                              submenuPosition={tasksHook.submenuPosition}
+                              detailsPopupTaskId={tasksHook.detailsPopupTaskId}
+                              dropdownRef={tasksHook.dropdownRef}
+                              submenuRef={tasksHook.submenuRef}
+                              handleTaskTap={tasksHook.handleTaskTap}
+                              handleIconClick={tasksHook.handleIconClick}
+                              handleDropdownItemClick={tasksHook.handleDropdownItemClick}
+                              handleSubmenuItemClick={tasksHook.handleSubmenuItemClick}
+                              closeDetailsPopup={tasksHook.closeDetailsPopup}
+                              // Callbacks
+                              onDone={() => handleMarkTaskDone(task.id)}
+                              onCreateTask={() => handleTaskAction('create', task.id)}
+                              onSubTask={() => handleTaskAction('subtask', task.id)}
+                              onNote={() => handleTaskAction('note', task.id)}
+                              onStart={() => handleTaskAction('start', task.id)}
+                              onEdit={() => handleTaskAction('edit', task.id)}
+                              onDetails={() => handleTaskAction('details', task.id)}
+                              onDelegate={() => handleTaskAction('delegate', task.id)}
+                              onPublish={() => handleTaskAction('publish', task.id)}
+                              onMoveTo={(destination) => handleMoveTask(destination, task.id)}
+                            />
+                          )
+                        })}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </>
+            )
+          })()
         ) : (
           <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
             <p>No tasks found. Create your first task above!</p>

@@ -2,8 +2,8 @@ import React from 'react'
 import { createPortal } from 'react-dom'
 // CSS moved to static/css/ directory - loaded via Django template
 
-interface TaskviewProps {
-  // Task data
+interface TimeSlotViewProps {
+  // Time Slot data
   taskId?: number
   title: string
   description?: string
@@ -35,7 +35,7 @@ interface TaskviewProps {
   handleSubmenuItemClick: (action: string) => void
   closeDetailsPopup: () => void
   
-  // Optional callbacks (keep if not transferable to hook)
+  // Optional callbacks
   onEdit?: () => void
   onDelete?: () => void
   onStatusChange?: (status: string) => void
@@ -50,7 +50,7 @@ interface TaskviewProps {
   onMoveTo?: (destination: string) => void
 }
 
-const Taskview: React.FC<TaskviewProps> = ({
+const TimeSlotView: React.FC<TimeSlotViewProps> = ({
   taskId,
   title,
   description,
@@ -491,4 +491,5 @@ const Taskview: React.FC<TaskviewProps> = ({
   )
 }
 
-export default Taskview
+export default TimeSlotView
+
