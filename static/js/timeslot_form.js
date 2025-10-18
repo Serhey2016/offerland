@@ -519,7 +519,7 @@ class FormSubmitter {
         const csrfValue = csrfTokenField.value;
         formData.append('csrfmiddlewaretoken', csrfValue);
         
-        formData.append('type_of_task', '5');
+        formData.append('type_of_view', 'task');
         
         const categoryField = this.form.querySelector('#time-slot-category');
         const serviceField = this.form.querySelector('#time-slot-service');

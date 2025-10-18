@@ -649,7 +649,7 @@ export const useInputContainer = ({
           console.log('Job Search created:', parentResponse)
           showSuccess('Job Search created successfully!', 'Job Search Saved', 4000)
         } else {
-          // Create Project (Task with type_of_task='project')
+          // Create Project (Task with type_of_view='project')
         const parentTaskData: InboxTaskData = {
           title,
         }
@@ -1009,7 +1009,7 @@ export const useInputContainer = ({
     try {
       // Create FormData for the request
       const formData = new FormData()
-      formData.append('type_of_task', 'task')
+      formData.append('type_of_view', 'task')
       formData.append('title', taskData.title || '')
       formData.append('description', taskData.description || '')
       formData.append('priority', taskData.priority || '')
@@ -1050,7 +1050,7 @@ export const useInputContainer = ({
     try {
       // Create FormData for the request
       const formData = new FormData()
-      formData.append('type_of_task', 'project')
+      formData.append('type_of_view', 'project')
       formData.append('title', projectData.title || '')
       formData.append('description', projectData.description || '')
       formData.append('priority', projectData.priority || '')

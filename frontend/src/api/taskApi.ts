@@ -196,8 +196,8 @@ export const taskApi = {
         formData.append('parent_id', taskData.parent_id.toString())
       }
       
-      // Type of task - use "task" string value (not ID)
-      formData.append('type_of_task', 'task')
+      // Type of view - use "task" string value (not ID)
+      formData.append('type_of_view', 'task')
       
       const response = await api.post('/services_and_projects/create_task/', formData, {
         headers: {
@@ -252,8 +252,8 @@ export const taskApi = {
       // Edit item ID
       formData.append('edit_item_id', taskId.toString())
       
-      // Type of task - use "task" string value (not ID)
-      formData.append('type_of_task', 'task')
+      // Type of view - use "task" string value (not ID)
+      formData.append('type_of_view', 'task')
       
       const response = await api.post('/services_and_projects/update_form/', formData, {
         headers: {
@@ -330,8 +330,8 @@ export const taskApi = {
         formData.append('parent_id', taskData.parent_id.toString())
       }
       
-      // Type of task - use 'project' type
-      formData.append('type_of_task', 'project')
+      // Type of view - use 'project' type
+      formData.append('type_of_view', 'project')
       
       const response = await api.post('/services_and_projects/create_task/', formData, {
         headers: {
@@ -373,8 +373,8 @@ export const taskApi = {
         formData.append('parent_id', taskData.parent_id.toString())
       }
       
-      // Type of task - use 'advertising' type
-      formData.append('type_of_task', 'advertising')
+      // Type of view - use 'advertising' type
+      formData.append('type_of_view', 'advertising')
       
       const response = await api.post('/services_and_projects/create_advertising/', formData, {
         headers: {
@@ -404,8 +404,8 @@ export const taskApi = {
         })
       }
       
-      // Type of task - use 'advertising' type
-      formData.append('type_of_task', 'advertising')
+      // Type of view - use 'advertising' type
+      formData.append('type_of_view', 'advertising')
       
       const response = await api.post('/services_and_projects/create_advertising/', formData, {
         headers: {
@@ -470,8 +470,8 @@ export const taskApi = {
         formData.append('hashtags', timeSlotData.hashtags)
       }
       
-      // Type of task for time slot - must be 'task' (from model choices)
-      formData.append('type_of_task', 'task')
+      // Type of view for time slot - must be 'task' (from model choices)
+      formData.append('type_of_view', 'task')
       
       const response = await api.post('/services_and_projects/create_time_slot/', formData, {
         headers: {

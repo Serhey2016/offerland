@@ -103,7 +103,7 @@
             {% if item.type == 'advertising' %}
                 {% include 'services_and_projects/advertising_feed.html' with advertising=item.data.advertising owner=item.data.owner categories=categories services=services all_tags=all_tags %}
             {% elif item.type == 'task' %}
-                {% if item.data.type_of_task.type_of_task_name == 'Job search' %}
+                {% if item.data.type_of_view.name == 'job_search' %}
                     {% include 'services_and_projects/job_search_feed.html' with task=item.data categories=categories services=services all_tags=all_tags %}
                 {% else %}
                     {% include 'services_and_projects/task_feed.html' with task=item.data categories=categories services=services all_tags=all_tags %}
@@ -184,7 +184,7 @@
 
         <form class="project-form" id="advertising-edit-form" method="post" enctype="multipart/form-data" action="{% url 'services_and_projects:update_form' %}">
             {% csrf_token %}
-            <input type="hidden" name="type_of_task" value="4"> <!-- Advertising -->
+            <input type="hidden" name="type_of_view" value="advertising"> <!-- Advertising -->
             <input type="hidden" name="edit_item_id" value="">
             
             <div class="form-group">

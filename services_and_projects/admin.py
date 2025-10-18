@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    Comment, TaskStatus, ElementPosition, ServicesCategory, PhotoRelations, Services, Finance, Task,
+    Comment, TaskStatus, ElementPosition, TypeOfView, ServicesCategory, PhotoRelations, Services, Finance, Task,
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations, 
     PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
     TimeSlot, Advertising, TaskClientRelations, TimeSlotPerformersRelations, CommentTimeSlotRelations,
@@ -29,15 +29,15 @@ class ServicesRelationsInline(admin.TabularInline):
     extra = 1
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'type_of_task', 'task_mode', 'element_position', 'priority', 'created_at', 'is_published', 'is_touchpoint', 'is_agenda')
-    list_filter = ('task_mode', 'element_position', 'priority', 'type_of_task', 'is_published', 'is_touchpoint', 'is_agenda', 'created_at')
+    list_display = ('id', 'title', 'type_of_view', 'task_mode', 'element_position', 'priority', 'created_at', 'is_published', 'is_touchpoint', 'is_agenda')
+    list_filter = ('task_mode', 'element_position', 'priority', 'type_of_view', 'is_published', 'is_touchpoint', 'is_agenda', 'created_at')
     search_fields = ('title', 'description')
     readonly_fields = ('created_at', 'updated_at')
     date_hierarchy = 'created_at'
     
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'description', 'type_of_task', 'task_mode', 'element_position', 'priority')
+            'fields': ('title', 'description', 'type_of_view', 'task_mode', 'element_position', 'priority')
         }),
         ('Дополнительная информация', {
             'fields': ('photo_link', 'documents', 'note', 'finance'),
@@ -63,15 +63,15 @@ class AdvertisingAdmin(admin.ModelAdmin):
     inlines = [AdvertisingHashtagRelationsInline]
 
 class TimeSlotAdmin(admin.ModelAdmin):
-    list_display = ('id', 'date_start', 'date_end', 'time_start', 'time_end', 'ts_mode', 'type_of_task', 'services', 'cost_of_1_hour_of_work')
-    list_filter = ('ts_mode', 'type_of_task', 'services', 'date_start', 'date_end')
+    list_display = ('id', 'date_start', 'date_end', 'time_start', 'time_end', 'ts_mode', 'type_of_view', 'services', 'cost_of_1_hour_of_work')
+    list_filter = ('ts_mode', 'type_of_view', 'services', 'date_start', 'date_end')
     search_fields = ('start_location', 'minimum_time_slot')
     readonly_fields = ('id',)
     date_hierarchy = 'date_start'
     
     fieldsets = (
         ('Основная информация', {
-            'fields': ('ts_mode', 'type_of_task', 'services')
+            'fields': ('ts_mode', 'type_of_view', 'services')
         }),
         ('Даты и время', {
             'fields': ('date_start', 'date_end', 'time_start', 'time_end')
@@ -125,6 +125,7 @@ class JobSearchActivitiesRelationsAdmin(admin.ModelAdmin):
 admin.site.register(Comment)
 admin.site.register(TaskStatus)
 admin.site.register(ElementPosition)
+admin.site.register(TypeOfView)
 admin.site.register(ServicesCategory)
 admin.site.register(PhotoRelations)
 admin.site.register(Services)

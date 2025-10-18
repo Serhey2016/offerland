@@ -83,6 +83,29 @@ class ElementPosition(models.Model):
         verbose_name_plural = "Element Positions"
 
 
+class TypeOfView(models.Model):
+    """Unified type/category for all view elements (Task, JobSearch, TimeSlot, Advertising, etc.)"""
+    VIEW_TYPE_CHOICES = [
+        ('tender', 'Tender'),
+        ('project', 'Project'),
+        ('advertising', 'Advertising'),
+        ('orders', 'Orders'),
+        ('job_search', 'Job Search'),
+        ('task', 'Task'),
+    ]
+    
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=15, choices=VIEW_TYPE_CHOICES, unique=True)
+    
+    def __str__(self):
+        return self.get_name_display()
+    
+    class Meta:
+        db_table = 'type_of_view'
+        verbose_name = "Type of View"
+        verbose_name_plural = "Types of View"
+
+
 class ServicesCategory(models.Model):
     id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=100, unique=True)
@@ -152,17 +175,8 @@ class Task(models.Model):
         ('ninu', 'Not Important & Not Urgent'),
     ]
     
-    TYPE_OF_TASK_CHOICES = [
-        ('tender', 'Tender'),
-        ('project', 'Project'),
-        ('advertising', 'Advertising'),
-        ('orders', 'Orders'),
-        ('job_search', 'Job Search'),
-        ('task', 'Task'),
-    ]
-    
     id = models.AutoField(primary_key=True)
-    type_of_task = models.CharField(max_length=15, choices=TYPE_OF_TASK_CHOICES, default='task', verbose_name='Type of task')
+    type_of_view = models.ForeignKey('TypeOfView', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Type of view', to_field='name', db_column='type_of_view')
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000, blank=True, null=True)
     photo_link = models.CharField(max_length=2000, blank=True, null=True)
@@ -310,15 +324,7 @@ class TimeSlot(models.Model):
     cost_of_1_hour_of_work = models.DecimalField(max_digits=10, decimal_places=2)  # В центах
     minimum_time_slot = models.CharField(max_length=50)  # Изменено на CharField
     
-    TYPE_OF_TASK_CHOICES = [
-        ('tender', 'Tender'),
-        ('project', 'Project'),
-        ('advertising', 'Advertising'),
-        ('orders', 'Orders'),
-        ('job_search', 'Job Search'),
-        ('task', 'Task'),
-    ]
-    type_of_task = models.CharField(max_length=15, choices=TYPE_OF_TASK_CHOICES, default='task', verbose_name='Type of task')
+    type_of_view = models.ForeignKey('TypeOfView', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Type of view', to_field='name', db_column='type_of_view')
     services = models.ForeignKey('Services', on_delete=models.CASCADE)
     element_position = models.ForeignKey('ElementPosition', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Position', to_field='name', db_column='element_position')
     ts_mode = models.CharField(max_length=10, choices=TS_MODE_CHOICES, default='draft', verbose_name='Time slot mode')
@@ -388,15 +394,7 @@ class Advertising(models.Model):
     hashtags = models.ManyToManyField('joblist.AllTags', through='AdvertisingHashtagRelations', blank=True)
     services = models.ForeignKey('Services', on_delete=models.CASCADE, null=True, blank=True)
     
-    TYPE_OF_TASK_CHOICES = [
-        ('tender', 'Tender'),
-        ('project', 'Project'),
-        ('advertising', 'Advertising'),
-        ('orders', 'Orders'),
-        ('job_search', 'Job Search'),
-        ('task', 'Task'),
-    ]
-    type_of_task = models.CharField(max_length=15, choices=TYPE_OF_TASK_CHOICES, default='task', verbose_name='Type of task')
+    type_of_view = models.ForeignKey('TypeOfView', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Type of view', to_field='name', db_column='type_of_view')
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='advertisings')
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Creation date')
     publication_date = models.DateTimeField(auto_now_add=True, verbose_name='Publication date')
@@ -545,6 +543,7 @@ class JobSearch(models.Model):
     result_of_task = models.CharField(max_length=10, choices=RESULT_CHOICES, default='not_find')
     js_mode = models.CharField(max_length=10, choices=JS_MODE_CHOICES, default='draft', verbose_name='Job search mode')
     post_type = models.CharField(max_length=20, choices=POST_TYPE_CHOICES, default='job_search', verbose_name='Post type')
+    type_of_view = models.ForeignKey('TypeOfView', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Type of view', to_field='name', db_column='type_of_view')
     element_position = models.ForeignKey('ElementPosition', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Position', to_field='name', db_column='element_position')
     
     # Связь многие ко многим с Activities через промежуточную таблицу

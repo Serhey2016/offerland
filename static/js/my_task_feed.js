@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Found task element
         
         // Получаем тип задачи из DOM или по умолчанию используем 'my-list'
-        const taskTypeElement = taskElement.querySelector('.post_info_dates_type_of_task');
+        const taskTypeElement = taskElement.querySelector('.post_info_dates_type_of_view');
         let formType = 'my-list'; // По умолчанию
         
         if (taskTypeElement) {

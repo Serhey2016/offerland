@@ -26,7 +26,7 @@
 
         <form class="project-form" id="advertising-form" method="post" enctype="multipart/form-data" action="{% url 'services_and_projects:submit_form' %}">
             {% csrf_token %}
-            <input type="hidden" name="type_of_task" value="4"> <!-- Advertising -->
+            <input type="hidden" name="type_of_view" value="advertising"> <!-- Advertising -->
             
             <div class="form-group">
                 <label for="advertising-title">Title</label>
@@ -71,7 +71,7 @@
 
         <form class="project-form" id="job-search-form" method="post" action="{% url 'services_and_projects:submit_form' %}">
             {% csrf_token %}
-            <input type="hidden" name="type_of_task" value="6"> <!-- Job Search -->
+            <input type="hidden" name="type_of_view" value="job_search"> <!-- Job Search -->
             
             <div class="form-group">
                 <label for="job-search-title">Title</label>
@@ -100,7 +100,7 @@
 
         <form class="project-form" id="time-slot-form-element" method="post" action="{% url 'services_and_projects:submit_form' %}">
             {% csrf_token %}
-            <input type="hidden" name="type_of_task" value="5"> <!-- Time Slot -->
+            <input type="hidden" name="type_of_view" value="task"> <!-- Time Slot -->
             
             <div class="form-group">
                 <label for="time-slot-category">Category</label>
@@ -186,7 +186,7 @@
 
         <form class="project-form" id="my-list-form" method="post" action="{% url 'services_and_projects:submit_form' %}">
             {% csrf_token %}
-            <input type="hidden" name="type_of_task" value="1"> <!-- My List -->
+            <input type="hidden" name="type_of_view" value="task"> <!-- My List -->
             
             <div class="form-group">
                 <label for="my-list-title">Title</label>
@@ -229,7 +229,7 @@
 
         <form class="project-form" id="tender-form" method="post" action="{% url 'services_and_projects:submit_form' %}">
             {% csrf_token %}
-            <input type="hidden" name="type_of_task" value="2"> <!-- Tender -->
+            <input type="hidden" name="type_of_view" value="tender"> <!-- Tender -->
             
             <div class="form-group">
                 <label for="tender-title">Title</label>
@@ -333,7 +333,7 @@
 
         <form class="project-form" id="project-form" method="post" enctype="multipart/form-data" action="{% url 'services_and_projects:submit_form' %}">
             {% csrf_token %}
-            <input type="hidden" name="type_of_task" value="3"> <!-- Project -->
+            <input type="hidden" name="type_of_view" value="project"> <!-- Project -->
             
             <div class="form-group">
                 <label for="project-title">Title</label>

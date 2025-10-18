@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from .models import ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations, TaskHashtagRelations
+from .models import ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations, TaskHashtagRelations, TypeOfView
 from joblist.models import AllTags, Companies
 from django.utils import timezone
 import json
@@ -17,8 +17,8 @@ def testpage(request):
     status_filter = request.GET.get('status', 'all')
     category_filter = request.GET.get('category', 'all')
     
-    # Get type of task choices from Task model
-    types = Task.TYPE_OF_TASK_CHOICES
+    # Get type of view choices from TypeOfView model
+    types = TypeOfView.objects.all()
     categories = ServicesCategory.objects.all()
     services = Services.objects.all()
     statuses = TaskStatus.objects.all()
@@ -55,7 +55,7 @@ def testpage(request):
         owner = owner_rel.user if owner_rel else None
         task = Task.objects.filter(
             services=advertising.services,
-            type_of_task=advertising.type_of_task
+            type_of_view=advertising.type_of_view
         ).order_by('-created_at').first()
         
         advertising_data.append({
@@ -713,7 +713,7 @@ def get_edit_data(request, form_type, item_id):
                 'hashtags', 'performers', 'photos', 'services'
             ).get(id=item_id)
             
-            print(f"DEBUG: Found task: {task.title}, type: {task.type_of_task}")
+            print(f"DEBUG: Found task: {task.title}, type: {task.type_of_view}")
             
             # Проверяем права доступа (только владелец может редактировать)
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -749,7 +749,7 @@ def get_edit_data(request, form_type, item_id):
             # Получаем данные тендера (используем модель Task с типом 'tender')
             task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
-            ).get(id=item_id, type_of_task='tender')
+            ).get(id=item_id, type_of_view__name='tender')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -777,7 +777,7 @@ def get_edit_data(request, form_type, item_id):
             # Получаем данные проекта (используем модель Task с типом 'project')
             task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
-            ).get(id=item_id, type_of_task='project')
+            ).get(id=item_id, type_of_view__name='project')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():

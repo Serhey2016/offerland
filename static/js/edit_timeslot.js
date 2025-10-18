@@ -177,7 +177,7 @@ class EditTimeSlotForm {
                     
                     <form class="edit-timeslot-form" id="edit-timeslot-form-element">
                         <input type="hidden" name="edit_item_id" id="edit-timeslot-id">
-                        <input type="hidden" name="type_of_task" value="5">
+                        <input type="hidden" name="type_of_view" value="task">
                         
                         <div class="form-group">
                             <label for="edit-timeslot-category">Category</label>

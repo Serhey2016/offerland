@@ -39,7 +39,7 @@ def create_task(request):
             logger.info(f"Request POST data: {dict(request.POST)}")
             
             # Получаем данные из формы
-            type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
+            type_of_task_id = none_if_empty(request.POST.get('type_of_view'))
             if isinstance(type_of_task_id, list):
                 type_of_task_id = type_of_task_id[0] if type_of_task_id else None
             title = none_if_empty(request.POST.get('title'))
@@ -141,7 +141,7 @@ def create_task(request):
 
             # ЭТАП 1: Создаём основную запись Task
             task = Task.objects.create(
-                type_of_task=type_of_task_id if type_of_task_id else 'task',
+                type_of_view_id=type_of_task_id if type_of_task_id else 'task',
                 title=title,
                 description=description,
                 photo_link=photo_link,
@@ -295,7 +295,7 @@ def create_advertising(request):
             title = none_if_empty(request.POST.get('title'))
             description = none_if_empty(request.POST.get('description'))
             photo_link = none_if_empty(request.POST.get('photo_link') or request.POST.get('photos-link'))
-            type_of_task_id = none_if_empty(request.POST.get('type_of_task'))
+            type_of_task_id = none_if_empty(request.POST.get('type_of_view'))
             service_id = none_if_empty(request.POST.get('service'))
 
             logger.info(f"Parsed form data:")
@@ -321,7 +321,7 @@ def create_advertising(request):
             advertising = Advertising.objects.create(
                 title=title,
                 description=description,
-                type_of_task=type_of_task_id if type_of_task_id else 'advertising',
+                type_of_view_id=type_of_task_id if type_of_task_id else 'advertising',
                 services_id=service_id
             )
             
@@ -462,7 +462,7 @@ def create_time_slot(request):
             logger.info(f"cost_of_1_hour_of_work: {cost_of_1_hour_of_work}")
             minimum_time_slot = none_if_empty(request.POST.get('minimum_time_slot'))
             logger.info(f"minimum_time_slot: {minimum_time_slot}")
-            type_of_task = none_if_empty(request.POST.get('type_of_task'))
+            type_of_task = none_if_empty(request.POST.get('type_of_view'))
             logger.info(f"type_of_task: {type_of_task}")
             services_id = none_if_empty(request.POST.get('services'))
             logger.info(f"services_id: {services_id}")
@@ -546,7 +546,7 @@ def create_time_slot(request):
                 start_location=start_location or '',
                 cost_of_1_hour_of_work=cost_in_cents or Decimal('0'),
                 minimum_time_slot=str(minimum_time_slot) if minimum_time_slot else '60',
-                type_of_task=type_of_task or 'task',
+                type_of_view_id=type_of_task or 'task',
                 services_id=services_id,
                 element_position_id='inbox'
             )
@@ -719,7 +719,7 @@ def handle_form_submission(request):
             logger.info(f"Request headers: {dict(request.headers)}")
             
             # Определяем тип публикации
-            type_of_task_id = request.POST.get('type_of_task')
+            type_of_task_id = request.POST.get('type_of_view')
             logger.info(f"Received type_of_task_id: {type_of_task_id}")
             
             if not type_of_task_id:
@@ -820,7 +820,7 @@ def create_activity_task(request, activity_id):
             # Создаем таску
             print(f"Creating task with title: {title}, description: {description}")
             task = Task.objects.create(
-                type_of_task=type_of_task,
+                type_of_view_id=type_of_task,
                 title=title,
                 description=description,
                 element_position_id=default_element_position,
@@ -892,7 +892,7 @@ def update_form(request):
             
             # Получаем ID редактируемого элемента
             edit_item_id = request.POST.get('edit_item_id')
-            type_of_task_id = request.POST.get('type_of_task')
+            type_of_task_id = request.POST.get('type_of_view')
             
             logger.info(f"Edit item ID: {edit_item_id}")
             logger.info(f"Type of task ID: {type_of_task_id}")
