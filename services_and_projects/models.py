@@ -90,12 +90,14 @@ class TypeOfView(models.Model):
         ('project', 'Project'),
         ('advertising', 'Advertising'),
         ('orders', 'Orders'),
+        ('timeslot', 'TimeSlot'),
+        ('timeslot_public', 'TimeSlot Public'),
         ('job_search', 'Job Search'),
         ('task', 'Task'),
     ]
     
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=15, choices=VIEW_TYPE_CHOICES, unique=True)
+    name = models.CharField(max_length=20, choices=VIEW_TYPE_CHOICES, unique=True)
     
     def __str__(self):
         return self.get_name_display()

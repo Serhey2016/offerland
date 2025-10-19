@@ -35,6 +35,14 @@ export interface DjangoTask {
     id: number
     tag_name: string
   }>
+  type_of_view?: 'task' | 'project' | 'tender' | 'advertising' | 'orders' | 'job_search' | 'timeslot' | 'timeslot_public'
+  // TimeSlot-specific fields
+  reserved_time_on_road?: number
+  start_location?: string
+  cost_of_1_hour_of_work?: number
+  minimum_time_slot?: string
+  user_name?: string
+  company_name?: string
 }
 
 export interface CreateTaskData {
@@ -147,6 +155,19 @@ export const taskApi = {
       return response.data
     } catch (error) {
       console.error(`Error fetching tasks for category ${category}:`, error)
+      throw error
+    }
+  },
+
+  // Get all inbox items (Tasks, TimeSlots, Advertising) grouped by type_of_view
+  getInboxItems: async (category: string): Promise<DjangoTask[]> => {
+    try {
+      const response = await api.get('/services_and_projects/user_inbox_items/', { 
+        params: { category: category.toLowerCase() } 
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error fetching inbox items:', error)
       throw error
     }
   },

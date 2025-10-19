@@ -4,6 +4,7 @@ import { taskApi, InboxTaskData, DjangoTask } from '../../api/taskApi'
 import Taskview from '../ui/Taskview'
 import Projectview from '../ui/Projectview'
 import TimeSlotView from '../ui/TimeSlotView'
+import TimeSlotViewPublic from '../ui/TimeSlotViewPublic'
 import AnnouncementView from '../ui/AnnouncementView'
 import JobSearchView from '../ui/JobSearchView'
 import InputContainer from '../ui/InputContainer'
@@ -391,6 +392,9 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                             case 'timeslot':
                               ViewComponent = TimeSlotView
                               break
+                            case 'timeslot_public':
+                              ViewComponent = TimeSlotViewPublic
+                              break
                             case 'advertising':
                               ViewComponent = AnnouncementView
                               break
@@ -404,43 +408,68 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                               break
                           }
                           
+                          // Prepare props based on view type
+                          const commonProps = {
+                            key: task.id,
+                            taskId: task.id,
+                            tags: task.hashtags?.map(h => h.tag_name) || [],
+                            priority: task.priority || null,
+                            tappedTaskId: tasksHook.tappedTaskId,
+                            openDropdownTaskId: tasksHook.openDropdownTaskId,
+                            showSubmenu: tasksHook.showSubmenu,
+                            dropdownPosition: tasksHook.dropdownPosition,
+                            submenuPosition: tasksHook.submenuPosition,
+                            detailsPopupTaskId: tasksHook.detailsPopupTaskId,
+                            dropdownRef: tasksHook.dropdownRef,
+                            submenuRef: tasksHook.submenuRef,
+                            handleTaskTap: tasksHook.handleTaskTap,
+                            handleIconClick: tasksHook.handleIconClick,
+                            handleDropdownItemClick: tasksHook.handleDropdownItemClick,
+                            handleSubmenuItemClick: tasksHook.handleSubmenuItemClick,
+                            closeDetailsPopup: tasksHook.closeDetailsPopup,
+                            onDone: () => handleMarkTaskDone(task.id),
+                            onCreateTask: () => handleTaskAction('create', task.id),
+                            onSubTask: () => handleTaskAction('subtask', task.id),
+                            onNote: () => handleTaskAction('note', task.id),
+                            onStart: () => handleTaskAction('start', task.id),
+                            onEdit: () => handleTaskAction('edit', task.id),
+                            onDetails: () => handleTaskAction('details', task.id),
+                            onDelegate: () => handleTaskAction('delegate', task.id),
+                            onPublish: () => handleTaskAction('publish', task.id),
+                            onMoveTo: (destination) => handleMoveTask(destination, task.id)
+                          }
+
+                          // TimeSlot-specific props
+                          if (task.type_of_view === 'timeslot' || task.type_of_view === 'timeslot_public' || task.type_of_view === 'orders') {
+                            return (
+                              <ViewComponent
+                                {...commonProps}
+                                companyName={(task as any).company_name || undefined}
+                                userName={(task as any).user_name || task.title || 'Unknown User'}
+                                hourPrice={(task as any).cost_of_1_hour_of_work || 0}
+                                minSlotHours={(task as any).minimum_time_slot}
+                                availabilityStartDate={task.date_start ? formatDateForDisplay(task.date_start) : ''}
+                                availabilityEndDate={task.date_end ? formatDateForDisplay(task.date_end) : ''}
+                                timeSlotStartTime={(task as any).time_start || ''}
+                                timeSlotEndTime={(task as any).time_end || ''}
+                                reservedRoadTime={(task as any).reserved_time_on_road ? `${(task as any).reserved_time_on_road} minutes` : undefined}
+                                startLocation={(task as any).start_location}
+                                description={task.description}
+                                onBook={() => handleTaskAction('book', task.id)}
+                              />
+                            )
+                          }
+                          
+                          // Default task props
                           return (
                             <ViewComponent
-                              key={task.id}
-                              taskId={task.id}
+                              {...commonProps}
                               title={task.title}
                               description={task.description}
                               startDate={task.date_start ? formatDateForDisplay(task.date_start) : undefined}
                               dueDate={task.date_end ? formatDateForDisplay(task.date_end) : undefined}
-                              tags={task.hashtags?.map(h => h.tag_name) || []}
                               category={displayName || category}
-                              priority={task.priority || null}
                               status={task.task_mode === 'published' ? 'in-progress' : 'pending'}
-                              // UI states from hook
-                              tappedTaskId={tasksHook.tappedTaskId}
-                              openDropdownTaskId={tasksHook.openDropdownTaskId}
-                              showSubmenu={tasksHook.showSubmenu}
-                              dropdownPosition={tasksHook.dropdownPosition}
-                              submenuPosition={tasksHook.submenuPosition}
-                              detailsPopupTaskId={tasksHook.detailsPopupTaskId}
-                              dropdownRef={tasksHook.dropdownRef}
-                              submenuRef={tasksHook.submenuRef}
-                              handleTaskTap={tasksHook.handleTaskTap}
-                              handleIconClick={tasksHook.handleIconClick}
-                              handleDropdownItemClick={tasksHook.handleDropdownItemClick}
-                              handleSubmenuItemClick={tasksHook.handleSubmenuItemClick}
-                              closeDetailsPopup={tasksHook.closeDetailsPopup}
-                              // Callbacks
-                              onDone={() => handleMarkTaskDone(task.id)}
-                              onCreateTask={() => handleTaskAction('create', task.id)}
-                              onSubTask={() => handleTaskAction('subtask', task.id)}
-                              onNote={() => handleTaskAction('note', task.id)}
-                              onStart={() => handleTaskAction('start', task.id)}
-                              onEdit={() => handleTaskAction('edit', task.id)}
-                              onDetails={() => handleTaskAction('details', task.id)}
-                              onDelegate={() => handleTaskAction('delegate', task.id)}
-                              onPublish={() => handleTaskAction('publish', task.id)}
-                              onMoveTo={(destination) => handleMoveTask(destination, task.id)}
                             />
                           )
                         })}

@@ -16,7 +16,11 @@
  
 }
 
-
+.task_tracker_task_container:hover {
+    border: 2px solid #323745;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+   
+}
 
 
 .task_tracker_task_container:hover .task_tracker_floating_icons {
@@ -348,10 +352,9 @@
     position: relative;
 }
 
-.time_slot_card_container:hover,.task_tracker_task_container:hover {
+.time_slot_card_container:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    border: 2px solid #323745;
 }
 
 /* Left Section - Main Details (55-60% width) */

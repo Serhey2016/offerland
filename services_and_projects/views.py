@@ -679,7 +679,8 @@ def user_tasks(request):
                 'note': task.note,
                 'created_at': task.created_at.isoformat(),
                 'updated_at': task.updated_at.isoformat(),
-                'hashtags': hashtags
+                'hashtags': hashtags,
+                'type_of_view': task.type_of_view.name if task.type_of_view else 'task'
             }
             tasks_data.append(task_data)
         
@@ -688,6 +689,247 @@ def user_tasks(request):
     except Exception as e:
         return JsonResponse({
             'error': f'Error fetching user tasks: {str(e)}'
+        }, status=500)
+
+
+@login_required
+def user_inbox_items(request):
+    """
+    API endpoint to get all items (Tasks, TimeSlots, Advertising, JobSearch) for authenticated user
+    Returns items grouped by type_of_view for inbox category
+    """
+    try:
+        # Get category/status filter from query params
+        category = request.GET.get('category', '').lower()
+        
+        # Map category names to element_position values
+        position_mapping = {
+            'inbox': 'inbox',
+            'backlog': 'backlog',
+            'agenda': 'agenda',
+            'waiting': 'waiting',
+            'someday': 'someday',
+            'projects': 'projects',
+            'done': 'done',
+            'archive': 'archive'
+        }
+        
+        all_items = []
+        
+        # Get Tasks
+        user_tasks = Task.objects.filter(
+            taskownerrelations__user=request.user
+        ).select_related(
+            'element_position', 'type_of_view'
+        ).prefetch_related(
+            'hashtags__hashtag'
+        )
+        
+        if category in position_mapping:
+            if category == 'agenda':
+                from django.db.models import Q
+                user_tasks = user_tasks.filter(Q(element_position__name='agenda') | Q(is_agenda=True))
+            else:
+                user_tasks = user_tasks.filter(element_position__name=position_mapping[category])
+        
+        user_tasks = user_tasks.order_by('-created_at')
+        
+        # Add tasks to all_items
+        for task in user_tasks:
+            hashtag_relations = TaskHashtagRelations.objects.filter(task=task).select_related('hashtag')
+            hashtags = [
+                {
+                    'id': rel.hashtag.id,
+                    'tag_name': rel.hashtag.tag
+                }
+                for rel in hashtag_relations
+            ]
+            
+            date_start_str = None
+            date_end_str = None
+            if task.start_datetime:
+                date_start_str = task.start_datetime.date().isoformat() if hasattr(task.start_datetime, 'date') else str(task.start_datetime).split('T')[0]
+            if task.end_datetime:
+                date_end_str = task.end_datetime.date().isoformat() if hasattr(task.end_datetime, 'date') else str(task.end_datetime).split('T')[0]
+            
+            all_items.append({
+                'id': task.id,
+                'title': task.title,
+                'description': task.description,
+                'date_start': date_start_str,
+                'date_end': date_end_str,
+                'time_start': task.start_datetime.isoformat() if task.start_datetime else None,
+                'time_end': task.end_datetime.isoformat() if task.end_datetime else None,
+                'priority': task.priority,
+                'status': task.element_position.name if task.element_position else None,
+                'task_mode': task.task_mode,
+                'note': task.note,
+                'created_at': task.created_at.isoformat(),
+                'updated_at': task.updated_at.isoformat(),
+                'hashtags': hashtags,
+                'type_of_view': task.type_of_view.name if task.type_of_view else 'task',
+                'item_type': 'task'
+            })
+        
+        # Get TimeSlots
+        user_time_slots = TimeSlot.objects.filter(
+            timeslotownerrelations__user=request.user
+        ).select_related(
+            'element_position', 'type_of_view', 'services'
+        ).prefetch_related(
+            'hashtags'
+        )
+        
+        if category in position_mapping:
+            user_time_slots = user_time_slots.filter(element_position__name=position_mapping[category])
+        
+        user_time_slots = user_time_slots.order_by('-date_start')
+        
+        # Add time slots to all_items
+        for ts in user_time_slots:
+            # Get time slot owner info
+            time_slot_owner = None
+            company_name = None
+            
+            # Get the owner through TimeSlotOwnerRelations
+            try:
+                owner_relation = TimeSlotOwnerRelations.objects.filter(time_slot=ts).first()
+                if owner_relation:
+                    time_slot_owner = owner_relation.user
+                    # Check if user has a company in UserMeta
+                    try:
+                        from home.models import UserMeta
+                        user_meta = UserMeta.objects.filter(user=time_slot_owner).first()
+                        company_name = user_meta.company_name if user_meta and hasattr(user_meta, 'company_name') else None
+                    except Exception:
+                        company_name = None
+            except Exception:
+                time_slot_owner = None
+            
+            # Get hashtags for this time slot
+            ts_hashtags = []
+            hashtag_relations = ts.hashtags.all()
+            for hashtag in hashtag_relations:
+                ts_hashtags.append({
+                    'id': hashtag.id,
+                    'tag_name': hashtag.tag
+                })
+            
+            all_items.append({
+                'id': ts.id,
+                'title': f"Time Slot: {ts.date_start} - {ts.date_end}",
+                'description': f"{ts.services.service_name if ts.services else 'No service'} ({ts.time_start} - {ts.time_end})",
+                'date_start': ts.date_start.isoformat(),
+                'date_end': ts.date_end.isoformat(),
+                'time_start': ts.time_start.isoformat() if ts.time_start else None,
+                'time_end': ts.time_end.isoformat() if ts.time_end else None,
+                'priority': None,
+                'status': ts.element_position.name if ts.element_position else None,
+                'task_mode': ts.ts_mode,
+                'note': None,
+                'created_at': None,
+                'updated_at': None,
+                'hashtags': ts_hashtags,
+                'type_of_view': ts.type_of_view.name if ts.type_of_view else 'orders',
+                'item_type': 'time_slot',
+                'slug': ts.slug,
+                # TimeSlot-specific fields
+                'reserved_time_on_road': ts.reserved_time_on_road,
+                'start_location': ts.start_location,
+                'cost_of_1_hour_of_work': float(ts.cost_of_1_hour_of_work) if ts.cost_of_1_hour_of_work else 0,
+                'minimum_time_slot': ts.minimum_time_slot,
+                'user_name': f"{time_slot_owner.first_name} {time_slot_owner.last_name}".strip() if time_slot_owner else None,
+                'company_name': company_name
+            })
+        
+        # Get Advertising
+        user_advertising = Advertising.objects.filter(
+            advertisingownerrelations__user=request.user
+        ).select_related(
+            'type_of_view'
+        ).prefetch_related(
+            'hashtags'
+        )
+        
+        # Advertising doesn't have element_position, so we only filter for inbox if needed
+        # For now, we'll include all advertising items when category is inbox
+        if category == 'inbox':
+            # Include advertising that are in draft mode (newly created)
+            user_advertising = user_advertising.filter(adv_mode='draft')
+        
+        user_advertising = user_advertising.order_by('-creation_date')
+        
+        # Add advertising to all_items
+        for adv in user_advertising:
+            all_items.append({
+                'id': adv.id,
+                'title': adv.title,
+                'description': adv.description,
+                'date_start': None,
+                'date_end': None,
+                'time_start': None,
+                'time_end': None,
+                'priority': None,
+                'status': None,
+                'task_mode': adv.adv_mode,
+                'note': None,
+                'created_at': adv.creation_date.isoformat(),
+                'updated_at': adv.publication_date.isoformat(),
+                'hashtags': [],
+                'type_of_view': adv.type_of_view.name if adv.type_of_view else 'advertising',
+                'item_type': 'advertising',
+                'slug': adv.slug
+            })
+        
+        # Get JobSearch items
+        user_job_searches = JobSearch.objects.filter(
+            user=request.user
+        ).select_related(
+            'element_position', 'type_of_view'
+        )
+        
+        if category in position_mapping:
+            user_job_searches = user_job_searches.filter(element_position__name=position_mapping[category])
+        
+        user_job_searches = user_job_searches.order_by('-last_update')
+        
+        # Add job searches to all_items
+        for js in user_job_searches:
+            date_start_str = None
+            if js.start_date:
+                date_start_str = js.start_date.date().isoformat() if hasattr(js.start_date, 'date') else str(js.start_date).split('T')[0]
+            
+            all_items.append({
+                'id': js.id,
+                'title': js.title,
+                'description': js.notes,
+                'date_start': date_start_str,
+                'date_end': None,
+                'time_start': js.start_date.isoformat() if js.start_date else None,
+                'time_end': None,
+                'priority': None,
+                'status': js.element_position.name if js.element_position else None,
+                'task_mode': js.js_mode,
+                'note': js.notes,
+                'created_at': js.start_date.isoformat() if js.start_date else js.last_update.isoformat(),
+                'updated_at': js.last_update.isoformat(),
+                'hashtags': [],
+                'type_of_view': js.type_of_view.name if js.type_of_view else 'job_search',
+                'item_type': 'job_search',
+                'slug': js.slug
+            })
+        
+        # Sort all items by creation date
+        all_items.sort(key=lambda x: x.get('created_at') or '', reverse=True)
+        
+        return JsonResponse(all_items, safe=False)
+        
+    except Exception as e:
+        import traceback
+        print(f"Error in user_inbox_items: {str(e)}")
+        print(traceback.format_exc())
+        return JsonResponse({
+            'error': f'Error fetching inbox items: {str(e)}'
         }, status=500)
 
 
