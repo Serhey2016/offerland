@@ -39,6 +39,8 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   
   // Time Slot dialog state
   const [showTimeSlotDialog, setShowTimeSlotDialog] = useState(false)
+  const [timeSlotEditMode, setTimeSlotEditMode] = useState<'create' | 'edit'>('create')
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<DjangoTask | null>(null)
   
   // Advertising dialog state
   const [showAdvertisingDialog, setShowAdvertisingDialog] = useState(false)
@@ -50,15 +52,27 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
     await loadUserTasks(false)
   }
 
-  // Handle Time Slot creation
-  const handleCreateTimeSlot = async (timeSlotData: TimeSlotFormData) => {
+  // Handle Time Slot creation/update
+  const handleSaveTimeSlot = async (timeSlotData: TimeSlotFormData) => {
     try {
-      await taskApi.createTimeSlot(timeSlotData)
-      showSuccess('Time slot created successfully!', 'Time Slot Saved', 4000)
+      if (timeSlotEditMode === 'edit' && selectedTimeSlot) {
+        // Update existing time slot
+        await taskApi.updateTimeSlot(selectedTimeSlot.id, timeSlotData)
+        showSuccess('Time slot updated successfully!', 'Time Slot Updated', 4000)
+      } else {
+        // Create new time slot
+        await taskApi.createTimeSlot(timeSlotData)
+        showSuccess('Time slot created successfully!', 'Time Slot Saved', 4000)
+      }
       await loadUserTasks(false)
+      setShowTimeSlotDialog(false)
+      setSelectedTimeSlot(null)
+      setTimeSlotEditMode('create')
     } catch (error: any) {
       // Extract error message from response
-      let errorMessage = 'Error creating time slot. Please try again.'
+      let errorMessage = timeSlotEditMode === 'edit' 
+        ? 'Error updating time slot. Please try again.'
+        : 'Error creating time slot. Please try again.'
       
       if (error.response?.data) {
         if (typeof error.response.data === 'string') {
@@ -128,6 +142,8 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       
       // For 'task' itemType, show TimeSlotDialog instead of InputContainer
       if (itemType === 'task') {
+        setTimeSlotEditMode('create')
+        setSelectedTimeSlot(null)
         setShowTimeSlotDialog(true)
         return
       }
@@ -202,8 +218,16 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
         if (taskSlug) {
           const task = userTasks.find(t => t.slug === taskSlug)
           if (task) {
-            setSelectedTask(task)
-            setShowEditDialog(true)
+            // Check if it's a time slot
+            if (task.type_of_view === 'timeslot' || task.type_of_view === 'orders') {
+              setSelectedTimeSlot(task)
+              setTimeSlotEditMode('edit')
+              setShowTimeSlotDialog(true)
+            } else {
+              // Regular task edit
+              setSelectedTask(task)
+              setShowEditDialog(true)
+            }
           }
         }
         break
@@ -308,8 +332,25 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       {/* Time Slot Dialog */}
       <TimeSlotDialog
         visible={showTimeSlotDialog}
-        onHide={() => setShowTimeSlotDialog(false)}
-        onSave={handleCreateTimeSlot}
+        onHide={() => {
+          setShowTimeSlotDialog(false)
+          setSelectedTimeSlot(null)
+          setTimeSlotEditMode('create')
+        }}
+        onSave={handleSaveTimeSlot}
+        mode={timeSlotEditMode}
+        editData={selectedTimeSlot ? {
+          category: (selectedTimeSlot as any).category,
+          service: (selectedTimeSlot as any).service,
+          date_start: selectedTimeSlot.date_start?.split('T')[0] || '',
+          date_end: selectedTimeSlot.date_end?.split('T')[0] || '',
+          time_start: (selectedTimeSlot as any).time_start || '',
+          time_end: (selectedTimeSlot as any).time_end || '',
+          reserved_time_on_road: (selectedTimeSlot as any).reserved_time_on_road || 30,
+          start_location: (selectedTimeSlot as any).start_location || '',
+          cost_of_1_hour_of_work: (selectedTimeSlot as any).cost_of_1_hour_of_work || 0,
+          minimum_time_slot: (selectedTimeSlot as any).minimum_time_slot || '1 hour'
+        } : null}
       />
 
       {/* Advertising Dialog */}

@@ -508,6 +508,75 @@ export const taskApi = {
     }
   },
 
+  // Оновити Time Slot
+  updateTimeSlot: async (timeSlotId: number, timeSlotData: any): Promise<any> => {
+    try {
+      // Prepare FormData for Django form submission
+      const formData = new FormData()
+      
+      if (timeSlotData.category) {
+        formData.append('category', timeSlotData.category.toString())
+      }
+      
+      if (timeSlotData.service) {
+        formData.append('services', timeSlotData.service.toString())
+      }
+      
+      if (timeSlotData.date_start) {
+        formData.append('date_start', timeSlotData.date_start)
+      }
+      
+      if (timeSlotData.date_end) {
+        formData.append('date_end', timeSlotData.date_end)
+      }
+      
+      if (timeSlotData.time_start) {
+        formData.append('time_start', timeSlotData.time_start)
+      }
+      
+      if (timeSlotData.time_end) {
+        formData.append('time_end', timeSlotData.time_end)
+      }
+      
+      if (timeSlotData.reserved_time_on_road) {
+        formData.append('reserved_time_on_road', timeSlotData.reserved_time_on_road.toString())
+      }
+      
+      if (timeSlotData.start_location) {
+        formData.append('start_location', timeSlotData.start_location)
+      }
+      
+      if (timeSlotData.cost_of_1_hour_of_work) {
+        formData.append('cost_of_1_hour_of_work', timeSlotData.cost_of_1_hour_of_work.toString())
+      }
+      
+      if (timeSlotData.minimum_time_slot) {
+        formData.append('minimum_time_slot', timeSlotData.minimum_time_slot)
+      }
+      
+      if (timeSlotData.hashtags) {
+        formData.append('hashtags', timeSlotData.hashtags)
+      }
+      
+      // Edit item ID for update
+      formData.append('edit_item_id', timeSlotId.toString())
+      
+      // Type of view for time slot
+      formData.append('type_of_view', 'timeslot')
+      
+      const response = await api.post('/services_and_projects/update_form/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error(`Error updating time slot ${timeSlotId}:`, error)
+      throw error
+    }
+  },
+
   // Create task with FormData (for new React dialogs)
   createTaskWithFormData: async (formData: FormData): Promise<any> => {
     try {

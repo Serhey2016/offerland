@@ -10,6 +10,8 @@ interface TimeSlotDialogProps {
   visible: boolean
   onHide: () => void
   onSave: (data: TimeSlotFormData) => Promise<void>
+  editData?: Partial<TimeSlotFormData> | null
+  mode?: 'create' | 'edit'
 }
 
 export interface TimeSlotFormData {
@@ -37,7 +39,7 @@ interface Service {
   category_id: number
 }
 
-const TimeSlotDialog: React.FC<TimeSlotDialogProps> = ({ visible, onHide, onSave }) => {
+const TimeSlotDialog: React.FC<TimeSlotDialogProps> = ({ visible, onHide, onSave, editData = null, mode = 'create' }) => {
   const [formData, setFormData] = useState<Partial<TimeSlotFormData>>({
     reserved_time_on_road: 30,
     minimum_time_slot: '1 hour'
@@ -46,6 +48,18 @@ const TimeSlotDialog: React.FC<TimeSlotDialogProps> = ({ visible, onHide, onSave
   const [services, setServices] = useState<Service[]>([])
   const [filteredServices, setFilteredServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(false)
+
+  // Pre-populate form with edit data
+  useEffect(() => {
+    if (mode === 'edit' && editData) {
+      setFormData(editData)
+    } else if (mode === 'create') {
+      setFormData({
+        reserved_time_on_road: 30,
+        minimum_time_slot: '1 hour'
+      })
+    }
+  }, [mode, editData, visible])
 
   // Mock data - replace with actual API calls
   useEffect(() => {
@@ -170,7 +184,7 @@ const TimeSlotDialog: React.FC<TimeSlotDialogProps> = ({ visible, onHide, onSave
 
   return (
     <Dialog
-      header="Create Time Slot"
+      header={mode === 'edit' ? 'Edit Time Slot' : 'Create Time Slot'}
       visible={visible}
       onHide={onHide}
       footer={dialogFooter}

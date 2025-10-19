@@ -117,7 +117,7 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
       <div className="task_tracker_floating_icons">
         <button 
           className="task_tracker_icon_btn" 
-          title="Done"
+          title="Publish"
           onClick={(e) => {
             e.stopPropagation()
             if (onDone) {
@@ -126,30 +126,6 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
           }}
         >
           <i className="pi pi-share-alt"></i>
-        </button>
-        <button 
-          className="task_tracker_icon_btn" 
-          title="Sub Task"
-          onClick={(e) => {
-            e.stopPropagation()
-            if (taskSlug) {
-              handleIconClick(taskSlug, 'subtask', e)
-            }
-          }}
-        >
-          <i className="pi pi-reply"></i>
-        </button>
-        <button 
-          className="task_tracker_icon_btn" 
-          title="Note"
-          onClick={(e) => {
-            e.stopPropagation()
-            if (onNote) {
-              onNote()
-            }
-          }}
-        >
-          <i className="pi pi-clipboard"></i>
         </button>
         <button 
           className="task_tracker_icon_btn" 
@@ -234,20 +210,6 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
           <div 
             className="task_tracker_task_dropdown_item"
             onClick={() => {
-              handleDropdownItemClick('start')
-              if (onStart) onStart()
-            }}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #f0f0f0'
-            }}
-          >
-            Start
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
               handleDropdownItemClick('edit')
               if (onEdit) onEdit()
             }}
@@ -262,44 +224,15 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
           <div 
             className="task_tracker_task_dropdown_item"
             onClick={() => {
-              handleDropdownItemClick('delegate')
-              if (onDelegate) onDelegate()
-            }}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #f0f0f0'
-            }}
-          >
-            Delegate
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
               handleDropdownItemClick('publish')
               if (onPublish) onPublish()
             }}
             style={{
               padding: '8px 16px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #f0f0f0'
+              cursor: 'pointer'
             }}
           >
             Publish
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item task_tracker_task_dropdown_item_with_submenu"
-            onClick={(e) => handleDropdownItemClick('move', taskSlug, e)}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <span>Move to...</span>
-            <i className="pi pi-chevron-right" style={{ fontSize: '12px', opacity: 0.7 }}></i>
           </div>
         </div>,
         document.body
