@@ -229,10 +229,24 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
             }}
             style={{
               padding: '8px 16px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              borderBottom: '1px solid #f0f0f0'
             }}
           >
             Publish
+          </div>
+          <div 
+            className="task_tracker_task_dropdown_item"
+            onClick={() => {
+              handleDropdownItemClick('archive')
+              if (onMoveTo) onMoveTo('archive')
+            }}
+            style={{
+              padding: '8px 16px',
+              cursor: 'pointer'
+            }}
+          >
+            Archive
           </div>
         </div>,
         document.body

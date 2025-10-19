@@ -147,8 +147,14 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node
-      if (dropdownRef.current && !dropdownRef.current.contains(target) &&
-          submenuRef.current && !submenuRef.current.contains(target)) {
+      
+      // Check if click is outside dropdown
+      const isOutsideDropdown = dropdownRef.current && !dropdownRef.current.contains(target)
+      // Check if click is outside submenu (or submenu doesn't exist)
+      const isOutsideSubmenu = !submenuRef.current || !submenuRef.current.contains(target)
+      
+      // Close dropdown if click is outside both dropdown and submenu
+      if (isOutsideDropdown && isOutsideSubmenu) {
         setOpenDropdownTaskId(null)
         setShowSubmenu(false)
       }
@@ -263,7 +269,7 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   // Handle submenu item clicks (moved from TaskDesign)
   const handleSubmenuItemClick = useCallback((action: string) => {
     setShowSubmenu(false)
-    setShowDropdown(false)
+    setOpenDropdownTaskId(null)
     // TODO: Implement move task logic
   }, [])
 
