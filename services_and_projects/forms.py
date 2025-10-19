@@ -97,14 +97,10 @@ def create_task(request):
                     except ValueError:
                         pass
             documents = none_if_empty(request.POST.get('documents'))
-            # Set element_position based on type_of_task
+            # Set element_position - all new items go to inbox by default
             element_position = none_if_empty(request.POST.get('element_position'))
             if not element_position:
-                # If type_of_task is 'project', set element_position to 'projects'
-                if type_of_task_id and type_of_task_id.lower() == 'project':
-                    element_position = 'projects'
-                else:
-                    element_position = 'inbox'
+                element_position = 'inbox'
             is_private = bool(request.POST.get('private'))
             disclose_name = bool(request.POST.get('disclose_name'))
             hidden = bool(request.POST.get('hidden'))

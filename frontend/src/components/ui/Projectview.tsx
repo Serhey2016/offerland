@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 
 interface ProjectviewProps {
   // Task data
-  taskId?: number
+  taskSlug?: number
   title: string
   description?: string
   timeRange?: string
@@ -30,9 +30,9 @@ interface ProjectviewProps {
   submenuRef: React.RefObject<HTMLDivElement>
   
   // Event handlers from hook
-  handleTaskTap: (taskId: number, e: React.MouseEvent) => void
-  handleIconClick: (taskId: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
-  handleDropdownItemClick: (action: string, taskId?: number, event?: React.MouseEvent<HTMLDivElement>) => void
+  handleTaskTap: (taskSlug: number, e: React.MouseEvent) => void
+  handleIconClick: (taskSlug: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
+  handleDropdownItemClick: (action: string, taskSlug?: number, event?: React.MouseEvent<HTMLDivElement>) => void
   handleSubmenuItemClick: (action: string) => void
   closeDetailsPopup: () => void
   
@@ -52,7 +52,7 @@ interface ProjectviewProps {
 }
 
 const Projectview: React.FC<ProjectviewProps> = ({
-  taskId,
+  taskSlug,
   title,
   description,
   timeRange,
@@ -95,14 +95,14 @@ const Projectview: React.FC<ProjectviewProps> = ({
     return `priority-${priority}`
   }
 
-  const isTapped = taskId !== undefined && tappedTaskId === taskId
+  const isTapped = taskSlug !== undefined && tappedTaskId === taskSlug
 
   return (
     <div 
       className={`task_tracker_task_container ${getPriorityClass()} ${isTapped ? 'mobile-tap' : ''}`}
       onClick={(e) => {
-        if (taskId !== undefined) {
-          handleTaskTap(taskId, e)
+        if (taskSlug !== undefined) {
+          handleTaskTap(taskSlug, e)
         }
       }}
     >
@@ -131,8 +131,8 @@ const Projectview: React.FC<ProjectviewProps> = ({
             title="Sub Task"
             onClick={(e) => {
               e.stopPropagation()
-              if (taskId !== undefined) {
-                handleIconClick(taskId, 'subtask', e)
+              if (taskSlug !== undefined) {
+                handleIconClick(taskSlug, 'subtask', e)
               }
             }}
           >
@@ -155,8 +155,8 @@ const Projectview: React.FC<ProjectviewProps> = ({
             title="More options"
             onClick={(e) => {
               e.stopPropagation()
-              if (taskId !== undefined) {
-                handleIconClick(taskId, 'more', e)
+              if (taskSlug !== undefined) {
+                handleIconClick(taskSlug, 'more', e)
               }
             }}
           >
@@ -165,7 +165,7 @@ const Projectview: React.FC<ProjectviewProps> = ({
         </div>
         
         {/* Dropdown Menu */}
-        {taskId !== undefined && openDropdownTaskId === taskId && createPortal(
+        {taskSlug !== undefined && openDropdownTaskId === taskSlug && createPortal(
           <div 
             ref={dropdownRef}
             className="task_tracker_task_dropdown_menu"
@@ -185,7 +185,7 @@ const Projectview: React.FC<ProjectviewProps> = ({
             <div 
               className="task_tracker_task_dropdown_item"
               onClick={() => {
-                handleDropdownItemClick('details', taskId)
+                handleDropdownItemClick('details', taskSlug)
                 if (onDetails) onDetails()
               }}
               style={{
@@ -254,7 +254,7 @@ const Projectview: React.FC<ProjectviewProps> = ({
             </div>
             <div 
               className="task_tracker_task_dropdown_item task_tracker_task_dropdown_item_with_submenu"
-              onClick={(e) => handleDropdownItemClick('move', taskId, e)}
+              onClick={(e) => handleDropdownItemClick('move', taskSlug, e)}
               style={{
                 padding: '8px 16px',
                 cursor: 'pointer',
@@ -369,7 +369,7 @@ const Projectview: React.FC<ProjectviewProps> = ({
         )}
         
         {/* Task Details Popup */}
-        {taskId !== undefined && detailsPopupTaskId === taskId && createPortal(
+        {taskSlug !== undefined && detailsPopupTaskId === taskSlug && createPortal(
           <div 
             className="task_details_popup_overlay"
             id="task-details-popup-overlay"

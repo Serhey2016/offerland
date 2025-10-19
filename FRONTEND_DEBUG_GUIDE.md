@@ -163,6 +163,7 @@
 - ❌ `PropTypes module does not provide default export` - Missing prop-types dependency
 - ❌ `React is not defined` - Using React.createElement without React import
 - ❌ `PrimeIcons 404 errors` - Font files not loading correctly
+- ❌ `A props object containing a "key" prop is being spread into JSX` - Key must be passed directly, not in spread operator
 
 #### Warning Errors (Monitor)
 - ⚠️ Deprecated API usage - Future compatibility
@@ -171,6 +172,7 @@
 - ⚠️ Network timeouts - Slow loading
 - ⚠️ "Outdated JSX transform" warning - Upgrade to modern JSX transform
 - ⚠️ Unused React imports - Clean up after JSX transform upgrade
+- ⚠️ Using number IDs instead of string slugs - Migration to slug-based identification required
 
 #### Info Messages (Track)
 - ℹ️ Initialization logs - Normal operation

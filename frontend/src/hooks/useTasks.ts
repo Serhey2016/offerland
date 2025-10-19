@@ -12,13 +12,13 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   // Use toasts hook
   const { toast, showError, showSuccess } = useToasts()
 
-  // UI states for task actions (moved from TaskDesign)
-  const [openDropdownTaskId, setOpenDropdownTaskId] = useState<number | null>(null)
+  // UI states for task actions (moved from TaskDesign) - using slug as identifier
+  const [openDropdownTaskId, setOpenDropdownTaskId] = useState<string | null>(null)
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
   const [showSubmenu, setShowSubmenu] = useState(false)
   const [submenuPosition, setSubmenuPosition] = useState({ top: 0, left: 0 })
-  const [tappedTaskId, setTappedTaskId] = useState<number | null>(null)
-  const [detailsPopupTaskId, setDetailsPopupTaskId] = useState<number | null>(null)
+  const [tappedTaskId, setTappedTaskId] = useState<string | null>(null)
+  const [detailsPopupTaskId, setDetailsPopupTaskId] = useState<string | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const submenuRef = useRef<HTMLDivElement>(null)
 
@@ -108,14 +108,14 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   }, [])
 
   // Оновлення статусу задачі
-  const updateTaskStatus = useCallback(async (taskId: number, status: string) => {
+  const updateTaskStatus = useCallback(async (taskSlug: string, status: string) => {
     try {
       setLoading(true)
       setError(null)
       
-      const updatedTask = await taskApi.updateTaskStatus(taskId, status)
+      const updatedTask = await taskApi.updateTaskStatus(taskSlug, status)
       setTasks(prev => prev.map(task => 
-        task.id === taskId ? updatedTask : task
+        task.slug === taskSlug ? updatedTask : task
       ))
       return updatedTask
     } catch (err) {
@@ -268,16 +268,16 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   }, [])
 
   // Handle mobile tap for floating icons (moved from TaskDesign)
-  const handleTaskTap = useCallback((taskId: number, e: React.MouseEvent) => {
+  const handleTaskTap = useCallback((taskSlug: string, e: React.MouseEvent) => {
     // Only handle tap on mobile devices
     if (window.innerWidth <= 768) {
       e.preventDefault()
-      setTappedTaskId(prevId => prevId === taskId ? null : taskId)
+      setTappedTaskId(prevId => prevId === taskSlug ? null : taskSlug)
     }
   }, [])
 
   // Handle dropdown menu item clicks (moved from TaskDesign)
-  const handleDropdownItemClick = useCallback((action: string, taskId?: number, event?: React.MouseEvent<HTMLDivElement>) => {
+  const handleDropdownItemClick = useCallback((action: string, taskSlug?: string, event?: React.MouseEvent<HTMLDivElement>) => {
     if (action === 'move' && event) {
       // Show submenu for Move to...
       const position = calculateSubmenuPosition(event.currentTarget)
@@ -294,8 +294,8 @@ export const useTasks = (initialFilters?: TaskFilters) => {
       case 'edit':
         break
       case 'details':
-        if (taskId) {
-          setDetailsPopupTaskId(taskId)
+        if (taskSlug) {
+          setDetailsPopupTaskId(taskSlug)
         }
         break
       case 'delegate':
@@ -313,11 +313,11 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   }, [])
 
   // Handle icon button clicks (moved from TaskDesign)
-  const handleIconClick = useCallback((taskId: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => {
+  const handleIconClick = useCallback((taskSlug: string, action: string, event?: React.MouseEvent<HTMLButtonElement>) => {
     if (action === 'more' && event) {
       const position = calculateDropdownPosition(event.currentTarget)
       setDropdownPosition(position)
-      setOpenDropdownTaskId(prevId => prevId === taskId ? null : taskId)
+      setOpenDropdownTaskId(prevId => prevId === taskSlug ? null : taskSlug)
       return
     }
     

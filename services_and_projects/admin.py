@@ -142,15 +142,15 @@ admin.site.register(Advertising, AdvertisingAdmin)
 admin.site.register(TaskClientRelations)
 admin.site.register(AdvertisingOwnerRelations)
 class JobSearchAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'user', 'post_type', 'js_mode', 'result_of_task', 'start_date', 'last_update')
-    list_filter = ('post_type', 'js_mode', 'result_of_task', 'start_date', 'user')
+    list_display = ('id', 'title', 'user', 'post_type', 'js_mode', 'type_of_view', 'element_position', 'result_of_task', 'start_date', 'last_update')
+    list_filter = ('post_type', 'js_mode', 'type_of_view', 'element_position', 'result_of_task', 'start_date', 'user')
     search_fields = ('title', 'notes', 'user__username')
     readonly_fields = ('last_update',)
     date_hierarchy = 'start_date'
     
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'user', 'post_type', 'js_mode', 'result_of_task')
+            'fields': ('title', 'user', 'post_type', 'js_mode', 'type_of_view', 'element_position', 'result_of_task')
         }),
         ('Дополнительная информация', {
             'fields': ('notes',),

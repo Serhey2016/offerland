@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 
 interface TimeSlotViewProps {
   // Time Slot data
-  taskId?: number
+  taskSlug?: string
   companyName?: string
   userName: string
   hourPrice: number
@@ -20,21 +20,21 @@ interface TimeSlotViewProps {
   priority?: 'iu' | 'inu' | 'niu' | 'ninu' | null
   
   // UI states from hook
-  tappedTaskId: number | null
-  openDropdownTaskId: number | null
+  tappedTaskId: string | null
+  openDropdownTaskId: string | null
   showSubmenu: boolean
   dropdownPosition: { top: number; left: number }
   submenuPosition: { top: number; left: number }
-  detailsPopupTaskId: number | null
+  detailsPopupTaskId: string | null
   
   // Refs
   dropdownRef: React.RefObject<HTMLDivElement>
   submenuRef: React.RefObject<HTMLDivElement>
   
   // Event handlers from hook
-  handleTaskTap: (taskId: number, e: React.MouseEvent) => void
-  handleIconClick: (taskId: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
-  handleDropdownItemClick: (action: string, taskId?: number, event?: React.MouseEvent<HTMLDivElement>) => void
+  handleTaskTap: (taskSlug: string, e: React.MouseEvent) => void
+  handleIconClick: (taskSlug: string, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
+  handleDropdownItemClick: (action: string, taskSlug?: string, event?: React.MouseEvent<HTMLDivElement>) => void
   handleSubmenuItemClick: (action: string) => void
   closeDetailsPopup: () => void
   
@@ -55,7 +55,7 @@ interface TimeSlotViewProps {
 }
 
 const TimeSlotView: React.FC<TimeSlotViewProps> = ({
-  taskId,
+  taskSlug,
   companyName,
   userName,
   hourPrice,
@@ -102,14 +102,14 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
     return `priority-${priority}`
   }
 
-  const isTapped = taskId !== undefined && tappedTaskId === taskId
+  const isTapped = taskSlug && tappedTaskId === taskSlug
 
   return (
     <div 
       className={`time_slot_card_container ${getPriorityClass()} ${isTapped ? 'mobile-tap' : ''}`}
       onClick={(e) => {
-        if (taskId !== undefined) {
-          handleTaskTap(taskId, e)
+        if (taskSlug) {
+          handleTaskTap(taskSlug, e)
         }
       }}
     >
@@ -125,15 +125,15 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
             }
           }}
         >
-          <i className="pi pi-check-circle"></i>
+          <i className="pi pi-share-alt"></i>
         </button>
         <button 
           className="task_tracker_icon_btn" 
           title="Sub Task"
           onClick={(e) => {
             e.stopPropagation()
-            if (taskId !== undefined) {
-              handleIconClick(taskId, 'subtask', e)
+            if (taskSlug) {
+              handleIconClick(taskSlug, 'subtask', e)
             }
           }}
         >
@@ -156,8 +156,8 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
           title="More options"
           onClick={(e) => {
             e.stopPropagation()
-            if (taskId !== undefined) {
-              handleIconClick(taskId, 'more', e)
+            if (taskSlug) {
+              handleIconClick(taskSlug, 'more', e)
             }
           }}
         >
@@ -200,7 +200,7 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
       </div>
 
       {/* Dropdown Menu */}
-      {taskId !== undefined && openDropdownTaskId === taskId && createPortal(
+      {taskSlug && openDropdownTaskId === taskSlug && createPortal(
         <div 
           ref={dropdownRef}
           className="task_tracker_task_dropdown_menu"
@@ -220,7 +220,7 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
           <div 
             className="task_tracker_task_dropdown_item"
             onClick={() => {
-              handleDropdownItemClick('details', taskId)
+              handleDropdownItemClick('details', taskSlug)
               if (onDetails) onDetails()
             }}
             style={{
@@ -289,7 +289,7 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
           </div>
           <div 
             className="task_tracker_task_dropdown_item task_tracker_task_dropdown_item_with_submenu"
-            onClick={(e) => handleDropdownItemClick('move', taskId, e)}
+            onClick={(e) => handleDropdownItemClick('move', taskSlug, e)}
             style={{
               padding: '8px 16px',
               cursor: 'pointer',

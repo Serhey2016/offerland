@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 
 interface TimeSlotViewPublicProps {
   // Time Slot data
-  taskId?: number
+  taskSlug?: number
   companyName?: string
   userName: string
   hourPrice: number
@@ -32,9 +32,9 @@ interface TimeSlotViewPublicProps {
   submenuRef: React.RefObject<HTMLDivElement>
   
   // Event handlers from hook
-  handleTaskTap: (taskId: number, e: React.MouseEvent) => void
-  handleIconClick: (taskId: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
-  handleDropdownItemClick: (action: string, taskId?: number, event?: React.MouseEvent<HTMLDivElement>) => void
+  handleTaskTap: (taskSlug: number, e: React.MouseEvent) => void
+  handleIconClick: (taskSlug: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
+  handleDropdownItemClick: (action: string, taskSlug?: number, event?: React.MouseEvent<HTMLDivElement>) => void
   handleSubmenuItemClick: (action: string) => void
   closeDetailsPopup: () => void
   
@@ -55,7 +55,7 @@ interface TimeSlotViewPublicProps {
 }
 
 const TimeSlotViewPublic: React.FC<TimeSlotViewPublicProps> = ({
-  taskId,
+  taskSlug,
   companyName,
   userName,
   hourPrice,
@@ -102,14 +102,14 @@ const TimeSlotViewPublic: React.FC<TimeSlotViewPublicProps> = ({
     return `priority-${priority}`
   }
 
-  const isTapped = taskId !== undefined && tappedTaskId === taskId
+  const isTapped = taskSlug !== undefined && tappedTaskId === taskSlug
 
   return (
     <div 
       className={`time_slot_card_container ${getPriorityClass()} ${isTapped ? 'mobile-tap' : ''}`}
       onClick={(e) => {
-        if (taskId !== undefined) {
-          handleTaskTap(taskId, e)
+        if (taskSlug !== undefined) {
+          handleTaskTap(taskSlug, e)
         }
       }}
     >

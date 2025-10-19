@@ -19,6 +19,7 @@ export interface Task {
 // Django Task Model Interface
 export interface DjangoTask {
   id: number
+  slug: string  // PRIMARY IDENTIFIER
   title: string
   description?: string
   date_start?: string
@@ -138,12 +139,12 @@ export const taskApi = {
   },
 
   // Оновити статус задачі
-  updateTaskStatus: async (id: number, status: string): Promise<Task> => {
+  updateTaskStatus: async (slug: string, status: string): Promise<Task> => {
     try {
-      const response = await api.patch(`/services_and_projects/tasks/${id}/`, { status })
+      const response = await api.patch(`/services_and_projects/tasks/${slug}/`, { status })
       return response.data
     } catch (error) {
-      console.error(`Error updating task ${id} status:`, error)
+      console.error(`Error updating task ${slug} status:`, error)
       throw error
     }
   },
@@ -290,12 +291,12 @@ export const taskApi = {
   },
 
   // Зберегти нотатки задачі
-  saveTaskNotes: async (taskId: number, notes: string): Promise<any> => {
+  saveTaskNotes: async (taskSlug: string, notes: string): Promise<any> => {
     try {
       const formData = new FormData()
       formData.append('notes', notes)
       
-      const response = await api.post(`/services_and_projects/save_task_notes/${taskId}/`, formData, {
+      const response = await api.post(`/services_and_projects/save_task_notes/${taskSlug}/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
@@ -303,7 +304,7 @@ export const taskApi = {
       
       return response.data
     } catch (error) {
-      console.error(`Error saving task notes for task ${taskId}:`, error)
+      console.error(`Error saving task notes for task ${taskSlug}:`, error)
       throw error
     }
   },

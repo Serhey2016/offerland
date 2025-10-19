@@ -44,6 +44,14 @@
 - **NO !important rules in CSS** - Use proper CSS specificity instead
 - **Example**: Use `className="my-component"` instead of `style="display: flex; gap: 10px;"`
 
+### Slug-Based Identification Rules
+- **ALWAYS use slugs** for identifying tasks, timeslots, advertising, and job search items
+- **NEVER use numeric IDs** in frontend state management (tappedTaskId, openDropdownTaskId, etc.)
+- **State types**: Use `string | null` instead of `number | null` for task identifiers
+- **React keys**: Use `task.slug` as key prop, pass directly to JSX (not in spread props)
+- **API calls**: All backend API endpoints use slug parameters instead of ID
+- **Example**: `handleTaskTap(taskSlug: string)` instead of `handleTaskTap(taskId: number)`
+
 ## 🎯 Current Task Context
 
 ### React DevTools Integration

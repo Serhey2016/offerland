@@ -298,10 +298,10 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 @require_POST
-def save_task_notes(request, task_id):
+def save_task_notes(request, task_slug):
     """Сохранение заметок к задаче"""
     try:
-        task = Task.objects.get(id=task_id)
+        task = Task.objects.get(slug=task_slug, taskownerrelations__user=request.user)
         
         # Проверяем, что пользователь имеет доступ к задаче
         # (владелец или исполнитель)
@@ -557,12 +557,12 @@ def change_advertising_status(request, advertising_id):
 
 @login_required
 @require_POST
-def start_task(request, task_id):
+def start_task(request, task_slug):
     """Set start date for Task (Project, Tender, My List, etc.)"""
     try:
         from .models import Task
         
-        task = Task.objects.get(id=task_id)
+        task = Task.objects.get(slug=task_slug, taskownerrelations__user=request.user)
         
         # Check if user has permission to start this task
         # For now, we'll allow any authenticated user to start any task
@@ -667,6 +667,7 @@ def user_tasks(request):
             
             task_data = {
                 'id': task.id,
+                'slug': task.slug,
                 'title': task.title,
                 'description': task.description,
                 'date_start': date_start_str,
@@ -754,6 +755,7 @@ def user_inbox_items(request):
             
             all_items.append({
                 'id': task.id,
+                'slug': task.slug,
                 'title': task.title,
                 'description': task.description,
                 'date_start': date_start_str,
@@ -934,13 +936,13 @@ def user_inbox_items(request):
 
 
 @login_required
-def get_edit_data(request, form_type, item_id):
+def get_edit_data(request, form_type, item_slug):
     """
     Получает данные для редактирования различных типов форм
     """
     print("=" * 50)
     print("DEBUG: get_edit_data function called!")
-    print(f"DEBUG: form_type={form_type}, item_id={item_id}")
+    print(f"DEBUG: form_type={form_type}, item_slug={item_slug}")
     print(f"DEBUG: User: {request.user}")
     print(f"DEBUG: Request method: {request.method}")
     print(f"DEBUG: Request path: {request.path}")
@@ -949,20 +951,20 @@ def get_edit_data(request, form_type, item_id):
     
     try:
         if form_type == 'my-list':
-            print(f"DEBUG: Processing my-list form type for item {item_id}")
+            print(f"DEBUG: Processing my-list form type for item {item_slug}")
             # Получаем данные задачи
             task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
-            ).get(id=item_id)
+            ).get(slug=item_slug)
             
             print(f"DEBUG: Found task: {task.title}, type: {task.type_of_view}")
             
             # Проверяем права доступа (только владелец может редактировать)
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
-                print(f"DEBUG: Access denied for user {request.user} on task {item_id}")
+                print(f"DEBUG: Access denied for user {request.user} on task {item_slug}")
                 return JsonResponse({'success': False, 'error': 'Access denied'})
             
-            print(f"DEBUG: Access granted, building data for task {item_id}")
+            print(f"DEBUG: Access granted, building data for task {item_slug}")
             
             # Get the first service and its category if it exists
             print(f"DEBUG: Task services count: {task.services.count()}")
@@ -991,7 +993,7 @@ def get_edit_data(request, form_type, item_id):
             # Получаем данные тендера (используем модель Task с типом 'tender')
             task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
-            ).get(id=item_id, type_of_view__name='tender')
+            ).get(slug=item_slug, type_of_view__name='tender')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -1019,7 +1021,7 @@ def get_edit_data(request, form_type, item_id):
             # Получаем данные проекта (используем модель Task с типом 'project')
             task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
-            ).get(id=item_id, type_of_view__name='project')
+            ).get(slug=item_slug, type_of_view__name='project')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -1044,13 +1046,13 @@ def get_edit_data(request, form_type, item_id):
             }
             
         elif form_type == 'advertising':
-            print(f"DEBUG: Processing advertising form type for item {item_id}")
-            # Получаем данные рекламы
+            print(f"DEBUG: Processing advertising form type for item {item_slug}")
+            # Получаем данные рекламы  - advertising uses slug
             advertising = Advertising.objects.select_related(
                 'services', 'services__category_name'
             ).prefetch_related(
                 'hashtags', 'photos'
-            ).get(id=item_id)
+            ).get(slug=item_slug)
             
             print(f"DEBUG: Found advertising: {advertising.title}")
             print(f"DEBUG: Advertising services: {advertising.services}")
@@ -1059,10 +1061,10 @@ def get_edit_data(request, form_type, item_id):
             
             # Проверяем права доступа
             if not AdvertisingOwnerRelations.objects.filter(advertising=advertising, user=request.user).exists():
-                print(f"DEBUG: Access denied for user {request.user} on advertising {item_id}")
+                print(f"DEBUG: Access denied for user {request.user} on advertising {item_slug}")
                 return JsonResponse({'success': False, 'error': 'Access denied'})
             
-            print(f"DEBUG: Access granted, building data for advertising {item_id}")
+            print(f"DEBUG: Access granted, building data for advertising {item_slug}")
             
             # Get the service and its category if it exists
             service = advertising.services
@@ -1084,8 +1086,8 @@ def get_edit_data(request, form_type, item_id):
             print(f"DEBUG: Built data: {data}")
             
         elif form_type == 'job-search':
-            # Получаем данные поиска работы
-            job_search = JobSearch.objects.select_related('user').get(id=item_id)
+            # Получаем данные поиска работы - job-search uses slug
+            job_search = JobSearch.objects.select_related('user').get(slug=item_slug)
             
             # Проверяем права доступа
             if job_search.user != request.user:
@@ -1107,17 +1109,17 @@ def get_edit_data(request, form_type, item_id):
         else:
             return JsonResponse({'success': False, 'error': f'Unknown form type: {form_type}'})
         
-        print(f"DEBUG: Returning success response with data for {form_type} {item_id}")
+        print(f"DEBUG: Returning success response with data for {form_type} {item_slug}")
         return JsonResponse({'success': True, 'data': data})
         
     except Task.DoesNotExist:
-        print(f"DEBUG: Task {item_id} not found")
+        print(f"DEBUG: Task {item_slug} not found")
         return JsonResponse({'success': False, 'error': 'Task not found'})
     except Advertising.DoesNotExist:
-        print(f"DEBUG: Advertising {item_id} not found")
+        print(f"DEBUG: Advertising {item_slug} not found")
         return JsonResponse({'success': False, 'error': 'Advertising not found'})
     except JobSearch.DoesNotExist:
-        print(f"DEBUG: JobSearch {item_id} not found")
+        print(f"DEBUG: JobSearch {item_slug} not found")
         return JsonResponse({'success': False, 'error': 'Job search not found'})
     except Exception as e:
         print(f"DEBUG: Exception occurred: {str(e)}")
@@ -1192,11 +1194,11 @@ def remove_advertising_photo(request, advertising_id, photo_id):
 @login_required
 @require_http_methods(["PATCH"])
 @csrf_exempt
-def update_task_status(request, task_id):
+def update_task_status(request, task_slug):
     """Update task status via PATCH request"""
     try:
         import json
-        task = Task.objects.get(id=task_id)
+        task = Task.objects.get(slug=task_slug, taskownerrelations__user=request.user)
         
         # Check if user has permission to update this task
         owner_rel = TaskOwnerRelations.objects.filter(task=task, user=request.user).first()

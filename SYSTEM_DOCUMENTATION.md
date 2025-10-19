@@ -189,6 +189,137 @@ ssh dev@192.168.0.146
   - SomedayView, ProjectsView, LockbookView, ArchiveView
 - **Hybrid Integration**: React монтируется в Django templates через `id="react-task-tracker"`
 
+### Slug-Based Identification System
+
+#### Overview
+Проект использует **slug-based identification** вместо числовых ID для предотвращения конфликтов при отображении разных типов объектов (Task, TimeSlot, Advertising, JobSearch) на одной странице.
+
+#### Backend Implementation
+
+**Model Structure (services_and_projects/models.py)**:
+```python
+class Task(models.Model):
+    id = models.AutoField(primary_key=True)  # Сохранён для БД
+    uuid = models.UUIDField(default=generate_uuid, unique=True, editable=False)
+    slug = models.SlugField(max_length=255, blank=True, null=True, unique=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = f"t-{self.uuid.hex[:8]}"  # Формат: t-a1b2c3d4
+        super().save(*args, **kwargs)
+```
+
+**URL Patterns (services_and_projects/urls.py)**:
+```python
+path('save_task_notes/<slug:task_slug>/', save_task_notes, name='save_task_notes'),
+path('start_task/<slug:task_slug>/', start_task, name='start_task'),
+path('tasks/<slug:task_slug>/', update_task_status, name='update_task_status'),
+path('get_edit_data/<str:form_type>/<slug:item_slug>/', get_edit_data, name='get_edit_data'),
+```
+
+**View Functions (services_and_projects/views.py)**:
+```python
+def update_task_status(request, task_slug):
+    task = Task.objects.get(slug=task_slug, taskownerrelations__user=request.user)
+    # ...
+
+def user_tasks(request):
+    # API response includes both id and slug
+    task_data = {
+        'id': task.id,
+        'slug': task.slug,  # PRIMARY IDENTIFIER
+        'title': task.title,
+        # ...
+    }
+```
+
+#### Frontend Implementation
+
+**TypeScript Interfaces (frontend/src/api/taskApi.ts)**:
+```typescript
+export interface DjangoTask {
+  id: number        // Retained for backward compatibility
+  slug: string      // PRIMARY IDENTIFIER - used in all operations
+  title: string
+  // ...
+}
+```
+
+**State Management (frontend/src/hooks/useTasks.ts)**:
+```typescript
+// All task identifiers use string slugs, not number IDs
+const [openDropdownTaskId, setOpenDropdownTaskId] = useState<string | null>(null)
+const [tappedTaskId, setTappedTaskId] = useState<string | null>(null)
+const [detailsPopupTaskId, setDetailsPopupTaskId] = useState<string | null>(null)
+
+// Function signatures use taskSlug
+const handleTaskTap = useCallback((taskSlug: string, e: React.MouseEvent) => {
+  setTappedTaskId(prevId => prevId === taskSlug ? null : taskSlug)
+}, [])
+
+const updateTaskStatus = useCallback(async (taskSlug: string, status: string) => {
+  const updatedTask = await taskApi.updateTaskStatus(taskSlug, status)
+  setTasks(prev => prev.map(task => task.slug === taskSlug ? updatedTask : task))
+}, [])
+```
+
+**Component Props (frontend/src/components/ui/*.tsx)**:
+```typescript
+interface TaskViewProps {
+  taskSlug?: string              // Changed from taskId?: number
+  tappedTaskId: string | null    // Changed from number | null
+  openDropdownTaskId: string | null
+  detailsPopupTaskId: string | null
+  handleTaskTap: (taskSlug: string, e: React.MouseEvent) => void
+  handleIconClick: (taskSlug: string, action: string, event?: React.MouseEvent) => void
+}
+```
+
+**React Keys (frontend/src/components/views/GenericView.tsx)**:
+```typescript
+// ✅ CORRECT - Key passed directly to JSX
+<ViewComponent
+  key={task.slug}          // Direct key prop
+  taskSlug={task.slug}     // Slug in component props
+  {...commonProps}
+/>
+
+// ❌ WRONG - Key in spread props (causes React warning)
+const props = { key: task.slug, taskSlug: task.slug, ... }
+<ViewComponent {...props} />
+```
+
+#### Slug Format Conventions
+
+- **Task**: `t-{uuid[:8]}` (example: `t-a1b2c3d4`)
+- **TimeSlot**: `timeslot-{date}-{time}-{uuid[:8]}` (example: `timeslot-20250119-0900-a1b2c3d4`)
+- **Advertising**: `adv-{title-slug}-{uuid[:8]}` (example: `adv-web-development-a1b2c3d4`)
+- **JobSearch**: `jobsearch-{title-slug}-{uuid[:8]}` (example: `jobsearch-python-developer-a1b2c3d4`)
+
+#### Migration Notes
+
+**Migration File**: `services_and_projects/migrations/0032_task_slug_task_uuid.py`
+- Adds `uuid` and `slug` fields without unique constraints initially
+- Populates UUIDs and slugs for all existing tasks via RunPython
+- Adds unique constraints after data population
+- Handles existing database state gracefully
+
+**Database Cleanup** (if migration fails):
+```sql
+DROP INDEX IF EXISTS services_and_projects_task_slug_b639bca9_like;
+DROP INDEX IF EXISTS services_and_projects_task_uuid_key;
+ALTER TABLE services_and_projects_task DROP COLUMN IF EXISTS slug;
+ALTER TABLE services_and_projects_task DROP COLUMN IF EXISTS uuid;
+```
+
+#### Benefits of Slug-Based System
+
+1. **No ID Conflicts**: Different entity types can coexist on the same page without ID collisions
+2. **Human-Readable**: Slugs are more meaningful than numeric IDs in URLs and debugging
+3. **SEO-Friendly**: URL slugs improve search engine optimization
+4. **UUID-Based Uniqueness**: Globally unique identifiers prevent conflicts across distributed systems
+5. **Type Safety**: TypeScript string types prevent mixing IDs from different entity types
+
 ### Конфигурация
 
 #### Django Settings (config/settings.py)

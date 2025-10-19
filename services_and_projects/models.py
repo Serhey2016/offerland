@@ -178,6 +178,8 @@ class Task(models.Model):
     ]
     
     id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(default=generate_uuid, unique=True, editable=False)
+    slug = models.SlugField(max_length=255, blank=True, null=True, unique=True)
     type_of_view = models.ForeignKey('TypeOfView', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Type of view', to_field='name', db_column='type_of_view')
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000, blank=True, null=True)
@@ -209,6 +211,15 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # Short slug: "t-{uuid[:8]}" (11 chars total)
+            self.slug = f"t-{self.uuid.hex[:8]}"
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return f"/task/{self.slug}/"
 
     class Meta:
         verbose_name = "Task"

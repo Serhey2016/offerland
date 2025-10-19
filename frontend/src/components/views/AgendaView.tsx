@@ -40,9 +40,9 @@ const AgendaView = () => {
   const { toast, showError, showSuccess } = useToasts()
 
   // Handle marking task as done
-  const handleTaskDone = async (taskId: number) => {
+  const handleTaskDone = async (taskSlug: string) => {
     try {
-      await taskApi.updateTaskStatus(taskId, 'done')
+      await taskApi.updateTaskStatus(taskSlug, 'done')
       showSuccess('Task marked as done')
       // Reload tasks to reflect the change
       await loadAgendaTasks()

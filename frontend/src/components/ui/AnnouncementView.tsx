@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 
 interface AnnouncementViewProps {
   // Announcement data
-  taskId?: number
+  taskSlug?: string
   title: string
   description?: string
   timeRange?: string
@@ -17,21 +17,21 @@ interface AnnouncementViewProps {
   startDate?: string
   
   // UI states from hook
-  tappedTaskId: number | null
-  openDropdownTaskId: number | null
+  tappedTaskId: string | null
+  openDropdownTaskId: string | null
   showSubmenu: boolean
   dropdownPosition: { top: number; left: number }
   submenuPosition: { top: number; left: number }
-  detailsPopupTaskId: number | null
+  detailsPopupTaskId: string | null
   
   // Refs
   dropdownRef: React.RefObject<HTMLDivElement>
   submenuRef: React.RefObject<HTMLDivElement>
   
   // Event handlers from hook
-  handleTaskTap: (taskId: number, e: React.MouseEvent) => void
-  handleIconClick: (taskId: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
-  handleDropdownItemClick: (action: string, taskId?: number, event?: React.MouseEvent<HTMLDivElement>) => void
+  handleTaskTap: (taskSlug: string, e: React.MouseEvent) => void
+  handleIconClick: (taskSlug: string, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
+  handleDropdownItemClick: (action: string, taskSlug?: string, event?: React.MouseEvent<HTMLDivElement>) => void
   handleSubmenuItemClick: (action: string) => void
   closeDetailsPopup: () => void
   
@@ -51,7 +51,7 @@ interface AnnouncementViewProps {
 }
 
 const AnnouncementView: React.FC<AnnouncementViewProps> = ({
-  taskId,
+  taskSlug,
   title,
   description,
   timeRange,
@@ -94,14 +94,14 @@ const AnnouncementView: React.FC<AnnouncementViewProps> = ({
     return `priority-${priority}`
   }
 
-  const isTapped = taskId !== undefined && tappedTaskId === taskId
+  const isTapped = taskSlug && tappedTaskId === taskSlug
 
   return (
     <div 
       className={`task_tracker_task_container ${getPriorityClass()} ${isTapped ? 'mobile-tap' : ''}`}
       onClick={(e) => {
-        if (taskId !== undefined) {
-          handleTaskTap(taskId, e)
+        if (taskSlug !== undefined) {
+          handleTaskTap(taskSlug, e)
         }
       }}
     >
@@ -124,8 +124,8 @@ const AnnouncementView: React.FC<AnnouncementViewProps> = ({
             title="Sub Task"
             onClick={(e) => {
               e.stopPropagation()
-              if (taskId !== undefined) {
-                handleIconClick(taskId, 'subtask', e)
+              if (taskSlug !== undefined) {
+                handleIconClick(taskSlug, 'subtask', e)
               }
             }}
           >
@@ -148,8 +148,8 @@ const AnnouncementView: React.FC<AnnouncementViewProps> = ({
             title="More options"
             onClick={(e) => {
               e.stopPropagation()
-              if (taskId !== undefined) {
-                handleIconClick(taskId, 'more', e)
+              if (taskSlug !== undefined) {
+                handleIconClick(taskSlug, 'more', e)
               }
             }}
           >
@@ -158,7 +158,7 @@ const AnnouncementView: React.FC<AnnouncementViewProps> = ({
         </div>
         
         {/* Dropdown Menu */}
-        {taskId !== undefined && openDropdownTaskId === taskId && createPortal(
+        {taskSlug !== undefined && openDropdownTaskId === taskSlug && createPortal(
           <div 
             ref={dropdownRef}
             className="task_tracker_task_dropdown_menu"
@@ -178,7 +178,7 @@ const AnnouncementView: React.FC<AnnouncementViewProps> = ({
             <div 
               className="task_tracker_task_dropdown_item"
               onClick={() => {
-                handleDropdownItemClick('details', taskId)
+                handleDropdownItemClick('details', taskSlug)
                 if (onDetails) onDetails()
               }}
               style={{
@@ -247,7 +247,7 @@ const AnnouncementView: React.FC<AnnouncementViewProps> = ({
             </div>
             <div 
               className="task_tracker_task_dropdown_item task_tracker_task_dropdown_item_with_submenu"
-              onClick={(e) => handleDropdownItemClick('move', taskId, e)}
+              onClick={(e) => handleDropdownItemClick('move', taskSlug, e)}
               style={{
                 padding: '8px 16px',
                 cursor: 'pointer',
@@ -362,7 +362,7 @@ const AnnouncementView: React.FC<AnnouncementViewProps> = ({
         )}
         
         {/* Task Details Popup */}
-        {taskId !== undefined && detailsPopupTaskId === taskId && createPortal(
+        {taskSlug !== undefined && detailsPopupTaskId === taskSlug && createPortal(
           <div 
             className="task_details_popup_overlay"
             id="task-details-popup-overlay"
@@ -456,24 +456,6 @@ const AnnouncementView: React.FC<AnnouncementViewProps> = ({
           document.body
         )}
         
-        {/* Task metadata */}
-        <div className="task_tracker_task_metadata">
-          <div>
-            <span className="task_tracker_task_category">{category || 'Inbox'}: </span>
-            <span className="task_tracker_task_times">{timeRange || '6:00 am 7:00 am'}</span>
-          </div>
-          <div className="task_tracker_task_dates">
-            <div className="task_tracker_task_date_item">
-              <span>Start date:</span>
-              <span className="task_tracker_task_date_value">{startDate || '20.09.2025'}</span>
-            </div>
-            <div className="task_tracker_task_date_item">
-              <span>Due date:</span>
-              <span className="task_tracker_task_date_value">{dueDate || '20.09.2025'}</span>
-            </div>
-          </div>
-        </div>
-
         {/* Task title */}
         <div className="task_tracker_task_title">{title}</div>
         

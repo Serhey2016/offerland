@@ -195,12 +195,12 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
 
 
   // Handle task actions from TaskDesign component
-  const handleTaskAction = (action: string, taskId?: number) => {
+  const handleTaskAction = (action: string, taskSlug?: string) => {
     switch (action) {
       case 'start': break
       case 'edit': 
-        if (taskId) {
-          const task = userTasks.find(t => t.id === taskId)
+        if (taskSlug) {
+          const task = userTasks.find(t => t.slug === taskSlug)
           if (task) {
             setSelectedTask(task)
             setShowEditDialog(true)
@@ -208,8 +208,8 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
         }
         break
       case 'note':
-        if (taskId) {
-          const task = userTasks.find(t => t.id === taskId)
+        if (taskSlug) {
+          const task = userTasks.find(t => t.slug === taskSlug)
           if (task) {
             setSelectedTaskForNotes(task)
             setShowNotesDialog(true)
@@ -245,9 +245,9 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   }
 
   // Handle save task notes
-  const handleSaveNotes = async (taskId: number, notes: string) => {
+  const handleSaveNotes = async (taskSlug: string, notes: string) => {
     try {
-      await taskApi.saveTaskNotes(taskId, notes)
+      await taskApi.saveTaskNotes(taskSlug, notes)
       showSuccess('Notes saved successfully')
       // Reload tasks to reflect the changes
       await loadUserTasks(false)
@@ -260,14 +260,14 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   }
 
   // Handle move task action
-  const handleMoveTask = (destination: string, taskId?: number) => {
+  const handleMoveTask = (destination: string, taskSlug?: string) => {
     // TODO: Implement move task logic
   }
 
   // Handle marking task as done
-  const handleMarkTaskDone = async (taskId: number) => {
+  const handleMarkTaskDone = async (taskSlug: string) => {
     try {
-      await tasksHook.updateTaskStatus(taskId, 'done')
+      await tasksHook.updateTaskStatus(taskSlug, 'done')
       showSuccess('Task marked as done')
       // Reload tasks to reflect the change
       await loadUserTasks(false)
@@ -295,7 +295,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       {/* Task Notes Dialog */}
       <TaskNotesDialog
         visible={showNotesDialog}
-        taskId={selectedTaskForNotes?.id || null}
+        taskId={selectedTaskForNotes?.slug || null}
         taskTitle={selectedTaskForNotes?.title}
         initialNotes={selectedTaskForNotes?.note || ''}
         onHide={() => {
@@ -410,8 +410,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                           
                           // Prepare props based on view type
                           const commonProps = {
-                            key: task.id,
-                            taskId: task.id,
+                            taskSlug: task.slug,
                             tags: task.hashtags?.map(h => h.tag_name) || [],
                             priority: task.priority || null,
                             tappedTaskId: tasksHook.tappedTaskId,
@@ -427,22 +426,23 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                             handleDropdownItemClick: tasksHook.handleDropdownItemClick,
                             handleSubmenuItemClick: tasksHook.handleSubmenuItemClick,
                             closeDetailsPopup: tasksHook.closeDetailsPopup,
-                            onDone: () => handleMarkTaskDone(task.id),
-                            onCreateTask: () => handleTaskAction('create', task.id),
-                            onSubTask: () => handleTaskAction('subtask', task.id),
-                            onNote: () => handleTaskAction('note', task.id),
-                            onStart: () => handleTaskAction('start', task.id),
-                            onEdit: () => handleTaskAction('edit', task.id),
-                            onDetails: () => handleTaskAction('details', task.id),
-                            onDelegate: () => handleTaskAction('delegate', task.id),
-                            onPublish: () => handleTaskAction('publish', task.id),
-                            onMoveTo: (destination) => handleMoveTask(destination, task.id)
+                            onDone: () => handleMarkTaskDone(task.slug),
+                            onCreateTask: () => handleTaskAction('create', task.slug),
+                            onSubTask: () => handleTaskAction('subtask', task.slug),
+                            onNote: () => handleTaskAction('note', task.slug),
+                            onStart: () => handleTaskAction('start', task.slug),
+                            onEdit: () => handleTaskAction('edit', task.slug),
+                            onDetails: () => handleTaskAction('details', task.slug),
+                            onDelegate: () => handleTaskAction('delegate', task.slug),
+                            onPublish: () => handleTaskAction('publish', task.slug),
+                            onMoveTo: (destination) => handleMoveTask(destination, task.slug)
                           }
 
                           // TimeSlot-specific props
                           if (task.type_of_view === 'timeslot' || task.type_of_view === 'timeslot_public' || task.type_of_view === 'orders') {
                             return (
                               <ViewComponent
+                                key={task.slug}
                                 {...commonProps}
                                 companyName={(task as any).company_name || undefined}
                                 userName={(task as any).user_name || task.title || 'Unknown User'}
@@ -455,7 +455,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                                 reservedRoadTime={(task as any).reserved_time_on_road ? `${(task as any).reserved_time_on_road} minutes` : undefined}
                                 startLocation={(task as any).start_location}
                                 description={task.description}
-                                onBook={() => handleTaskAction('book', task.id)}
+                                onBook={() => handleTaskAction('book', task.slug)}
                               />
                             )
                           }
@@ -463,6 +463,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                           // Default task props
                           return (
                             <ViewComponent
+                              key={task.slug}
                               {...commonProps}
                               title={task.title}
                               description={task.description}
