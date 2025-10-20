@@ -1,0 +1,285 @@
+/* Task Details Popup Overlay */
+.task_details_popup_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+/* Task Details Popup Container */
+.task_details_popup_container {
+    background-color: #F8F8F8;
+    border-radius: 10px;
+    padding: 20px 24px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Custom scrollbar for popup */
+.task_details_popup_container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.task_details_popup_container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.task_details_popup_container::-webkit-scrollbar-thumb {
+    background: #9C27B0;
+    border-radius: 4px;
+}
+
+.task_details_popup_container::-webkit-scrollbar-thumb:hover {
+    background: #7B1FA2;
+}
+
+/* Popup Header */
+.task_details_popup_header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+/* Close Icon */
+.task_details_close_icon {
+    font-size: 20px;
+    color: #000;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.task_details_close_icon:hover {
+    color: #666;
+}
+
+/* Dates and Priority Row */
+.task_details_dates_priority_row {
+    margin-bottom: 10px;
+    overflow: hidden; /* clearfix for floats */
+}
+
+/* Date Block */
+.task_details_date_block {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.task_details_date_block:first-child {
+    float: left;
+}
+
+.task_details_date_block:last-of-type {
+    float: right;
+}
+
+.task_details_date_label {
+    font-size: 14px;
+    color:#282D3B;
+    font-weight: 400;
+    text-align: center;
+}
+
+.task_details_date_value {
+    font-size: 16px;
+    color: #333333;
+    font-weight: 500;
+}
+
+/* Priority Label */
+.task_details_priority_label {
+    font-size: 16px;
+    color: #666666;
+    text-align: center;
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Title */
+.task_details_title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333333;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+/* Description */
+.task_details_description {
+    font-size: 14px;
+    color: #333333;
+    line-height: 1.6;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Section Heading */
+.task_details_section_heading {
+    font-size: 15px;
+    color: #AAAAAA;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 16px;
+}
+
+/* Notes Content */
+.task_details_notes_content {
+    font-size: 14px;
+    color: #333333;
+    line-height: 1.6;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Subtasks Container */
+.task_details_subtasks_container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+/* Custom scrollbar for subtasks */
+.task_details_subtasks_container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.task_details_subtasks_container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+.task_details_subtasks_container::-webkit-scrollbar-thumb {
+    background: #9C27B0;
+    border-radius: 3px;
+}
+
+.task_details_subtasks_container::-webkit-scrollbar-thumb:hover {
+    background: #7B1FA2;
+}
+
+/* Subtask Item */
+.task_details_subtask_item {
+    background-color: #FFFBEB;
+    border-radius: 6px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtask Status Bar */
+.task_details_subtask_status_bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    background-color: #4CAF50;
+    border-radius: 6px 0 0 6px;
+}
+
+/* Subtask Check Icon */
+.task_details_subtask_check_icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+/* Subtask Content */
+.task_details_subtask_content {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.task_details_subtask_title {
+    font-size: 14px;
+    color: #333333;
+    font-weight: 500;
+}
+
+.task_details_subtask_date {
+    font-size: 12px;
+    color: #666666;
+}
+
+/* Subtask More Button */
+.task_details_subtask_more_btn {
+    background: none;
+    border: none;
+    color: #666666;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.task_details_subtask_more_btn:hover {
+    color: #333333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .task_details_popup_container {
+        width: 95%;
+        padding: 16px 20px;
+        max-height: 85vh;
+    }
+    
+    /* Floats work for mobile too, no override needed */
+    
+    .task_details_title {
+        font-size: 16px;
+    }
+    
+    .task_details_description,
+    .task_details_notes_content {
+        font-size: 13px;
+    }
+    
+    .task_details_subtask_item {
+        padding: 10px 12px;
+    }
+    
+    .task_details_subtask_content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
+

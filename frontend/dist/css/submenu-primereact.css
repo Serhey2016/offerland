@@ -1,0 +1,67 @@
+.task_tracker_sub_menu_filter_container {
+  position: relative;
+  display: inline-block;
+}
+
+.task_tracker_sub_menu_filter_btn {
+  background: #282d3b;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-right: 10px;
+  z-index: 50;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(40, 45, 59, 0.3);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.task_tracker_sub_menu_filter_btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.task_tracker_sub_menu_filter_btn svg path {
+  stroke: white;
+}
+
+.task_tracker_sub_menu_filter_btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(40, 45, 59, 0.4);
+}
+
+
+.task_tracker_sub_menu_filter_btn.p-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.task_tracker_sub_menu_filter_btn.p-button:hover {
+  background: rgba(40, 45, 59, 0.1);
+  color: #282d3b;
+}
+
+.task_tracker_sub_menu_filter_btn.p-button:focus {
+  box-shadow: 0 0 0 2px rgba(40, 45, 59, 0.2);
+}
+
+.task_tracker_sub_menu_filter_btn.p-button .p-button-icon {
+  font-size: 16px;
+  color: white;
+}
+
+.task_tracker_sub_menu_filter_btn.p-button:hover .p-button-icon {
+  color: #282d3b;
+}

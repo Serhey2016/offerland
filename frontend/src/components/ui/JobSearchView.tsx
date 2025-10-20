@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 
 interface JobSearchViewProps {
   // Job Search data
-  taskSlug?: number
+  taskSlug?: string
   title: string
   description?: string
   timeRange?: string
@@ -17,21 +17,21 @@ interface JobSearchViewProps {
   startDate?: string
   
   // UI states from hook
-  tappedTaskId: number | null
-  openDropdownTaskId: number | null
+  tappedTaskId: string | null
+  openDropdownTaskId: string | null
   showSubmenu: boolean
   dropdownPosition: { top: number; left: number }
   submenuPosition: { top: number; left: number }
-  detailsPopupTaskId: number | null
+  detailsPopupTaskId: string | null
   
   // Refs
   dropdownRef: React.RefObject<HTMLDivElement>
   submenuRef: React.RefObject<HTMLDivElement>
   
   // Event handlers from hook
-  handleTaskTap: (taskSlug: number, e: React.MouseEvent) => void
-  handleIconClick: (taskSlug: number, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
-  handleDropdownItemClick: (action: string, taskSlug?: number, event?: React.MouseEvent<HTMLDivElement>) => void
+  handleTaskTap: (taskSlug: string, e: React.MouseEvent) => void
+  handleIconClick: (taskSlug: string, action: string, event?: React.MouseEvent<HTMLButtonElement>) => void
+  handleDropdownItemClick: (action: string, taskSlug?: string, event?: React.MouseEvent<HTMLDivElement>) => void
   handleSubmenuItemClick: (action: string) => void
   closeDetailsPopup: () => void
   
@@ -109,7 +109,7 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
         <div className="task_tracker_floating_icons">
           <button 
             className="task_tracker_icon_btn" 
-            title="Done"
+            title="Publish"
             onClick={(e) => {
               e.stopPropagation()
               if (onDone) {
@@ -117,31 +117,7 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
               }
             }}
           >
-            <i className="pi pi-check-circle"></i>
-          </button>
-          <button 
-            className="task_tracker_icon_btn" 
-            title="Sub Task"
-            onClick={(e) => {
-              e.stopPropagation()
-              if (taskSlug !== undefined) {
-                handleIconClick(taskSlug, 'subtask', e)
-              }
-            }}
-          >
-            <i className="pi pi-reply"></i>
-          </button>
-          <button 
-            className="task_tracker_icon_btn" 
-            title="Note"
-            onClick={(e) => {
-              e.stopPropagation()
-              if (onNote) {
-                onNote()
-              }
-            }}
-          >
-            <i className="pi pi-clipboard"></i>
+            <i className="pi pi-share-alt"></i>
           </button>
           <button 
             className="task_tracker_icon_btn" 
@@ -192,20 +168,6 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
             <div 
               className="task_tracker_task_dropdown_item"
               onClick={() => {
-                handleDropdownItemClick('start')
-                if (onStart) onStart()
-              }}
-              style={{
-                padding: '8px 16px',
-                cursor: 'pointer',
-                borderBottom: '1px solid #f0f0f0'
-              }}
-            >
-              Start
-            </div>
-            <div 
-              className="task_tracker_task_dropdown_item"
-              onClick={() => {
                 handleDropdownItemClick('edit')
                 if (onEdit) onEdit()
               }}
@@ -216,20 +178,6 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
               }}
             >
               Edit
-            </div>
-            <div 
-              className="task_tracker_task_dropdown_item"
-              onClick={() => {
-                handleDropdownItemClick('delegate')
-                if (onDelegate) onDelegate()
-              }}
-              style={{
-                padding: '8px 16px',
-                cursor: 'pointer',
-                borderBottom: '1px solid #f0f0f0'
-              }}
-            >
-              Delegate
             </div>
             <div 
               className="task_tracker_task_dropdown_item"
@@ -246,18 +194,16 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
               Publish
             </div>
             <div 
-              className="task_tracker_task_dropdown_item task_tracker_task_dropdown_item_with_submenu"
-              onClick={(e) => handleDropdownItemClick('move', taskSlug, e)}
+              className="task_tracker_task_dropdown_item"
+              onClick={() => {
+                handleDropdownItemClick('archive')
+              }}
               style={{
                 padding: '8px 16px',
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
+                cursor: 'pointer'
               }}
             >
-              <span>Move to...</span>
-              <i className="pi pi-chevron-right" style={{ fontSize: '12px', opacity: 0.7 }}></i>
+              Archive
             </div>
           </div>,
           document.body
@@ -474,4 +420,5 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
 }
 
 export default JobSearchView
+
 

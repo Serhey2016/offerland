@@ -325,6 +325,27 @@ export const taskApi = {
     }
   },
 
+  // Оновити Job Search
+  updateJobSearch: async (jobSearchId: number, jobSearchData: { title: string }): Promise<any> => {
+    try {
+      const formData = new FormData()
+      formData.append('title', jobSearchData.title)
+      formData.append('edit_item_id', jobSearchId.toString())
+      formData.append('type_of_view', 'job_search')
+      
+      const response = await api.post('/services_and_projects/update_form/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error(`Error updating job search ${jobSearchId}:`, error)
+      throw error
+    }
+  },
+
   // Створити Project (Task with type_of_task='project')
   createProject: async (taskData: InboxTaskData): Promise<any> => {
     try {

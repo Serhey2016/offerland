@@ -2,21 +2,27 @@ import React, { useState, useEffect } from 'react'
 import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
+import { DjangoTask } from '../../api/taskApi'
 
 interface CreateJobSearchDialogProps {
   visible: boolean
   onHide: () => void
   onSave: (jobSearchData: JobSearchFormData) => Promise<void>
+  mode?: 'create' | 'edit'
+  editData?: DjangoTask | null
 }
 
 export interface JobSearchFormData {
+  id?: number
   title: string
 }
 
 const CreateJobSearchDialog: React.FC<CreateJobSearchDialogProps> = ({
   visible,
   onHide,
-  onSave
+  onSave,
+  mode = 'create',
+  editData = null
 }) => {
   const [formData, setFormData] = useState<JobSearchFormData>({
     title: ''
@@ -24,14 +30,21 @@ const CreateJobSearchDialog: React.FC<CreateJobSearchDialogProps> = ({
   
   const [loading, setLoading] = useState(false)
 
-  // Reset form when dialog opens
+  // Reset or populate form when dialog opens
   useEffect(() => {
     if (visible) {
-      setFormData({
-        title: ''
-      })
+      if (mode === 'edit' && editData) {
+        setFormData({
+          id: editData.id,
+          title: editData.title
+        })
+      } else {
+        setFormData({
+          title: ''
+        })
+      }
     }
-  }, [visible])
+  }, [visible, mode, editData])
 
   const handleSave = async () => {
     try {
@@ -47,7 +60,9 @@ const CreateJobSearchDialog: React.FC<CreateJobSearchDialogProps> = ({
 
   const headerContent = (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-      <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>Create Job Search</h2>
+      <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>
+        {mode === 'edit' ? 'Edit Job Search' : 'Create Job Search'}
+      </h2>
     </div>
   )
 

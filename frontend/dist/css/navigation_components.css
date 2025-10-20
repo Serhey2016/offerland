@@ -1,0 +1,99 @@
+/* Navigation Components Styles */
+
+/* Fixed Circle Menu (Left Side) */
+.fixed_circle_menu {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 85;
+    width: 60px;
+    height: 60px;
+}
+
+.fixed_circle {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: #DC7E7E;
+    border: 3px solid #282D3B;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 8px rgba(40, 45, 59, 0.08);
+}
+
+.fixed_circle svg {
+    width: 24px;
+    height: 24px;
+}
+
+.fixed_circle.sub {
+    width: 51px;
+    /* 60px * 0.85 */
+    height: 51px;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        transform 0.35s cubic-bezier(.68, -0.55, .27, 1.55),
+        opacity 0.2s 0.4s;
+    /* задержка исчезновения 0.4s */
+    left: 4.5px;
+    /* (60-51)/2 */
+    top: 4.5px;
+    z-index: 999;
+    cursor: pointer;
+}
+
+/* Позиции для выезжающих кнопок */
+.fixed_circle.sub1 {
+    /* 95deg */
+    transform: translate(0, 0);
+}
+
+.fixed_circle.sub2 {
+    /* 145deg */
+    transform: translate(0, 0);
+}
+
+.fixed_circle.sub3 {
+    /* 170deg */
+    transform: translate(0, 0);
+}
+
+/* Показываем кнопки при hover/active на главной */
+.fixed_circle_menu.fab-open .fixed_circle.sub {
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: 0s, 0s;
+}
+
+.fixed_circle_menu.fab-open .fixed_circle.sub1 {
+    transform: translate(20.7px, -77.3px);
+}
+
+.fixed_circle_menu.fab-open .fixed_circle.sub2 {
+    transform: translate(63.4px, -48.7px);
+}
+
+.fixed_circle_menu.fab-open .fixed_circle.sub3 {
+    transform: translate(80px, 0px);
+}
+
+.fixed_circle.main {
+    z-index: 1001;
+}
+
+.fixed_circle.main:active {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(40, 45, 59, 0.2);
+}
+
+.fixed_circle.sub:hover {
+    box-shadow: 0 4px 15px rgba(40, 45, 59, 0.18);
+    background: #ffe066;
+}
+
+/* Navigation Menu styles moved to React component - see frontend/src/styles/NavigationMenu.css */

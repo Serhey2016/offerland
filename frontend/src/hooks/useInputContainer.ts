@@ -1056,7 +1056,7 @@ export const useInputContainer = ({
       formData.append('priority', projectData.priority || '')
       formData.append('date_start', projectData.date_start || '')
       formData.append('date_end', projectData.date_end || '')
-      formData.append('element_position', 'projects')
+      formData.append('element_position', 'inbox')
 
       // Call the correct endpoint
       const response = await taskApi.createTaskWithFormData(formData)

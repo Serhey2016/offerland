@@ -1,0 +1,1141 @@
+/* Job Feed Application Styles */
+
+/* Основной блок заявки на работу */
+.job_feed_application {
+    background-color: #FEFBD7;
+    width: 95%;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 8px auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Стили для случая, когда нет активностей */
+.job_feed_no_activities {
+    background-color: #f8f9fa;
+    width: 95%;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 8px auto;
+    text-align: center;
+    border: 2px dashed #dee2e6;
+}
+
+.job_feed_no_activities p {
+    margin: 0;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Стили для элементов post_info_dates в job_search_feed */
+.social_feed2 .post_info_dates {
+    margin-top: 12px;
+}
+
+.social_feed2 .post_info_start_date_column,
+.social_feed2 .post_info_dates_type_of_view,
+.social_feed2 .post_info_end_date_column {
+    margin-top: 12px;
+}
+
+/* Контейнер для сердечка и dropdown menu */
+.social_feed2 .jsf_actions_container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Стили для сердечка в job search feed */
+.social_feed2 .sftsts1_favorites_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 12px;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+}
+
+/* Состояние "не в избранном" - контур */
+.social_feed2 .sftsts1_favorites_icon.favorite-unchecked {
+    color: #282d3b;
+}
+
+.social_feed2 .sftsts1_favorites_icon.favorite-unchecked:hover {
+    transform: scale(1.1);
+}
+
+/* Состояние "в избранном" - залитое красное */
+.social_feed2 .sftsts1_favorites_icon.favorite-checked {
+    color: #e74c3c;
+}
+
+.social_feed2 .sftsts1_favorites_icon.favorite-checked:hover {
+    transform: scale(1.1);
+}
+
+/* Специфичные стили для jsf_dropdown_menu */
+.social_feed2 .jsf_dropdown_menu {
+    position: relative !important;
+    cursor: pointer !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    z-index: 3 !important;
+}
+
+/* Иконка трех точек для job search */
+.social_feed2 .jsf_dropdown_menu::after {
+    content: "\22EE" !important;
+    right: 0 !important;
+    top: 0 !important;
+    color: #666 !important;
+    font-size: 1.4em !important;
+    line-height: 1 !important;
+    display: block !important;
+    transition: color 0.2s ease !important;
+    pointer-events: none !important;
+}
+
+/* Эффект при наведении на кнопку */
+.social_feed2 .jsf_dropdown_menu:hover::after {
+    color: #333 !important;
+}
+
+/* Контейнер с содержимым dropdown */
+.social_feed2 .jsf_dropdown_content {
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    background: white !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    min-width: 120px !important;
+    z-index: 86 !important;
+    display: none !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(-10px) !important;
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease !important;
+}
+
+/* Состояние показа dropdown */
+.social_feed2 .jsf_dropdown_content.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+/* Отдельные пункты dropdown */
+.social_feed2 .jsf_dropdown_item {
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    transition: background-color 0.2s ease !important;
+    font-size: 14px !important;
+    color: #333 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+}
+
+/* Последний пункт без границы */
+.social_feed2 .jsf_dropdown_item:last-child {
+    border-bottom: none !important;
+}
+
+/* Эффект при наведении на пункт */
+.social_feed2 .jsf_dropdown_item:hover {
+    background-color: #f8f9fa !important;
+}
+
+/* Специальные цвета для разных типов действий */
+.social_feed2 .jsf_dropdown_item.start {
+    color: #28a745 !important;
+}
+
+.social_feed2 .jsf_dropdown_item.start:hover {
+    background-color: #e8f5e8 !important;
+}
+
+.social_feed2 .jsf_dropdown_item.edit {
+    color: #007bff !important;
+}
+
+.social_feed2 .jsf_dropdown_item.edit:hover {
+    background-color: #e8f4fd !important;
+}
+
+.social_feed2 .jsf_dropdown_item.remove {
+    color: #dc3545 !important;
+}
+
+.social_feed2 .jsf_dropdown_item.remove:hover {
+    background-color: #fde8e8 !important;
+}
+
+/* Иконки в пунктах dropdown */
+.social_feed2 .jsf_dropdown_item svg {
+    width: 16px !important;
+    height: 16px !important;
+    flex-shrink: 0 !important;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .social_feed2 .jsf_dropdown_content {
+        min-width: 100px !important;
+        right: -10px !important;
+    }
+    
+    .social_feed2 .jsf_dropdown_item {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+    }
+    
+    .social_feed2 .jsf_dropdown_item svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+}
+
+/* Контейнер для кнопок */
+.social_feed_button_container_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* Стили для первой кнопки (💡) */
+.social_feed_button_container_button {
+    display: flex;
+    align-items: center;
+}
+
+.social_feed_button_container_button a {
+    display: block;
+    text-decoration: none;
+}
+
+/* Стили для второй кнопки (+) */
+.social_feed_button_container_button2 {
+    display: flex;
+    align-items: center;
+}
+
+.social_feed_button_container_button2 a {
+    display: block;
+    text-decoration: none;
+}
+
+/* Детали действий */
+.job_feed_actions_details {
+    width: 95%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    /* Добавляем плавную анимацию для сворачивания/разворачивания */
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* Состояние свернутости */
+.job_feed_actions_details.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Состояние развернутости */
+.job_feed_actions_details.expanded {
+    max-height: 1000px; /* Достаточно большое значение для всех элементов */
+    opacity: 1;
+}
+
+/* Отдельный элемент действия */
+.job_feed_action_details {
+    background-color: #FEFBD7;
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Иконка статуса действия */
+.job_feed_action_details_icon_done {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+/* Текст действия */
+.job_feed_action_details_text {
+    flex: 1;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Контейнер даты и времени */
+.job_feed_action_datetime_container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 10px;
+}
+
+/* Дата действия */
+.job_feed_action_details_date {
+    font-size: 0.85em;
+    color: #666;
+}
+
+/* Время действия */
+.job_feed_action_icon_time {
+    font-size: 0.8em;
+    color: #888;
+    margin-bottom: 2px;
+}
+
+/* Иконка помощи */
+.job_feed_action_icon_help {
+    font-size: 1.2em;
+    margin-left: 10px;
+}
+
+/* Кнопка следующего действия */
+.job_feed_next_action {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin: 10px auto;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.job_feed_next_action:hover {
+    background-color: #0056b3;
+}
+
+/* Стили для ссылок */
+.job_feed_ca_job_link a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.job_feed_ca_job_cv a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+/* Стили для статусов активностей */
+.job_feed_ca_status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 500;
+    text-transform: capitalize;
+    min-width: 80px;
+    text-align: center;
+}
+
+.job_feed_ca_status:contains("successful") {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.job_feed_ca_status:contains("unsuccessful") {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.job_feed_ca_status:contains("canceled") {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* Стили для названия компании */
+.job_feed_ca_company_name {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1em;
+}
+
+/* Стили для иконок */
+.job_feed_ca_icon_action,
+.job_feed_ca_job_link,
+.job_feed_ca_job_cv,
+.job_feed_ca_expand_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+.job_feed_ca_icon_action:hover,
+.job_feed_ca_job_link:hover,
+.job_feed_ca_job_cv:hover,
+.job_feed_ca_expand_icon:hover {
+    opacity: 0.7;
+}
+
+/* Стили для иконки разворачивания в свернутом состоянии */
+.job_feed_ca_expand_icon.collapsed {
+    transform: rotate(90deg);
+}
+
+/* Стили для иконки разворачивания в развернутом состоянии */
+.job_feed_ca_expand_icon.expanded {
+    transform: rotate(0deg);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .job_feed_application {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .job_feed_action_details {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    
+    .job_feed_action_datetime_container {
+        align-items: center;
+        margin-right: 0;
+    }
+    
+    .job_feed_ca_status {
+        min-width: auto;
+        padding: 4px 8px;
+    }
+}
+
+/* Job Feed Hide Icon - исправленная версия для избежания смещения при вращении */
+.social_feed_hide_icon2 {
+    position: absolute;
+    left: 50%;
+    /* Используем top вместо bottom для фиксации позиции */
+    top: calc(100% - 17.5px); /* Позиционируем от верхней границы с учетом высоты иконки */
+    width: 35px;
+    height: 35px;
+    margin-left: -17.5px;
+    z-index: 999;
+    cursor: pointer;
+    /* Фиксируем позицию чтобы не смещалась при разворачивании */
+    transform: translateZ(0);
+    /* Принудительно фиксируем позицию относительно родительского контейнера */
+    position: absolute !important;
+}
+
+/* Вращаем только содержимое иконки */
+.social_feed_hide_icon2 svg {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    transform-origin: center;
+}
+
+/* Стили для состояния развернуто */
+.social_feed_hide_icon2.expanded svg {
+    transform: rotate(180deg);
+}
+
+/* Стили для состояния свернуто */
+.social_feed_hide_icon2.collapsed svg {
+    transform: rotate(0deg);
+}
+
+/* Плавная анимация для social_feed_details */
+.social_feed_details {
+    transition: opacity 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+/* Состояние свернуто */
+.social_feed_details.collapsed {
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* Состояние развернуто */
+.social_feed_details.expanded {
+    opacity: 1;
+    max-height: none;
+    padding: inherit;
+    margin: inherit;
+}
+
+
+.social_feed_details2 {
+    background: #808080;
+    color: #E2FEC3;
+    border-radius: 0 0 24px 24px;
+    padding: 24px;
+    border: 2px solid #E2FEC3;
+    border-top: none;
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: -20px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Стилизация скроллбара для social_feed_details2 */
+.social_feed_details2::-webkit-scrollbar {
+    width: 8px;
+}
+
+.social_feed_details2::-webkit-scrollbar-track {
+    background: rgba(226, 254, 195, 0.2);
+    border-radius: 4px;
+}
+
+.social_feed_details2::-webkit-scrollbar-thumb {
+    background: #E2FEC3;
+    border-radius: 4px;
+}
+
+.social_feed_details2::-webkit-scrollbar-thumb:hover {
+    background: #c8e8a0;
+}
+
+/* Плавная анимация для social_feed_details2 */
+.social_feed_details2 {
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+/* Стили для попапа заметок */
+.notes-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 87;
+    /* Центрирование с помощью flexbox */
+    align-items: center;
+    justify-content: center;
+}
+
+.notes-popup-overlay.show {
+    display: flex !important;
+}
+
+.notes-popup-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    animation: popupSlideIn 0.3s ease-out;
+    /* Дополнительные стили для лучшего позиционирования */
+    margin: 0;
+    transform: translateZ(0); /* Включаем аппаратное ускорение */
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95) translateZ(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1) translateZ(0);
+    }
+}
+
+.notes-popup-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notes-popup-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fbd551;
+}
+
+.notes-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #fbd551;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.notes-close-btn:hover {
+    background-color: rgba(251, 213, 81, 0.1);
+    color: #fbd551;
+}
+
+.notes-popup-body {
+    padding: 24px;
+}
+
+.notes-form .form-group {
+    margin-bottom: 20px;
+}
+
+.notes-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.notes-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+.notes-textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.notes-popup-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.notes-save-btn,
+.notes-cancel-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notes-save-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.notes-save-btn:hover {
+    background-color: #0056b3;
+}
+
+.notes-cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.notes-cancel-btn:hover {
+    background-color: #545b62;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .notes-popup-content {
+        width: 95%;
+        margin: 20px;
+        max-height: 90vh;
+    }
+    
+    .notes-popup-header {
+        padding: 16px 20px 12px;
+    }
+    
+    .notes-popup-body {
+        padding: 20px;
+    }
+    
+    .notes-popup-actions {
+        flex-direction: column;
+    }
+    
+    .notes-save-btn,
+    .notes-cancel-btn {
+        width: 100%;
+    }
+    
+    .notes-popup-overlay {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .notes-popup-content {
+        width: 98%;
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .notes-popup-header {
+        padding: 12px 15px 10px;
+    }
+    
+    .notes-popup-header h3 {
+        font-size: 16px;
+    }
+    
+    .notes-popup-body {
+        padding: 15px;
+    }
+    
+    .notes-textarea {
+        min-height: 100px;
+        font-size: 14px;
+    }
+    
+    .notes-popup-actions {
+        margin-top: 20px;
+    }
+    
+    .notes-save-btn,
+    .notes-cancel-btn {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Стили для модального окна добавления активности */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 87;
+    /* Добавляем flexbox для центрирования */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-form {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+    /* Убираем margin, так как центрирование теперь через flexbox */
+    margin: 0;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal_close_btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    z-index: 88;
+}
+
+.modal_close_btn:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.project-form {
+    padding: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-row .form-group.half {
+    flex: 0 0 calc(50% - 7.5px);
+}
+
+.file-upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.2s ease;
+    cursor: pointer;
+}
+
+.file-upload-area:hover {
+    border-color: #007bff;
+}
+
+.file-upload-area input[type="file"] {
+    display: none;
+}
+
+.drop-zone {
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drop-zone:hover {
+    color: #007bff;
+}
+
+.drop-zone p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Стили для информации о выбранном файле */
+.file-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.file-name {
+    font-weight: 500;
+    color: #495057;
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-size {
+    font-size: 12px;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+.remove-file-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.remove-file-btn:hover {
+    background: #c82333;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.save-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .modal-form {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .project-form {
+        padding: 20px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-row .form-group.half {
+        flex: 1;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .save-btn {
+        width: 100%;
+    }
+}
+
+/* --- Company Chips & Dropdown --- */
+.company-chip-container {
+    min-height: 38px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    cursor: text;
+    position: relative;
+    background: #fff;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 4px 8px;
+    gap: 4px;
+}
+
+/* --- Job Feed Application Styles --- */
+.job_feed_ca_job_link {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.job_feed_ca_job_link:hover {
+    opacity: 0.8;
+}
+
+.job_feed_ca_job_link a {
+    display: block;
+    transition: opacity 0.2s;
+}
+
+.job_feed_ca_job_link a:hover {
+    opacity: 0.8;
+}
+
+.job_feed_ca_job_cv {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.job_feed_ca_job_cv:hover {
+    opacity: 0.8;
+}
+
+/* Стили для выбранной компании в поле ввода */
+.company-input-field.selected {
+    background-color: #e8f5e8;
+    border-color: #28a745;
+    color: #28a745;
+    font-weight: 500;
+}
+
+/* Стили для иконок статуса */
+.job_feed_ca_status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help; /* Показываем, что есть tooltip */
+}
+
+.job_feed_ca_status svg {
+    width: 38px;
+    height: 36px;
+    transition: transform 0.2s ease;
+}
+
+.job_feed_ca_status:hover svg {
+    transform: scale(1.1);
+}
+
+.company-dropdown-menu {
+    display: none;
+    position: fixed;
+    background: #fff;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(40,45,59,0.15);
+    z-index: 999999;
+    max-height: 200px;
+    overflow-y: auto;
+    min-width: 200px;
+    margin-top: 4px;
+}
+
+/* Отладочные стили для выпадающего списка */
+.company-dropdown-menu[style*="display: block"] {
+    background: #ffffcc !important;
+    border: 3px solid #ff0000 !important;
+}
+
+.company-dropdown-menu .company-dropdown-item {
+    padding: 8px 14px;
+    cursor: pointer;
+    color: #282D3B;
+    border-radius: 8px;
+    transition: background 0.2s;
+    font-size: 15px;
+}
+
+.company-dropdown-menu .company-dropdown-item:hover {
+    background: #f0f0f0;
+}
+
+.company-dropdown-menu .company-dropdown-item.create-new-company {
+    background: #f8f9fa;
+    border-left: 3px solid #28a745;
+    font-style: italic;
+}
+
+.company-dropdown-menu .company-dropdown-item.create-new-company:hover {
+    background: #e9ecef;
+}
+
+.company-dropdown-menu .company-dropdown-item.no-results {
+    color: #6c757d;
+    font-style: italic;
+    cursor: default;
+}
+
+.company-dropdown-menu .company-dropdown-item.no-results:hover {
+    background: transparent;
+}

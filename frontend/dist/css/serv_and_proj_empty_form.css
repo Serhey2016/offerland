@@ -1,0 +1,1055 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 90;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+/* Дополнительные стили для центрирования */
+.modal-overlay[style*="flex"] {
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure modal is properly centered */
+.modal-overlay.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Стили для сетки выбора типа */
+.type-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 15px;
+}
+
+.type-option {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.type-option:hover {
+    background: #e9ecef;
+    border-color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.type-option h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.type-option p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.type-option.selected {
+    background: #007bff;
+    border-color: #0056b3;
+    color: white;
+}
+
+.type-option.selected h3,
+.type-option.selected p {
+    color: white;
+}
+
+/* Разрешаем клики только на саму форму */
+.modal-overlay .modal-form {
+    pointer-events: auto;
+}
+
+.modal-form {
+    background: #FBD551;
+    padding: 0;
+    border-radius: 15px 0px 0px 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid #282D3B;
+    margin: 20px;
+    z-index: 91;
+}
+
+/* Header actions container - только для форм редактирования */
+.modal-form .modal-header-actions {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Modal header for type selection */
+.modal-form .modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Стили для текста заголовка */
+.modal-form .modal-header .modal-title-text {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;
+}
+
+.modal-form .modal-header .modal-title-text h4 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #282D3B;
+    text-align: left;
+}
+
+/* Специальные стили для кнопки закрытия в modal-header */
+.modal-form .modal-header .modal_close_btn {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0;
+    float: right;
+    position: relative;
+    top: -20px;
+}
+
+.modal-form .modal-header-actions h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #282D3B;
+    flex: 1;
+    text-align: left;
+}
+
+/* Form content padding - только для форм редактирования */
+.modal-form form {
+    padding: 0 30px 30px 30px;
+}
+
+/* Кнопка закриття для всіх модальних форм */
+.modal_close_btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #282D3B;
+    padding: 8px;
+    line-height: 1;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    position: relative;
+    z-index: 10;
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.modal_close_btn:hover {
+    background-color: #f0f0f0;
+}
+
+/* Стили для существующих фото в форме редактирования */
+.existing-photos {
+    margin-top: 15px;
+    padding: 15px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    min-height: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.existing-photos:empty::before {
+    content: 'No photos uploaded yet';
+    color: #666;
+    font-style: italic;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+}
+
+.existing-photo {
+    display: inline-block;
+    margin: 8px;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.existing-photo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.existing-photo img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.existing-photo button {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.existing-photo button:hover {
+    background: #c82333;
+}
+
+/* Social feed menu styles for modal forms */
+.social_feed_menu {
+    position: relative;
+}
+
+.social_feed_menu_trigger {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    color: #666;
+    transition: color 0.2s ease;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.social_feed_menu_trigger:hover {
+    color: #333;
+}
+
+.social_feed_menu_trigger svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Overflow Menu styles */
+.social_feed_overflow_menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    z-index: 93;
+    display: none;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+.social_feed_overflow_menu.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.social_feed_overflow_menu_item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.social_feed_overflow_menu_item:last-child {
+    border-bottom: none;
+}
+
+.social_feed_overflow_menu_item:hover {
+    background-color: #f8f9fa;
+}
+
+.social_feed_overflow_menu_item.start {
+    color: #28a745;
+}
+
+.social_feed_overflow_menu_item.edit {
+    color: #007bff;
+}
+
+.social_feed_overflow_menu_item.remove {
+    color: #dc3545;
+}
+
+.modal_close_btn:hover {
+    color: #000;
+}
+
+.form-group.checkbox label {
+    padding-top: 10px;
+}
+
+
+
+.close-btn svg {
+    fill: #282D3B;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group.half {
+    flex: 1;
+}
+
+label {
+    display: block;
+  
+    color: #282D3B;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+input[type="url"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.file-upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.drop-zone {
+    color: #666;
+}
+
+.form-group.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-group.checkbox input {
+    width: 18px;
+    height: 18px;
+}
+
+.performers-input-group {
+    display: flex;
+    gap: 10px;
+    position: relative; /* Для позиционирования dropdown */
+}
+
+.add-performer {
+    background: #282D3B;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.performers-list {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.performer-tag {
+    background: #e0e0e0;
+    color: #282D3B;
+    border-radius: 15px;
+    padding: 5px 12px;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.performer-tag.need-performer {
+    background: #f0f0f0;
+    color: #222;
+    border-radius: 15px;
+    font-style: normal;
+    padding: 5px 12px;
+}
+
+.performers-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(40,45,59,0.08);
+    margin-top: 2px;
+    z-index: 10;
+    min-width: 180px;
+    max-width: 100%;
+}
+
+.performers-dropdown .dropdown-item {
+    padding: 8px 14px;
+    cursor: pointer;
+    color: #282D3B;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.performers-dropdown .dropdown-item:hover {
+    background: #f0f0f0;
+}
+
+.performers-dropdown .need-performer {
+    background: #f6f6f6;
+    color: #666;
+    font-style: italic;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background: #282D3B;
+    color: white;
+}
+
+.btn-secondary {
+    background: #282D3B;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.form-extend-toggle {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.extend-btn {
+    background: none;
+    border: none;
+    color: #282D3B;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: background 0.2s;
+}
+
+.extend-btn:hover {
+    background: #f0f0f0;
+}
+
+.extend-icon {
+    font-size: 20px;
+    display: inline-block;
+    transition: transform 0.2s;
+}
+
+.form-extend-toggle.extended .extend-icon {
+    transform: rotate(180deg);
+}
+
+.input-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-left: 6px;
+    border: 2.5px solid #ccc;
+    border-top: 2.5px solid #888;
+    border-radius: 50%;
+    animation: input-spinner-rotate 0.7s linear infinite;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 11;
+}
+
+@keyframes input-spinner-rotate {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+
+/* Стили для ввода тайм- слота */
+
+/* Общие стили для контейнера */
+.time-slot-group {
+   
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 400px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Заголовок группы */
+  .time-slot-group-title {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  /* Оболочка для полей ввода даты и времени */
+  .time-slot-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Промежуток между группами даты и времени */
+  }
+  
+  /* Стили для каждой группы (дата/время) */
+  .date-slot-group,
+  .time-slot-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Промежуток между меткой и полями ввода */
+  }
+  
+  /* Метки для полей ввода (Дата, Время) */
+  .input-label {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+  
+  /* Стили для полей ввода даты и времени */
+  .date-time-slot-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    color: #333;
+    box-sizing: border-box; /* Важно для корректного расчета ширины с учетом padding */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .date-time-slot-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none; /* Убираем стандартную обводку при фокусе */
+  }
+  
+  /* Стили для иконок календаря/часов в полях ввода (может зависеть от браузера) */
+  .date-time-slot-input::-webkit-calendar-picker-indicator,
+  .date-time-slot-input::-webkit-inner-spin-button {
+    cursor: pointer;
+    filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg); /* Стилизация иконки */
+  }
+  
+  /* Стили для мобильных устройств (пример) */
+  @media (max-width: 600px) {
+    .time-slot-group {
+      padding: 15px;
+      margin: 10px;
+    }
+  
+    .time-slot-group-title {
+      font-size: 1.3em;
+    }
+  
+    .input-label {
+      font-size: 1em;
+    }
+  
+    .date-time-slot-input {
+      padding: 8px 10px;
+    }
+  }
+
+/* --- Hashtag Chips & Dropdown --- */
+.hashtag-chip-container {
+    min-height: 38px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    cursor: text;
+    position: relative;
+    background: #fff;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 4px 8px;
+    gap: 4px;
+}
+.hashtag-chip {
+    background: #007bff;
+    color: #fff;
+    border-radius: 12px;
+    padding: 2px 8px 2px 10px;
+    margin-right: 4px;
+    margin-bottom: 2px;
+    font-size: 0.95em;
+    display: inline-flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+.hashtag-chip .hashtag-remove {
+    margin-left: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #fff;
+    opacity: 0.8;
+    transition: color 0.2s, opacity 0.2s;
+}
+.hashtag-chip .hashtag-remove:hover {
+    color: #ffdddd;
+    opacity: 1;
+}
+.hashtag-dropdown-menu {
+    display: none;
+    position: fixed;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(40,45,59,0.15);
+    z-index: 95;
+    max-height: 200px;
+    overflow-y: auto;
+    min-width: 200px;
+    /* Дополнительные стили для видимости */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+
+
+
+
+/* Принудительное отображение dropdown */
+.hashtag-dropdown-menu[style*="display: block"],
+.hashtag-dropdown-menu[style*="visibility: visible"],
+.hashtag-dropdown-menu.show,
+.hashtag-dropdown-menu.visible {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+}
+.hashtag-dropdown-menu .dropdown-item {
+    padding: 8px 14px;
+    cursor: pointer;
+    color: #282D3B;
+    border-radius: 8px;
+    transition: background 0.2s;
+    font-size: 15px;
+}
+.hashtag-dropdown-menu .dropdown-item:hover {
+    background: #f0f0f0;
+}
+.hashtag-dropdown-menu .dropdown-item {
+    cursor: pointer;
+}
+
+.hashtag-dropdown-menu .dropdown-item.create-new-tag {
+    background: #f8f9fa;
+    border-left: 3px solid #007bff;
+    font-style: italic;
+}
+
+.hashtag-dropdown-menu .dropdown-item.create-new-tag:hover {
+    background: #e9ecef;
+}
+
+.hashtag-dropdown-menu .dropdown-item.create-new-tag span {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.save-spinner {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border: 3px solid #ddd;
+    border-top: 3px solid #282D3B;
+    border-radius: 50%;
+    animation: save-spin 0.8s linear infinite;
+    margin-left: 12px;
+    vertical-align: middle;
+}
+@keyframes save-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.save-success-message {
+    color: #1a7f37;
+    font-weight: 600;
+    margin-top: 18px;
+    font-size: 1.1em;
+    text-align: left;
+}
+
+/* Стили для функциональности "Read more..." */
+
+.read_more {
+    color: #007bff;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 8px;
+    display: inline-block;
+    transition: color 0.3s ease;
+    font-size: 14px;
+}
+
+.read_more:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.read_more:active {
+    color: #004085;
+}
+
+/* Стили для состояния "Show less" */
+.read_more.expanded {
+    color: #6c757d;
+}
+
+.read_more.expanded:hover {
+    color: #495057;
+}
+
+/* Стили для текста постов */
+.social_feed_text p {
+    margin-bottom: 8px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+/* Анимация для плавного показа полного текста */
+
+/* Класи для керування видимістю блоків */
+.form-group.hidden,
+.form-actions.hidden {
+    display: none !important;
+}
+
+.form-group.visible,
+.form-actions.visible {
+    display: block !important;
+}
+
+/* Для checkbox груп */
+.form-group.checkbox.hidden {
+    display: none !important;
+}
+
+.form-group.checkbox.visible {
+    display: flex !important;
+}
+.social_feed_text p.expanded {
+    transition: all 0.3s ease;
+}
+
+
+/* Для input поля посилання на фото */
+.photos-link-input {
+    margin-bottom: 12px;
+}
+
+/* Для тексту "or" між полями */
+.photos-link-or {
+    text-align: center;
+    font-weight: 600;
+    color: #282d3b;
+    margin-bottom: 8px;
+}
+
+/* Для time input */
+.time-input {
+    margin-top: 6px;
+}
+
+/* Для поля хештегів */
+.hashtags-input-field {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+    background: transparent;
+}
+
+/* Гарантуємо видимість select елементів */
+.form-group.visible select {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    opacity: 1 !important;
+}
+
+/* Додаткові стилі для select в form-group-status */
+#form-group-status.visible select {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    padding: 10px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+}
+
+/* ===== JOB SEARCH DROPDOWN MENU СТИЛИ ===== */
+
+/* Кнопка dropdown menu для job search */
+.jsf_dropdown_menu {
+    position: relative;
+    right: 10px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+/* Иконка трех точек для job search */
+.jsf_dropdown_menu::after {
+    content: "\22EE";
+    right: 0;
+    top: 0;
+    color: #666;
+    font-size: 1.4em;
+    line-height: 1;
+    display: block;
+    transition: color 0.2s ease;
+    pointer-events: none;
+}
+
+/* Эффект при наведении на кнопку */
+.jsf_dropdown_menu:hover::after {
+    color: #333;
+}
+
+/* Контейнер с содержимым dropdown */
+.jsf_dropdown_content {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    z-index: 94;
+    display: none;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+/* Состояние показа dropdown */
+.jsf_dropdown_content.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Отдельные пункты dropdown */
+.jsf_dropdown_item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+/* Последний пункт без границы */
+.jsf_dropdown_item:last-child {
+    border-bottom: none;
+}
+
+/* Эффект при наведении на пункт */
+.jsf_dropdown_item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Специальные цвета для разных типов действий */
+.jsf_dropdown_item.start {
+    color: #28a745;
+}
+
+.jsf_dropdown_item.start:hover {
+    background-color: #e8f5e8;
+}
+
+.jsf_dropdown_item.edit {
+    color: #007bff;
+}
+
+.jsf_dropdown_item.edit:hover {
+    background-color: #e8f4fd;
+}
+
+.jsf_dropdown_item.remove {
+    color: #dc3545;
+}
+
+.jsf_dropdown_item.remove:hover {
+    background-color: #fde8e8;
+}
+
+/* Иконки в пунктах dropdown */
+.jsf_dropdown_item svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .jsf_dropdown_content {
+        min-width: 100px;
+        right: -10px;
+    }
+    
+    .jsf_dropdown_item {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .jsf_dropdown_item svg {
+        width: 14px;
+        height: 14px;
+    }
+}

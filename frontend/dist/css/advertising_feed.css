@@ -1,0 +1,1028 @@
+/* Advertising Feed CSS Styles */
+
+
+
+/* ===== ОСНОВНЫЕ СТИЛИ ДЛЯ SOCIAL FEED ===== */
+
+.social_feed {
+    background: #e8fae8;
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.social_feed2 {
+    position: relative;
+    background: #e8fae8;
+    border-radius: 15px;
+    max-width: 600px;
+    margin: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для time slot feed перенесены в timeslot_feed.css */
+
+/* ===== СТИЛИ ДЛЯ ИМЕНИ ПОЛЬЗОВАТЕЛЯ И АВАТАРА ===== */
+
+.social_feed_user_name_image {
+    display: flex;
+    transform: scale(0.9);
+}
+
+.social_feed_user_name_image img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.social_feed_user_text_name {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    margin-top: 7px;
+}
+
+/* ===== СТИЛИ ДЛЯ МЕНЮ ===== */
+
+/* Стили для сердечка в advertising feed */
+.sftsts1_favorites_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 12px;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+}
+
+/* Состояние "не в избранном" - контур */
+.sftsts1_favorites_icon.favorite-unchecked {
+    color: #282d3b;
+}
+
+.sftsts1_favorites_icon.favorite-unchecked:hover {
+    transform: scale(1.1);
+}
+
+/* Состояние "в избранном" - залитое красное */
+.sftsts1_favorites_icon.favorite-checked {
+    color: #e74c3c;
+}
+
+.sftsts1_favorites_icon.favorite-checked:hover {
+    transform: scale(1.1);
+}
+
+.advertising_social_feed_menu {
+    position: relative;
+    right: 10px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.advertising_social_feed_menu_trigger {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    color: #666;
+    transition: color 0.2s ease;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.advertising_social_feed_menu_trigger:hover {
+    color: #333;
+}
+
+/* Иконка трех точек для advertising feed */
+.advertising_social_feed_menu_trigger::after {
+    content: "\22EE";
+    right: 0;
+    top: 0;
+    color: #666;
+    font-size: 1.4em;
+    line-height: 1;
+    display: block;
+    transition: color 0.2s ease;
+    pointer-events: none;
+}
+
+/* ===== OVERFLOW MENU СТИЛИ ===== */
+
+.advertising_social_feed_overflow_menu {
+    position: absolute;
+    top: calc(100% - 20px);
+    right: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    z-index: 50;
+    display: none;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    margin-top: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.advertising_social_feed_overflow_menu.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.advertising_social_feed_overflow_menu_item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.advertising_social_feed_overflow_menu_item:last-child {
+    border-bottom: none;
+}
+
+.advertising_social_feed_overflow_menu_item:hover {
+    background-color: #f8f9fa;
+}
+
+.advertising_social_feed_overflow_menu_item.remove {
+    color: #dc3545;
+}
+
+.advertising_social_feed_overflow_menu_item.edit {
+    color: #007bff;
+}
+
+.advertising_social_feed_overflow_menu_item.share {
+    color: #28a745;
+}
+
+.advertising_social_feed_overflow_menu_item.unarchive {
+    color: #17a2b8;
+}
+
+.advertising_social_feed_overflow_menu_item.publish {
+    color: #28a745;
+}
+
+.advertising_social_feed_overflow_menu_item.archive {
+    color: #6c757d;
+}
+
+.advertising_social_feed_overflow_menu_item svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* ===== СТИЛИ ДЛЯ ТЕКСТА ===== */
+
+.social_feed_text {
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.social_feed_text p {
+    margin: 0 0 10px 0;
+}
+
+/* ===== СТИЛИ ДЛЯ ГАЛЕРЕИ ИЗОБРАЖЕНИЙ ===== */
+
+.social_feed_image_gallery_1 {
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+    background: #282d3b;
+    border-radius: 10px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(173, 118, 118, 0.5) transparent;
+}
+
+/* Стили для Webkit (Chrome, Safari, newer Edge) */
+.social_feed_image_gallery_1::-webkit-scrollbar {
+    height: 6px;
+}
+
+.social_feed_image_gallery_1::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.social_feed_image_gallery_1::-webkit-scrollbar-thumb {
+    background-color: rgba(173, 118, 118, 0.5);
+    border-radius: 3px;
+}
+
+.social_feed_image_gallery_1::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(173, 118, 118, 0.8);
+}
+
+.social_feed_image_gallery_1 img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: -75px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+.social_feed_image_gallery_1 img:last-child {
+    margin-right: 0;
+}
+
+.social_feed_image_gallery_1 img:hover {
+    transform: scale(1.1) translateY(-10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== СТИЛИ ДЛЯ ИНФОРМАЦИИ О ПОСТЕ ===== */
+
+.post_info {
+    margin-left: auto;
+    margin-right: 30px;
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.post_info_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding: 0 0 12px 0;
+    position: relative;
+}
+
+.post_info_start_date_column_group {
+    display: flex;
+    flex-direction: row;
+    margin-right: 20px;
+}
+
+.post_info_start_date_column,
+.post_info_end_date_column {
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    padding: 0 0;
+}
+
+.post_info_end_date_column {
+    /* убираем position и right */
+}
+
+.post_info_block {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: start;
+    width: 100%;
+    gap: 0 1px;
+    position: relative;
+}
+
+.social_feed_user_name,
+.post_info_block {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    width: 100%;
+    position: relative;
+}
+
+.post_info_dates {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    width: 100%;
+    align-items: center;
+}
+
+.post_info_start_date_column {
+    justify-self: start;
+    text-align: left;
+}
+
+.post_info_dates_type_of_view {
+    justify-self: center;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #282D3B;
+    padding: 8px 16px;
+    background: #e1ded3;
+    opacity: 0.4;
+    border-radius: 24px;
+    min-width: 100px;
+}
+
+.post_info_end_date_column {
+    justify-self: end;
+    text-align: right;
+}
+
+.post_info_project_or_task_title_column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 0 0 0;
+}
+
+.post_info_project_or_task_title_text {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.post_info_title_row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    margin: -24px 0 0 0;
+}
+
+.post_info_icons_scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-height: 190px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f0f0f0;
+}
+
+.post_info_icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post_info_icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post_info_icon svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post_info_icons_scroll::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+.post_info_icons_scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* ===== СТИЛИ ДЛЯ READ MORE ===== */
+
+.read_more {
+    color: #666;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* ===== СТИЛИ ДЛЯ ДЕЙСТВИЙ ===== */
+
+.post_actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 15px 0;
+}
+
+.action_buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action_btn {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.action_btn:hover {
+    background-color: #f0f0f0;
+}
+
+.order_now {
+    padding: 10px 20px;
+    background-color: #282d3b;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.order_now:hover {
+    background-color: #3a3f4f;
+}
+
+/* ===== СТИЛИ ДЛЯ ИЗОБРАЖЕНИЙ ===== */
+
+.social_feed_image_1 {
+    width: 100%;
+    height: 400px;
+    margin: 15px 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.social_feed_image_1 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.social_feed_image_2 {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.social_feed_image_2 img {
+    width: calc(50% - 5px);
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* ===== СТИЛИ ДЛЯ ТЕГОВ ===== */
+
+.social_feed_tags {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0;
+    color: #666;
+    font-size: 14px;
+    flex-wrap: wrap;
+    word-break: break-word;
+}
+
+.social_feed_tags::before {
+    content: "🏷️";
+    font-size: 16px;
+}
+
+.social_feed_tags span {
+    color: #666;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.social_feed_tags span:hover {
+    color: #282d3b;
+}
+
+.social_feed_tags span::after {
+    content: ",";
+    margin-right: 4px;
+}
+
+.social_feed_tags span:last-child::after {
+    content: "";
+    margin-right: 0;
+}
+
+/* ===== СТИЛИ ДЛЯ ДЕТАЛЕЙ ===== */
+
+.social_feed_details {
+    background: #808080;
+    color: #E2FEC3;
+    border-radius: 0 0 24px 24px;
+    padding: 24px;
+    border: 2px solid #E2FEC3;
+    border-top: none;
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: -20px;
+}
+
+.social_feed_details a,
+.social_feed_details b,
+.social_feed_details_label,
+.social_feed_details_text p,
+.social_feed_details_tags,
+.social_feed_details_grid {
+    color: #E2FEC3;
+}
+
+.social_feed_details_label,
+.social_feed_details_grid_client,
+.social_feed_details_grid_date_start,
+.social_feed_details_grid_date_end,
+.social_feed_details_grid_documents,
+.social_feed_details_grid_project_private,
+.social_feed_details_grid_customer_name,
+.social_feed_details_grid_stakeholders,
+.social_feed_details_grid_status,
+.social_feed_details_task_number {
+    margin-top: 8px;
+}
+
+.social_feed_hide_icon {
+    position: absolute;
+    left: 50%;
+    top: calc(100% - 17.5px);
+    width: 35px;
+    height: 35px;
+    margin-left: -17.5px;
+    z-index: 85;
+    cursor: pointer;
+    transform: translateZ(0);
+}
+
+.social_feed_details .social_feed_tags,
+.social_feed_details .social_feed_tags span {
+    color: #E2FEC3 !important;
+}
+
+.social_feed_details .social_feed_details_text {
+    margin-left: 20px;
+}
+
+/* ===== СТИЛИ ДЛЯ TIME SLOT ===== */
+
+/* Стили для time slot feed перенесены в timeslot_feed.css */
+
+/* Стили для time slot feed перенесены в timeslot_feed.css */
+
+/* ===== СТИЛИ ДЛЯ КОНТЕЙНЕРА ===== */
+
+.social_responses_container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.social_feeds {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+.social_feeds>.social_feed {
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Стили для time slot feed перенесены в timeslot_feed.css */
+
+.social_feeds>.social_feed2 {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+/* ===== СТИЛИ ДЛЯ FIXED CIRCLE MENU ===== */
+
+.fixed_circle_menu {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 85;
+    width: 60px;
+    height: 60px;
+}
+
+.fixed_circle {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: #FBD551;
+    border: 3px solid #282D3B;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 8px rgba(40, 45, 59, 0.08);
+}
+
+.fixed_circle svg {
+    width: 24px;
+    height: 24px;
+}
+
+.fixed_circle.sub {
+    width: 51px;
+    height: 51px;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        transform 0.35s cubic-bezier(.68, -0.55, .27, 1.55),
+        opacity 0.2s 0.4s;
+    left: 4.5px;
+    top: 4.5px;
+    z-index: 999;
+    cursor: pointer;
+}
+
+.fixed_circle.sub1 {
+    transform: translate(0, 0);
+}
+
+/* ===== АДАПТИВНЫЕ СТИЛИ ===== */
+
+@media (max-width: 900px) {
+    .social_responses_container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .social_feeds {
+        align-items: stretch;
+    }
+
+    /* Стили для time slot feed перенесены в timeslot_feed.css */
+}
+
+@media (max-width: 600px) {
+    .post_info {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* ===== НАВИГАЦИОННЫЕ СТРЕЛКИ ===== */
+
+.nav-arrow-left svg,
+.nav-arrow-right svg {
+    width: 16px;
+    height: 16px;
+    fill: #282d3b;
+}
+
+/* ===== СТИЛИ ДЛЯ ИНДИКАТОРА ЗАГРУЗКИ ===== */
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    font-size: 18px;
+    color: #666;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border: 2px dashed #dee2e6;
+    width: 100%;
+    max-width: 600px;
+    min-height: 200px; /* Минимальная высота для предотвращения скачков */
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 200px 120px;
+    font-size: 18px;
+    color: #666;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border: 2px dashed #dee2e6;
+    width: 100%;
+    max-width: 600px;
+    min-height: 800px; /* Минимальная высота для предотвращения скачков */
+}
+
+.loading-spinner {
+    width: 160px;
+    height: 160px;
+    border: 16px solid #dee2e6;
+    border-top: 16px solid #FBD551;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 40px;
+}
+
+.loading span {
+    font-size: 48px;
+    color: #666;
+    font-weight: 600;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    background: #f8d7da;
+    border-radius: 15px;
+    border: 2px solid #f5c6cb;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    min-height: 200px; /* Минимальная высота для предотвращения скачков */
+}
+
+.error-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.error-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #dc3545;
+}
+
+.error-description {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #721c24;
+    max-width: 400px;
+}
+
+/* ===== СТИЛИ ДЛЯ ЗАПОЛНЕНИЯ ПРИ ОТСУТСТВИИ ПОСТОВ ===== */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 40px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border: 2px dashed #dee2e6;
+    width: 100%;
+    max-width: 600px;
+    min-height: 300px; /* Минимальная высота для предотвращения скачков футера */
+    text-align: center;
+    color: #666;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+.empty-state-description {
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 400px;
+}
+
+/* ===== СТИЛИ ДЛЯ ПЛАВНЫХ ПЕРЕХОДОВ ===== */
+
+.social_feeds {
+    transition: min-height 0.3s ease;
+}
+
+.social_feeds.loading {
+    min-height: 1000px; /* Минимальная высота при загрузке */
+}
+
+.social_feeds.empty {
+    min-height: 950px; /* Минимальная высота при отсутствии постов */
+}
+
+/* ===== СТИЛИ ДЛЯ ALERTIFY УВЕДОМЛЕНИЙ ===== */
+
+/* Кастомизация уведомлений alertify */
+.alertify-notifier {
+    z-index: 9999;
+}
+
+.alertify-notifier .ajs-message {
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    padding: 12px 20px;
+    margin: 8px;
+    min-width: 280px;
+    max-width: 400px;
+}
+
+/* Стили для успешных уведомлений */
+.alertify-notifier .ajs-message.ajs-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-left: 4px solid #1e7e34;
+}
+
+/* Стили для уведомлений об ошибках */
+.alertify-notifier .ajs-message.ajs-error {
+    background: linear-gradient(135deg, #dc3545, #e74c3c);
+    color: white;
+    border-left: 4px solid #c82333;
+}
+
+/* Стили для предупреждающих уведомлений */
+.alertify-notifier .ajs-message.ajs-warning {
+    background: linear-gradient(135deg, #ffc107, #ffb300);
+    color: #212529;
+    border-left: 4px solid #e0a800;
+}
+
+/* Стили для информационных уведомлений */
+.alertify-notifier .ajs-message.ajs-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    border-left: 4px solid #117a8b;
+}
+
+/* Анимация появления уведомлений */
+.alertify-notifier .ajs-message.ajs-visible {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Анимация исчезновения уведомлений */
+.alertify-notifier .ajs-message.ajs-hidden {
+    animation: slideOutRight 0.3s ease-in;
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* ===== СТИЛИ ДЛЯ ALERTIFY CONFIRM ДИАЛОГОВ ===== */
+
+/* Кастомизация confirm диалогов */
+.alertify .ajs-dialog {
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: none;
+}
+
+.alertify .ajs-header {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 20px 24px 16px 24px;
+}
+
+.alertify .ajs-header .ajs-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.alertify .ajs-body {
+    padding: 20px 24px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.alertify .ajs-footer {
+    padding: 16px 24px 20px 24px;
+    background: #f8f9fa;
+    border-radius: 0 0 12px 12px;
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button {
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 10px;
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button.ajs-ok {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button.ajs-ok:hover {
+    background: linear-gradient(135deg, #218838, #1ea085);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button.ajs-cancel {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+}
+
+.alertify .ajs-footer .ajs-buttons .ajs-button.ajs-cancel:hover {
+    background: linear-gradient(135deg, #5a6268, #343a40);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ===== HOVER EFFECTS FOR ADVERTISING FEED ===== */
+
+/* Hover эффекты для постов advertising feed */
+.social_feed {
+    transition: all 0.3s ease;
+}
+
+.social_feed:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.social_feed.hover {
+    background-color: rgba(39, 56, 77, 0.05);
+}
+
+.social_feed2 {
+    transition: all 0.3s ease;
+}
+
+.social_feed2:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.social_feed2.hover {
+    background-color: rgba(39, 56, 77, 0.05);
+}

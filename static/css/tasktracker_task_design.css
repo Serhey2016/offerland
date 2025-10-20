@@ -4,17 +4,7 @@
 }
 
 /* Task Tracker Task Container - New Design */
-.task_tracker_task_container {
-    display: block;
-    background: #9EAEBE;
-    border: 0px solid #282D3B;
-    border-radius: 10px;
-    padding: 8px 20px 8px 35px; /* Added left padding to avoid overlap with line */
-    margin: 10px 0;
-    position: relative;
-   
- 
-}
+
 
 
 
@@ -148,8 +138,9 @@
     font-size: 1.6rem;
     font-weight: 600;
     color: #282D3B;
-   
+  
     line-height: 0.5;
+    margin-top: 10px;
 }
 
 
@@ -334,7 +325,16 @@
 /* ============================================================================
    TIME SLOT VIEW COMPONENT STYLES
    ============================================================================ */
-
+   .task_tracker_task_container {
+    display: block;
+    background: #9EAEBE;
+    border: 0px solid #282D3B;
+    border-radius: 10px;
+    padding: 8px 20px 8px 35px; /* Added left padding to avoid overlap with line */
+    margin: 10px 0;
+    position: relative;
+    border: 1px solid #282D3B;
+}
 .time_slot_card_container {
     display: flex;
     flex-direction: row;
@@ -346,12 +346,13 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     margin-bottom: 12px;
     position: relative;
+    border: 1px solid #282D3B;
 }
 
 .time_slot_card_container:hover,.task_tracker_task_container:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    border: 2px solid #323745;
+    border: 2px solid #2A8A34;
 }
 
 /* Left Section - Main Details (55-60% width) */

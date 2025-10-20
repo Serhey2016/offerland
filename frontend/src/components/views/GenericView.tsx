@@ -12,6 +12,7 @@ import EditTaskDialog, { EditTaskFormData } from '../ui/EditTaskDialog'
 import TaskNotesDialog from '../ui/TaskNotesDialog'
 import TimeSlotDialog, { TimeSlotFormData } from '../ui/TimeSlotDialog'
 import AdvertisingDialog, { AdvertisingFormData } from '../ui/AdvertisingDialog'
+import CreateJobSearchDialog, { JobSearchFormData } from '../ui/CreateJobSearchDialog'
 import { useInputContainer } from '../../hooks/useInputContainer'
 import { useTasks } from '../../hooks/useTasks'
 import { useToasts } from '../../hooks/useToasts'
@@ -44,6 +45,11 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   
   // Advertising dialog state
   const [showAdvertisingDialog, setShowAdvertisingDialog] = useState(false)
+  
+  // Job Search dialog state
+  const [showJobSearchDialog, setShowJobSearchDialog] = useState(false)
+  const [jobSearchEditMode, setJobSearchEditMode] = useState<'create' | 'edit'>('create')
+  const [selectedJobSearch, setSelectedJobSearch] = useState<DjangoTask | null>(null)
 
   // Handle task creation
   const handleCreateTask = async (taskData: InboxTaskData) => {
@@ -111,6 +117,38 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       await loadUserTasks(false)
     } catch (error) {
       showError('Error creating announcement. Please try again.')
+      throw error
+    }
+  }
+
+  // Handle Job Search creation/update
+  const handleSaveJobSearch = async (jobSearchData: JobSearchFormData) => {
+    try {
+      if (jobSearchEditMode === 'edit' && selectedJobSearch && jobSearchData.id) {
+        // Update existing job search
+        await taskApi.updateJobSearch(jobSearchData.id, { title: jobSearchData.title })
+        showSuccess('Job search updated successfully!', 'Job Search Updated', 4000)
+      } else {
+        // Create new job search
+        const formData = new FormData()
+        formData.append('title', jobSearchData.title)
+        await taskApi.createJobSearch(formData)
+        showSuccess('Job search created successfully!', 'Job Search Saved', 4000)
+      }
+      await loadUserTasks(false)
+      setShowJobSearchDialog(false)
+      setSelectedJobSearch(null)
+      setJobSearchEditMode('create')
+    } catch (error: any) {
+      let errorMessage = jobSearchEditMode === 'edit'
+        ? 'Error updating job search. Please try again.'
+        : 'Error creating job search. Please try again.'
+      
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error
+      }
+      
+      showError(errorMessage)
       throw error
     }
   }
@@ -223,6 +261,11 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
               setSelectedTimeSlot(task)
               setTimeSlotEditMode('edit')
               setShowTimeSlotDialog(true)
+            } else if (task.type_of_view === 'job_search') {
+              // Job Search edit
+              setSelectedJobSearch(task)
+              setJobSearchEditMode('edit')
+              setShowJobSearchDialog(true)
             } else {
               // Regular task edit
               setSelectedTask(task)
@@ -358,6 +401,19 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
         visible={showAdvertisingDialog}
         onHide={() => setShowAdvertisingDialog(false)}
         onSave={handleCreateAdvertising}
+      />
+
+      {/* Job Search Dialog */}
+      <CreateJobSearchDialog
+        visible={showJobSearchDialog}
+        onHide={() => {
+          setShowJobSearchDialog(false)
+          setSelectedJobSearch(null)
+          setJobSearchEditMode('create')
+        }}
+        onSave={handleSaveJobSearch}
+        mode={jobSearchEditMode}
+        editData={selectedJobSearch}
       />
       
       <div className="touchpoint-container">
