@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 // CSS moved to static/css/ directory - loaded via Django template
 import { taskApi, InboxTaskData, DjangoTask } from '../../api/taskApi'
 import Taskview from '../ui/Taskview'
@@ -415,6 +416,247 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
         mode={jobSearchEditMode}
         editData={selectedJobSearch}
       />
+
+      {/* Centralized Dropdown Menu */}
+      {tasksHook.openDropdownTaskId !== null && (() => {
+        // Find current task to determine its type
+        const currentTask = userTasks.find(t => t.slug === tasksHook.openDropdownTaskId)
+        const taskType = currentTask?.type_of_view || 'task'
+        
+        // Determine which menu items to show based on task type
+        const showStartAndDelegate = taskType === 'task' || taskType === 'tender' || taskType === 'project'
+        const showMoveTo = taskType === 'task' || taskType === 'tender' || taskType === 'project'
+        
+        return createPortal(
+          <div 
+            ref={tasksHook.dropdownRef}
+            className="task_tracker_task_dropdown_menu"
+            style={{
+              position: 'fixed',
+              top: tasksHook.dropdownPosition.top,
+              left: tasksHook.dropdownPosition.left,
+              zIndex: 9999,
+              backgroundColor: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '6px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              minWidth: '160px',
+              padding: '4px 0'
+            }}
+          >
+            <div 
+              className="task_tracker_task_dropdown_item"
+              onClick={() => {
+                tasksHook.handleDropdownItemClick('details', tasksHook.openDropdownTaskId!)
+                handleTaskAction('details', tasksHook.openDropdownTaskId!)
+              }}
+              style={{
+                padding: '8px 16px',
+                cursor: 'pointer',
+                borderBottom: '1px solid #f0f0f0'
+              }}
+            >
+              Details
+            </div>
+            
+            {showStartAndDelegate && (
+              <div 
+                className="task_tracker_task_dropdown_item"
+                onClick={() => {
+                  tasksHook.handleDropdownItemClick('start')
+                  handleTaskAction('start', tasksHook.openDropdownTaskId!)
+                }}
+                style={{
+                  padding: '8px 16px',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid #f0f0f0'
+                }}
+              >
+                Start
+              </div>
+            )}
+            
+            <div 
+              className="task_tracker_task_dropdown_item"
+              onClick={() => {
+                tasksHook.handleDropdownItemClick('edit')
+                handleTaskAction('edit', tasksHook.openDropdownTaskId!)
+              }}
+              style={{
+                padding: '8px 16px',
+                cursor: 'pointer',
+                borderBottom: '1px solid #f0f0f0'
+              }}
+            >
+              Edit
+            </div>
+            
+            {showStartAndDelegate && (
+              <div 
+                className="task_tracker_task_dropdown_item"
+                onClick={() => {
+                  tasksHook.handleDropdownItemClick('delegate')
+                  handleTaskAction('delegate', tasksHook.openDropdownTaskId!)
+                }}
+                style={{
+                  padding: '8px 16px',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid #f0f0f0'
+                }}
+              >
+                Delegate
+              </div>
+            )}
+            
+            <div 
+              className="task_tracker_task_dropdown_item"
+              onClick={() => {
+                tasksHook.handleDropdownItemClick('publish')
+                handleTaskAction('publish', tasksHook.openDropdownTaskId!)
+              }}
+              style={{
+                padding: '8px 16px',
+                cursor: 'pointer',
+                borderBottom: '1px solid #f0f0f0'
+              }}
+            >
+              Publish
+            </div>
+            
+            {showMoveTo && (
+              <div 
+                className="task_tracker_task_dropdown_item task_tracker_task_dropdown_item_with_submenu"
+                onClick={(e) => tasksHook.handleDropdownItemClick('move', tasksHook.openDropdownTaskId!, e)}
+                style={{
+                  padding: '8px 16px',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid #f0f0f0',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <span>Move to...</span>
+                <i className="pi pi-chevron-right" style={{ fontSize: '12px', opacity: 0.7 }}></i>
+              </div>
+            )}
+            
+            {!showMoveTo && (
+              <div 
+                className="task_tracker_task_dropdown_item"
+                onClick={() => {
+                  tasksHook.handleDropdownItemClick('archive')
+                }}
+                style={{
+                  padding: '8px 16px',
+                  cursor: 'pointer'
+                }}
+              >
+                Archive
+              </div>
+            )}
+          </div>,
+          document.body
+        )
+      })()}
+
+      {/* Centralized Submenu */}
+      {tasksHook.showSubmenu && createPortal(
+        <div 
+          ref={tasksHook.submenuRef}
+          className="task_tracker_task_submenu"
+          style={{
+            position: 'fixed',
+            top: tasksHook.submenuPosition.top,
+            left: tasksHook.submenuPosition.left,
+            zIndex: 10000,
+            backgroundColor: 'white',
+            border: '1px solid #ddd',
+            borderRadius: '6px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            minWidth: '160px',
+            padding: '4px 0'
+          }}
+        >
+          <div 
+            className="task_tracker_task_submenu_item"
+            onClick={() => tasksHook.handleSubmenuItemClick('agenda')}
+            style={{
+              padding: '8px 16px',
+              cursor: 'pointer',
+              borderBottom: '1px solid #f0f0f0'
+            }}
+          >
+            Agenda
+          </div>
+          <div 
+            className="task_tracker_task_submenu_item"
+            onClick={() => tasksHook.handleSubmenuItemClick('backlog')}
+            style={{
+              padding: '8px 16px',
+              cursor: 'pointer',
+              borderBottom: '1px solid #f0f0f0'
+            }}
+          >
+            Backlog
+          </div>
+          <div 
+            className="task_tracker_task_submenu_item"
+            onClick={() => tasksHook.handleSubmenuItemClick('waiting')}
+            style={{
+              padding: '8px 16px',
+              cursor: 'pointer',
+              borderBottom: '1px solid #f0f0f0'
+            }}
+          >
+            Waiting
+          </div>
+          <div 
+            className="task_tracker_task_submenu_item"
+            onClick={() => tasksHook.handleSubmenuItemClick('someday')}
+            style={{
+              padding: '8px 16px',
+              cursor: 'pointer',
+              borderBottom: '1px solid #f0f0f0'
+            }}
+          >
+            Some day
+          </div>
+          <div 
+            className="task_tracker_task_submenu_item"
+            onClick={() => tasksHook.handleSubmenuItemClick('project')}
+            style={{
+              padding: '8px 16px',
+              cursor: 'pointer',
+              borderBottom: '1px solid #f0f0f0'
+            }}
+          >
+            Convert to project
+          </div>
+          <div 
+            className="task_tracker_task_submenu_item"
+            onClick={() => tasksHook.handleSubmenuItemClick('done')}
+            style={{
+              padding: '8px 16px',
+              cursor: 'pointer',
+              borderBottom: '1px solid #f0f0f0'
+            }}
+          >
+            Done
+          </div>
+          <div 
+            className="task_tracker_task_submenu_item"
+            onClick={() => tasksHook.handleSubmenuItemClick('archive')}
+            style={{
+              padding: '8px 16px',
+              cursor: 'pointer'
+            }}
+          >
+            Archive
+          </div>
+        </div>,
+        document.body
+      )}
       
       <div className="touchpoint-container">
         {/* Task Creation Block - New component */}

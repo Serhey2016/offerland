@@ -52,8 +52,7 @@ const TaskNotesDialog: React.FC<TaskNotesDialogProps> = ({
   const headerContent = (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>
-        Notes for task {taskId ? `#${taskId}` : ''}
-        {taskTitle && ` - ${taskTitle}`}
+        Note {taskId ? `#${taskId}` : ''}
       </h2>
     </div>
   )
