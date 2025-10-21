@@ -419,32 +419,22 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
           <div 
             className="task_tracker_task_dropdown_item"
             onClick={() => {
-              handleSubmenuItemClick('agenda')
-              if (onMoveTo) onMoveTo('agenda')
-            }}
-            style={{ padding: '8px 16px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0' }}
-          >
-            Agenda
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
-              handleSubmenuItemClick('waiting')
-              if (onMoveTo) onMoveTo('waiting')
-            }}
-            style={{ padding: '8px 16px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0' }}
-          >
-            Waiting
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
               handleSubmenuItemClick('someday')
               if (onMoveTo) onMoveTo('someday')
             }}
             style={{ padding: '8px 16px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0' }}
           >
             Someday
+          </div>
+          <div 
+            className="task_tracker_task_dropdown_item"
+            onClick={() => {
+              handleSubmenuItemClick('projects')
+              if (onMoveTo) onMoveTo('projects')
+            }}
+            style={{ padding: '8px 16px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0' }}
+          >
+            Projects
           </div>
           <div 
             className="task_tracker_task_dropdown_item"
