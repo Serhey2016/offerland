@@ -1262,3 +1262,104 @@ def update_task_status(request, task_slug):
             'error': str(e)
         }, status=500)
 
+
+@login_required
+@require_http_methods(["PATCH"])
+@csrf_exempt
+def update_element_position(request, slug):
+    """
+    Universal endpoint to update element_position for any element type (Task, TimeSlot, JobSearch)
+    Determines the element type automatically and updates accordingly
+    """
+    try:
+        import json
+        
+        # Get data from request body
+        data = json.loads(request.body)
+        new_position = data.get('position')
+        
+        # Validate position
+        valid_positions = ['inbox', 'backlog', 'agenda', 'waiting', 'someday', 'projects', 'done', 'archive']
+        if new_position not in valid_positions:
+            return JsonResponse({
+                'success': False,
+                'error': f'Invalid position. Must be one of: {", ".join(valid_positions)}'
+            }, status=400)
+        
+        element = None
+        element_type = None
+        
+        # Try to find Task
+        try:
+            element = Task.objects.get(slug=slug, taskownerrelations__user=request.user)
+            element_type = 'task'
+            # Check permission
+            owner_rel = TaskOwnerRelations.objects.filter(task=element, user=request.user).first()
+            if not owner_rel:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'You do not have permission to update this task'
+                }, status=403)
+        except Task.DoesNotExist:
+            pass
+        
+        # Try to find TimeSlot if not found as Task
+        if not element:
+            try:
+                element = TimeSlot.objects.get(slug=slug, timeslotownerrelations__user=request.user)
+                element_type = 'timeslot'
+                # Check permission
+                owner_rel = TimeSlotOwnerRelations.objects.filter(time_slot=element, user=request.user).first()
+                if not owner_rel:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'You do not have permission to update this time slot'
+                    }, status=403)
+            except TimeSlot.DoesNotExist:
+                pass
+        
+        # Try to find JobSearch if not found as Task or TimeSlot
+        if not element:
+            try:
+                element = JobSearch.objects.get(slug=slug, user=request.user)
+                element_type = 'job_search'
+            except JobSearch.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Element not found'
+                }, status=404)
+        
+        # Update element_position
+        element.element_position_id = new_position
+        
+        # Special handling for agenda category
+        if new_position == 'agenda' and element_type == 'task':
+            element.is_agenda = True
+        elif element_type == 'task' and hasattr(element, 'is_agenda'):
+            # If moving away from agenda, set is_agenda to False
+            if element.is_agenda and new_position != 'agenda':
+                element.is_agenda = False
+        
+        element.save()
+        
+        return JsonResponse({
+            'success': True,
+            'position': new_position,
+            'element_type': element_type,
+            'message': f'{element_type.capitalize()} moved to {new_position} successfully'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        import traceback
+        print(f"Error updating element position: {e}")
+        print(f"Traceback: {traceback.format_exc()}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+

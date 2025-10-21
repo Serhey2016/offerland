@@ -611,6 +611,19 @@ export const taskApi = {
       console.error('Error creating task:', error)
       throw error
     }
+  },
+
+  // Update element position (universal for Tasks, TimeSlots, JobSearch)
+  updateElementPosition: async (slug: string, position: string): Promise<any> => {
+    try {
+      const response = await api.patch(`/services_and_projects/elements/${slug}/position/`, { 
+        position 
+      })
+      return response.data
+    } catch (error) {
+      console.error(`Error updating element ${slug} position:`, error)
+      throw error
+    }
   }
 }
 

@@ -192,11 +192,40 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
     console.log('Move to clicked - submenu toggle', { showSubmenu: newState, position: { top: topPosition, left: leftPosition }})
   }
 
-  const handleSubmenuItemClick = (category: string) => {
+  const handleSubmenuItemClick = async (category: string) => {
     console.log(`Move to: ${category}`, event)
-    setShowSubmenu(false)
-    setShowDropdown(false)
-    // TODO: Implement actual move action
+    
+    try {
+      // Get task slug from event resource (prefer slug over id)
+      const taskSlug = event.resource?.taskSlug || event.resource?.taskId?.toString()
+      if (!taskSlug) {
+        console.error('No task slug found in event resource')
+        setShowSubmenu(false)
+        setShowDropdown(false)
+        return
+      }
+      
+      // Import taskApi dynamically
+      const { taskApi } = await import('../../api/taskApi')
+      
+      // Call API to update element position
+      await taskApi.updateElementPosition(taskSlug, category)
+      
+      // Close menus
+      setShowSubmenu(false)
+      setShowDropdown(false)
+      
+      // Trigger reload by dispatching custom event
+      window.dispatchEvent(new CustomEvent('taskMoved', {
+        detail: { slug: taskSlug, category }
+      }))
+      
+      console.log(`Task ${taskSlug} successfully moved to ${category}`)
+    } catch (error) {
+      console.error('Error moving task:', error)
+      setShowSubmenu(false)
+      setShowDropdown(false)
+    }
   }
 
   // Close dropdown when clicking outside

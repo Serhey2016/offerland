@@ -121,6 +121,7 @@ const AgendaView = () => {
             description: task.description,
             note: task.note,
             taskId: task.id,
+            taskSlug: task.slug,
             onTaskDone: handleTaskDone,
             onTaskNote: handleTaskNote
           }
@@ -137,6 +138,21 @@ const AgendaView = () => {
 
   useEffect(() => {
     loadAgendaTasks()
+  }, [])
+
+  // Listen for task moved events
+  useEffect(() => {
+    const handleTaskMoved = (event: Event) => {
+      const customEvent = event as CustomEvent
+      console.log('Task moved event received in AgendaView:', customEvent.detail)
+      // Reload tasks after moving
+      loadAgendaTasks()
+    }
+
+    window.addEventListener('taskMoved', handleTaskMoved)
+    return () => {
+      window.removeEventListener('taskMoved', handleTaskMoved)
+    }
   }, [])
 
   const handleSelectEvent = (event: any) => {

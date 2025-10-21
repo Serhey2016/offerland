@@ -173,6 +173,21 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
     loadUserTasks()
   }, [category])
 
+  // Listen for task moved events
+  useEffect(() => {
+    const handleTaskMoved = (event: Event) => {
+      const customEvent = event as CustomEvent
+      console.log('Task moved event received:', customEvent.detail)
+      // Reload tasks after moving
+      loadUserTasks(false)
+    }
+
+    window.addEventListener('taskMoved', handleTaskMoved)
+    return () => {
+      window.removeEventListener('taskMoved', handleTaskMoved)
+    }
+  }, [category])
+
   // Listen for SpeedDial button clicks from SubMenuSection
   useEffect(() => {
     const handleSpeedDialClick = (event: Event) => {

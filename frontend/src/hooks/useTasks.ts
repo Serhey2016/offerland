@@ -267,11 +267,31 @@ export const useTasks = (initialFilters?: TaskFilters) => {
   }, [])
 
   // Handle submenu item clicks (moved from TaskDesign)
-  const handleSubmenuItemClick = useCallback((action: string) => {
-    setShowSubmenu(false)
-    setOpenDropdownTaskId(null)
-    // TODO: Implement move task logic
-  }, [])
+  const handleSubmenuItemClick = useCallback(async (category: string) => {
+    if (!openDropdownTaskId) return
+    
+    try {
+      // Call API to update element position
+      await taskApi.updateElementPosition(openDropdownTaskId, category)
+      
+      // Close menus
+      setShowSubmenu(false)
+      setOpenDropdownTaskId(null)
+      
+      // Show success message
+      showSuccess(`Moved to ${category} successfully`)
+      
+      // Trigger reload by dispatching custom event
+      window.dispatchEvent(new CustomEvent('taskMoved', {
+        detail: { slug: openDropdownTaskId, category }
+      }))
+    } catch (error) {
+      console.error('Error moving element:', error)
+      showError('Error moving item. Please try again.')
+      setShowSubmenu(false)
+      setOpenDropdownTaskId(null)
+    }
+  }, [openDropdownTaskId, showSuccess, showError])
 
   // Handle mobile tap for floating icons (moved from TaskDesign)
   const handleTaskTap = useCallback((taskSlug: string, e: React.MouseEvent) => {
