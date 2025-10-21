@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { Calendar as BigCalendar, momentLocalizer, Views, Components, EventProps } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import { taskApi } from '../../api/taskApi'
 // CSS moved to static/css/ directory - loaded via Django template
 
 // Setup the localizer by providing the moment (or globalize) Object
@@ -204,9 +205,6 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
         setShowDropdown(false)
         return
       }
-      
-      // Import taskApi dynamically
-      const { taskApi } = await import('../../api/taskApi')
       
       // Call API to update element position
       await taskApi.updateElementPosition(taskSlug, category)
