@@ -299,33 +299,46 @@ from django.contrib.auth.decorators import login_required
 @login_required
 @require_POST
 def save_task_notes(request, task_slug):
-    """Сохранение заметок к задаче"""
+    """Сохранение заметок к задаче или Job Search"""
     try:
-        task = Task.objects.get(slug=task_slug, taskownerrelations__user=request.user)
-        
-        # Проверяем, что пользователь имеет доступ к задаче
-        # (владелец или исполнитель)
-        is_owner = TaskOwnerRelations.objects.filter(task=task, user=request.user).exists()
-        is_performer = task.performers.filter(id=request.user.id).exists()
-        
-        if not (is_owner or is_performer):
+        # Check if this is a JobSearch slug (starts with 'jobsearch-')
+        if task_slug.startswith('jobsearch-'):
+            job_search = JobSearch.objects.get(slug=task_slug, user=request.user)
+            
+            notes = request.POST.get('notes', '').strip()
+            job_search.notes = notes
+            job_search.save()  # last_update автоматически обновится
+            
             return JsonResponse({
-                'success': False,
-                'error': 'You do not have permission to edit this task'
-            }, status=403)
+                'success': True
+            })
+        else:
+            # Regular Task
+            task = Task.objects.get(slug=task_slug, taskownerrelations__user=request.user)
+            
+            # Проверяем, что пользователь имеет доступ к задаче
+            # (владелец или исполнитель)
+            is_owner = TaskOwnerRelations.objects.filter(task=task, user=request.user).exists()
+            is_performer = task.performers.filter(id=request.user.id).exists()
+            
+            if not (is_owner or is_performer):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'You do not have permission to edit this task'
+                }, status=403)
+            
+            notes = request.POST.get('notes', '').strip()
+            task.note = notes
+            task.save()
+            
+            return JsonResponse({
+                'success': True
+            })
         
-        notes = request.POST.get('notes', '').strip()
-        task.note = notes
-        task.save()
-        
-        return JsonResponse({
-            'success': True
-        })
-        
-    except Task.DoesNotExist:
+    except (Task.DoesNotExist, JobSearch.DoesNotExist):
         return JsonResponse({
             'success': False,
-            'error': 'Task not found'
+            'error': 'Task or Job Search not found'
         }, status=404)
     except Exception as e:
         return JsonResponse({
