@@ -380,7 +380,7 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
       )}
 
       {/* Submenu */}
-      {showSubmenu && createPortal(
+      {taskSlug !== undefined && openDropdownTaskId === taskSlug && showSubmenu && createPortal(
         <div 
           ref={submenuRef}
           className="task_tracker_task_submenu"
