@@ -229,10 +229,8 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   const loadUserTasks = async (showErrorOnFailure: boolean = true) => {
     try {
       setLoadingTasks(true)
-      // Use inbox items endpoint for Inbox category to get all types
-      const tasks = category.toLowerCase() === 'inbox' 
-        ? await taskApi.getInboxItems(category)
-        : await taskApi.getTasksByCategory(category)
+      // Use inbox items endpoint for all categories to get all types (Tasks, TimeSlots, JobSearch)
+      const tasks = await taskApi.getInboxItems(category)
       setUserTasks(tasks)
     } catch (error) {
       console.error('Error loading user tasks:', error)
