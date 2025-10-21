@@ -380,85 +380,62 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
       )}
 
       {/* Submenu */}
-      {taskSlug !== undefined && openDropdownTaskId === taskSlug && showSubmenu && createPortal(
-        <div 
-          ref={submenuRef}
-          className="task_tracker_task_submenu"
-          style={{
-            position: 'fixed',
-            top: submenuPosition.top,
-            left: submenuPosition.left,
-            zIndex: 10000,
-            backgroundColor: 'white',
-            border: '1px solid #ddd',
-            borderRadius: '6px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            minWidth: '160px'
-          }}
-        >
+      {taskSlug !== undefined && openDropdownTaskId === taskSlug && showSubmenu && (() => {
+        // Get current category and normalize it
+        const currentCategory = category?.toLowerCase() || ''
+        
+        // Define all available categories
+        const availableCategories = [
+          { key: 'inbox', label: 'Inbox' },
+          { key: 'backlog', label: 'Backlog' },
+          { key: 'someday', label: 'Someday' },
+          { key: 'projects', label: 'Projects' },
+          { key: 'done', label: 'Done' },
+          { key: 'archive', label: 'Archive' }
+        ]
+        
+        // Filter out the current category
+        const filteredCategories = availableCategories.filter(
+          cat => cat.key !== currentCategory
+        )
+        
+        return createPortal(
           <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
-              handleSubmenuItemClick('inbox')
-              if (onMoveTo) onMoveTo('inbox')
+            ref={submenuRef}
+            className="task_tracker_task_submenu"
+            style={{
+              position: 'fixed',
+              top: submenuPosition.top,
+              left: submenuPosition.left,
+              zIndex: 10000,
+              backgroundColor: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '6px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              minWidth: '160px'
             }}
-            style={{ padding: '8px 16px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0' }}
           >
-            Inbox
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
-              handleSubmenuItemClick('backlog')
-              if (onMoveTo) onMoveTo('backlog')
-            }}
-            style={{ padding: '8px 16px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0' }}
-          >
-            Backlog
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
-              handleSubmenuItemClick('someday')
-              if (onMoveTo) onMoveTo('someday')
-            }}
-            style={{ padding: '8px 16px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0' }}
-          >
-            Someday
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
-              handleSubmenuItemClick('projects')
-              if (onMoveTo) onMoveTo('projects')
-            }}
-            style={{ padding: '8px 16px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0' }}
-          >
-            Projects
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
-              handleSubmenuItemClick('done')
-              if (onMoveTo) onMoveTo('done')
-            }}
-            style={{ padding: '8px 16px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0' }}
-          >
-            Done
-          </div>
-          <div 
-            className="task_tracker_task_dropdown_item"
-            onClick={() => {
-              handleSubmenuItemClick('archive')
-              if (onMoveTo) onMoveTo('archive')
-            }}
-            style={{ padding: '8px 16px', cursor: 'pointer' }}
-          >
-            Archive
-          </div>
-        </div>,
-        document.body
-      )}
+            {filteredCategories.map((cat, index) => (
+              <div 
+                key={cat.key}
+                className="task_tracker_task_dropdown_item"
+                onClick={() => {
+                  handleSubmenuItemClick(cat.key)
+                  if (onMoveTo) onMoveTo(cat.key)
+                }}
+                style={{ 
+                  padding: '8px 16px', 
+                  cursor: 'pointer', 
+                  borderBottom: index < filteredCategories.length - 1 ? '1px solid #f0f0f0' : 'none'
+                }}
+              >
+                {cat.label}
+              </div>
+            ))}
+          </div>,
+          document.body
+        )
+      })()}
     </>
   )
 }

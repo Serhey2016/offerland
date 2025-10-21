@@ -309,61 +309,70 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
       )}
 
       {/* Submenu - SEPARATE portal */}
-      {showSubmenu && createPortal(
-        <div 
-          ref={submenuRef}
-          className="agenda_submenu"
-          style={{
-            position: 'fixed',
-            top: submenuPosition.top,
-            left: submenuPosition.left,
-            zIndex: 10000
-          }}
-          onMouseEnter={() => {
-            // Keep submenu open when hovering over it
-            setShowSubmenu(true)
-            console.log('Submenu mouseenter - keeping open')
-          }}
-          onMouseLeave={() => {
-            // Close submenu when leaving it with delay
-            setTimeout(() => {
-              // Check if mouse returned to "Move to..." item
-              const moveToElement = document.querySelector('.agenda_dropdown_item_with_submenu')
-              const isHoveringMoveToItem = moveToElement && moveToElement.matches(':hover')
-              
-              if (!isHoveringMoveToItem) {
-                setShowSubmenu(false)
-                console.log('Submenu mouseleave - closing')
-              } else {
-                console.log('Submenu mouseleave - keeping open (hovering Move to...)')
-              }
-            }, 200)
-          }}
-        >
-          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Agenda')}>
-            Agenda
-          </div>
-          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Backlog')}>
-            Backlog
-          </div>
-          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Waiting')}>
-            Waiting
-          </div>
-          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Someday')}>
-            Some day
-          </div>
-          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Projects')}>
-            Convert to project
-          </div>
-          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Done')}>
-            Done
-          </div>
-          <div className="agenda_submenu_item" onClick={() => handleSubmenuItemClick('Archive')}>
-            Archive
-          </div>
-        </div>,
-        document.body
-      )}
+      {showSubmenu && (() => {
+        // Get current category/status from event resource
+        const currentCategory = event.resource?.status?.toLowerCase() || ''
+        
+        // Define all available categories for agenda items
+        const availableCategories = [
+          { key: 'agenda', label: 'Agenda' },
+          { key: 'backlog', label: 'Backlog' },
+          { key: 'waiting', label: 'Waiting' },
+          { key: 'someday', label: 'Some day' },
+          { key: 'projects', label: 'Convert to project' },
+          { key: 'done', label: 'Done' },
+          { key: 'archive', label: 'Archive' }
+        ]
+        
+        // Filter out the current category
+        const filteredCategories = availableCategories.filter(
+          cat => cat.key !== currentCategory
+        )
+        
+        return createPortal(
+          <div 
+            ref={submenuRef}
+            className="agenda_submenu"
+            style={{
+              position: 'fixed',
+              top: submenuPosition.top,
+              left: submenuPosition.left,
+              zIndex: 10000
+            }}
+            onMouseEnter={() => {
+              // Keep submenu open when hovering over it
+              setShowSubmenu(true)
+              console.log('Submenu mouseenter - keeping open')
+            }}
+            onMouseLeave={() => {
+              // Close submenu when leaving it with delay
+              setTimeout(() => {
+                // Check if mouse returned to "Move to..." item
+                const moveToElement = document.querySelector('.agenda_dropdown_item_with_submenu')
+                const isHoveringMoveToItem = moveToElement && moveToElement.matches(':hover')
+                
+                if (!isHoveringMoveToItem) {
+                  setShowSubmenu(false)
+                  console.log('Submenu mouseleave - closing')
+                } else {
+                  console.log('Submenu mouseleave - keeping open (hovering Move to...)')
+                }
+              }, 200)
+            }}
+          >
+            {filteredCategories.map(cat => (
+              <div 
+                key={cat.key}
+                className="agenda_submenu_item" 
+                onClick={() => handleSubmenuItemClick(cat.key)}
+              >
+                {cat.label}
+              </div>
+            ))}
+          </div>,
+          document.body
+        )
+      })()}
     </>
   )
 }

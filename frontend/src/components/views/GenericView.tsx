@@ -562,14 +562,47 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
 
       {/* Centralized Submenu */}
       {tasksHook.showSubmenu && (() => {
-        // Find current task to determine its type
+        // Find current task to determine its type and current position
         const currentTask = userTasks.find(t => t.slug === tasksHook.openDropdownTaskId)
         const taskType = currentTask?.type_of_view || 'task'
+        const currentPosition = currentTask?.status?.toLowerCase() || ''
         
         // Don't show centralized submenu for job_search - it has its own
         if (taskType === 'job_search') {
           return null
         }
+        
+        // Define available categories based on task type
+        // Tasks have more options including agenda and waiting
+        // Projects and other types have similar but slightly different options
+        let availableCategories
+        if (taskType === 'task' || taskType === 'tender') {
+          availableCategories = [
+            { key: 'inbox', label: 'Inbox' },
+            { key: 'backlog', label: 'Backlog' },
+            { key: 'agenda', label: 'Agenda' },
+            { key: 'waiting', label: 'Waiting' },
+            { key: 'someday', label: 'Someday' },
+            { key: 'projects', label: 'Projects' },
+            { key: 'done', label: 'Done' },
+            { key: 'archive', label: 'Archive' }
+          ]
+        } else {
+          // For projects and other types
+          availableCategories = [
+            { key: 'inbox', label: 'Inbox' },
+            { key: 'backlog', label: 'Backlog' },
+            { key: 'someday', label: 'Someday' },
+            { key: 'projects', label: 'Projects' },
+            { key: 'done', label: 'Done' },
+            { key: 'archive', label: 'Archive' }
+          ]
+        }
+        
+        // Filter out the current position
+        const filteredCategories = availableCategories.filter(
+          cat => cat.key !== currentPosition
+        )
         
         return createPortal(
         <div 
@@ -588,71 +621,20 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             padding: '4px 0'
           }}
         >
-          <div 
-            className="task_tracker_task_submenu_item"
-            onClick={() => tasksHook.handleSubmenuItemClick('inbox')}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #f0f0f0'
-            }}
-          >
-            Inbox
-          </div>
-          <div 
-            className="task_tracker_task_submenu_item"
-            onClick={() => tasksHook.handleSubmenuItemClick('backlog')}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #f0f0f0'
-            }}
-          >
-            Backlog
-          </div>
-          <div 
-            className="task_tracker_task_submenu_item"
-            onClick={() => tasksHook.handleSubmenuItemClick('someday')}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #f0f0f0'
-            }}
-          >
-            Someday
-          </div>
-          <div 
-            className="task_tracker_task_submenu_item"
-            onClick={() => tasksHook.handleSubmenuItemClick('projects')}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #f0f0f0'
-            }}
-          >
-            Projects
-          </div>
-          <div 
-            className="task_tracker_task_submenu_item"
-            onClick={() => tasksHook.handleSubmenuItemClick('done')}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #f0f0f0'
-            }}
-          >
-            Done
-          </div>
-          <div 
-            className="task_tracker_task_submenu_item"
-            onClick={() => tasksHook.handleSubmenuItemClick('archive')}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer'
-            }}
-          >
-            Archive
-          </div>
+          {filteredCategories.map((cat, index) => (
+            <div 
+              key={cat.key}
+              className="task_tracker_task_submenu_item"
+              onClick={() => tasksHook.handleSubmenuItemClick(cat.key)}
+              style={{
+                padding: '8px 16px',
+                cursor: 'pointer',
+                borderBottom: index < filteredCategories.length - 1 ? '1px solid #f0f0f0' : 'none'
+              }}
+            >
+              {cat.label}
+            </div>
+          ))}
         </div>,
         document.body
       )
