@@ -588,7 +588,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
         }
         
         // Define available categories based on task type
-        // Tasks have more options including agenda and waiting
+        // Tasks have more options including agenda and waiting, but can't be moved to Projects
         // Projects and other types have similar but slightly different options
         let availableCategories
         if (taskType === 'task' || taskType === 'tender') {
@@ -598,7 +598,6 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             { key: 'agenda', label: 'Agenda' },
             { key: 'waiting', label: 'Waiting' },
             { key: 'someday', label: 'Someday' },
-            { key: 'projects', label: 'Projects' },
             { key: 'done', label: 'Done' },
             { key: 'archive', label: 'Archive' }
           ]
