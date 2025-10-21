@@ -590,14 +590,14 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
         >
           <div 
             className="task_tracker_task_submenu_item"
-            onClick={() => tasksHook.handleSubmenuItemClick('agenda')}
+            onClick={() => tasksHook.handleSubmenuItemClick('inbox')}
             style={{
               padding: '8px 16px',
               cursor: 'pointer',
               borderBottom: '1px solid #f0f0f0'
             }}
           >
-            Agenda
+            Inbox
           </div>
           <div 
             className="task_tracker_task_submenu_item"
@@ -612,17 +612,6 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           </div>
           <div 
             className="task_tracker_task_submenu_item"
-            onClick={() => tasksHook.handleSubmenuItemClick('waiting')}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #f0f0f0'
-            }}
-          >
-            Waiting
-          </div>
-          <div 
-            className="task_tracker_task_submenu_item"
             onClick={() => tasksHook.handleSubmenuItemClick('someday')}
             style={{
               padding: '8px 16px',
@@ -630,18 +619,18 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
               borderBottom: '1px solid #f0f0f0'
             }}
           >
-            Some day
+            Someday
           </div>
           <div 
             className="task_tracker_task_submenu_item"
-            onClick={() => tasksHook.handleSubmenuItemClick('project')}
+            onClick={() => tasksHook.handleSubmenuItemClick('projects')}
             style={{
               padding: '8px 16px',
               cursor: 'pointer',
               borderBottom: '1px solid #f0f0f0'
             }}
           >
-            Convert to project
+            Projects
           </div>
           <div 
             className="task_tracker_task_submenu_item"
