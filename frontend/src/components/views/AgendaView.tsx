@@ -22,8 +22,9 @@ interface CalendarEvent {
     description?: string
     note?: string
     taskId?: number
-    onTaskDone?: (taskId: number) => void
-    onTaskNote?: (taskId: number) => void
+    taskSlug?: string
+    onTaskDone?: (taskSlug: string) => void
+    onTaskNote?: (taskSlug: string) => void
   }
 }
 
@@ -53,18 +54,26 @@ const AgendaView = () => {
   }
 
   // Handle opening notes dialog
-  const handleTaskNote = (taskId: number) => {
-    const task = tasks.find(t => t.id === taskId)
-    if (task) {
-      setSelectedTaskForNotes(task)
-      setShowNotesDialog(true)
+  const handleTaskNote = async (taskSlug: string) => {
+    try {
+      // Fetch fresh task data by slug
+      const loadedTasks = await taskApi.getTasksByCategory('agenda')
+      const task = loadedTasks.find(t => t.slug === taskSlug)
+      
+      if (task) {
+        setSelectedTaskForNotes(task)
+        setShowNotesDialog(true)
+      }
+    } catch (error) {
+      console.error('Error loading task for notes:', error)
+      showError('Error loading task')
     }
   }
 
   // Handle save task notes
-  const handleSaveNotes = async (taskId: number, notes: string) => {
+  const handleSaveNotes = async (taskSlug: string, notes: string) => {
     try {
-      await taskApi.saveTaskNotes(taskId, notes)
+      await taskApi.saveTaskNotes(taskSlug, notes)
       showSuccess('Notes saved successfully')
       // Reload tasks to reflect the changes
       await loadAgendaTasks()
@@ -109,12 +118,26 @@ const AgendaView = () => {
           endDate.setHours(23, 59, 59)
         }
         
+        // Determine if this should be an all-day event
+        // Check if time_start and time_end have specific times (not just 00:00:00)
+        const hasSpecificTime = task.time_start && task.time_end && 
+          (new Date(task.time_start).getHours() !== 0 || 
+           new Date(task.time_start).getMinutes() !== 0 ||
+           new Date(task.time_end).getHours() !== 0 || 
+           new Date(task.time_end).getMinutes() !== 0)
+        
+        // If task has specific times, use them for start and end dates
+        if (hasSpecificTime) {
+          startDate = new Date(task.time_start!)
+          endDate = new Date(task.time_end!)
+        }
+        
         return {
           id: task.id.toString(),
           title: task.title,
           start: startDate,
           end: endDate,
-          allDay: !task.date_start || !task.date_end, // Mark as all-day if no specific times
+          allDay: !hasSpecificTime, // Mark as all-day if no specific times
           resource: {
             priority: task.priority,
             status: task.status,
@@ -186,7 +209,7 @@ const AgendaView = () => {
       {/* Task Notes Dialog */}
       <TaskNotesDialog
         visible={showNotesDialog}
-        taskId={selectedTaskForNotes?.id || null}
+        taskId={selectedTaskForNotes?.slug || null}
         taskTitle={selectedTaskForNotes?.title}
         initialNotes={selectedTaskForNotes?.note || ''}
         onHide={() => {

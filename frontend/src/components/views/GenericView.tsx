@@ -596,6 +596,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             { key: 'agenda', label: 'Agenda' },
             { key: 'waiting', label: 'Waiting' },
             { key: 'someday', label: 'Someday' },
+            { key: 'subtask', label: 'Subtask' },
             { key: 'done', label: 'Done' },
             { key: 'archive', label: 'Archive' }
           ]
@@ -606,6 +607,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             { key: 'backlog', label: 'Backlog' },
             { key: 'someday', label: 'Someday' },
             { key: 'projects', label: 'Projects' },
+            { key: 'subtask', label: 'Subtask' },
             { key: 'done', label: 'Done' },
             { key: 'archive', label: 'Archive' }
           ]

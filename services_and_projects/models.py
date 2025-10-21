@@ -67,6 +67,7 @@ class ElementPosition(models.Model):
         ('waiting', 'Waiting'),
         ('someday', 'Someday'),
         ('projects', 'Projects'),
+        ('subtask', 'Subtask'),
         ('done', 'Done'),
         ('archive', 'Archive'),
     ]

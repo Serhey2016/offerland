@@ -390,6 +390,7 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
           { key: 'backlog', label: 'Backlog' },
           { key: 'someday', label: 'Someday' },
           { key: 'projects', label: 'Projects' },
+          { key: 'subtask', label: 'Subtask' },
           { key: 'done', label: 'Done' },
           { key: 'archive', label: 'Archive' }
         ]

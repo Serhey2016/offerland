@@ -57,20 +57,19 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
       }
     } else if (action === 'done') {
       // Handle done action
-      const taskId = event.resource?.taskId
+      const taskSlug = event.resource?.taskSlug
       const onTaskDone = event.resource?.onTaskDone
-      if (taskId && onTaskDone) {
-        onTaskDone(taskId)
+      if (taskSlug && onTaskDone) {
+        onTaskDone(taskSlug)
       }
     } else if (action === 'note') {
       // Handle note action
-      const taskId = event.resource?.taskId
+      const taskSlug = event.resource?.taskSlug
       const onTaskNote = event.resource?.onTaskNote
-      if (taskId && onTaskNote) {
-        onTaskNote(taskId)
+      if (taskSlug && onTaskNote) {
+        onTaskNote(taskSlug)
       }
     } else {
-      console.log(`Action clicked: ${action}`, event)
       // TODO: Implement actual actions
     }
   }
@@ -347,6 +346,7 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
           { key: 'waiting', label: 'Waiting' },
           { key: 'someday', label: 'Some day' },
           { key: 'projects', label: 'Convert to project' },
+          { key: 'subtask', label: 'Subtask' },
           { key: 'done', label: 'Done' },
           { key: 'archive', label: 'Archive' }
         ]

@@ -5,11 +5,11 @@ import { Button } from 'primereact/button'
 
 interface TaskNotesDialogProps {
   visible: boolean
-  taskId: number | null
+  taskId: string | null
   taskTitle?: string
   initialNotes?: string
   onHide: () => void
-  onSave: (taskId: number, notes: string) => Promise<void>
+  onSave: (taskId: string, notes: string) => Promise<void>
 }
 
 const TaskNotesDialog: React.FC<TaskNotesDialogProps> = ({
@@ -31,7 +31,7 @@ const TaskNotesDialog: React.FC<TaskNotesDialogProps> = ({
   }, [visible, taskId, initialNotes])
 
   const handleSave = async () => {
-    if (taskId === null) return
+    if (!taskId) return
     
     try {
       setLoading(true)

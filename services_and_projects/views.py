@@ -643,6 +643,7 @@ def user_tasks(request):
             'waiting': 'waiting',
             'someday': 'someday',
             'projects': 'projects',
+            'subtask': 'subtask',
             'done': 'done',
             'archive': 'archive'
         }
@@ -724,6 +725,7 @@ def user_inbox_items(request):
             'waiting': 'waiting',
             'someday': 'someday',
             'projects': 'projects',
+            'subtask': 'subtask',
             'done': 'done',
             'archive': 'archive'
         }
@@ -1226,7 +1228,7 @@ def update_task_status(request, task_slug):
         new_status = data.get('status')
         
         # Validate status
-        valid_statuses = ['inbox', 'backlog', 'agenda', 'waiting', 'someday', 'projects', 'done', 'archive']
+        valid_statuses = ['inbox', 'backlog', 'agenda', 'waiting', 'someday', 'projects', 'subtask', 'done', 'archive']
         if new_status not in valid_statuses:
             return JsonResponse({
                 'success': False,
