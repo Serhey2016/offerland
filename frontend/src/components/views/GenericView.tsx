@@ -561,7 +561,17 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       })()}
 
       {/* Centralized Submenu */}
-      {tasksHook.showSubmenu && createPortal(
+      {tasksHook.showSubmenu && (() => {
+        // Find current task to determine its type
+        const currentTask = userTasks.find(t => t.slug === tasksHook.openDropdownTaskId)
+        const taskType = currentTask?.type_of_view || 'task'
+        
+        // Don't show centralized submenu for job_search - it has its own
+        if (taskType === 'job_search') {
+          return null
+        }
+        
+        return createPortal(
         <div 
           ref={tasksHook.submenuRef}
           className="task_tracker_task_submenu"
@@ -656,7 +666,8 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           </div>
         </div>,
         document.body
-      )}
+      )
+      })()}
       
       <div className="touchpoint-container">
         {/* Task Creation Block - New component */}
