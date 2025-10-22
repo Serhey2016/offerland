@@ -2,7 +2,7 @@
 // JSX preamble for Vite plugin detection
 const JSX_PREAMBLE = <div></div>
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import InfiniteDailyCalendar from '../InfiniteDailyCalendar'
 import { taskApi, DjangoTask } from '../../api/taskApi'
 import TaskNotesDialog from '../ui/TaskNotesDialog'
@@ -89,7 +89,7 @@ const AgendaView = () => {
   }
 
   // Handle task moved callback for toast messages
-  const handleTaskMoved = (category: string, success: boolean, error?: string) => {
+  const handleTaskMoved = useCallback((category: string, success: boolean, error?: string) => {
     if (success) {
       const categoryLabels: Record<string, string> = {
         'inbox': 'Inbox',
@@ -103,31 +103,13 @@ const AgendaView = () => {
       }
       const categoryLabel = categoryLabels[category] || category
       
-      // Call toast directly (same approach as useInputContainer)
-      if (toast.current) {
-        toast.current.show({
-          severity: 'success',
-          summary: 'Task Moved',
-          detail: `Task moved to ${categoryLabel}`,
-          life: 4000,
-          closable: true,
-          sticky: false
-        })
-      }
+      // Use showSuccess function from useToasts hook
+      showSuccess(`Task moved to ${categoryLabel}`, 'Task Moved', 4000)
     } else {
-      // Call toast directly for error
-      if (toast.current) {
-        toast.current.show({
-          severity: 'error',
-          summary: 'Error',
-          detail: error || 'Failed to move task',
-          life: 3000,
-          closable: true,
-          sticky: false
-        })
-      }
+      // Use showError function from useToasts hook
+      showError(error || 'Failed to move task', 'Error', 3000)
     }
-  }
+  }, [showSuccess, showError])
 
   // Load tasks from backend with status='agenda' or is_agenda=true
   const loadAgendaTasks = async () => {
