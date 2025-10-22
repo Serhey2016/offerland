@@ -42,6 +42,14 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const submenuRef = useRef<HTMLDivElement>(null)
 
+  // Format time range for display
+  const formatTimeRange = () => {
+    if (event.allDay) return null
+    const startTime = moment(event.start).format('h:mm A')
+    const endTime = moment(event.end).format('h:mm A')
+    return `${startTime} – ${endTime}`
+  }
+
   const handleTap = (e: React.MouseEvent) => {
     // Toggle tap state for mobile
     if (window.innerWidth <= 768) {
@@ -253,13 +261,18 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
     }
   }, [showDropdown])
 
+  const timeRange = formatTimeRange()
+
   return (
     <>
       <div 
         className={`agenda-calendar-event ${isTapped ? 'mobile-tap' : ''} ${event.resource?.status === 'done' ? 'done' : ''}`}
         onClick={handleTap}
       >
-        <div className="agenda-event-title">{title}</div>
+        <div className="agenda-event-header">
+          <div className="agenda-event-title">{title}</div>
+          {timeRange && <div className="agenda-event-time">{timeRange}</div>}
+        </div>
         <div className="agenda_floating_icons">
           <button 
             className="agenda_icon_btn" 
