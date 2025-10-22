@@ -674,8 +674,6 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
 
   // Handle event resize
   const handleEventResize = async ({ event, start, end }: any) => {
-    console.log('🔴 Resize ended:', { start, end })
-    
     try {
       const taskSlug = event.resource?.taskSlug || event.resource?.taskId?.toString()
       

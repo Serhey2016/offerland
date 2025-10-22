@@ -6,8 +6,6 @@ export const useResizePreview = () => {
   const isApplyingStylesRef = useRef(false)
 
   useEffect(() => {
-    console.log('🎨 Initializing resize preview system')
-    
     const applyResizeStyles = (element: HTMLElement) => {
       // Prevent re-entry to avoid infinite loop
       if (isApplyingStylesRef.current) return
@@ -15,7 +13,6 @@ export const useResizePreview = () => {
       // 🎯 ONLY apply styles during RESIZE, not DRAG
       const isResizing = document.querySelector('.rbc-addons-dnd-resizing')
       if (!isResizing) {
-        console.log('⏭️ Skipping styles - this is drag, not resize')
         return
       }
       
@@ -45,8 +42,6 @@ export const useResizePreview = () => {
         transition: none !important;
         z-index: 9999 !important;
       `
-      
-      console.log('✅ Applied RESIZE styles with border:', borderColor)
       
       // Reconnect observer after applying styles
       setTimeout(() => {
@@ -85,7 +80,6 @@ export const useResizePreview = () => {
           const dragPreview = document.querySelector('.rbc-addons-dnd-drag-preview')
           
           if (dragPreview) {
-            console.log('🎯 Found drag-preview element!')
             applyResizeStyles(dragPreview as HTMLElement)
           }
         })
@@ -98,9 +92,7 @@ export const useResizePreview = () => {
         })
         
         isAttachedRef.current = true
-        console.log('👀 Observer attached to calendar')
       } else {
-        console.warn('⚠️ Calendar not found, retrying...')
         // Retry after a short delay
         setTimeout(attachObserver, 100)
       }
@@ -117,7 +109,6 @@ export const useResizePreview = () => {
       }
       document.removeEventListener('mousemove', handleMouseMove)
       isAttachedRef.current = false
-      console.log('🧹 Cleanup resize preview system')
     }
   }, [])
 }
