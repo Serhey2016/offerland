@@ -27,7 +27,8 @@ export interface DjangoTask {
   time_start?: string
   time_end?: string
   priority?: 'iu' | 'inu' | 'niu' | 'ninu'
-  status?: string
+  status?: string  // element_position.name from backend
+  element_position?: string  // Same as status, kept for clarity
   task_mode: 'draft' | 'published' | 'archived'
   created_at: string
   updated_at: string

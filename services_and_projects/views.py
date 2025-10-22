@@ -1237,6 +1237,21 @@ def update_task_status(request, task_slug):
         
         # Update task element_position
         task.element_position_id = new_status
+        
+        # Special handling for agenda category
+        if new_status == 'agenda':
+            task.is_agenda = True
+        elif task.is_agenda and new_status not in ['agenda', 'done']:
+            # If moving away from agenda, set is_agenda to False
+            # EXCEPT for 'done' - it stays in agenda but changes element_position
+            # Archive and all others remove task from agenda
+            task.is_agenda = False
+        
+        # Record completion time when task is marked as done
+        if new_status == 'done' and not task.end_datetime:
+            from django.utils import timezone
+            task.end_datetime = timezone.now()
+        
         task.save()
         
         return JsonResponse({
@@ -1339,8 +1354,16 @@ def update_element_position(request, slug):
             element.is_agenda = True
         elif element_type == 'task' and hasattr(element, 'is_agenda'):
             # If moving away from agenda, set is_agenda to False
-            if element.is_agenda and new_position != 'agenda':
+            # EXCEPT for 'done' - it stays in agenda but changes element_position
+            # Archive and all others remove task from agenda
+            if element.is_agenda and new_position not in ['agenda', 'done']:
                 element.is_agenda = False
+        
+        # Record completion time when task is marked as done
+        if new_position == 'done' and element_type == 'task' and hasattr(element, 'end_datetime'):
+            if not element.end_datetime:
+                from django.utils import timezone
+                element.end_datetime = timezone.now()
         
         element.save()
         

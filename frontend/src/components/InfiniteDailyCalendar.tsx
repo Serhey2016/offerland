@@ -27,6 +27,8 @@ const TimeGutterHeader = () => {
 
 // Custom Event component with floating action buttons
 const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
+  // Get onTaskMoved from event resource
+  const onTaskMoved = event.resource?.onTaskMoved
   const [isTapped, setIsTapped] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
@@ -75,7 +77,6 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
   }
 
   const handleDropdownItemClick = (action: string) => {
-    console.log(`Dropdown action: ${action}`, event)
     setShowDropdown(false)
     // TODO: Implement actual actions
   }
@@ -124,7 +125,6 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
       left: leftPosition
     })
     setShowSubmenu(true)
-    console.log('Move to hover - submenu should show', { showSubmenu: true, position: { top: topPosition, left: leftPosition }})
   }
 
   const handleMoveToLeave = () => {
@@ -136,9 +136,6 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
       
       if (!isHoveringSubmenu) {
         setShowSubmenu(false)
-        console.log('Move to leave - submenu should hide')
-      } else {
-        console.log('Move to leave - keeping submenu open (hovering)')
       }
     }, 300)
   }
@@ -189,17 +186,18 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
     // Toggle submenu for both desktop and mobile
     const newState = !showSubmenu
     setShowSubmenu(newState)
-    console.log('Move to clicked - submenu toggle', { showSubmenu: newState, position: { top: topPosition, left: leftPosition }})
   }
 
   const handleSubmenuItemClick = async (category: string) => {
-    console.log(`Move to: ${category}`, event)
-    
     try {
       // Get task slug from event resource (prefer slug over id)
       const taskSlug = event.resource?.taskSlug || event.resource?.taskId?.toString()
+      
       if (!taskSlug) {
-        console.error('No task slug found in event resource')
+        // Show error toast if callback available
+        if (onTaskMoved) {
+          onTaskMoved(category, false, 'Task identifier not found')
+        }
         setShowSubmenu(false)
         setShowDropdown(false)
         return
@@ -213,15 +211,25 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
       setShowDropdown(false)
       
       // Trigger reload by dispatching custom event
-      window.dispatchEvent(new CustomEvent('taskMoved', {
-        detail: { slug: taskSlug, category }
-      }))
+      const taskMovedEvent = new window.CustomEvent('taskMoved', {
+        detail: { slug: taskSlug, category },
+        bubbles: true
+      })
+      window.dispatchEvent(taskMovedEvent)
       
-      console.log(`Task ${taskSlug} successfully moved to ${category}`)
-    } catch (error) {
-      console.error('Error moving task:', error)
+      // Call callback to show success toast
+      if (onTaskMoved) {
+        onTaskMoved(category, true)
+      }
+    } catch (error: any) {
       setShowSubmenu(false)
       setShowDropdown(false)
+      
+      // Call callback to show error toast
+      if (onTaskMoved) {
+        const errorMessage = error.response?.data?.error || error.message || 'Failed to move task'
+        onTaskMoved(category, false, errorMessage)
+      }
     }
   }
 
@@ -337,15 +345,16 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
       {/* Submenu - SEPARATE portal */}
       {showSubmenu && (() => {
         // Get current category/status from event resource
-        const currentCategory = event.resource?.status?.toLowerCase() || ''
+        // Use element_position if available, fallback to status, or default to 'agenda' for agenda view
+        const currentCategory = (event.resource?.element_position || event.resource?.status || 'agenda').toLowerCase()
         
-        // Define all available categories for agenda items
+        // Define all available categories for agenda items (same as standard task categories)
         const availableCategories = [
-          { key: 'agenda', label: 'Agenda' },
+          { key: 'inbox', label: 'Inbox' },
           { key: 'backlog', label: 'Backlog' },
+          { key: 'agenda', label: 'Agenda' },
           { key: 'waiting', label: 'Waiting' },
-          { key: 'someday', label: 'Some day' },
-          { key: 'projects', label: 'Convert to project' },
+          { key: 'someday', label: 'Someday' },
           { key: 'subtask', label: 'Subtask' },
           { key: 'done', label: 'Done' },
           { key: 'archive', label: 'Archive' }
@@ -369,7 +378,6 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
             onMouseEnter={() => {
               // Keep submenu open when hovering over it
               setShowSubmenu(true)
-              console.log('Submenu mouseenter - keeping open')
             }}
             onMouseLeave={() => {
               // Close submenu when leaving it with delay
@@ -380,9 +388,6 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
                 
                 if (!isHoveringMoveToItem) {
                   setShowSubmenu(false)
-                  console.log('Submenu mouseleave - closing')
-                } else {
-                  console.log('Submenu mouseleave - keeping open (hovering Move to...)')
                 }
               }, 200)
             }}
@@ -391,7 +396,12 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
               <div 
                 key={cat.key}
                 className="agenda_submenu_item" 
-                onClick={() => handleSubmenuItemClick(cat.key)}
+                onMouseDown={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleSubmenuItemClick(cat.key)
+                }}
+                style={{ cursor: 'pointer', pointerEvents: 'auto' }}
               >
                 {cat.label}
               </div>

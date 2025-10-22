@@ -19,12 +19,14 @@ interface CalendarEvent {
   resource?: {
     priority?: string
     status?: string
+    element_position?: string
     description?: string
     note?: string
     taskId?: number
     taskSlug?: string
     onTaskDone?: (taskSlug: string) => void
     onTaskNote?: (taskSlug: string) => void
+    onTaskMoved?: (category: string, success: boolean, error?: string) => void
   }
 }
 
@@ -43,7 +45,8 @@ const AgendaView = () => {
   // Handle marking task as done
   const handleTaskDone = async (taskSlug: string) => {
     try {
-      await taskApi.updateTaskStatus(taskSlug, 'done')
+      // Use updateElementPosition instead of updateTaskStatus to properly handle is_agenda
+      await taskApi.updateElementPosition(taskSlug, 'done')
       showSuccess('Task marked as done')
       // Reload tasks to reflect the change
       await loadAgendaTasks()
@@ -82,6 +85,47 @@ const AgendaView = () => {
     } catch (error) {
       console.error('Error saving notes:', error)
       showError('Error saving notes')
+    }
+  }
+
+  // Handle task moved callback for toast messages
+  const handleTaskMoved = (category: string, success: boolean, error?: string) => {
+    if (success) {
+      const categoryLabels: Record<string, string> = {
+        'inbox': 'Inbox',
+        'backlog': 'Backlog',
+        'agenda': 'Agenda',
+        'waiting': 'Waiting',
+        'someday': 'Someday',
+        'subtask': 'Subtask',
+        'done': 'Done',
+        'archive': 'Archive'
+      }
+      const categoryLabel = categoryLabels[category] || category
+      
+      // Call toast directly (same approach as useInputContainer)
+      if (toast.current) {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Task Moved',
+          detail: `Task moved to ${categoryLabel}`,
+          life: 4000,
+          closable: true,
+          sticky: false
+        })
+      }
+    } else {
+      // Call toast directly for error
+      if (toast.current) {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: error || 'Failed to move task',
+          life: 3000,
+          closable: true,
+          sticky: false
+        })
+      }
     }
   }
 
@@ -141,12 +185,14 @@ const AgendaView = () => {
           resource: {
             priority: task.priority,
             status: task.status,
+            element_position: task.status || 'agenda',  // Backend returns element_position.name as 'status'
             description: task.description,
             note: task.note,
             taskId: task.id,
             taskSlug: task.slug,
             onTaskDone: handleTaskDone,
-            onTaskNote: handleTaskNote
+            onTaskNote: handleTaskNote,
+            onTaskMoved: handleTaskMoved  // Add callback for toast messages
           }
         }
       })
@@ -165,31 +211,28 @@ const AgendaView = () => {
 
   // Listen for task moved events
   useEffect(() => {
-    const handleTaskMoved = (event: Event) => {
+    const handleTaskMovedEvent = (event: Event) => {
       const customEvent = event as CustomEvent
-      console.log('Task moved event received in AgendaView:', customEvent.detail)
       // Reload tasks after moving
       loadAgendaTasks()
     }
 
-    window.addEventListener('taskMoved', handleTaskMoved)
+    window.addEventListener('taskMoved', handleTaskMovedEvent)
     return () => {
-      window.removeEventListener('taskMoved', handleTaskMoved)
+      window.removeEventListener('taskMoved', handleTaskMovedEvent)
     }
   }, [])
 
   const handleSelectEvent = (event: any) => {
-    console.log('Event selected:', event)
     // You can add modal or detailed view here
   }
 
   const handleSelectSlot = (slotInfo: any) => {
-    console.log('Slot selected:', slotInfo)
     // You can add new event creation here
   }
 
   const handleNavigate = (date: Date, view: string) => {
-    console.log('Calendar navigated:', { date, view })
+    // Handle navigation
   }
 
   if (loading) {

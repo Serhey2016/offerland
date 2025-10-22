@@ -177,7 +177,6 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   useEffect(() => {
     const handleTaskMoved = (event: Event) => {
       const customEvent = event as CustomEvent
-      console.log('Task moved event received:', customEvent.detail)
       // Reload tasks after moving
       loadUserTasks(false)
     }
