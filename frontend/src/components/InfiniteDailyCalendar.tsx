@@ -588,15 +588,15 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
       // Calculate proper end time
       let finalEnd = end
       
-      // If dragging from all-day to a time slot, set 30-minute duration
+      // If dragging from all-day to a time slot, set 1-hour duration
       if (event.allDay && !isAllDay) {
         finalEnd = new Date(start)
-        finalEnd.setMinutes(start.getMinutes() + 30)
+        finalEnd.setMinutes(start.getMinutes() + 60)
       }
-      // If the end time is more than 24 hours after start (whole day event), set 30-minute duration
+      // If the end time is more than 24 hours after start (whole day event), set 1-hour duration
       else if (!isAllDay && (end.getTime() - start.getTime()) > (23 * 60 * 60 * 1000)) {
         finalEnd = new Date(start)
-        finalEnd.setMinutes(start.getMinutes() + 30)
+        finalEnd.setMinutes(start.getMinutes() + 60)
       }
 
       // Update task datetime via API
