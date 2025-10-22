@@ -450,6 +450,7 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
   const [currentDate, setCurrentDate] = useState(new Date())
   const [visibleDays, setVisibleDays] = useState<Date[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [draggingEvent, setDraggingEvent] = useState<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
   const loadingRef = useRef(false)
@@ -575,9 +576,17 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
     }
   }
 
+  // Handle drag start
+  const handleDragStart = ({ event }: any) => {
+    setDraggingEvent(event)
+  }
+
   // Handle event drop (drag and drop)
   const handleEventDrop = async ({ event, start, end, isAllDay }: any) => {
     try {
+      // Clear dragging state
+      setDraggingEvent(null)
+      
       const taskSlug = event.resource?.taskSlug || event.resource?.taskId?.toString()
       
       if (!taskSlug) {
@@ -620,6 +629,8 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
     } catch (error: any) {
       console.error('Error updating task datetime:', error)
       alert(`Failed to update task time: ${error.message || 'Unknown error'}`)
+      // Clear dragging state on error
+      setDraggingEvent(null)
     }
   }
 
@@ -733,12 +744,24 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
                   date={day}
                   onSelectEvent={handleSelectEvent}
                   onSelectSlot={handleSelectSlot}
+                  onDragStart={handleDragStart}
                   onEventDrop={handleEventDrop}
                   onEventResize={handleEventResize}
                   eventPropGetter={eventStyleGetter}
                   selectable={true}
                   resizable={true}
-                  draggableAccessor={() => true}
+                  draggableAccessor={(event) => {
+                    // Disable dragging for done tasks
+                    const status = event.resource?.status?.toLowerCase()
+                    const category = event.resource?.category?.toLowerCase()
+                    return status !== 'done' && category !== 'done'
+                  }}
+                  resizableAccessor={(event) => {
+                    // Disable resizing for done tasks
+                    const status = event.resource?.status?.toLowerCase()
+                    const category = event.resource?.category?.toLowerCase()
+                    return status !== 'done' && category !== 'done'
+                  }}
                   popup={true}
                   showMultiDayTimes={true}
                   step={30}
@@ -762,6 +785,9 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
                     timeGutterHeader: TimeGutterHeader,
                     event: CustomEvent
                   }}
+                  // Set default duration for dragged events (1 hour = 60 minutes)
+                  dragFromOutsideItem={() => null}
+                  defaultDraggedEventDuration={60}
                 />
               </div>
             </div>
