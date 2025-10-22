@@ -3493,4 +3493,88 @@ dl, ol, ul {
     gap: 10px;
   }
 }
+
+/* ============================================
+   Agenda Calendar Event Styles (Class-based)
+   ============================================ */
+
+/* Default event style */
+.agenda-event-default {
+  background-color: #3174ad !important;
+  border-radius: 3px !important;
+  opacity: 0.8 !important;
+  color: white !important;
+  border: 0 !important;
+  display: block !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.agenda-event-default:hover {
+  opacity: 0.9 !important;
+}
+
+/* Priority-based event styles */
+.agenda-event-priority-high {
+  background-color: #f56565 !important; /* red */
+  border-radius: 3px !important;
+  opacity: 0.8 !important;
+  color: white !important;
+  border: 0 !important;
+  display: block !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.agenda-event-priority-high:hover {
+  opacity: 0.9 !important;
+}
+
+.agenda-event-priority-medium {
+  background-color: #ed8936 !important; /* orange */
+  border-radius: 3px !important;
+  opacity: 0.8 !important;
+  color: white !important;
+  border: 0 !important;
+  display: block !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.agenda-event-priority-medium:hover {
+  opacity: 0.9 !important;
+}
+
+.agenda-event-priority-low {
+  background-color: #48bb78 !important; /* green */
+  border-radius: 3px !important;
+  opacity: 0.8 !important;
+  color: white !important;
+  border: 0 !important;
+  display: block !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.agenda-event-priority-low:hover {
+  opacity: 0.9 !important;
+}
+
+/* Done task style - green with locked cursor */
+.agenda-event-done {
+  background-color: #48bb78 !important; /* green */
+  border-radius: 3px !important;
+  opacity: 0.8 !important;
+  color: white !important;
+  border: 0 !important;
+  display: block !important;
+  cursor: not-allowed !important; /* indicates drag is disabled */
+  transition: opacity 0.2s ease !important;
+}
+
+.agenda-event-done:hover {
+  opacity: 0.7 !important; /* slightly less opacity to indicate it's locked */
+}
+
+/* Disable drag cursor for done events */
+.agenda-event-done .rbc-event-label,
+.agenda-event-done .rbc-event-content {
+  cursor: not-allowed !important;
+}
   

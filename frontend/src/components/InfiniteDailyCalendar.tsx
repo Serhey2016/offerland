@@ -668,35 +668,37 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
     }
   }
 
-  // Event style getter
+  // Event style getter - returns CSS classes instead of inline styles
   const eventStyleGetter = (event: Event) => {
-    let backgroundColor = '#3174ad'
+    let className = 'agenda-event-default'
     
-    if (event.resource && event.resource.priority) {
+    const status = event.resource?.status?.toLowerCase()
+    const category = event.resource?.category?.toLowerCase()
+    
+    // Done tasks get special styling
+    if (status === 'done' || category === 'done') {
+      className = 'agenda-event-done'
+    } 
+    // Priority-based styling for active tasks
+    else if (event.resource?.priority) {
       switch (event.resource.priority) {
         case 'high':
-          backgroundColor = '#f56565'
+          className = 'agenda-event-priority-high'
           break
         case 'medium':
-          backgroundColor = '#ed8936'
+          className = 'agenda-event-priority-medium'
           break
         case 'low':
-          backgroundColor = '#48bb78'
+          className = 'agenda-event-priority-low'
           break
         default:
-          backgroundColor = '#3174ad'
+          className = 'agenda-event-default'
       }
     }
 
     return {
-      style: {
-        backgroundColor,
-        borderRadius: '3px',
-        opacity: 0.8,
-        color: 'white',
-        border: '0px',
-        display: 'block'
-      }
+      className: className
+      // Note: Positioning (top, height, width, left) is handled by react-big-calendar
     }
   }
 
