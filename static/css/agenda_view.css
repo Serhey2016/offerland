@@ -263,3 +263,30 @@ div.rbc-time-slot div.rbc-event div.rbc-event-label {
   pointer-events: auto ;
 }
 
+/* ============================================
+   Touch Support for Mobile Resize
+   ============================================ */
+
+/* Larger hit area for resize handles on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .rbc-addons-dnd-resize-ns-anchor {
+    height: 25px ; /* Збільшено з 15px до 25px для кращого захоплення пальцем */
+  }
+  
+  /* Always show resize handles on touch devices */
+  .rbc-addons-dnd-resize-ns-icon {
+    opacity: 0.4 ;
+  }
+  
+  .rbc-addons-dnd-resize-ns-anchor:active .rbc-addons-dnd-resize-ns-icon {
+    opacity: 1 ;
+  }
+}
+
+/* Prevent text selection during touch resize */
+.rbc-addons-dnd-resizing {
+  user-select: none ;
+  -webkit-user-select: none ;
+  -webkit-touch-callout: none ;
+}
+

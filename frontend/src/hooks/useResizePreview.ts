@@ -60,8 +60,8 @@ export const useResizePreview = () => {
       }, 0)
     }
 
-    // Also listen to mousemove for continuous updates
-    const handleMouseMove = () => {
+    // Handle both mouse and touch events for continuous updates
+    const handleMove = () => {
       const dragPreviewElements = document.querySelectorAll('.rbc-addons-dnd-drag-preview')
       if (dragPreviewElements.length > 0) {
         dragPreviewElements.forEach(el => applyResizeStyles(el as HTMLElement))
@@ -101,13 +101,18 @@ export const useResizePreview = () => {
     // Wait for calendar to be mounted
     setTimeout(attachObserver, 0)
     
-    document.addEventListener('mousemove', handleMouseMove, { passive: true })
+    // Listen to BOTH mouse AND touch events
+    document.addEventListener('mousemove', handleMove, { passive: true })
+    document.addEventListener('touchmove', handleMove, { passive: true })
+    document.addEventListener('touchstart', handleMove, { passive: true })
 
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect()
       }
-      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mousemove', handleMove)
+      document.removeEventListener('touchmove', handleMove)
+      document.removeEventListener('touchstart', handleMove)
       isAttachedRef.current = false
     }
   }, [])
