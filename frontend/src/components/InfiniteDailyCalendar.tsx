@@ -6,6 +6,7 @@ import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import { taskApi } from '../api/taskApi'
+import { useResizePreview } from '../hooks/useResizePreview'
 // CSS moved to static/css/ directory - loaded via Django template
 
 // Setup the localizer by providing the moment (or globalize) Object
@@ -270,7 +271,7 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
         onClick={handleTap}
       >
         <div className="agenda-event-header">
-          <div className="agenda-event-title">{title}</div>
+        <div className="agenda-event-title">{title}</div>
           {timeRange && <div className="agenda-event-time">{timeRange}</div>}
         </div>
         <div className="agenda_floating_icons">
@@ -467,6 +468,9 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
   const loadingRef = useRef(false)
+
+  // 🎯 Hybrid resize preview with MutationObserver
+  useResizePreview()
 
   // Generate initial days starting from TODAY
   useEffect(() => {
@@ -670,6 +674,8 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
 
   // Handle event resize
   const handleEventResize = async ({ event, start, end }: any) => {
+    console.log('🔴 Resize ended:', { start, end })
+    
     try {
       const taskSlug = event.resource?.taskSlug || event.resource?.taskId?.toString()
       
@@ -733,6 +739,7 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
     return {
       className: className
       // Note: Positioning (top, height, width, left) is handled by react-big-calendar
+      // Live resize preview is handled by CSS class .rbc-addons-dnd-resizing added by react-big-calendar
     }
   }
 
