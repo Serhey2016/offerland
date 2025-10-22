@@ -4,6 +4,7 @@ export const useResizePreview = () => {
   const observerRef = useRef<MutationObserver | null>(null)
   const isAttachedRef = useRef(false)
   const isApplyingStylesRef = useRef(false)
+  const isResizingActiveRef = useRef(false)
 
   useEffect(() => {
     const applyResizeStyles = (element: HTMLElement) => {
@@ -13,9 +14,11 @@ export const useResizePreview = () => {
       // 🎯 ONLY apply styles during RESIZE, not DRAG
       const isResizing = document.querySelector('.rbc-addons-dnd-resizing')
       if (!isResizing) {
+        isResizingActiveRef.current = false
         return
       }
       
+      isResizingActiveRef.current = true
       isApplyingStylesRef.current = true
       
       // Temporarily disconnect observer to prevent triggering on our own style changes
@@ -68,6 +71,29 @@ export const useResizePreview = () => {
       }
     }
 
+    // Prevent scroll during resize on touch devices
+    const preventScrollDuringResize = (e: TouchEvent) => {
+      if (isResizingActiveRef.current || document.querySelector('.rbc-addons-dnd-resizing')) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
+    // Attach touch listeners to resize handles specifically
+    const attachTouchListenersToHandles = () => {
+      const resizeHandles = document.querySelectorAll('.rbc-addons-dnd-resize-ns-anchor')
+      
+      resizeHandles.forEach(handle => {
+        // Remove old listeners if any
+        handle.removeEventListener('touchstart', preventScrollDuringResize as any)
+        handle.removeEventListener('touchmove', preventScrollDuringResize as any)
+        
+        // Add new listeners WITHOUT passive to allow preventDefault
+        handle.addEventListener('touchstart', preventScrollDuringResize as any, { passive: false })
+        handle.addEventListener('touchmove', preventScrollDuringResize as any, { passive: false })
+      })
+    }
+
     const attachObserver = () => {
       if (isAttachedRef.current) return
 
@@ -82,6 +108,9 @@ export const useResizePreview = () => {
           if (dragPreview) {
             applyResizeStyles(dragPreview as HTMLElement)
           }
+
+          // Reattach touch listeners when DOM changes (new events rendered)
+          attachTouchListenersToHandles()
         })
 
         observerRef.current.observe(calendarContainer, {
@@ -92,6 +121,9 @@ export const useResizePreview = () => {
         })
         
         isAttachedRef.current = true
+        
+        // Initial attach of touch listeners
+        attachTouchListenersToHandles()
       } else {
         // Retry after a short delay
         setTimeout(attachObserver, 100)
@@ -113,7 +145,16 @@ export const useResizePreview = () => {
       document.removeEventListener('mousemove', handleMove)
       document.removeEventListener('touchmove', handleMove)
       document.removeEventListener('touchstart', handleMove)
+      
+      // Clean up touch listeners from handles
+      const resizeHandles = document.querySelectorAll('.rbc-addons-dnd-resize-ns-anchor')
+      resizeHandles.forEach(handle => {
+        handle.removeEventListener('touchstart', preventScrollDuringResize as any)
+        handle.removeEventListener('touchmove', preventScrollDuringResize as any)
+      })
+      
       isAttachedRef.current = false
+      isResizingActiveRef.current = false
     }
   }, [])
 }
