@@ -651,6 +651,21 @@ export const taskApi = {
     }
   },
 
+  // Update task datetime (for drag and drop in calendar)
+  updateTaskDatetime: async (slug: string, datetimeData: {
+    start_datetime: string
+    end_datetime: string
+    all_day?: boolean
+  }): Promise<any> => {
+    try {
+      const response = await api.patch(`/services_and_projects/tasks/${slug}/datetime/`, datetimeData)
+      return response.data
+    } catch (error) {
+      console.error(`Error updating task ${slug} datetime:`, error)
+      throw error
+    }
+  },
+
   // Create recurring task with recurrence pattern
   createRecurringTask: async (taskData: {
     title: string

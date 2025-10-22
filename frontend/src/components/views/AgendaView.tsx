@@ -207,6 +207,7 @@ const AgendaView = () => {
         onNavigate={handleNavigate}
         height="auto"
         daysToShow={3}
+        onEventUpdate={loadAgendaTasks}
       />
     </div>
   )

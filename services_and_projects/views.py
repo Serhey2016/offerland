@@ -1286,6 +1286,85 @@ def update_task_status(request, task_slug):
 @login_required
 @require_http_methods(["PATCH"])
 @csrf_exempt
+def update_task_datetime(request, task_slug):
+    """Update task start_datetime and end_datetime via PATCH request (for calendar drag-and-drop)"""
+    try:
+        import json
+        from datetime import datetime
+        from django.utils import timezone
+        
+        task = Task.objects.get(slug=task_slug, taskownerrelations__user=request.user)
+        
+        # Check if user has permission to update this task
+        owner_rel = TaskOwnerRelations.objects.filter(task=task, user=request.user).first()
+        if not owner_rel:
+            return JsonResponse({
+                'success': False,
+                'error': 'You do not have permission to update this task'
+            }, status=403)
+        
+        # Get data from request body
+        data = json.loads(request.body)
+        start_datetime_str = data.get('start_datetime')
+        end_datetime_str = data.get('end_datetime')
+        all_day = data.get('all_day', False)
+        
+        # Parse and update start_datetime
+        if start_datetime_str:
+            try:
+                # Parse ISO format datetime string
+                start_dt = datetime.fromisoformat(start_datetime_str.replace('Z', '+00:00'))
+                task.start_datetime = start_dt
+            except ValueError as e:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Invalid start_datetime format: {e}'
+                }, status=400)
+        
+        # Parse and update end_datetime
+        if end_datetime_str:
+            try:
+                # Parse ISO format datetime string
+                end_dt = datetime.fromisoformat(end_datetime_str.replace('Z', '+00:00'))
+                task.end_datetime = end_dt
+            except ValueError as e:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Invalid end_datetime format: {e}'
+                }, status=400)
+        
+        task.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Task datetime updated successfully',
+            'start_datetime': task.start_datetime.isoformat() if task.start_datetime else None,
+            'end_datetime': task.end_datetime.isoformat() if task.end_datetime else None
+        })
+        
+    except Task.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Task not found'
+        }, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        import traceback
+        print(f"Error updating task datetime: {e}")
+        print(f"Traceback: {traceback.format_exc()}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
+@login_required
+@require_http_methods(["PATCH"])
+@csrf_exempt
 def update_category(request, slug):
     """
     Universal endpoint to update category for any element type (Task, TimeSlot, JobSearch)

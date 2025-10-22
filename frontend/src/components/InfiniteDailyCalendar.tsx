@@ -1,13 +1,18 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { Calendar as BigCalendar, momentLocalizer, Views, Components, EventProps } from 'react-big-calendar'
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import { taskApi } from '../api/taskApi'
 // CSS moved to static/css/ directory - loaded via Django template
 
 // Setup the localizer by providing the moment (or globalize) Object
 const localizer = momentLocalizer(moment)
+
+// Create DnD Calendar component
+const DnDCalendar = withDragAndDrop(BigCalendar)
 
 // Custom TimeGutterHeader component to show "All day" label
 const TimeGutterHeader = () => {
@@ -430,6 +435,7 @@ interface InfiniteDailyCalendarProps {
   onNavigate?: (date: Date, view: string) => void
   height?: number | string
   daysToShow?: number
+  onEventUpdate?: () => void  // Callback to reload events after drag-drop
 }
 
 const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
@@ -438,7 +444,8 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
   onSelectSlot,
   onNavigate,
   height = 600,
-  daysToShow = 7
+  daysToShow = 7,
+  onEventUpdate
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [visibleDays, setVisibleDays] = useState<Date[]>([])
@@ -568,6 +575,74 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
     }
   }
 
+  // Handle event drop (drag and drop)
+  const handleEventDrop = async ({ event, start, end, isAllDay }: any) => {
+    try {
+      const taskSlug = event.resource?.taskSlug || event.resource?.taskId?.toString()
+      
+      if (!taskSlug) {
+        console.error('Task identifier not found for event:', event)
+        return
+      }
+
+      // Update task datetime via API
+      await taskApi.updateTaskDatetime(taskSlug, {
+        start_datetime: start.toISOString(),
+        end_datetime: end.toISOString(),
+        all_day: isAllDay || false
+      })
+
+      // Trigger reload
+      if (onEventUpdate) {
+        onEventUpdate()
+      }
+      
+      // Dispatch event to notify other components
+      const taskMovedEvent = new window.CustomEvent('taskMoved', {
+        detail: { slug: taskSlug, datetime_updated: true },
+        bubbles: true
+      })
+      window.dispatchEvent(taskMovedEvent)
+    } catch (error: any) {
+      console.error('Error updating task datetime:', error)
+      alert(`Failed to update task time: ${error.message || 'Unknown error'}`)
+    }
+  }
+
+  // Handle event resize
+  const handleEventResize = async ({ event, start, end }: any) => {
+    try {
+      const taskSlug = event.resource?.taskSlug || event.resource?.taskId?.toString()
+      
+      if (!taskSlug) {
+        console.error('Task identifier not found for event:', event)
+        return
+      }
+
+      // Update task datetime via API
+      await taskApi.updateTaskDatetime(taskSlug, {
+        start_datetime: start.toISOString(),
+        end_datetime: end.toISOString(),
+        all_day: event.allDay || false
+      })
+
+      // Trigger reload
+      if (onEventUpdate) {
+        onEventUpdate()
+      }
+      
+      // Dispatch event to notify other components
+      const taskMovedEvent = new window.CustomEvent('taskMoved', {
+        detail: { slug: taskSlug, datetime_updated: true },
+        bubbles: true
+      })
+      window.dispatchEvent(taskMovedEvent)
+    } catch (error: any) {
+      console.error('Error resizing task:', error)
+      alert(`Failed to resize task: ${error.message || 'Unknown error'}`)
+    }
+  }
+
   // Event style getter
   const eventStyleGetter = (event: Event) => {
     let backgroundColor = '#3174ad'
@@ -634,7 +709,7 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
                 data-day-index={index}
                 data-calendar-initialized="true"
               >
-                <BigCalendar
+                <DnDCalendar
                   localizer={localizer}
                   events={dayEvents}
                   startAccessor="start"
@@ -644,8 +719,12 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
                   date={day}
                   onSelectEvent={handleSelectEvent}
                   onSelectSlot={handleSelectSlot}
+                  onEventDrop={handleEventDrop}
+                  onEventResize={handleEventResize}
                   eventPropGetter={eventStyleGetter}
                   selectable={true}
+                  resizable={true}
+                  draggableAccessor={() => true}
                   popup={true}
                   showMultiDayTimes={true}
                   step={30}

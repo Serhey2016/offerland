@@ -3445,4 +3445,52 @@ dl, ol, ul {
     width: 100%;
   }
 }
+
+/* Inbox Group Styles */
+.inbox-group {
+  margin-bottom: 32px;
+}
+
+.inbox-group-header {
+  margin-bottom: 16px;
+  padding-left: 8px;
+  border-left: 4px solid var(--accent-color);
+}
+
+.inbox-group-header h3 {
+  font-family: 'League Spartan', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin: 0;
+  line-height: 1.4;
+  text-transform: capitalize;
+}
+
+.inbox-group-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Add spacing between different groups */
+.inbox-group:not(:last-child) {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .inbox-group {
+    margin-bottom: 24px;
+  }
+  
+  .inbox-group-header h3 {
+    font-size: 1.3rem;
+  }
+  
+  .inbox-group-content {
+    gap: 10px;
+  }
+}
   
