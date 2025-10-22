@@ -2,134 +2,99 @@
    Agenda View Styles - React Big Calendar
    ============================================ */
 
-/* Default event style */
-.agenda-event-default {
-  background-color: #3174ad !important;
-  border-radius: 3px !important;
-  opacity: 0.8 !important;
-  color: white !important;
-  border: 0 !important;
-  display: block !important;
-  transition: opacity 0.2s ease !important;
+:root {
+  --agenda-event-opacity: 0.8;
+  --agenda-event-hover-opacity: 0.9;
+  --agenda-event-radius: 3px;
+  --agenda-resize-opacity: 0.7;
+  --agenda-resize-scale: 1.05;
+  --agenda-resize-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --agenda-color-blue: #3174ad;
+  --agenda-color-red: #f56565;
+  --agenda-color-orange: #ed8936;
+  --agenda-color-green: #48bb78;
+  --agenda-color-preview: #4285f4;
 }
 
-.agenda-event-default:hover {
-  opacity: 0.9 !important;
-}
-
-/* Priority-based event styles */
-.agenda-event-priority-high {
-  background-color: #f56565 !important; /* red */
-  border-radius: 3px !important;
-  opacity: 0.8 !important;
-  color: white !important;
-  border: 0 !important;
-  display: block !important;
-  transition: opacity 0.2s ease !important;
-}
-
-.agenda-event-priority-high:hover {
-  opacity: 0.9 !important;
-}
-
-.agenda-event-priority-medium {
-  background-color: #ed8936 !important; /* orange */
-  border-radius: 3px !important;
-  opacity: 0.8 !important;
-  color: white !important;
-  border: 0 !important;
-  display: block !important;
-  transition: opacity 0.2s ease !important;
-}
-
-.agenda-event-priority-medium:hover {
-  opacity: 0.9 !important;
-}
-
-.agenda-event-priority-low {
-  background-color: #48bb78 !important; /* green */
-  border-radius: 3px !important;
-  opacity: 0.8 !important;
-  color: white !important;
-  border: 0 !important;
-  display: block !important;
-  transition: opacity 0.2s ease !important;
-}
-
-.agenda-event-priority-low:hover {
-  opacity: 0.9 !important;
-}
-
-/* Done task style - green with locked cursor */
+/* Common event styles */
+.agenda-event-default,
+.agenda-event-priority-high,
+.agenda-event-priority-medium,
+.agenda-event-priority-low,
 .agenda-event-done {
-  background-color: #48bb78 !important; /* green */
-  border-radius: 3px !important;
-  opacity: 0.8 !important;
-  color: white !important;
-  border: 0 !important;
-  display: block !important;
-  cursor: not-allowed !important; /* indicates drag is disabled */
-  transition: opacity 0.2s ease !important;
+  border-radius: var(--agenda-event-radius) ;
+  opacity: var(--agenda-event-opacity) ;
+  color: white ;
+  border: 0 ;
+  display: block ;
+  transition: opacity 0.2s ease ;
+}
+
+/* Event colors */
+.agenda-event-default { background-color: var(--agenda-color-blue) ; }
+.agenda-event-priority-high { background-color: var(--agenda-color-red) ; }
+.agenda-event-priority-medium { background-color: var(--agenda-color-orange) ; }
+.agenda-event-priority-low,
+.agenda-event-done { background-color: var(--agenda-color-green) ; }
+
+/* Hover states */
+.agenda-event-default:hover,
+.agenda-event-priority-high:hover,
+.agenda-event-priority-medium:hover,
+.agenda-event-priority-low:hover {
+  opacity: var(--agenda-event-hover-opacity) ;
+}
+
+/* Done task specific */
+.agenda-event-done {
+  cursor: not-allowed ;
 }
 
 .agenda-event-done:hover {
-  opacity: 0.7 !important; /* slightly less opacity to indicate it's locked */
+  opacity: 0.7 ;
 }
 
-/* Disable drag cursor for done events */
 .agenda-event-done .rbc-event-label,
 .agenda-event-done .rbc-event-content {
-  cursor: not-allowed !important;
+  cursor: not-allowed ;
 }
 
-/* Direct styling for resizing event - live preview feedback */
-.agenda-event-resizing {
-  opacity: 0.7 !important;
-  transform: scale(1.05) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-  transition: none !important;
-  z-index: 9999 !important;
-  cursor: ns-resize !important;
-  border: 3px solid #4285f4 !important;
-  background-color: rgba(66, 133, 244, 0.1) !important;
-}
-
-/* Also target nested elements */
+/* Resizing event styles */
+.agenda-event-resizing,
 .rbc-event.agenda-event-resizing {
-  opacity: 0.7 !important;
-  transform: scale(1.05) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-  border: 3px solid #4285f4 !important;
+  opacity: var(--agenda-resize-opacity) ;
+  transform: scale(var(--agenda-resize-scale)) ;
+  box-shadow: var(--agenda-resize-shadow) ;
+  border: 3px solid var(--agenda-color-preview) ;
+  transition: none ;
+}
+
+.agenda-event-resizing {
+  z-index: 9999 ;
+  cursor: ns-resize ;
+  background-color: rgba(66, 133, 244, 0.1) ;
 }
 
 .rbc-event-content.agenda-event-resizing {
-  opacity: 0.7 !important;
+  opacity: var(--agenda-resize-opacity) ;
 }
 
 /* ============================================
    Drag Preview Fix - Limit All-Day Event Height
    ============================================ */
 
-/* Limit drag preview height when dragging all-day events to timeline */
 .rbc-addons-dnd-dragging.rbc-event-allday,
 .rbc-addons-dnd-dragging .rbc-event-allday {
-  max-height: 60px !important;
-  height: auto !important;
+  max-height: 60px ;
+  height: auto ;
 }
 
-/* Force 1-hour height for drag preview in day view */
-.rbc-day-slot .rbc-addons-dnd-dragging {
-  height: 4.16667% !important; /* 1 hour out of 24 hours = 4.16667% */
-  min-height: 50px !important;
-  max-height: 60px !important;
-}
-
-/* Specifically for all-day events being dragged into time slots */
+.rbc-day-slot .rbc-addons-dnd-dragging,
 .rbc-time-content .rbc-addons-dnd-dragging[class*="allday"],
 .rbc-time-content .rbc-addons-dnd-drag-preview {
-  height: 4.16667% !important;
-  max-height: 60px !important;
-  min-height: 50px !important;
+  height: 4.16667% ; /* 1 hour = 4.16667% of 24h */
+  min-height: 50px ;
+  max-height: 60px ;
 }
 
 /* ============================================
@@ -142,164 +107,192 @@
 .rbc-time-column .rbc-event-label,
 .rbc-day-slot .rbc-event-label,
 div.rbc-time-slot div.rbc-event div.rbc-event-label {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  overflow: hidden !important;
+  display: none ;
+  visibility: hidden ;
+  opacity: 0 ;
+  height: 0 ;
+  overflow: hidden ;
 }
 
 /* Custom event header layout - horizontal */
 .agenda-event-header {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-  min-width: 0 !important;
+  display: flex ;
+  align-items: center ;
+  gap: 8px ;
+  width: 100% ;
+  min-width: 0 ;
 }
 
 /* Title - flexible width, can truncate */
 .agenda-event-header .agenda-event-title {
-  flex: 1 !important;
-  font-weight: 600 !important;
-  font-size: 13px !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  line-height: 1.2 !important;
+  flex: 1 ;
+  font-weight: 600 ;
+  font-size: 13px ;
+  white-space: nowrap ;
+  overflow: hidden ;
+  text-overflow: ellipsis ;
+  line-height: 1.2 ;
 }
 
 /* Time - fixed width, always visible */
 .agenda-event-header .agenda-event-time {
-  flex-shrink: 0 !important;
-  font-size: 10px !important;
-  font-weight: 500 !important;
-  white-space: nowrap !important;
-  opacity: 0.85 !important;
+  flex-shrink: 0 ;
+  font-size: 10px ;
+  font-weight: 500 ;
+  white-space: nowrap ;
+  opacity: 0.85 ;
 }
 
 /* Make sure agenda-calendar-event fills the space properly */
 .rbc-time-slot .agenda-calendar-event {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  padding: 4px 6px !important;
-  position: relative !important;
+  display: flex ;
+  flex-direction: column ;
+  height: 100% ;
+  padding: 4px 6px ;
+  position: relative ;
   /* REMOVED: pointer-events: none - was blocking live resize preview */
 }
 
 /* Keep all-day events showing the default label */
 .rbc-allday-cell .rbc-event-label {
-  display: block !important;
+  display: block ;
 }
 
 /* ============================================
    Resize Handles - Google Calendar Style
    ============================================ */
 
-/* Resize handles with highest priority and larger hit area */
 .rbc-addons-dnd-resize-ns-anchor {
-  position: absolute !important;
-  width: 100% !important;
-  height: 15px !important; /* Increased from 10px for easier grab */
-  z-index: 1000 !important; /* Very high to be above everything */
-  cursor: ns-resize !important;
-  background: transparent !important;
+  position: absolute ;
+  width: 100% ;
+  height: 15px ;
+  z-index: 1000 ;
+  cursor: ns-resize ;
+  background: transparent ;
+  touch-action: none ; /* Prevent default touch behaviors (scroll) during resize */
 }
 
-/* Top resize handle */
-.rbc-addons-dnd-resize-ns-anchor:first-child {
-  top: 0 !important;
-  left: 0 !important;
-}
+.rbc-addons-dnd-resize-ns-anchor:first-child { top: 0 ; left: 0 ; }
+.rbc-addons-dnd-resize-ns-anchor:last-child { bottom: 0 ; left: 0 ; }
+.rbc-addons-dnd-resize-ns-anchor:hover { background: rgba(255, 255, 255, 0.2) ; }
 
-/* Bottom resize handle */
-.rbc-addons-dnd-resize-ns-anchor:last-child {
-  bottom: 0 !important;
-  left: 0 !important;
-}
-
-/* Visual feedback on hover */
-.rbc-addons-dnd-resize-ns-anchor:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Resize icon subtle hint */
 .rbc-addons-dnd-resize-ns-icon {
-  width: 100% !important;
-  height: 100% !important;
-  opacity: 0 !important;
-  transition: opacity 0.2s ease !important;
+  width: 100% ;
+  height: 100% ;
+  opacity: 0 ;
+  transition: opacity 0.2s ease ;
 }
 
-.rbc-addons-dnd-resize-ns-anchor:hover .rbc-addons-dnd-resize-ns-icon {
-  opacity: 0.8 !important;
+.rbc-addons-dnd-resize-ns-anchor:hover .rbc-addons-dnd-resize-ns-icon { opacity: 0.8 ; }
+
+/* ============================================
+   Drag Preview (All-Day → Timeline) - Subtle
+   ============================================ */
+
+.rbc-addons-dnd-dragging .rbc-addons-dnd-drag-preview {
+  opacity: 0.85 ;
+  transition: none ;
+  z-index: 9999 ;
+  /* NO scale, NO thick border - just semi-transparent */
 }
 
-/* Live resize/drag preview - Google Calendar style - ENHANCED */
-.rbc-addons-dnd-drag-preview {
-  opacity: 0.7 !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-  transition: none !important;
-  transform: scale(1.05) !important;
-  z-index: 9999 !important;
-  border: 3px solid #4285f4 !important;
-  background: rgba(66, 133, 244, 0.1) !important;
+.rbc-addons-dnd-dragging .rbc-addons-dnd-drag-preview .agenda_floating_icons {
+  display: none ;
 }
 
-/* Apply preview effects to specific event priority classes */
-.rbc-addons-dnd-drag-preview.agenda-event-priority-high {
-  border-color: #f56565 !important;
-  box-shadow: 0 8px 24px rgba(245, 101, 101, 0.5) !important;
+/* ============================================
+   Resize Preview - Prominent Visual Feedback
+   ============================================ */
+
+.rbc-addons-dnd-resizing .rbc-addons-dnd-drag-preview {
+  opacity: var(--agenda-resize-opacity) ;
+  transform: scale(var(--agenda-resize-scale)) ;
+  box-shadow: var(--agenda-resize-shadow) ;
+  border: 3px solid var(--agenda-color-preview) ;
+  background: rgba(66, 133, 244, 0.1) ;
+  transition: none ;
+  z-index: 9999 ;
 }
 
-.rbc-addons-dnd-drag-preview.agenda-event-priority-medium {
-  border-color: #ed8936 !important;
-  box-shadow: 0 8px 24px rgba(237, 137, 54, 0.5) !important;
+/* Priority colors - only during RESIZE */
+.rbc-addons-dnd-resizing .rbc-addons-dnd-drag-preview.agenda-event-priority-high {
+  border-color: var(--agenda-color-red) ;
+  box-shadow: 0 8px 24px rgba(245, 101, 101, 0.5) ;
 }
 
-.rbc-addons-dnd-drag-preview.agenda-event-priority-low {
-  border-color: #48bb78 !important;
-  box-shadow: 0 8px 24px rgba(72, 187, 120, 0.5) !important;
+.rbc-addons-dnd-resizing .rbc-addons-dnd-drag-preview.agenda-event-priority-medium {
+  border-color: var(--agenda-color-orange) ;
+  box-shadow: 0 8px 24px rgba(237, 137, 54, 0.5) ;
 }
 
-/* Hide floating icons during drag/resize */
-.rbc-addons-dnd-drag-preview .agenda_floating_icons {
-  display: none !important;
+.rbc-addons-dnd-resizing .rbc-addons-dnd-drag-preview.agenda-event-priority-low {
+  border-color: var(--agenda-color-green) ;
+  box-shadow: 0 8px 24px rgba(72, 187, 120, 0.5) ;
 }
 
-/* Ensure resizable container allows live preview */
+.rbc-addons-dnd-resizing .rbc-addons-dnd-drag-preview .agenda_floating_icons {
+  display: none ;
+}
+
+/* Resizable container */
 .rbc-addons-dnd-resizable {
-  position: relative !important;
-  height: 100% !important;
-  width: 100% !important;
-  transition: none !important; /* Remove transition for immediate feedback */
+  position: relative ;
+  height: 100% ;
+  width: 100% ;
+  transition: none ;
 }
 
-/* Visual indicator during resize - border pulse */
 .rbc-addons-dnd-resizing .rbc-addons-dnd-resizable {
-  border: 2px solid rgba(66, 133, 244, 0.4) !important;
+  border: 2px solid rgba(66, 133, 244, 0.4) ;
   animation: resize-pulse 0.3s ease-in-out;
 }
 
 @keyframes resize-pulse {
-  0%, 100% {
-    border-color: rgba(66, 133, 244, 0.4);
-  }
-  50% {
-    border-color: rgba(66, 133, 244, 0.6);
-  }
+  0%, 100% { border-color: rgba(66, 133, 244, 0.4); }
+  50% { border-color: rgba(66, 133, 244, 0.6); }
 }
 
-/* Floating icons - only show on hover, hide during resize */
+/* Floating icons */
 .agenda_floating_icons {
-  opacity: 0 !important;
-  transition: opacity 0.2s ease !important;
-  pointer-events: none !important;
+  opacity: 0 ;
+  transition: opacity 0.2s ease ;
+  pointer-events: none ;
 }
 
 .rbc-event:hover:not(.rbc-addons-dnd-resizing) .agenda_floating_icons {
-  opacity: 1 !important;
-  pointer-events: auto !important;
+  opacity: 1 ;
+  pointer-events: auto ;
+}
+
+/* ============================================
+   Touch Support for Mobile Resize
+   ============================================ */
+
+/* Larger hit area for resize handles on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .rbc-addons-dnd-resize-ns-anchor {
+    height: 25px ; /* Збільшено з 15px до 25px для кращого захоплення пальцем */
+  }
+  
+  /* Always show resize handles on touch devices */
+  .rbc-addons-dnd-resize-ns-icon {
+    opacity: 0.4 ;
+  }
+  
+  .rbc-addons-dnd-resize-ns-anchor:active .rbc-addons-dnd-resize-ns-icon {
+    opacity: 1 ;
+  }
+}
+
+/* Prevent text selection and scroll during touch resize */
+.rbc-addons-dnd-resizing {
+  user-select: none ;
+  -webkit-user-select: none ;
+  -webkit-touch-callout: none ;
+  touch-action: none ; /* Prevent scroll during resize */
+}
+
+.rbc-addons-dnd-resizing * {
+  touch-action: none ; /* Prevent scroll on child elements too */
 }
 

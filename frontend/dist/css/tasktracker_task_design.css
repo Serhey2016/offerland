@@ -22,14 +22,14 @@
     position: absolute;
     top: -15px;
     right: 10px;
-    display: flex !important;
+    display: flex ;
     gap: 5px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease;
-    z-index: 9999 !important;
-    pointer-events: auto !important;
+    z-index: 9999 ;
+    pointer-events: auto ;
 }
 
 
@@ -39,11 +39,11 @@
     height: 32px;
     border: none;
     border-radius: 50%;
-    background: #282D3B !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    pointer-events: auto !important;
+    background: #282D3B ;
+    display: flex ;
+    align-items: center ;
+    justify-content: center ;
+    pointer-events: auto ;
     color: white;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -52,9 +52,9 @@
 }
 
 .task_tracker_icon_btn:hover {
-    background: #007bff !important;
-    transform: scale(1.1) !important;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+    background: #007bff ;
+    transform: scale(1.1) ;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) ;
 }
 
 .task_tracker_icon_btn:active {
@@ -174,10 +174,10 @@
     
     .task_tracker_task_container:hover .task_tracker_floating_icons,
     .task_tracker_task_container.mobile-tap .task_tracker_floating_icons {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-        visibility: visible !important;
-        display: flex !important;
+        opacity: 1 ;
+        transform: translateY(0) ;
+        visibility: visible ;
+        display: flex ;
     }
     
     .task_tracker_icon_btn {
@@ -210,18 +210,18 @@
 
 /* Task Dropdown Menu Styles */
 .task_tracker_task_dropdown_menu {
-    position: fixed !important;
-    z-index: 9999 !important;
-    background-color: white !important;
-    border: 1px solid #ddd !important;
-    border-radius: 6px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    min-width: 160px !important;
-    padding: 4px 0 !important;
-    font-size: 14px !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+    position: fixed ;
+    z-index: 9999 ;
+    background-color: white ;
+    border: 1px solid #ddd ;
+    border-radius: 6px ;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) ;
+    min-width: 160px ;
+    padding: 4px 0 ;
+    font-size: 14px ;
+    display: block ;
+    visibility: visible ;
+    opacity: 1 ;
 }
 
 .task_tracker_task_dropdown_item {
@@ -319,7 +319,7 @@
 }
 
 .task_tracker_task_dropdown_item_with_submenu:hover .pi-chevron-right {
-    opacity: 1 !important;
+    opacity: 1 ;
 }
 
 /* ============================================================================

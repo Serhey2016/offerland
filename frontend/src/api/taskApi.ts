@@ -653,8 +653,8 @@ export const taskApi = {
 
   // Update task datetime (for drag and drop in calendar)
   updateTaskDatetime: async (slug: string, datetimeData: {
-    start_datetime: string
-    end_datetime: string
+    start_datetime: string | null
+    end_datetime: string | null
     all_day?: boolean
   }): Promise<any> => {
     try {

@@ -1309,29 +1309,34 @@ def update_task_datetime(request, task_slug):
         end_datetime_str = data.get('end_datetime')
         all_day = data.get('all_day', False)
         
-        # Parse and update start_datetime
-        if start_datetime_str:
-            try:
-                # Parse ISO format datetime string
-                start_dt = datetime.fromisoformat(start_datetime_str.replace('Z', '+00:00'))
-                task.start_datetime = start_dt
-            except ValueError as e:
-                return JsonResponse({
-                    'success': False,
-                    'error': f'Invalid start_datetime format: {e}'
-                }, status=400)
-        
-        # Parse and update end_datetime
-        if end_datetime_str:
-            try:
-                # Parse ISO format datetime string
-                end_dt = datetime.fromisoformat(end_datetime_str.replace('Z', '+00:00'))
-                task.end_datetime = end_dt
-            except ValueError as e:
-                return JsonResponse({
-                    'success': False,
-                    'error': f'Invalid end_datetime format: {e}'
-                }, status=400)
+        # If moving to all_day, clear datetime fields
+        if all_day and start_datetime_str is None and end_datetime_str is None:
+            task.start_datetime = None
+            task.end_datetime = None
+        else:
+            # Parse and update start_datetime
+            if start_datetime_str:
+                try:
+                    # Parse ISO format datetime string
+                    start_dt = datetime.fromisoformat(start_datetime_str.replace('Z', '+00:00'))
+                    task.start_datetime = start_dt
+                except ValueError as e:
+                    return JsonResponse({
+                        'success': False,
+                        'error': f'Invalid start_datetime format: {e}'
+                    }, status=400)
+            
+            # Parse and update end_datetime
+            if end_datetime_str:
+                try:
+                    # Parse ISO format datetime string
+                    end_dt = datetime.fromisoformat(end_datetime_str.replace('Z', '+00:00'))
+                    task.end_datetime = end_dt
+                except ValueError as e:
+                    return JsonResponse({
+                        'success': False,
+                        'error': f'Invalid end_datetime format: {e}'
+                    }, status=400)
         
         task.save()
         

@@ -8,6 +8,7 @@ import AgendaView from './views/AgendaView'
 import TouchpointView from './views/TouchpointView'
 import GenericView from './views/GenericView'
 import ContactsView from './views/subcategories/ContactsView'
+import EmptyStateView from './views/EmptyStateView'
 import {
   Category,
   Subcategory,
@@ -32,6 +33,7 @@ const TaskTracker = () => {
   
   const [selectedCategory, setSelectedCategory] = useState<Category>(CATEGORIES.AGENDA)
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('')
+  const [selectedNavigationItem, setSelectedNavigationItem] = useState<string | null>(null)
   const [isUpdating, setIsUpdating] = useState(false)
   const [renderKey, setRenderKey] = useState(0)
 
@@ -112,6 +114,7 @@ const TaskTracker = () => {
       // Update React state
       setSelectedCategory(category)
       setSelectedSubcategory('')
+      setSelectedNavigationItem(null)
       
       // Update UI
       updateActiveMenuItems(category)
@@ -153,6 +156,7 @@ const TaskTracker = () => {
       try {
         setSelectedCategory(category)
         setSelectedSubcategory(subcategory)
+        setSelectedNavigationItem(null)
         updateSubcategoryDisplay(category)
         setIsUpdating(false)
       } catch (error) {
@@ -176,6 +180,7 @@ const TaskTracker = () => {
     try {
       setSelectedCategory(category)
       setSelectedSubcategory('')
+      setSelectedNavigationItem(null)
       
       // Update active states in task tracker menu
       updateMenuStates(category, '' as Subcategory)
@@ -223,6 +228,7 @@ const TaskTracker = () => {
           try {
             setSelectedCategory(category)
             setSelectedSubcategory('')
+            setSelectedNavigationItem(null)
             
             // Update UI
             updateActiveMenuItems(category)
@@ -262,8 +268,30 @@ const TaskTracker = () => {
 
   // Handle submenu navigation events
   const handleSubMenuNavigation = (event: CustomEvent): void => {
-    const { category, item, itemId } = event.detail
-    // TODO: Implement navigation logic
+    const { itemId } = event.detail
+    
+    // Set navigation item as active
+    setSelectedNavigationItem(itemId)
+    setSelectedSubcategory('')
+    
+    // Deactivate all left menu items
+    document.querySelectorAll('.task_tracker_menu_item').forEach(item => {
+      item.classList.remove('active', 'expanded')
+    })
+    
+    // Hide all submenus
+    document.querySelectorAll('.task_tracker_submenu').forEach(submenu => {
+      submenu.classList.remove('show')
+    })
+  }
+
+  // Handle submenu navigation clear events
+  const handleSubMenuNavigationClear = (event: CustomEvent): void => {
+    setSelectedNavigationItem(null)
+    
+    // Restore previous category state
+    updateActiveMenuItems(selectedCategory)
+    toggleSubmenus(selectedCategory)
   }
 
   // Initialize and manage all event listeners
@@ -275,6 +303,7 @@ const TaskTracker = () => {
     window.addEventListener('subMenuFilter', handleSubMenuFilter as EventListener)
     window.addEventListener('subMenuAdd', handleSubMenuAdd as EventListener)
     window.addEventListener('subMenuNavigation', handleSubMenuNavigation as EventListener)
+    window.addEventListener('subMenuNavigationClear', handleSubMenuNavigationClear as EventListener)
     document.addEventListener('click', handleDirectMenuClick)
     
     // Initialize task tracker menu
@@ -307,6 +336,7 @@ const TaskTracker = () => {
       window.removeEventListener('subMenuFilter', handleSubMenuFilter as EventListener)
       window.removeEventListener('subMenuAdd', handleSubMenuAdd as EventListener)
       window.removeEventListener('subMenuNavigation', handleSubMenuNavigation as EventListener)
+      window.removeEventListener('subMenuNavigationClear', handleSubMenuNavigationClear as EventListener)
       document.removeEventListener('click', handleDirectMenuClick)
     }
   }, [])
@@ -331,6 +361,9 @@ const TaskTracker = () => {
   }, [isUpdating])
 
   const renderSubcategoryContent = (): React.ReactElement | null => {
+    // Don't render subcategory content if navigation item is selected
+    if (selectedNavigationItem) return null
+    
     if (!selectedSubcategory || !selectedCategory) return null
 
     // Touchpoint subcategories
@@ -380,6 +413,11 @@ const TaskTracker = () => {
   }
 
   const renderMainContent = (): React.ReactElement => {
+    // If navigation item is selected (Business support or Personal support), show empty state
+    if (selectedNavigationItem) {
+      return <EmptyStateView />
+    }
+    
     const viewComponents = {
       [CATEGORIES.AGENDA]: <AgendaView />,
       [CATEGORIES.TOUCHPOINT]: <TouchpointView />,
@@ -399,15 +437,18 @@ const TaskTracker = () => {
   const handleCategoryChange = useCallback((category: string) => {
     setSelectedCategory(category as Category)
     setSelectedSubcategory('')
+    setSelectedNavigationItem(null)
   }, [])
 
   const handleSubcategoryChange = useCallback((category: string, subcategory: string) => {
     setSelectedCategory(category as Category)
     setSelectedSubcategory(subcategory as Subcategory)
+    setSelectedNavigationItem(null)
   }, [])
 
   const handleSubcategoryDisplayChange = useCallback((subcategory: string) => {
     setSelectedSubcategory(subcategory as Subcategory)
+    setSelectedNavigationItem(null)
   }, [])
 
   return React.createElement('div', { 

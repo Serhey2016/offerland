@@ -249,18 +249,24 @@ const Taskview: React.FC<TaskviewProps> = ({
         )}
         
         {/* Task metadata */}
-        <div className="task_tracker_task_metadata">
-          <div className="task_tracker_task_dates">
-            <div className="task_tracker_task_date_item">
-              <span>Start date:</span>
-              <span className="task_tracker_task_date_value">{startDate || '20.09.2025'}</span>
-            </div>
-            <div className="task_tracker_task_date_item">
-              <span>Due date:</span>
-              <span className="task_tracker_task_date_value">{dueDate || '20.09.2025'}</span>
+        {(startDate || dueDate) && (
+          <div className="task_tracker_task_metadata">
+            <div className="task_tracker_task_dates">
+              {startDate && (
+                <div className="task_tracker_task_date_item">
+                  <span>Start date:</span>
+                  <span className="task_tracker_task_date_value">{startDate}</span>
+                </div>
+              )}
+              {dueDate && (
+                <div className="task_tracker_task_date_item">
+                  <span>Due date:</span>
+                  <span className="task_tracker_task_date_value">{dueDate}</span>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        )}
 
         {/* Task title */}
         <div className="task_tracker_task_title">{title}</div>

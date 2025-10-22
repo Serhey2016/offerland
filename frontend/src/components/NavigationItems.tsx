@@ -2,7 +2,7 @@
 // JSX preamble for Vite plugin detection
 const JSX_PREAMBLE = <div></div>
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Category } from './shared/MenuHandlers'
 
 interface NavigationItem {
@@ -43,8 +43,8 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
       active: navItem.id === itemId ? shouldActivate : false
     })))
     
-    // Only dispatch event if activating (not when deactivating)
     if (shouldActivate) {
+      // Dispatch activation event
       const navigationEvent = {
         type: 'navigation',
         category: selectedCategory,
@@ -59,6 +59,11 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
       if (onNavigationItemClick) {
         onNavigationItemClick(item.label)
       }
+    } else {
+      // Dispatch deactivation event
+      window.dispatchEvent(new CustomEvent('subMenuNavigationClear', {
+        detail: { itemId: item.id }
+      }))
     }
   }
 
@@ -108,6 +113,30 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   const handleTouchEnd = (): void => {
     setIsDragging(false)
   }
+
+  // Listen for category changes and deactivate navigation buttons
+  useEffect(() => {
+    const handleCategoryChange = () => {
+      // Deactivate all navigation items when category changes
+      setNavigationItems(prev => prev.map(item => ({
+        ...item,
+        active: false
+      })))
+    }
+
+    // Listen to various category change events
+    window.addEventListener('taskTrackerCategoryChange', handleCategoryChange)
+    window.addEventListener('expandableMenuClick', handleCategoryChange)
+    window.addEventListener('submenuItemClick', handleCategoryChange)
+    window.addEventListener('navMenuCategoryChange', handleCategoryChange)
+
+    return () => {
+      window.removeEventListener('taskTrackerCategoryChange', handleCategoryChange)
+      window.removeEventListener('expandableMenuClick', handleCategoryChange)
+      window.removeEventListener('submenuItemClick', handleCategoryChange)
+      window.removeEventListener('navMenuCategoryChange', handleCategoryChange)
+    }
+  }, [])
 
   return (
     <div className="task_tracker_sub_menu_scrollable_container task_tracker_navigation_items_mobile">
