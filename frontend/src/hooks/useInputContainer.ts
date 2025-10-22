@@ -649,7 +649,7 @@ export const useInputContainer = ({
           console.log('Job Search created:', parentResponse)
           showSuccess('Job Search created successfully!', 'Job Search Saved', 4000)
         } else {
-          // Create Project (Task with type_of_view='project')
+          // Create Project (Task with card_template='project')
         const parentTaskData: InboxTaskData = {
           title,
         }
@@ -1009,13 +1009,13 @@ export const useInputContainer = ({
     try {
       // Create FormData for the request
       const formData = new FormData()
-      formData.append('type_of_view', 'task')
+      formData.append('card_template', 'task')
       formData.append('title', taskData.title || '')
       formData.append('description', taskData.description || '')
       formData.append('priority', taskData.priority || '')
       formData.append('date_start', taskData.date_start || '')
       formData.append('date_end', taskData.date_end || '')
-      formData.append('element_position', 'inbox')
+      formData.append('category', 'inbox')
 
       // Call the correct endpoint
       const response = await taskApi.createTaskWithFormData(formData)
@@ -1050,13 +1050,13 @@ export const useInputContainer = ({
     try {
       // Create FormData for the request
       const formData = new FormData()
-      formData.append('type_of_view', 'project')
+      formData.append('card_template', 'project')
       formData.append('title', projectData.title || '')
       formData.append('description', projectData.description || '')
       formData.append('priority', projectData.priority || '')
       formData.append('date_start', projectData.date_start || '')
       formData.append('date_end', projectData.date_end || '')
-      formData.append('element_position', 'inbox')
+      formData.append('category', 'inbox')
 
       // Call the correct endpoint
       const response = await taskApi.createTaskWithFormData(formData)

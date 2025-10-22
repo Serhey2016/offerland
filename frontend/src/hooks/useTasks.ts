@@ -282,8 +282,8 @@ export const useTasks = (
     if (!openDropdownTaskId) return
     
     try {
-      // Call API to update element position
-      await taskApi.updateElementPosition(openDropdownTaskId, category)
+      // Call API to update category
+      await taskApi.updateCategory(openDropdownTaskId, category)
       
       // Close menus
       setShowSubmenu(false)

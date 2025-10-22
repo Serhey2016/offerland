@@ -16,6 +16,23 @@ export interface Task {
   tags?: string[]
 }
 
+// Recurrence Pattern Interfaces
+export interface RecurrenceSlot {
+  date: string              // "2025-10-21"
+  start_time: string        // "15:30:00"
+  end_time: string          // "16:30:00"
+  day_label?: string        // "Day 1"
+  notes?: string            // Optional notes for this slot
+}
+
+export interface RecurrencePattern {
+  type: 'custom' | 'daily' | 'weekly' | 'weekdays' | 'weekend'
+  description?: string
+  slots: RecurrenceSlot[]
+  total_duration_minutes?: number
+  recurring_group_id?: string
+}
+
 // Django Task Model Interface
 export interface DjangoTask {
   id: number
@@ -26,18 +43,25 @@ export interface DjangoTask {
   date_end?: string
   time_start?: string
   time_end?: string
+  start_datetime?: string
+  end_datetime?: string
   priority?: 'iu' | 'inu' | 'niu' | 'ninu'
-  status?: string  // element_position.name from backend
-  element_position?: string  // Same as status, kept for clarity
+  status?: string  // category.name from backend
+  category?: string  // Same as status, kept for clarity
   task_mode: 'draft' | 'published' | 'archived'
   created_at: string
   updated_at: string
+  completed_at?: string | null  // Date and time when task was marked as done
   note?: string
   hashtags?: Array<{
     id: number
     tag_name: string
   }>
-  type_of_view?: 'task' | 'project' | 'tender' | 'advertising' | 'orders' | 'job_search' | 'timeslot' | 'timeslot_public'
+  card_template?: 'task' | 'project' | 'tender' | 'advertising' | 'orders' | 'job_search' | 'timeslot' | 'timeslot_public'
+  
+  // Recurrence pattern for recurring events
+  recurrence_pattern?: RecurrencePattern | null
+  
   // TimeSlot-specific fields
   reserved_time_on_road?: number
   start_location?: string
@@ -161,7 +185,7 @@ export const taskApi = {
     }
   },
 
-  // Get all inbox items (Tasks, TimeSlots, Advertising) grouped by type_of_view
+  // Get all inbox items (Tasks, TimeSlots, Advertising) grouped by card_template
   getInboxItems: async (category: string): Promise<DjangoTask[]> => {
     try {
       const response = await api.get('/services_and_projects/user_inbox_items/', { 
@@ -219,8 +243,8 @@ export const taskApi = {
         formData.append('parent_id', taskData.parent_id.toString())
       }
       
-      // Type of view - use "task" string value (not ID)
-      formData.append('type_of_view', 'task')
+      // Card template - use "task" string value (not ID)
+      formData.append('card_template', 'task')
       
       const response = await api.post('/services_and_projects/create_task/', formData, {
         headers: {
@@ -275,8 +299,8 @@ export const taskApi = {
       // Edit item ID
       formData.append('edit_item_id', taskId.toString())
       
-      // Type of view - use "task" string value (not ID)
-      formData.append('type_of_view', 'task')
+      // Card template - use "task" string value (not ID)
+      formData.append('card_template', 'task')
       
       const response = await api.post('/services_and_projects/update_form/', formData, {
         headers: {
@@ -332,7 +356,7 @@ export const taskApi = {
       const formData = new FormData()
       formData.append('title', jobSearchData.title)
       formData.append('edit_item_id', jobSearchId.toString())
-      formData.append('type_of_view', 'job_search')
+      formData.append('card_template', 'job_search')
       
       const response = await api.post('/services_and_projects/update_form/', formData, {
         headers: {
@@ -374,8 +398,8 @@ export const taskApi = {
         formData.append('parent_id', taskData.parent_id.toString())
       }
       
-      // Type of view - use 'project' type
-      formData.append('type_of_view', 'project')
+      // Card template - use 'project' type
+      formData.append('card_template', 'project')
       
       const response = await api.post('/services_and_projects/create_task/', formData, {
         headers: {
@@ -417,8 +441,8 @@ export const taskApi = {
         formData.append('parent_id', taskData.parent_id.toString())
       }
       
-      // Type of view - use 'advertising' type
-      formData.append('type_of_view', 'advertising')
+      // Card template - use 'advertising' type
+      formData.append('card_template', 'advertising')
       
       const response = await api.post('/services_and_projects/create_advertising/', formData, {
         headers: {
@@ -448,8 +472,8 @@ export const taskApi = {
         })
       }
       
-      // Type of view - use 'advertising' type
-      formData.append('type_of_view', 'advertising')
+      // Card template - use 'advertising' type
+      formData.append('card_template', 'advertising')
       
       const response = await api.post('/services_and_projects/create_advertising/', formData, {
         headers: {
@@ -514,8 +538,8 @@ export const taskApi = {
         formData.append('hashtags', timeSlotData.hashtags)
       }
       
-      // Type of view for time slot - must be 'task' (from model choices)
-      formData.append('type_of_view', 'task')
+      // Card template for time slot - must be 'task' (from model choices)
+      formData.append('card_template', 'task')
       
       const response = await api.post('/services_and_projects/create_time_slot/', formData, {
         headers: {
@@ -583,8 +607,8 @@ export const taskApi = {
       // Edit item ID for update
       formData.append('edit_item_id', timeSlotId.toString())
       
-      // Type of view for time slot
-      formData.append('type_of_view', 'timeslot')
+      // Card template for time slot
+      formData.append('card_template', 'timeslot')
       
       const response = await api.post('/services_and_projects/update_form/', formData, {
         headers: {
@@ -614,8 +638,8 @@ export const taskApi = {
     }
   },
 
-  // Update element position (universal for Tasks, TimeSlots, JobSearch)
-  updateElementPosition: async (slug: string, position: string): Promise<any> => {
+  // Update category (universal for Tasks, TimeSlots, JobSearch)
+  updateCategory: async (slug: string, position: string): Promise<any> => {
     try {
       const response = await api.patch(`/services_and_projects/elements/${slug}/position/`, { 
         position 
@@ -623,6 +647,64 @@ export const taskApi = {
       return response.data
     } catch (error) {
       console.error(`Error updating element ${slug} position:`, error)
+      throw error
+    }
+  },
+
+  // Create recurring task with recurrence pattern
+  createRecurringTask: async (taskData: {
+    title: string
+    description?: string
+    priority?: string
+    category?: string
+    recurrence_pattern: RecurrencePattern
+  }): Promise<DjangoTask> => {
+    try {
+      const formData = new FormData()
+      formData.append('title', taskData.title)
+      if (taskData.description) formData.append('description', taskData.description)
+      if (taskData.priority) formData.append('priority', taskData.priority)
+      if (taskData.category) formData.append('category', taskData.category)
+      formData.append('card_template', 'task')
+      
+      // Add recurrence_pattern as JSON string
+      formData.append('recurrence_pattern', JSON.stringify(taskData.recurrence_pattern))
+      
+      const response = await api.post('/services_and_projects/create_task/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error('Error creating recurring task:', error)
+      throw error
+    }
+  },
+
+  // Update task's recurrence pattern
+  updateRecurrencePattern: async (taskSlug: string, recurrence_pattern: RecurrencePattern | null): Promise<DjangoTask> => {
+    try {
+      const formData = new FormData()
+      formData.append('edit_item_id', taskSlug)
+      
+      if (recurrence_pattern) {
+        formData.append('recurrence_pattern', JSON.stringify(recurrence_pattern))
+      } else {
+        // Clear recurrence pattern
+        formData.append('recurrence_pattern', 'null')
+      }
+      
+      const response = await api.post('/services_and_projects/update_form/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error(`Error updating recurrence pattern for task ${taskSlug}:`, error)
       throw error
     }
   }

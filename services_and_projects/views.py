@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from .models import ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations, TaskHashtagRelations, TypeOfView
+from .models import ServicesCategory, Services, TaskStatus, Task, TaskOwnerRelations, Advertising, AdvertisingOwnerRelations, JobSearch, TimeSlot, TimeSlotOwnerRelations, PhotoRelations, TaskHashtagRelations, CardTemplate
 from joblist.models import AllTags, Companies
 from django.utils import timezone
 import json
@@ -17,8 +17,8 @@ def testpage(request):
     status_filter = request.GET.get('status', 'all')
     category_filter = request.GET.get('category', 'all')
     
-    # Get type of view choices from TypeOfView model
-    types = TypeOfView.objects.all()
+    # Get card template choices from CardTemplate model
+    types = CardTemplate.objects.all()
     categories = ServicesCategory.objects.all()
     services = Services.objects.all()
     statuses = TaskStatus.objects.all()
@@ -55,7 +55,7 @@ def testpage(request):
         owner = owner_rel.user if owner_rel else None
         task = Task.objects.filter(
             services=advertising.services,
-            type_of_view=advertising.type_of_view
+            card_template=advertising.card_template
         ).order_by('-created_at').first()
         
         advertising_data.append({
@@ -629,13 +629,13 @@ def user_tasks(request):
         user_tasks = Task.objects.filter(
             taskownerrelations__user=request.user
         ).select_related(
-            'element_position'
+            'category'
         ).prefetch_related(
             'hashtags__hashtag'
         )
         
-        # Filter by element_position if category is provided and matches a valid position
-        # Map category names to element_position values
+        # Filter by category if category is provided and matches a valid position
+        # Map category names to position values
         position_mapping = {
             'inbox': 'inbox',
             'backlog': 'backlog',
@@ -649,12 +649,12 @@ def user_tasks(request):
         }
         
         if category in position_mapping:
-            # Special handling for agenda - show tasks with element_position='agenda' OR is_agenda=True
+            # Special handling for agenda - show tasks with category='agenda' OR is_agenda=True
             if category == 'agenda':
                 from django.db.models import Q
-                user_tasks = user_tasks.filter(Q(element_position__name='agenda') | Q(is_agenda=True))
+                user_tasks = user_tasks.filter(Q(category__name='agenda') | Q(is_agenda=True))
             else:
-                user_tasks = user_tasks.filter(element_position__name=position_mapping[category])
+                user_tasks = user_tasks.filter(category__name=position_mapping[category])
         
         user_tasks = user_tasks.order_by('-created_at')
         
@@ -688,14 +688,18 @@ def user_tasks(request):
                 'date_end': date_end_str,
                 'time_start': task.start_datetime.isoformat() if task.start_datetime else None,
                 'time_end': task.end_datetime.isoformat() if task.end_datetime else None,
+                'start_datetime': task.start_datetime.isoformat() if task.start_datetime else None,
+                'end_datetime': task.end_datetime.isoformat() if task.end_datetime else None,
                 'priority': task.priority,
-                'status': task.element_position.name if task.element_position else None,
+                'status': task.category.name if task.category else None,
                 'task_mode': task.task_mode,
                 'note': task.note,
                 'created_at': task.created_at.isoformat(),
                 'updated_at': task.updated_at.isoformat(),
+                'completed_at': task.completed_at.isoformat() if task.completed_at else None,
                 'hashtags': hashtags,
-                'type_of_view': task.type_of_view.name if task.type_of_view else 'task'
+                'card_template': task.card_template.name if task.card_template else 'task',
+                'recurrence_pattern': task.recurrence_pattern  # Додаємо recurrence_pattern
             }
             tasks_data.append(task_data)
         
@@ -711,13 +715,13 @@ def user_tasks(request):
 def user_inbox_items(request):
     """
     API endpoint to get all items (Tasks, TimeSlots, Advertising, JobSearch) for authenticated user
-    Returns items grouped by type_of_view for inbox category
+    Returns items grouped by card_template for inbox category
     """
     try:
         # Get category/status filter from query params
         category = request.GET.get('category', '').lower()
         
-        # Map category names to element_position values
+        # Map category names to position values
         position_mapping = {
             'inbox': 'inbox',
             'backlog': 'backlog',
@@ -736,7 +740,7 @@ def user_inbox_items(request):
         user_tasks = Task.objects.filter(
             taskownerrelations__user=request.user
         ).select_related(
-            'element_position', 'type_of_view'
+            'category', 'card_template'
         ).prefetch_related(
             'hashtags__hashtag'
         )
@@ -744,9 +748,9 @@ def user_inbox_items(request):
         if category in position_mapping:
             if category == 'agenda':
                 from django.db.models import Q
-                user_tasks = user_tasks.filter(Q(element_position__name='agenda') | Q(is_agenda=True))
+                user_tasks = user_tasks.filter(Q(category__name='agenda') | Q(is_agenda=True))
             else:
-                user_tasks = user_tasks.filter(element_position__name=position_mapping[category])
+                user_tasks = user_tasks.filter(category__name=position_mapping[category])
         
         user_tasks = user_tasks.order_by('-created_at')
         
@@ -778,13 +782,13 @@ def user_inbox_items(request):
                 'time_start': task.start_datetime.isoformat() if task.start_datetime else None,
                 'time_end': task.end_datetime.isoformat() if task.end_datetime else None,
                 'priority': task.priority,
-                'status': task.element_position.name if task.element_position else None,
+                'status': task.category.name if task.category else None,
                 'task_mode': task.task_mode,
                 'note': task.note,
                 'created_at': task.created_at.isoformat(),
                 'updated_at': task.updated_at.isoformat(),
                 'hashtags': hashtags,
-                'type_of_view': task.type_of_view.name if task.type_of_view else 'task',
+                'card_template': task.card_template.name if task.card_template else 'task',
                 'item_type': 'task'
             })
         
@@ -792,13 +796,13 @@ def user_inbox_items(request):
         user_time_slots = TimeSlot.objects.filter(
             timeslotownerrelations__user=request.user
         ).select_related(
-            'element_position', 'type_of_view', 'services'
+            'category', 'card_template', 'services'
         ).prefetch_related(
             'hashtags'
         )
         
         if category in position_mapping:
-            user_time_slots = user_time_slots.filter(element_position__name=position_mapping[category])
+            user_time_slots = user_time_slots.filter(category__name=position_mapping[category])
         
         user_time_slots = user_time_slots.order_by('-date_start')
         
@@ -841,13 +845,13 @@ def user_inbox_items(request):
                 'time_start': ts.time_start.isoformat() if ts.time_start else None,
                 'time_end': ts.time_end.isoformat() if ts.time_end else None,
                 'priority': None,
-                'status': ts.element_position.name if ts.element_position else None,
+                'status': ts.category.name if ts.category else None,
                 'task_mode': ts.ts_mode,
                 'note': None,
                 'created_at': None,
                 'updated_at': None,
                 'hashtags': ts_hashtags,
-                'type_of_view': ts.type_of_view.name if ts.type_of_view else 'orders',
+                'card_template': ts.card_template.name if ts.card_template else 'orders',
                 'item_type': 'time_slot',
                 'slug': ts.slug,
                 # TimeSlot-specific fields
@@ -863,16 +867,13 @@ def user_inbox_items(request):
         user_advertising = Advertising.objects.filter(
             advertisingownerrelations__user=request.user
         ).select_related(
-            'type_of_view'
+            'category', 'card_template'
         ).prefetch_related(
             'hashtags'
         )
         
-        # Advertising doesn't have element_position, so we only filter for inbox if needed
-        # For now, we'll include all advertising items when category is inbox
-        if category == 'inbox':
-            # Include advertising that are in draft mode (newly created)
-            user_advertising = user_advertising.filter(adv_mode='draft')
+        if category in position_mapping:
+            user_advertising = user_advertising.filter(category__name=position_mapping[category])
         
         user_advertising = user_advertising.order_by('-creation_date')
         
@@ -887,13 +888,13 @@ def user_inbox_items(request):
                 'time_start': None,
                 'time_end': None,
                 'priority': None,
-                'status': None,
+                'status': adv.category.name if adv.category else None,
                 'task_mode': adv.adv_mode,
                 'note': None,
                 'created_at': adv.creation_date.isoformat(),
                 'updated_at': adv.publication_date.isoformat(),
                 'hashtags': [],
-                'type_of_view': adv.type_of_view.name if adv.type_of_view else 'advertising',
+                'card_template': adv.card_template.name if adv.card_template else 'advertising',
                 'item_type': 'advertising',
                 'slug': adv.slug
             })
@@ -902,11 +903,11 @@ def user_inbox_items(request):
         user_job_searches = JobSearch.objects.filter(
             user=request.user
         ).select_related(
-            'element_position', 'type_of_view'
+            'category', 'card_template'
         )
         
         if category in position_mapping:
-            user_job_searches = user_job_searches.filter(element_position__name=position_mapping[category])
+            user_job_searches = user_job_searches.filter(category__name=position_mapping[category])
         
         user_job_searches = user_job_searches.order_by('-last_update')
         
@@ -925,13 +926,13 @@ def user_inbox_items(request):
                 'time_start': js.start_date.isoformat() if js.start_date else None,
                 'time_end': None,
                 'priority': None,
-                'status': js.element_position.name if js.element_position else None,
+                'status': js.category.name if js.category else None,
                 'task_mode': js.js_mode,
                 'note': js.notes,
                 'created_at': js.start_date.isoformat() if js.start_date else js.last_update.isoformat(),
                 'updated_at': js.last_update.isoformat(),
                 'hashtags': [],
-                'type_of_view': js.type_of_view.name if js.type_of_view else 'job_search',
+                'card_template': js.card_template.name if js.card_template else 'job_search',
                 'item_type': 'job_search',
                 'slug': js.slug
             })
@@ -972,7 +973,7 @@ def get_edit_data(request, form_type, item_slug):
                 'hashtags', 'performers', 'photos', 'services'
             ).get(slug=item_slug)
             
-            print(f"DEBUG: Found task: {task.title}, type: {task.type_of_view}")
+            print(f"DEBUG: Found task: {task.title}, type: {task.card_template}")
             
             # Проверяем права доступа (только владелец может редактировать)
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -994,7 +995,7 @@ def get_edit_data(request, form_type, item_slug):
                 'description': task.description,
                 'category': category_id,
                 'service': service_id,
-                'status': task.element_position.name if task.element_position else None,
+                'status': task.category.name if task.category else None,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
                 'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
@@ -1008,7 +1009,7 @@ def get_edit_data(request, form_type, item_slug):
             # Получаем данные тендера (используем модель Task с типом 'tender')
             task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
-            ).get(slug=item_slug, type_of_view__name='tender')
+            ).get(slug=item_slug, card_template__name='tender')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -1024,7 +1025,7 @@ def get_edit_data(request, form_type, item_slug):
                 'description': task.description,
                 'category': category_id,
                 'service': service_id,
-                'status': task.element_position.name if task.element_position else None,
+                'status': task.category.name if task.category else None,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
                 'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
@@ -1036,7 +1037,7 @@ def get_edit_data(request, form_type, item_slug):
             # Получаем данные проекта (используем модель Task с типом 'project')
             task = Task.objects.prefetch_related(
                 'hashtags', 'performers', 'photos', 'services'
-            ).get(slug=item_slug, type_of_view__name='project')
+            ).get(slug=item_slug, card_template__name='project')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
@@ -1052,7 +1053,7 @@ def get_edit_data(request, form_type, item_slug):
                 'description': task.description,
                 'category': category_id,
                 'service': service_id,
-                'status': task.element_position.name if task.element_position else None,
+                'status': task.category.name if task.category else None,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
                 'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
@@ -1094,6 +1095,8 @@ def get_edit_data(request, form_type, item_slug):
                 'description': advertising.description,
                 'category': category_id,
                 'service': service_id,
+                'card_template': advertising.card_template.name if advertising.card_template else None,
+                'category': advertising.category.name if advertising.category else None,
                 'hashtags': [{'tag': tag.tag} for tag in advertising.hashtags.all()],
                 'photos': [{'id': photo.id, 'url': photo.photo.url} if photo.photo else None for photo in advertising.photos.all() if photo.photo]
             }
@@ -1235,15 +1238,15 @@ def update_task_status(request, task_slug):
                 'error': f'Invalid status. Must be one of: {", ".join(valid_statuses)}'
             }, status=400)
         
-        # Update task element_position
-        task.element_position_id = new_status
+        # Update task category
+        task.category_id = new_status
         
         # Special handling for agenda category
         if new_status == 'agenda':
             task.is_agenda = True
         elif task.is_agenda and new_status not in ['agenda', 'done']:
             # If moving away from agenda, set is_agenda to False
-            # EXCEPT for 'done' - it stays in agenda but changes element_position
+            # EXCEPT for 'done' - it stays in agenda but changes category
             # Archive and all others remove task from agenda
             task.is_agenda = False
         
@@ -1283,9 +1286,9 @@ def update_task_status(request, task_slug):
 @login_required
 @require_http_methods(["PATCH"])
 @csrf_exempt
-def update_element_position(request, slug):
+def update_category(request, slug):
     """
-    Universal endpoint to update element_position for any element type (Task, TimeSlot, JobSearch)
+    Universal endpoint to update category for any element type (Task, TimeSlot, JobSearch)
     Determines the element type automatically and updates accordingly
     """
     try:
@@ -1346,15 +1349,15 @@ def update_element_position(request, slug):
                     'error': 'Element not found'
                 }, status=404)
         
-        # Update element_position
-        element.element_position_id = new_position
+        # Update category
+        element.category_id = new_position
         
         # Special handling for agenda category
         if new_position == 'agenda' and element_type == 'task':
             element.is_agenda = True
         elif element_type == 'task' and hasattr(element, 'is_agenda'):
             # If moving away from agenda, set is_agenda to False
-            # EXCEPT for 'done' - it stays in agenda but changes element_position
+            # EXCEPT for 'done' - it stays in agenda but changes category
             # Archive and all others remove task from agenda
             if element.is_agenda and new_position not in ['agenda', 'done']:
                 element.is_agenda = False
@@ -1381,7 +1384,7 @@ def update_element_position(request, slug):
         }, status=400)
     except Exception as e:
         import traceback
-        print(f"Error updating element position: {e}")
+        print(f"Error updating category: {e}")
         print(f"Traceback: {traceback.format_exc()}")
         return JsonResponse({
             'success': False,

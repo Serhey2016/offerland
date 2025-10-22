@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from .models import (
-    Comment, TaskStatus, ElementPosition, TypeOfView, ServicesCategory, PhotoRelations, Services, Finance, Task,
+    Comment, TaskStatus, Category, CardTemplate, ServicesCategory, PhotoRelations, Services, Finance, Task,
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations, 
     PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
     TimeSlot, Advertising, TaskClientRelations, TimeSlotPerformersRelations, CommentTimeSlotRelations,
@@ -29,15 +30,16 @@ class ServicesRelationsInline(admin.TabularInline):
     extra = 1
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'type_of_view', 'task_mode', 'element_position', 'priority', 'created_at', 'is_published', 'is_touchpoint', 'is_agenda')
-    list_filter = ('task_mode', 'element_position', 'priority', 'type_of_view', 'is_published', 'is_touchpoint', 'is_agenda', 'created_at')
+    list_display = ('id', 'title', 'card_template', 'task_mode', 'category', 'priority', 'created_at', 'is_published', 'is_touchpoint', 'is_agenda', 'is_recurring_display')
+    list_filter = ('task_mode', 'category', 'priority', 'card_template', 'is_published', 'is_touchpoint', 'is_agenda', 'created_at')
     search_fields = ('title', 'description')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at', 'completed_at', 'recurrence_info_display')
     date_hierarchy = 'created_at'
+    inlines = [TaskHashtagRelationsInline, PerformersRelationsInline, ServicesRelationsInline]
     
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'description', 'type_of_view', 'task_mode', 'element_position', 'priority')
+            'fields': ('title', 'description', 'card_template', 'task_mode', 'category', 'priority')
         }),
         ('Дополнительная информация', {
             'fields': ('photo_link', 'documents', 'note', 'finance'),
@@ -48,7 +50,11 @@ class TaskAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
         ('Даты и время', {
-            'fields': ('start_datetime', 'end_datetime'),
+            'fields': ('start_datetime', 'end_datetime', 'created_at', 'updated_at', 'completed_at'),
+            'classes': ('collapse',)
+        }),
+        ('Повторення (Recurrence)', {
+            'fields': ('recurrence_pattern', 'recurrence_info_display'),
             'classes': ('collapse',)
         }),
         ('Связи', {
@@ -57,21 +63,59 @@ class TaskAdmin(admin.ModelAdmin):
         }),
     )
     
-    inlines = [TaskHashtagRelationsInline, PerformersRelationsInline, ServicesRelationsInline]
+    @admin.display(description='Recurring')
+    def is_recurring_display(self, obj):
+        """Display recurring status in list"""
+        return '🔄 Yes' if obj.is_recurring() else 'No'
+    
+    @admin.display(description='Recurrence Info')
+    def recurrence_info_display(self, obj):
+        """Display detailed recurrence information"""
+        if not obj.is_recurring():
+            return 'Not a recurring task'
+        
+        slots = obj.get_recurrence_slots()
+        info = f"<strong>Type:</strong> {obj.get_recurrence_type()}<br>"
+        info += f"<strong>Total slots:</strong> {len(slots)}<br><br>"
+        
+        for i, slot in enumerate(slots, 1):
+            info += f"<strong>Slot {i}:</strong> {slot.get('date', 'N/A')} "
+            info += f"({slot.get('start_time', 'N/A')} - {slot.get('end_time', 'N/A')})"
+            if slot.get('day_label'):
+                info += f" - {slot.get('day_label')}"
+            info += "<br>"
+        
+        return mark_safe(info)
 
 class AdvertisingAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'card_template', 'category', 'adv_mode', 'services', 'creation_date', 'publication_date')
+    list_filter = ('adv_mode', 'card_template', 'category', 'services', 'creation_date')
+    search_fields = ('title', 'description')
+    readonly_fields = ('creation_date', 'publication_date')
+    date_hierarchy = 'creation_date'
+    
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('title', 'description', 'card_template', 'category', 'adv_mode', 'services')
+        }),
+        ('Даты', {
+            'fields': ('creation_date', 'publication_date'),
+            'classes': ('collapse',)
+        }),
+    )
+    
     inlines = [AdvertisingHashtagRelationsInline]
 
 class TimeSlotAdmin(admin.ModelAdmin):
-    list_display = ('id', 'date_start', 'date_end', 'time_start', 'time_end', 'ts_mode', 'type_of_view', 'services', 'cost_of_1_hour_of_work')
-    list_filter = ('ts_mode', 'type_of_view', 'services', 'date_start', 'date_end')
+    list_display = ('id', 'date_start', 'date_end', 'time_start', 'time_end', 'ts_mode', 'card_template', 'category', 'services', 'cost_of_1_hour_of_work')
+    list_filter = ('ts_mode', 'card_template', 'category', 'services', 'date_start', 'date_end')
     search_fields = ('start_location', 'minimum_time_slot')
     readonly_fields = ('id',)
     date_hierarchy = 'date_start'
     
     fieldsets = (
         ('Основная информация', {
-            'fields': ('ts_mode', 'type_of_view', 'services')
+            'fields': ('ts_mode', 'card_template', 'category', 'services')
         }),
         ('Даты и время', {
             'fields': ('date_start', 'date_end', 'time_start', 'time_end')
@@ -124,8 +168,8 @@ class JobSearchActivitiesRelationsAdmin(admin.ModelAdmin):
 
 admin.site.register(Comment)
 admin.site.register(TaskStatus)
-admin.site.register(ElementPosition)
-admin.site.register(TypeOfView)
+admin.site.register(Category)
+admin.site.register(CardTemplate)
 admin.site.register(ServicesCategory)
 admin.site.register(PhotoRelations)
 admin.site.register(Services)
@@ -142,15 +186,15 @@ admin.site.register(Advertising, AdvertisingAdmin)
 admin.site.register(TaskClientRelations)
 admin.site.register(AdvertisingOwnerRelations)
 class JobSearchAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'user', 'post_type', 'js_mode', 'type_of_view', 'element_position', 'result_of_task', 'start_date', 'last_update')
-    list_filter = ('post_type', 'js_mode', 'type_of_view', 'element_position', 'result_of_task', 'start_date', 'user')
+    list_display = ('id', 'title', 'user', 'post_type', 'js_mode', 'card_template', 'category', 'result_of_task', 'start_date', 'last_update')
+    list_filter = ('post_type', 'js_mode', 'card_template', 'category', 'result_of_task', 'start_date', 'user')
     search_fields = ('title', 'notes', 'user__username')
     readonly_fields = ('last_update',)
     date_hierarchy = 'start_date'
     
     fieldsets = (
-        ('Основная информация', {
-            'fields': ('title', 'user', 'post_type', 'js_mode', 'type_of_view', 'element_position', 'result_of_task')
+        ('Основная информація', {
+            'fields': ('title', 'user', 'post_type', 'js_mode', 'card_template', 'category', 'result_of_task')
         }),
         ('Дополнительная информация', {
             'fields': ('notes',),

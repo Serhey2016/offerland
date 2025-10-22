@@ -39,7 +39,7 @@ def create_task(request):
             logger.info(f"Request POST data: {dict(request.POST)}")
             
             # Получаем данные из формы
-            type_of_task_id = none_if_empty(request.POST.get('type_of_view'))
+            type_of_task_id = none_if_empty(request.POST.get('card_template'))
             if isinstance(type_of_task_id, list):
                 type_of_task_id = type_of_task_id[0] if type_of_task_id else None
             title = none_if_empty(request.POST.get('title'))
@@ -97,10 +97,10 @@ def create_task(request):
                     except ValueError:
                         pass
             documents = none_if_empty(request.POST.get('documents'))
-            # Set element_position - all new items go to inbox by default
-            element_position = none_if_empty(request.POST.get('element_position'))
-            if not element_position:
-                element_position = 'inbox'
+            # Set category - all new items go to inbox by default
+            category = none_if_empty(request.POST.get('category'))
+            if not category:
+                category = 'inbox'
             is_private = bool(request.POST.get('private'))
             disclose_name = bool(request.POST.get('disclose_name'))
             hidden = bool(request.POST.get('hidden'))
@@ -137,7 +137,7 @@ def create_task(request):
 
             # ЭТАП 1: Создаём основную запись Task
             task = Task.objects.create(
-                type_of_view_id=type_of_task_id if type_of_task_id else 'task',
+                card_template_id=type_of_task_id if type_of_task_id else 'task',
                 title=title,
                 description=description,
                 photo_link=photo_link,
@@ -145,7 +145,7 @@ def create_task(request):
                 end_datetime=end_datetime,
                 documents=documents,
                 priority=priority,
-                element_position_id=element_position,
+                category_id=category,
                 is_private=is_private,
                 disclose_name=disclose_name,
                 hidden=hidden,
@@ -291,8 +291,9 @@ def create_advertising(request):
             title = none_if_empty(request.POST.get('title'))
             description = none_if_empty(request.POST.get('description'))
             photo_link = none_if_empty(request.POST.get('photo_link') or request.POST.get('photos-link'))
-            type_of_task_id = none_if_empty(request.POST.get('type_of_view'))
+            type_of_task_id = none_if_empty(request.POST.get('card_template'))
             service_id = none_if_empty(request.POST.get('service'))
+            category_id = none_if_empty(request.POST.get('category'))
 
             logger.info(f"Parsed form data:")
             logger.info(f"  - title: {title}")
@@ -300,6 +301,7 @@ def create_advertising(request):
             logger.info(f"  - photo_link: {photo_link}")
             logger.info(f"  - type_of_task_id: {type_of_task_id}")
             logger.info(f"  - service_id: {service_id}")
+            logger.info(f"  - category_id: {category_id}")
 
             logger.info(f"Creating advertising with title: {title}")
 
@@ -314,11 +316,13 @@ def create_advertising(request):
                 }, status=400)
 
             # ЭТАП 1: Создаём основную запись Advertising
+            # Set default values for Announcement: card_template='advertising', category='inbox'
             advertising = Advertising.objects.create(
                 title=title,
                 description=description,
-                type_of_view_id=type_of_task_id if type_of_task_id else 'advertising',
-                services_id=service_id
+                card_template_id=type_of_task_id if type_of_task_id else 'advertising',
+                services_id=service_id,
+                category_id=category_id if category_id else 'inbox'
             )
             
             logger.info(f"Advertising created with ID: {advertising.id}")
@@ -458,7 +462,7 @@ def create_time_slot(request):
             logger.info(f"cost_of_1_hour_of_work: {cost_of_1_hour_of_work}")
             minimum_time_slot = none_if_empty(request.POST.get('minimum_time_slot'))
             logger.info(f"minimum_time_slot: {minimum_time_slot}")
-            type_of_task = none_if_empty(request.POST.get('type_of_view'))
+            type_of_task = none_if_empty(request.POST.get('card_template'))
             logger.info(f"type_of_task: {type_of_task}")
             services_id = none_if_empty(request.POST.get('services'))
             logger.info(f"services_id: {services_id}")
@@ -542,9 +546,9 @@ def create_time_slot(request):
                 start_location=start_location or '',
                 cost_of_1_hour_of_work=cost_in_cents or Decimal('0'),
                 minimum_time_slot=str(minimum_time_slot) if minimum_time_slot else '60',
-                type_of_view_id=type_of_task or 'task',
+                card_template_id=type_of_task or 'task',
                 services_id=services_id,
-                element_position_id='inbox'
+                category_id='inbox'
             )
             
             logger.info(f"TimeSlot created successfully with ID: {time_slot.id}")
@@ -681,7 +685,7 @@ def create_job_search(request):
             job_search = JobSearch.objects.create(
                 user=request.user,
                 title=title,
-                element_position_id='projects'
+                category_id='projects'
                 # start_date остается пустым
                 # last_update заполнится автоматически
             )
@@ -715,7 +719,7 @@ def handle_form_submission(request):
             logger.info(f"Request headers: {dict(request.headers)}")
             
             # Определяем тип публикации
-            type_of_task_id = request.POST.get('type_of_view')
+            type_of_task_id = request.POST.get('card_template')
             logger.info(f"Received type_of_task_id: {type_of_task_id}")
             
             if not type_of_task_id:
@@ -809,17 +813,17 @@ def create_activity_task(request, activity_id):
             type_of_task = 'job_search'
             print(f"Type of task: {type_of_task}")
             
-            # Element position по умолчанию
-            default_element_position = 'inbox'
-            print(f"Default element_position: {default_element_position}")
+            # Category по умолчанию
+            default_category = 'inbox'
+            print(f"Default category: {default_category}")
             
             # Создаем таску
             print(f"Creating task with title: {title}, description: {description}")
             task = Task.objects.create(
-                type_of_view_id=type_of_task,
+                card_template_id=type_of_task,
                 title=title,
                 description=description,
-                element_position_id=default_element_position,
+                category_id=default_category,
                 is_private=False,
                 disclose_name=False,
                 hidden=False,
@@ -888,7 +892,7 @@ def update_form(request):
             
             # Получаем ID редактируемого элемента
             edit_item_id = request.POST.get('edit_item_id')
-            type_of_task_id = request.POST.get('type_of_view')
+            type_of_task_id = request.POST.get('card_template')
             
             logger.info(f"Edit item ID: {edit_item_id}")
             logger.info(f"Type of task ID: {type_of_task_id}")
@@ -962,6 +966,7 @@ def update_advertising(request, advertising_id):
         description = request.POST.get('description', '').strip()
         category_id = request.POST.get('category')
         service_id = request.POST.get('service')
+        category_id = request.POST.get('category')
         
         # Валидация обязательных полей
         if not title:
@@ -972,6 +977,21 @@ def update_advertising(request, advertising_id):
         # Обновляем основные поля
         advertising.title = title
         advertising.description = description
+        
+        # Обновляем category
+        if category_id:
+            try:
+                logger.info(f"Updating category to ID: {category_id}")
+                from .models import Category
+                category = Category.objects.get(name=category_id)
+                advertising.category = category
+                logger.info(f"Category updated to: {category.name}")
+            except Category.DoesNotExist:
+                logger.warning(f"Category with name {category_id} not found")
+                pass
+            except Exception as e:
+                logger.error(f"Error updating category: {e}")
+                pass
         
         # Обновляем сервис (у Advertising есть поле services как ForeignKey)
         if service_id:

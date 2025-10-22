@@ -58,7 +58,7 @@ class TaskStatus(models.Model):
         verbose_name_plural = "Task Statuses"
 
 
-class ElementPosition(models.Model):
+class Category(models.Model):
     """Unified position/status for all elements (Task, JobSearch, TimeSlot, etc.)"""
     POSITION_CHOICES = [
         ('inbox', 'Inbox'),
@@ -79,14 +79,14 @@ class ElementPosition(models.Model):
         return self.get_name_display()
     
     class Meta:
-        db_table = 'element_position'
-        verbose_name = "Element Position"
-        verbose_name_plural = "Element Positions"
+        db_table = 'category'
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
 
 
-class TypeOfView(models.Model):
-    """Unified type/category for all view elements (Task, JobSearch, TimeSlot, Advertising, etc.)"""
-    VIEW_TYPE_CHOICES = [
+class CardTemplate(models.Model):
+    """Unified card template for all view elements (Task, JobSearch, TimeSlot, Advertising, etc.)"""
+    TEMPLATE_CHOICES = [
         ('tender', 'Tender'),
         ('project', 'Project'),
         ('advertising', 'Advertising'),
@@ -98,15 +98,15 @@ class TypeOfView(models.Model):
     ]
     
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20, choices=VIEW_TYPE_CHOICES, unique=True)
+    name = models.CharField(max_length=20, choices=TEMPLATE_CHOICES, unique=True)
     
     def __str__(self):
         return self.get_name_display()
     
     class Meta:
-        db_table = 'type_of_view'
-        verbose_name = "Type of View"
-        verbose_name_plural = "Types of View"
+        db_table = 'card_template'
+        verbose_name = "Card Template"
+        verbose_name_plural = "Card Templates"
 
 
 class ServicesCategory(models.Model):
@@ -181,17 +181,18 @@ class Task(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(default=generate_uuid, unique=True, editable=False)
     slug = models.SlugField(max_length=255, blank=True, null=True, unique=True)
-    type_of_view = models.ForeignKey('TypeOfView', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Type of view', to_field='name', db_column='type_of_view')
+    card_template = models.ForeignKey('CardTemplate', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Card template', to_field='name', db_column='card_template')
     title = models.CharField(max_length=120)
     description = models.TextField(max_length=5000, blank=True, null=True)
     photo_link = models.CharField(max_length=2000, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    completed_at = models.DateTimeField(null=True, blank=True, verbose_name='Completed At', help_text='Date and time when task was marked as done')
     start_datetime = models.DateTimeField(null=True, blank=True, verbose_name='Start Date & Time')
     end_datetime = models.DateTimeField(null=True, blank=True, verbose_name='End Date & Time')
     documents = models.CharField(max_length=2000, blank=True, null=True)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, null=True, blank=True, verbose_name='Priority')
-    element_position = models.ForeignKey('ElementPosition', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Position', to_field='name', db_column='element_position')
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Category', to_field='name', db_column='category')
     task_mode = models.CharField(max_length=15, choices=TASK_MODE_CHOICES, default='draft', verbose_name='Task mode')
     is_private = models.BooleanField(default=False)
     disclose_name = models.BooleanField(default=False)
@@ -202,6 +203,15 @@ class Task(models.Model):
     note = models.TextField(max_length=10000, blank=True, null=True)
     finance = models.ForeignKey('Finance', on_delete=models.SET_NULL, null=True, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subtasks')
+    
+    # Recurrence pattern для повторюваних подій
+    recurrence_pattern = models.JSONField(
+        null=True, 
+        blank=True,
+        verbose_name='Recurrence Pattern',
+        help_text='JSON structure for recurring events with different time slots per day',
+        default=None
+    )
     
     # Связи многие ко многим через промежуточные таблицы
     hashtags = models.ManyToManyField('joblist.AllTags', through='TaskHashtagRelations', blank=True)
@@ -217,10 +227,61 @@ class Task(models.Model):
         if not self.slug:
             # Short slug: "t-{uuid[:8]}" (11 chars total)
             self.slug = f"t-{self.uuid.hex[:8]}"
+        
+        # Автоматично встановлюємо completed_at при переміщенні в done
+        if self.category and self.category.name == 'done' and not self.completed_at:
+            from django.utils import timezone
+            self.completed_at = timezone.now()
+        
+        # Очищаємо completed_at якщо таска перейшла з done в іншу категорію
+        if self.category and self.category.name != 'done' and self.completed_at:
+            self.completed_at = None
+        
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return f"/task/{self.slug}/"
+    
+    # Helper методи для роботи з повтореннями
+    def is_recurring(self):
+        """Перевіряє, чи є таска повторюваною"""
+        return self.recurrence_pattern is not None and \
+               isinstance(self.recurrence_pattern, dict) and \
+               'slots' in self.recurrence_pattern and \
+               len(self.recurrence_pattern['slots']) > 0
+    
+    def get_recurrence_slots(self):
+        """Повертає список часових слотів для повторюваної події"""
+        if not self.is_recurring():
+            return []
+        return self.recurrence_pattern.get('slots', [])
+    
+    def get_recurrence_type(self):
+        """Повертає тип повторення (daily, weekly, custom, etc.)"""
+        if not self.is_recurring():
+            return None
+        return self.recurrence_pattern.get('type', 'custom')
+    
+    def add_recurrence_slot(self, date, start_time, end_time, **extra_data):
+        """Додає новий часовий слот до повторення"""
+        if self.recurrence_pattern is None:
+            self.recurrence_pattern = {'type': 'custom', 'slots': []}
+        
+        slot = {
+            'date': str(date),
+            'start_time': str(start_time),
+            'end_time': str(end_time),
+            **extra_data
+        }
+        
+        if 'slots' not in self.recurrence_pattern:
+            self.recurrence_pattern['slots'] = []
+        
+        self.recurrence_pattern['slots'].append(slot)
+        
+    def clear_recurrence(self):
+        """Очищає всі дані про повторення"""
+        self.recurrence_pattern = None
 
     class Meta:
         verbose_name = "Task"
@@ -338,9 +399,9 @@ class TimeSlot(models.Model):
     cost_of_1_hour_of_work = models.DecimalField(max_digits=10, decimal_places=2)  # В центах
     minimum_time_slot = models.CharField(max_length=50)  # Изменено на CharField
     
-    type_of_view = models.ForeignKey('TypeOfView', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Type of view', to_field='name', db_column='type_of_view')
+    card_template = models.ForeignKey('CardTemplate', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Card template', to_field='name', db_column='card_template')
     services = models.ForeignKey('Services', on_delete=models.CASCADE)
-    element_position = models.ForeignKey('ElementPosition', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Position', to_field='name', db_column='element_position')
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Category', to_field='name', db_column='category')
     ts_mode = models.CharField(max_length=10, choices=TS_MODE_CHOICES, default='draft', verbose_name='Time slot mode')
     
     # Добавляем связи многие ко многим через промежуточные таблицы
@@ -408,7 +469,8 @@ class Advertising(models.Model):
     hashtags = models.ManyToManyField('joblist.AllTags', through='AdvertisingHashtagRelations', blank=True)
     services = models.ForeignKey('Services', on_delete=models.CASCADE, null=True, blank=True)
     
-    type_of_view = models.ForeignKey('TypeOfView', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Type of view', to_field='name', db_column='type_of_view')
+    card_template = models.ForeignKey('CardTemplate', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Card template', to_field='name', db_column='card_template')
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Category', to_field='name', db_column='category')
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='advertisings')
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Creation date')
     publication_date = models.DateTimeField(auto_now_add=True, verbose_name='Publication date')
@@ -557,8 +619,8 @@ class JobSearch(models.Model):
     result_of_task = models.CharField(max_length=10, choices=RESULT_CHOICES, default='not_find')
     js_mode = models.CharField(max_length=10, choices=JS_MODE_CHOICES, default='draft', verbose_name='Job search mode')
     post_type = models.CharField(max_length=20, choices=POST_TYPE_CHOICES, default='job_search', verbose_name='Post type')
-    type_of_view = models.ForeignKey('TypeOfView', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Type of view', to_field='name', db_column='type_of_view')
-    element_position = models.ForeignKey('ElementPosition', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Position', to_field='name', db_column='element_position')
+    card_template = models.ForeignKey('CardTemplate', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Card template', to_field='name', db_column='card_template')
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Category', to_field='name', db_column='category')
     
     # Связь многие ко многим с Activities через промежуточную таблицу
     activities = models.ManyToManyField('Activities', through='JobSearchActivitiesRelations', blank=True)

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import testpage, save_task_notes, save_job_search_notes, add_job_search_activity, change_advertising_status, start_task, get_edit_data, remove_advertising_photo, user_tasks, user_inbox_items, update_task_status, update_element_position
+from .views import testpage, save_task_notes, save_job_search_notes, add_job_search_activity, change_advertising_status, start_task, get_edit_data, remove_advertising_photo, user_tasks, user_inbox_items, update_task_status, update_category
 from .forms import update_form
 from . import views
 from services_and_projects.forms import create_task, create_advertising, create_time_slot, create_job_search, handle_form_submission, create_activity_task
@@ -26,5 +26,5 @@ urlpatterns = [
     path('user_tasks/', user_tasks, name='user_tasks'),
     path('user_inbox_items/', user_inbox_items, name='user_inbox_items'),
     path('tasks/<slug:task_slug>/', update_task_status, name='update_task_status'),
-    path('elements/<slug:slug>/position/', update_element_position, name='update_element_position'),
+    path('elements/<slug:slug>/position/', update_category, name='update_category'),
 ]

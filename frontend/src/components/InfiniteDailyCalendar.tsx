@@ -203,8 +203,8 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
         return
       }
       
-      // Call API to update element position
-      await taskApi.updateElementPosition(taskSlug, category)
+      // Call API to update category
+      await taskApi.updateCategory(taskSlug, category)
       
       // Close menus
       setShowSubmenu(false)
@@ -345,8 +345,8 @@ const CustomEvent: React.FC<EventProps> = ({ event, title }) => {
       {/* Submenu - SEPARATE portal */}
       {showSubmenu && (() => {
         // Get current category/status from event resource
-        // Use element_position if available, fallback to status, or default to 'agenda' for agenda view
-        const currentCategory = (event.resource?.element_position || event.resource?.status || 'agenda').toLowerCase()
+        // Use category if available, fallback to status, or default to 'agenda' for agenda view
+        const currentCategory = (event.resource?.category || event.resource?.status || 'agenda').toLowerCase()
         
         // Define all available categories for agenda items (same as standard task categories)
         const availableCategories = [

@@ -8,6 +8,7 @@ import { taskApi, DjangoTask } from '../../api/taskApi'
 import TaskNotesDialog from '../ui/TaskNotesDialog'
 import Toasts from '../ui/Toasts'
 import { useToasts } from '../../hooks/useToasts'
+import { convertTasksToCalendarEvents, CalendarEvent as CalendarEventType } from '../../utils/calendarHelpers'
 // CSS styles moved to task_tracker.css
 
 interface CalendarEvent {
@@ -19,7 +20,7 @@ interface CalendarEvent {
   resource?: {
     priority?: string
     status?: string
-    element_position?: string
+    category?: string
     description?: string
     note?: string
     taskId?: number
@@ -45,8 +46,8 @@ const AgendaView = () => {
   // Handle marking task as done
   const handleTaskDone = async (taskSlug: string) => {
     try {
-      // Use updateElementPosition instead of updateTaskStatus to properly handle is_agenda
-      await taskApi.updateElementPosition(taskSlug, 'done')
+      // Use updateCategory instead of updateTaskStatus to properly handle is_agenda
+      await taskApi.updateCategory(taskSlug, 'done')
       showSuccess('Task marked as done')
       // Reload tasks to reflect the change
       await loadAgendaTasks()
@@ -119,67 +120,22 @@ const AgendaView = () => {
       
       setTasks(loadedTasks)
       
-      // Transform tasks to calendar events
-      const calendarEvents: CalendarEvent[] = loadedTasks.map((task: DjangoTask) => {
-        // Get today's date for tasks without specific dates
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        
-        // If task has start and end dates, use them
-        let startDate: Date
-        let endDate: Date
-        
-        if (task.date_start && task.date_end) {
-          startDate = new Date(task.date_start)
-          endDate = new Date(task.date_end)
-        } else if (task.date_start) {
-          // Only start date provided
-          startDate = new Date(task.date_start)
-          endDate = new Date(task.date_start)
-          endDate.setHours(23, 59, 59)
-        } else {
-          // No dates provided - show as all-day event today
-          startDate = new Date(today)
-          endDate = new Date(today)
-          endDate.setHours(23, 59, 59)
-        }
-        
-        // Determine if this should be an all-day event
-        // Check if time_start and time_end have specific times (not just 00:00:00)
-        const hasSpecificTime = task.time_start && task.time_end && 
-          (new Date(task.time_start).getHours() !== 0 || 
-           new Date(task.time_start).getMinutes() !== 0 ||
-           new Date(task.time_end).getHours() !== 0 || 
-           new Date(task.time_end).getMinutes() !== 0)
-        
-        // If task has specific times, use them for start and end dates
-        if (hasSpecificTime) {
-          startDate = new Date(task.time_start!)
-          endDate = new Date(task.time_end!)
-        }
-        
-        return {
-          id: task.id.toString(),
-          title: task.title,
-          start: startDate,
-          end: endDate,
-          allDay: !hasSpecificTime, // Mark as all-day if no specific times
-          resource: {
-            priority: task.priority,
-            status: task.status,
-            element_position: task.status || 'agenda',  // Backend returns element_position.name as 'status'
-            description: task.description,
-            note: task.note,
-            taskId: task.id,
-            taskSlug: task.slug,
-            onTaskDone: handleTaskDone,
-            onTaskNote: handleTaskNote,
-            onTaskMoved: handleTaskMoved  // Add callback for toast messages
-          }
-        }
-      })
+      // Transform tasks to calendar events using helper
+      // This now handles both regular tasks and recurring tasks with multiple slots
+      const calendarEvents = convertTasksToCalendarEvents(loadedTasks)
       
-      setEvents(calendarEvents)
+      // Add callbacks to each event's resource
+      const eventsWithCallbacks = calendarEvents.map(event => ({
+        ...event,
+        resource: {
+          ...event.resource,
+          onTaskDone: handleTaskDone,
+          onTaskNote: handleTaskNote,
+          onTaskMoved: handleTaskMoved
+        }
+      }))
+      
+      setEvents(eventsWithCallbacks)
     } catch (error) {
       console.error('Error loading agenda tasks:', error)
     } finally {

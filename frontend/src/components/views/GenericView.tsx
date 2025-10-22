@@ -270,11 +270,11 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           const task = userTasks.find(t => t.slug === taskSlug)
           if (task) {
             // Check if it's a time slot
-            if (task.type_of_view === 'timeslot' || task.type_of_view === 'orders') {
+            if (task.card_template === 'timeslot' || task.card_template === 'orders') {
               setSelectedTimeSlot(task)
               setTimeSlotEditMode('edit')
               setShowTimeSlotDialog(true)
-            } else if (task.type_of_view === 'job_search') {
+            } else if (task.card_template === 'job_search') {
               // Job Search edit
               setSelectedJobSearch(task)
               setJobSearchEditMode('edit')
@@ -433,7 +433,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       {tasksHook.openDropdownTaskId !== null && (() => {
         // Find current task to determine its type
         const currentTask = userTasks.find(t => t.slug === tasksHook.openDropdownTaskId)
-        const taskType = currentTask?.type_of_view || 'task'
+        const taskType = currentTask?.card_template || 'task'
         
         // Determine which menu items to show based on task type
         const showStartAndDelegate = taskType === 'task' || taskType === 'tender' || taskType === 'project'
@@ -576,7 +576,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
       {tasksHook.showSubmenu && (() => {
         // Find current task to determine its type and current position
         const currentTask = userTasks.find(t => t.slug === tasksHook.openDropdownTaskId)
-        const taskType = currentTask?.type_of_view || 'task'
+        const taskType = currentTask?.card_template || 'task'
         const currentPosition = currentTask?.status?.toLowerCase() || ''
         
         // Don't show centralized submenu for job_search - it has its own
@@ -678,17 +678,17 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           </div>
         ) : userTasks.length > 0 ? (
           (() => {
-            // Group tasks by type_of_view
+            // Group tasks by card_template
             const groupedTasks: Record<string, DjangoTask[]> = {}
             userTasks.forEach((task) => {
-              const typeOfView = task.type_of_view || 'task'
-              if (!groupedTasks[typeOfView]) {
-                groupedTasks[typeOfView] = []
+              const cardTemplate = task.card_template || 'task'
+              if (!groupedTasks[cardTemplate]) {
+                groupedTasks[cardTemplate] = []
               }
-              groupedTasks[typeOfView].push(task)
+              groupedTasks[cardTemplate].push(task)
             })
 
-            // Map type_of_view to display names
+            // Map card_template to display names
             const typeDisplayNames: Record<string, string> = {
               'task': 'Tasks',
               'project': 'Projects',
@@ -716,9 +716,9 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                       <div className="inbox-group-content">
                         <div className="task-design-container">
                           {tasks.map((task) => {
-                          // Select appropriate view component based on type_of_view
+                          // Select appropriate view component based on card_template
                           let ViewComponent
-                          switch (task.type_of_view) {
+                          switch (task.card_template) {
                             case 'project':
                               ViewComponent = Projectview
                               break
@@ -773,7 +773,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                           }
 
                           // TimeSlot-specific props
-                          if (task.type_of_view === 'timeslot' || task.type_of_view === 'timeslot_public' || task.type_of_view === 'orders') {
+                          if (task.card_template === 'timeslot' || task.card_template === 'timeslot_public' || task.card_template === 'orders') {
                             return (
                               <ViewComponent
                                 key={task.slug}
