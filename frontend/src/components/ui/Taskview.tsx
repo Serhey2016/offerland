@@ -7,7 +7,6 @@ interface TaskviewProps {
   taskSlug?: number
   title: string
   description?: string
-  timeRange?: string
   category?: string
   priority?: 'iu' | 'inu' | 'niu' | 'ninu' | null
   status?: 'pending' | 'in-progress' | 'completed'
@@ -54,7 +53,6 @@ const Taskview: React.FC<TaskviewProps> = ({
   taskSlug,
   title,
   description,
-  timeRange,
   category,
   priority = null,
   status = 'pending',
@@ -255,8 +253,7 @@ const Taskview: React.FC<TaskviewProps> = ({
         {/* Task metadata */}
         <div className="task_tracker_task_metadata">
           <div>
-            <span className="task_tracker_task_category">{category || 'Agenda'}: </span>
-            <span className="task_tracker_task_times">{timeRange || '6:00 am 7:00 am'}</span>
+            <span className="task_tracker_task_category">{category || 'Agenda'}</span>
           </div>
           <div className="task_tracker_task_dates">
             <div className="task_tracker_task_date_item">
