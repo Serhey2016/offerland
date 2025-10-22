@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { Calendar as BigCalendar, momentLocalizer, Views, Components, EventProps } from 'react-big-calendar'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
@@ -581,6 +581,27 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
     setDraggingEvent(event)
   }
 
+  // Handle drag over (for continuous preview update)
+  const handleDragOver = useCallback(() => {
+    // Keep draggingEvent state active during drag
+    // This ensures processedDayEvents updates properly
+  }, [])
+
+  // Clear dragging state on mouse up anywhere (cancel drag)
+  useEffect(() => {
+    const handleMouseUp = () => {
+      // Small delay to allow drop event to process first
+      setTimeout(() => {
+        setDraggingEvent(null)
+      }, 100)
+    }
+
+    document.addEventListener('mouseup', handleMouseUp)
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [])
+
   // Handle event drop (drag and drop)
   const handleEventDrop = async ({ event, start, end, isAllDay }: any) => {
     try {
@@ -702,6 +723,29 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
     }
   }
 
+  // Process events for drag preview - give all-day events shorter duration
+  // This reduces the drag preview size while keeping allDay flag for proper display
+  const processEvents = useCallback((dayEvents: Event[]) => {
+    return dayEvents.map(event => {
+      // For all-day events, set a 1-hour duration to fix drag preview
+      // Keep allDay: true so it still shows in all-day section
+      if (event.allDay) {
+        const start = new Date(event.start)
+        start.setHours(0, 0, 0, 0)
+        const end = new Date(start)
+        end.setHours(1, 0, 0, 0) // 1 hour duration
+        
+        return {
+          ...event,
+          start: start,
+          end: end,
+          allDay: true // Keep this so it displays in all-day section
+        }
+      }
+      return event
+    })
+  }, [])
+
 
   return (
     <div 
@@ -716,6 +760,9 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
           const eventDate = new Date(event.start)
           return eventDate.toDateString() === day.toDateString()
         })
+
+        // Process events for drag preview
+        const processedDayEvents = processEvents(dayEvents)
 
         return (
           <div
@@ -738,7 +785,7 @@ const InfiniteDailyCalendar: React.FC<InfiniteDailyCalendarProps> = ({
               >
                 <DnDCalendar
                   localizer={localizer}
-                  events={dayEvents}
+                  events={processedDayEvents}
                   startAccessor="start"
                   endAccessor="end"
                   style={{ height: '100%' }}

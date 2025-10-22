@@ -3577,4 +3577,30 @@ dl, ol, ul {
 .agenda-event-done .rbc-event-content {
   cursor: not-allowed !important;
 }
+
+/* ============================================
+   Drag Preview Fix - Limit All-Day Event Height
+   ============================================ */
+
+/* Limit drag preview height when dragging all-day events to timeline */
+.rbc-addons-dnd-dragging.rbc-event-allday,
+.rbc-addons-dnd-dragging .rbc-event-allday {
+  max-height: 60px !important;
+  height: auto !important;
+}
+
+/* Force 1-hour height for drag preview in day view */
+.rbc-day-slot .rbc-addons-dnd-dragging {
+  height: 4.16667% !important; /* 1 hour out of 24 hours = 4.16667% */
+  min-height: 50px !important;
+  max-height: 60px !important;
+}
+
+/* Specifically for all-day events being dragged into time slots */
+.rbc-time-content .rbc-addons-dnd-dragging[class*="allday"],
+.rbc-time-content .rbc-addons-dnd-drag-preview {
+  height: 4.16667% !important;
+  max-height: 60px !important;
+  min-height: 50px !important;
+}
   
