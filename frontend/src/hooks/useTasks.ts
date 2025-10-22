@@ -2,15 +2,26 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { taskApi, Task, TaskFilters, CreateTaskData } from '../api/taskApi'
 import { useToasts } from './useToasts'
 
+interface ToastFunctions {
+  showSuccess: (message: string, summary?: string, life?: number) => void
+  showError: (message: string, summary?: string, life?: number) => void
+}
+
 // Кастомний хук для роботи з задачами
-export const useTasks = (initialFilters?: TaskFilters) => {
+export const useTasks = (
+  initialFilters?: TaskFilters,
+  toastFunctions?: ToastFunctions
+) => {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [filters, setFilters] = useState<TaskFilters>(initialFilters || {})
   
-  // Use toasts hook
-  const { toast, showError, showSuccess } = useToasts()
+  // Use toasts hook only if toast functions are not provided
+  const internalToasts = useToasts()
+  const showError = toastFunctions?.showError || internalToasts.showError
+  const showSuccess = toastFunctions?.showSuccess || internalToasts.showSuccess
+  const toast = internalToasts.toast
 
   // UI states for task actions (moved from TaskDesign) - using slug as identifier
   const [openDropdownTaskId, setOpenDropdownTaskId] = useState<string | null>(null)

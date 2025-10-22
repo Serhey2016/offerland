@@ -157,8 +157,8 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   // Use toasts hook
   const { toast, showError, showSuccess } = useToasts()
 
-  // Use tasks hook for UI logic
-  const tasksHook = useTasks()
+  // Use tasks hook for UI logic - pass toast functions to avoid null ref error
+  const tasksHook = useTasks(undefined, { showSuccess, showError })
 
   // Use input container hook
   const inputContainerProps = useInputContainer({
