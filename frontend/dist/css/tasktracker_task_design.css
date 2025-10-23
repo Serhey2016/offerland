@@ -210,7 +210,7 @@
 
 /* Task Dropdown Menu Styles */
 .task_tracker_task_dropdown_menu {
-    position: fixed ;
+    position: absolute ;
     z-index: 9999 ;
     background-color: white ;
     border: 1px solid #ddd ;
@@ -247,7 +247,7 @@
 
 /* Task Submenu Styles - Renamed to avoid conflicts with left menu */
 .task_tracker_task_submenu {
-    position: fixed;
+    position: absolute;
     z-index: 10000;
     background-color: white;
     border: 1px solid #ddd;

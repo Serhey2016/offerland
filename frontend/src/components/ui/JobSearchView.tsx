@@ -149,7 +149,8 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
             title="More options"
             onClick={(e) => {
               e.stopPropagation()
-              if (taskSlug !== undefined) {
+              // Only proceed if taskSlug is defined and not empty
+              if (taskSlug && taskSlug.trim() !== '') {
                 handleIconClick(taskSlug, 'more', e)
               }
             }}
@@ -274,7 +275,7 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
           ref={dropdownRef}
           className="task_tracker_task_dropdown_menu"
           style={{
-            position: 'fixed',
+            position: 'absolute',
             top: dropdownPosition.top,
             left: dropdownPosition.left,
             zIndex: 9999,
@@ -405,7 +406,7 @@ const JobSearchView: React.FC<JobSearchViewProps> = ({
             ref={submenuRef}
             className="task_tracker_task_submenu"
             style={{
-              position: 'fixed',
+              position: 'absolute',
               top: submenuPosition.top,
               left: submenuPosition.left,
               zIndex: 10000,

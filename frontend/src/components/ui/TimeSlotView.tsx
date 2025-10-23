@@ -132,7 +132,8 @@ const TimeSlotView: React.FC<TimeSlotViewProps> = ({
           title="More options"
           onClick={(e) => {
             e.stopPropagation()
-            if (taskSlug) {
+            // Only proceed if taskSlug is defined and not empty
+            if (taskSlug && taskSlug.trim() !== '') {
               handleIconClick(taskSlug, 'more', e)
             }
           }}

@@ -444,7 +444,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             ref={tasksHook.dropdownRef}
             className="task_tracker_task_dropdown_menu"
             style={{
-              position: 'fixed',
+              position: 'absolute',
               top: tasksHook.dropdownPosition.top,
               left: tasksHook.dropdownPosition.left,
               zIndex: 9999,
@@ -622,7 +622,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           ref={tasksHook.submenuRef}
           className="task_tracker_task_submenu"
           style={{
-            position: 'fixed',
+            position: 'absolute',
             top: tasksHook.submenuPosition.top,
             left: tasksHook.submenuPosition.left,
             zIndex: 10000,
@@ -776,7 +776,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                           if (task.card_template === 'timeslot' || task.card_template === 'timeslot_public' || task.card_template === 'orders') {
                             return (
                               <ViewComponent
-                                key={task.slug}
+                                key={task.slug || `task-${task.id}`}
                                 {...commonProps}
                                 companyName={(task as any).company_name || undefined}
                                 userName={(task as any).user_name || task.title || 'Unknown User'}
@@ -797,7 +797,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                           // Default task props
                           return (
                             <ViewComponent
-                              key={task.slug}
+                              key={task.slug || `task-${task.id}`}
                               {...commonProps}
                               title={task.title}
                               description={task.description}

@@ -188,32 +188,36 @@ export const useTasks = (
     const dropdownWidth = 160
     const dropdownHeight = 200
     
-    // Position dropdown to the right of the button
-    let top = rect.bottom + 5
-    let left = rect.right - dropdownWidth // Align right edge with button
+    // Add scroll offsets to convert from viewport to document coordinates
+    const scrollX = window.pageXOffset || document.documentElement.scrollLeft
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop
+    
+    // Position dropdown to the right of the button (document coordinates)
+    let top = rect.bottom + 5 + scrollY
+    let left = rect.right - dropdownWidth + scrollX // Align right edge with button
     
     // If dropdown goes off the right edge, position it to the left of button
-    if (left + dropdownWidth > viewportWidth - 10) {
-      left = rect.left - dropdownWidth
+    if (left + dropdownWidth > viewportWidth + scrollX - 10) {
+      left = rect.left - dropdownWidth + scrollX
     }
     
     // If dropdown goes off the left edge, position it below button centered
-    if (left < 10) {
-      left = rect.left + (rect.width / 2) - (dropdownWidth / 2)
+    if (left < 10 + scrollX) {
+      left = rect.left + (rect.width / 2) - (dropdownWidth / 2) + scrollX
       // Ensure it doesn't go off right edge
-      if (left + dropdownWidth > viewportWidth - 10) {
-        left = viewportWidth - dropdownWidth - 10
+      if (left + dropdownWidth > viewportWidth + scrollX - 10) {
+        left = viewportWidth + scrollX - dropdownWidth - 10
       }
     }
     
     // Check if dropdown would go off the bottom edge
-    if (top + dropdownHeight > viewportHeight - 10) {
-      top = rect.top - dropdownHeight - 5
+    if (rect.bottom + dropdownHeight > viewportHeight) {
+      top = rect.top - dropdownHeight - 5 + scrollY
     }
     
     // Ensure dropdown doesn't go off the top edge
-    if (top < 10) {
-      top = 10
+    if (top < 10 + scrollY) {
+      top = 10 + scrollY
     }
     
     return { top, left }
@@ -228,50 +232,54 @@ export const useTasks = (
     const estimatedSubmenuHeight = 300 // Approximate height with all items
     const isMobile = viewportWidth <= 768
     
-    // Position submenu to the right of parent item by default
-    let top = rect.top
-    let left = rect.right + 5
+    // Add scroll offsets to convert from viewport to document coordinates
+    const scrollX = window.pageXOffset || document.documentElement.scrollLeft
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop
+    
+    // Position submenu to the right of parent item by default (document coordinates)
+    let top = rect.top + scrollY
+    let left = rect.right + 5 + scrollX
     
     // Mobile-specific positioning
     if (isMobile) {
       // On mobile, try to keep it within viewport
       // If there's not enough space on the right, show on the left
-      if (left + submenuWidth > viewportWidth - 10) {
-        left = rect.left - submenuWidth - 5
+      if (left + submenuWidth > viewportWidth + scrollX - 10) {
+        left = rect.left - submenuWidth - 5 + scrollX
       }
       
       // If still not enough space on the left, center it with padding
-      if (left < 10) {
-        left = 10
+      if (left < 10 + scrollX) {
+        left = 10 + scrollX
       }
       
       // Ensure it doesn't extend beyond viewport width
-      if (left + submenuWidth > viewportWidth - 10) {
-        left = viewportWidth - submenuWidth - 10
+      if (left + submenuWidth > viewportWidth + scrollX - 10) {
+        left = viewportWidth + scrollX - submenuWidth - 10
       }
     } else {
       // Desktop positioning
       // If submenu goes off the right edge, position it to the left
-      if (left + submenuWidth > viewportWidth - 10) {
-        left = rect.left - submenuWidth - 5
+      if (left + submenuWidth > viewportWidth + scrollX - 10) {
+        left = rect.left - submenuWidth - 5 + scrollX
       }
     }
     
     // Handle vertical positioning
     // Check if submenu would go off the bottom
-    if (top + estimatedSubmenuHeight > viewportHeight - 20) {
+    if (rect.top + estimatedSubmenuHeight > viewportHeight) {
       // Try to position it higher, aligning bottom with viewport
-      top = viewportHeight - estimatedSubmenuHeight - 20
+      top = viewportHeight + scrollY - estimatedSubmenuHeight - 20
     }
     
     // Ensure submenu doesn't go off the top edge
-    if (top < 10) {
-      top = 10
+    if (top < 10 + scrollY) {
+      top = 10 + scrollY
     }
     
     // Final safety check for left edge
-    if (left < 10) {
-      left = 10
+    if (left < 10 + scrollX) {
+      left = 10 + scrollX
     }
     
     return { top, left }

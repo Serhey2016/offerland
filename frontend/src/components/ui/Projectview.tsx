@@ -155,7 +155,8 @@ const Projectview: React.FC<ProjectviewProps> = ({
             title="More options"
             onClick={(e) => {
               e.stopPropagation()
-              if (taskSlug !== undefined) {
+              // Only proceed if taskSlug is defined and not empty
+              if (taskSlug && taskSlug.trim() !== '') {
                 handleIconClick(taskSlug, 'more', e)
               }
             }}
