@@ -5,6 +5,8 @@ import { InputTextarea } from 'primereact/inputtextarea'
 import { Calendar } from 'primereact/calendar'
 import { Dropdown } from 'primereact/dropdown'
 import { Button } from 'primereact/button'
+import { DjangoTask, taskApi } from '../../api/taskApi'
+import '../../styles/ParentTaskDropdown.css'
 
 interface CreateProjectDialogProps {
   visible: boolean
@@ -18,6 +20,7 @@ export interface ProjectFormData {
   priority: 'iu' | 'inu' | 'niu' | 'ninu' | ''
   date_start: string
   date_end: string
+  parent_id: number | null
 }
 
 const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
@@ -30,10 +33,13 @@ const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
     description: '',
     priority: '',
     date_start: '',
-    date_end: ''
+    date_end: '',
+    parent_id: null
   })
   
   const [loading, setLoading] = useState(false)
+  const [availableTasks, setAvailableTasks] = useState<DjangoTask[]>([])
+  const [loadingTasks, setLoadingTasks] = useState(false)
 
   // Priority options
   const priorityOptions = [
@@ -43,6 +49,25 @@ const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
     { label: 'Not Important & Not Urgent', value: 'ninu' }
   ]
 
+  // Load available tasks for parent selection
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        setLoadingTasks(true)
+        const tasks = await taskApi.getUserTasks()
+        setAvailableTasks(tasks)
+      } catch (error) {
+        console.error('Error loading tasks:', error)
+      } finally {
+        setLoadingTasks(false)
+      }
+    }
+    
+    if (visible) {
+      loadTasks()
+    }
+  }, [visible])
+
   // Reset form when dialog opens
   useEffect(() => {
     if (visible) {
@@ -51,7 +76,8 @@ const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
         description: '',
         priority: '',
         date_start: '',
-        date_end: ''
+        date_end: '',
+        parent_id: null
       })
     }
   }, [visible])
@@ -204,6 +230,43 @@ const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
             icon="pi pi-calendar"
             className="w-full"
             placeholder="Select due date"
+          />
+        </div>
+
+        {/* Parent Task Field */}
+        <div className="form-group">
+          <label htmlFor="project-parent" style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>
+            Parent Task
+          </label>
+          <Dropdown
+            id="project-parent"
+            value={formData.parent_id}
+            options={[
+              { label: 'None', value: null },
+              ...availableTasks.map(t => ({ 
+                label: t.title, 
+                value: t.id 
+              }))
+            ]}
+            onChange={(e) => setFormData(prev => ({ ...prev, parent_id: e.value }))}
+            placeholder="Select parent task"
+            className="w-full parent-task-dropdown"
+            disabled={loadingTasks}
+            filter
+            filterBy="label"
+            showClear={formData.parent_id !== null}
+            panelStyle={{ maxWidth: '500px' }}
+            itemTemplate={(option) => (
+              <div style={{ 
+                whiteSpace: 'normal', 
+                wordWrap: 'break-word', 
+                wordBreak: 'break-word',
+                maxWidth: '100%',
+                overflow: 'hidden'
+              }}>
+                {option.label}
+              </div>
+            )}
           />
         </div>
 

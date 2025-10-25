@@ -30,6 +30,17 @@ export const useTasks = (
   const [submenuPosition, setSubmenuPosition] = useState({ top: 0, left: 0 })
   const [tappedTaskId, setTappedTaskId] = useState<string | null>(null)
   const [detailsPopupTaskId, setDetailsPopupTaskId] = useState<string | null>(null)
+  const [publishPopupTaskId, setPublishPopupTaskId] = useState<string | null>(null)
+  
+  // Combined state for subtask dialog to avoid race conditions
+  const [subtaskDialogState, setSubtaskDialogState] = useState<{
+    show: boolean
+    parentId: number | null
+  }>({
+    show: false,
+    parentId: null
+  })
+  
   const dropdownRef = useRef<HTMLDivElement>(null)
   const submenuRef = useRef<HTMLDivElement>(null)
 
@@ -346,6 +357,9 @@ export const useTasks = (
       case 'delegate':
         break
       case 'publish':
+        if (taskSlug) {
+          setPublishPopupTaskId(taskSlug)
+        }
         break
       default:
         break
@@ -357,8 +371,13 @@ export const useTasks = (
     setDetailsPopupTaskId(null)
   }, [])
 
+  // Handle closing publish popup
+  const closePublishPopup = useCallback(() => {
+    setPublishPopupTaskId(null)
+  }, [])
+
   // Handle icon button clicks (moved from TaskDesign)
-  const handleIconClick = useCallback((taskSlug: string, action: string, event?: React.MouseEvent<HTMLButtonElement>) => {
+  const handleIconClick = useCallback((taskSlug: string, action: string, event?: React.MouseEvent<HTMLButtonElement>, taskId?: number) => {
     if (action === 'more' && event) {
       const position = calculateDropdownPosition(event.currentTarget)
       setDropdownPosition(position)
@@ -370,6 +389,14 @@ export const useTasks = (
       case 'create':
         break
       case 'subtask':
+        // Open create task dialog with the current task as parent
+        console.log('[useTasks] Subtask button clicked, taskId:', taskId)
+        if (taskId) {
+          console.log('[useTasks] Setting subtaskDialogState with parentId:', taskId)
+          setSubtaskDialogState({ show: true, parentId: taskId })
+        } else {
+          console.error('[useTasks] ERROR: taskId is undefined when clicking subtask button')
+        }
         break
       case 'note':
         break
@@ -377,6 +404,11 @@ export const useTasks = (
         break
     }
   }, [calculateDropdownPosition])
+  
+  // Handle closing subtask dialog
+  const closeSubtaskDialog = useCallback(() => {
+    setSubtaskDialogState({ show: false, parentId: null })
+  }, [])
 
   // Handle task creation toggle (for Add Note button in SpeedDial)
   const toggleTaskCreation = useCallback((type: string = 'Task', icon: string = 'pi pi-check-circle', itemType: string = 'note') => {
@@ -420,6 +452,9 @@ export const useTasks = (
     submenuPosition,
     tappedTaskId,
     detailsPopupTaskId,
+    publishPopupTaskId,
+    subtaskParentId: subtaskDialogState.parentId,
+    showSubtaskDialog: subtaskDialogState.show,
     dropdownRef,
     submenuRef,
     showTaskCreation,
@@ -442,6 +477,8 @@ export const useTasks = (
     handleDropdownItemClick,
     handleSubmenuItemClick,
     closeDetailsPopup,
+    closePublishPopup,
+    closeSubtaskDialog,
     toggleTaskCreation,
     showTaskCreationBlock,
     hideTaskCreationBlock,

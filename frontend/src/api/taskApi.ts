@@ -62,6 +62,16 @@ export interface DjangoTask {
   // Recurrence pattern for recurring events
   recurrence_pattern?: RecurrencePattern | null
   
+  // Parent task for subtasks
+  parent_id?: number | null
+  
+  // Subtasks metadata for quick display
+  subtasks_meta?: {
+    count: number
+    completed_count: number
+    last_updated: string
+  } | null
+  
   // TimeSlot-specific fields
   reserved_time_on_road?: number
   start_location?: string
@@ -219,6 +229,9 @@ export const taskApi = {
   // Створити Inbox задачу
   createInboxTask: async (taskData: InboxTaskData): Promise<any> => {
     try {
+      console.log('[taskApi.createInboxTask] Called with taskData:', taskData)
+      console.log('[taskApi.createInboxTask] parent_id:', taskData.parent_id)
+      
       // Prepare FormData for Django form submission
       const formData = new FormData()
       formData.append('title', taskData.title)
@@ -240,7 +253,10 @@ export const taskApi = {
       
       // Parent task ID for subtasks
       if (taskData.parent_id) {
+        console.log('[taskApi.createInboxTask] Adding parent_id to FormData:', taskData.parent_id)
         formData.append('parent_id', taskData.parent_id.toString())
+      } else {
+        console.warn('[taskApi.createInboxTask] No parent_id provided')
       }
       
       // Card template - use "task" string value (not ID)
@@ -267,6 +283,20 @@ export const taskApi = {
     } catch (error) {
       console.error('Error fetching user tasks:', error)
       throw error
+    }
+  },
+
+  // Отримати subtasks для певної задачі (за parent_id)
+  getSubtasks: async (parentId: number): Promise<DjangoTask[]> => {
+    try {
+      const response = await api.get(`/services_and_projects/tasks/${parentId}/subtasks/`)
+      if (response.data.success) {
+        return response.data.subtasks
+      }
+      return []
+    } catch (error) {
+      console.error(`Error fetching subtasks for parent ${parentId}:`, error)
+      return []
     }
   },
 

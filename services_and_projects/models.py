@@ -200,6 +200,12 @@ class Task(models.Model):
     note = models.TextField(max_length=10000, blank=True, null=True)
     finance = models.ForeignKey('Finance', on_delete=models.SET_NULL, null=True, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subtasks')
+    subtasks_meta = models.JSONField(
+        null=True,
+        blank=True,
+        default=None,
+        help_text='Lightweight metadata about subtasks for quick display'
+    )
     
     # Creator fields for GDPR compliance
     creator = models.ForeignKey(
@@ -283,6 +289,9 @@ class Task(models.Model):
     class Meta:
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
+        indexes = [
+            models.Index(fields=['parent', 'created_at']),
+        ]
 
     def delete(self, *args, **kwargs):
         related_photos = list(self.photos.all())

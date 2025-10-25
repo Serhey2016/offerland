@@ -1016,6 +1016,11 @@ export const useInputContainer = ({
       formData.append('date_start', taskData.date_start || '')
       formData.append('date_end', taskData.date_end || '')
       formData.append('category', 'inbox')
+      
+      // Add parent_id if provided
+      if (taskData.parent_id) {
+        formData.append('parent_id', taskData.parent_id.toString())
+      }
 
       // Call the correct endpoint
       const response = await taskApi.createTaskWithFormData(formData)
@@ -1057,6 +1062,11 @@ export const useInputContainer = ({
       formData.append('date_start', projectData.date_start || '')
       formData.append('date_end', projectData.date_end || '')
       formData.append('category', 'inbox')
+      
+      // Add parent_id if provided
+      if (projectData.parent_id) {
+        formData.append('parent_id', projectData.parent_id.toString())
+      }
 
       // Call the correct endpoint
       const response = await taskApi.createTaskWithFormData(formData)

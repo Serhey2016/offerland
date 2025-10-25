@@ -68,48 +68,57 @@
     color: #666;
 }
 
-/* Dates and Priority Row */
-.task_details_dates_priority_row {
-    margin-bottom: 10px;
-    overflow: hidden; /* clearfix for floats */
-}
-
-/* Date Block */
-.task_details_date_block {
-    display: flex;
-    flex-direction: column;
-    
-}
-
-.task_details_date_block:first-child {
-    float: left;
-}
-
-.task_details_date_block:last-of-type {
-    float: right;
-}
-
-.task_details_date_label {
-    font-size: 14px;
-    color:#282D3B;
-    font-weight: 400;
-    text-align: center;
-}
-
-.task_details_date_value {
-    font-size: 16px;
-    color: #333333;
-    font-weight: 500;
-}
-
-/* Priority Label */
-.task_details_priority_label {
-    font-size: 16px;
-    color: #666666;
-    text-align: center;
-    display: block;
-    width: 100%;
+/* Info Container */
+.task_details_info_container {
     margin-bottom: 20px;
+    background-color: #FAFAFA;
+    padding: 12px 16px;
+    border-radius: 6px;
+}
+
+/* Info Row */
+.task_details_info_row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+}
+
+.task_details_info_row:not(:last-of-type) {
+    margin-bottom: 4px;
+}
+
+/* Info Label */
+.task_details_info_label {
+    font-size: 14px;
+    color: #666666;
+    font-weight: 400;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+/* Info Separator */
+.task_details_info_separator {
+    width: 1px;
+    height: 20px;
+    background-color: #DDDDDD;
+    flex-shrink: 0;
+}
+
+/* Info Value */
+.task_details_info_value {
+    font-size: 14px;
+    color: #666666;
+    font-weight: 400;
+    flex: 1;
+}
+
+/* Bottom Line */
+.task_details_info_bottom_line {
+    width: 100%;
+    height: 1px;
+    background-color: #DDDDDD;
+    margin-top: 12px;
 }
 
 /* Title */
@@ -179,7 +188,7 @@
 
 /* Subtask Item */
 .task_details_subtask_item {
-    background-color: #FFFBEB;
+    background-color: #E8E8E8;
     border-radius: 6px;
     padding: 12px 16px;
     display: flex;
@@ -187,6 +196,7 @@
     gap: 12px;
     position: relative;
     overflow: hidden;
+    border: 1px solid #282D3B;
 }
 
 /* Subtask Status Bar */

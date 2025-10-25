@@ -16,6 +16,9 @@ interface ProjectviewProps {
   assignedTo?: string
   tags?: string[]
   startDate?: string
+  createdAt?: string
+  updatedAt?: string
+  note?: string
   
   // UI states from hook
   tappedTaskId: number | null
@@ -63,6 +66,9 @@ const Projectview: React.FC<ProjectviewProps> = ({
   assignedTo,
   tags = [],
   startDate,
+  createdAt,
+  updatedAt,
+  note,
   tappedTaskId,
   openDropdownTaskId,
   showSubmenu,
@@ -93,6 +99,26 @@ const Projectview: React.FC<ProjectviewProps> = ({
   const getPriorityClass = () => {
     if (!priority) return 'priority-none'
     return `priority-${priority}`
+  }
+
+  // Format datetime to "Oct. 22, 2025, 11:46 p.m." format
+  const formatDateTime = (dateString?: string): string => {
+    if (!dateString) return ''
+    
+    try {
+      const date = new Date(dateString)
+      const options: Intl.DateTimeFormatOptions = {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      }
+      return date.toLocaleString('en-US', options)
+    } catch (error) {
+      return dateString
+    }
   }
 
   const isTapped = taskSlug !== undefined && tappedTaskId === taskSlug
@@ -185,41 +211,71 @@ const Projectview: React.FC<ProjectviewProps> = ({
                 </span>
               </div>
               
-              <div className="task_details_dates_priority_row">
-                <div className="task_details_date_block">
-                  <div className="task_details_date_label">Start date</div>
-                  <div className="task_details_date_value">{startDate || '10.09.2025'}</div>
+              <div className="task_details_info_container">
+                {createdAt && (
+                  <div className="task_details_info_row">
+                    <div className="task_details_info_label">Created at:</div>
+                    <div className="task_details_info_separator"></div>
+                    <div className="task_details_info_value">{formatDateTime(createdAt)}</div>
+                  </div>
+                )}
+                
+                {updatedAt && (
+                  <div className="task_details_info_row">
+                    <div className="task_details_info_label">Updated at:</div>
+                    <div className="task_details_info_separator"></div>
+                    <div className="task_details_info_value">{formatDateTime(updatedAt)}</div>
+                  </div>
+                )}
+                
+                <div className="task_details_info_row">
+                  <div className="task_details_info_label">Start date:</div>
+                  <div className="task_details_info_separator"></div>
+                  <div className="task_details_info_value">{startDate || '10.09.2025'}</div>
                 </div>
                 
-                <div className="task_details_date_block">
-                  <div className="task_details_date_label">Due date</div>
-                  <div className="task_details_date_value">{dueDate || '10.10.2025'}</div>
+                <div className="task_details_info_row">
+                  <div className="task_details_info_label">Due date:</div>
+                  <div className="task_details_info_separator"></div>
+                  <div className="task_details_info_value">{dueDate || '10.10.2025'}</div>
                 </div>
+                
+                <div className="task_details_info_row">
+                  <div className="task_details_info_label">priority:</div>
+                  <div className="task_details_info_separator"></div>
+                  <div className="task_details_info_value">
+                    {priority === 'iu' ? 'important & urgent' : 
+                     priority === 'inu' ? 'important & not urgent' : 
+                     priority === 'niu' ? 'not important & urgent' : 
+                     priority === 'ninu' ? 'not important & not urgent' : 'no priority'}
+                  </div>
+                </div>
+                
+                <div className="task_details_info_bottom_line"></div>
               </div>
-              
-              <div className="task_details_priority_label">
-                  {priority === 'iu' ? 'important & urgent' : 
-                   priority === 'inu' ? 'important & not urgent' : 
-                   priority === 'niu' ? 'not important & urgent' : 
-                   priority === 'ninu' ? 'not important & not urgent' : 'no priority'}
-                </div>
 
               <div className="task_details_title">
                 <i className="pi pi-briefcase" style={{ fontSize: '1.3rem', marginRight: '10px' }}></i>
                 {title}
               </div>
               
-              <div className="task_details_description">
-                {description || 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)'}
-              </div>
+              {description && (
+                <div className="task_details_description">
+                  {description}
+                </div>
+              )}
               
-              <div className="task_details_section_heading">
-                Notes:
-              </div>
-              
-              <div className="task_details_notes_content">
-                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using
-              </div>
+              {note && (
+                <>
+                  <div className="task_details_section_heading">
+                    Notes:
+                  </div>
+                  
+                  <div className="task_details_notes_content">
+                    {note}
+                  </div>
+                </>
+              )}
               
               <div className="task_details_section_heading">
                 Sub tasks:

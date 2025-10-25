@@ -56,11 +56,7 @@ const TaskTrackerLeftMenu: React.FC<TaskTrackerLeftMenuProps> = ({
       id: 'backlog',
       category: 'Backlog',
       text: 'Backlog',
-      expandable: true,
-      submenu: [
-        { id: 'projects', subcategory: 'Projects', text: 'Projects' },
-        { id: 'tasks', subcategory: 'Tasks', text: 'Tasks' }
-      ]
+      expandable: false
     },
     {
       id: 'agenda',
@@ -96,21 +92,13 @@ const TaskTrackerLeftMenu: React.FC<TaskTrackerLeftMenuProps> = ({
       id: 'lockbook',
       category: 'Done',
       text: 'Done',
-      expandable: true,
-      submenu: [
-        { id: 'lockbook_projects', subcategory: 'Lockbook_Projects', text: 'Projects' },
-        { id: 'lockbook_tasks', subcategory: 'Lockbook_Tasks', text: 'Tasks' }
-      ]
+      expandable: false
     },
     {
       id: 'archive',
       category: 'Archive',
       text: 'Archive',
-      expandable: true,
-      submenu: [
-        { id: 'archive_projects', subcategory: 'Archive_projects', text: 'Projects' },
-        { id: 'archive_tasks', subcategory: 'Archive_Tasks', text: 'Tasks' }
-      ]
+      expandable: false
     }
   ]
 

@@ -306,21 +306,42 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
   // Handle save edited task
   const handleSaveTask = async (taskData: EditTaskFormData) => {
     try {
-      await taskApi.updateInboxTask(taskData.id, {
-        title: taskData.title,
-        description: taskData.description,
-        priority: taskData.priority,
-        date_start: taskData.date_start,
-        date_end: taskData.date_end
-      })
-      showSuccess('Task updated successfully')
+      console.log('[GenericView handleSaveTask] Called with taskData:', taskData)
+      console.log('[GenericView handleSaveTask] parent_id:', taskData.parent_id)
+      
+      // If task has a valid id (not 0), update it; otherwise create new
+      if (taskData.id && taskData.id > 0) {
+        console.log('[GenericView handleSaveTask] Updating existing task')
+        await taskApi.updateInboxTask(taskData.id, {
+          title: taskData.title,
+          description: taskData.description,
+          priority: taskData.priority,
+          date_start: taskData.date_start,
+          date_end: taskData.date_end,
+          parent_id: taskData.parent_id
+        })
+        showSuccess('Task updated successfully')
+      } else {
+        // Create new task
+        console.log('[GenericView handleSaveTask] Creating new task with parent_id:', taskData.parent_id)
+        await taskApi.createInboxTask({
+          title: taskData.title,
+          description: taskData.description,
+          priority: taskData.priority,
+          date_start: taskData.date_start,
+          date_end: taskData.date_end,
+          parent_id: taskData.parent_id
+        })
+        showSuccess('Task created successfully')
+      }
+      
       // Reload tasks to reflect the changes
       await loadUserTasks(false)
       setShowEditDialog(false)
       setSelectedTask(null)
     } catch (error) {
-      console.error('Error updating task:', error)
-      showError('Error updating task')
+      console.error('Error saving task:', error)
+      showError('Error saving task')
     }
   }
 
@@ -370,6 +391,37 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
           setSelectedTask(null)
         }}
         onSave={handleSaveTask}
+      />
+
+      {/* Subtask Creation Dialog */}
+      <EditTaskDialog
+        visible={tasksHook.showSubtaskDialog}
+        task={null}
+        mode="create"
+        defaultParentId={tasksHook.subtaskParentId}
+        onHide={tasksHook.closeSubtaskDialog}
+        onSave={async (taskData) => {
+          const parentId = tasksHook.subtaskParentId
+          console.log('[GenericView] Subtask dialog onSave called')
+          console.log('[GenericView] parentId from hook:', parentId)
+          console.log('[GenericView] taskData received:', taskData)
+          
+          await handleSaveTask(taskData)
+          tasksHook.closeSubtaskDialog()
+          
+          // Dispatch event to notify that a subtask was created
+          if (parentId) {
+            console.log('[GenericView] Dispatching subtaskCreated event for parentId:', parentId)
+            window.dispatchEvent(new CustomEvent('subtaskCreated', {
+              detail: { parentId }
+            }))
+          } else {
+            console.warn('[GenericView] No parentId to dispatch event')
+          }
+          
+          // Reload tasks after subtask creation
+          await loadUserTasks(false)
+        }}
       />
 
       {/* Task Notes Dialog */}
@@ -523,7 +575,7 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
             <div 
               className="task_tracker_task_dropdown_item"
               onClick={() => {
-                tasksHook.handleDropdownItemClick('publish')
+                tasksHook.handleDropdownItemClick('publish', tasksHook.openDropdownTaskId!)
                 handleTaskAction('publish', tasksHook.openDropdownTaskId!)
               }}
               style={{
@@ -745,21 +797,29 @@ const GenericView: React.FC<GenericViewProps> = ({ category, subcategory, displa
                           // Prepare props based on view type
                           const commonProps = {
                             taskSlug: task.slug,
+                            taskId: task.id,  // Add task ID for fetching subtasks
                             tags: task.hashtags?.map(h => h.tag_name) || [],
                             priority: task.priority || null,
+                            createdAt: task.created_at,
+                            updatedAt: task.updated_at,
+                            note: task.note,
+                            subtasksMetadata: task.subtasks_meta,  // Add subtasks metadata
                             tappedTaskId: tasksHook.tappedTaskId,
                             openDropdownTaskId: tasksHook.openDropdownTaskId,
                             showSubmenu: tasksHook.showSubmenu,
                             dropdownPosition: tasksHook.dropdownPosition,
                             submenuPosition: tasksHook.submenuPosition,
                             detailsPopupTaskId: tasksHook.detailsPopupTaskId,
+                            publishPopupTaskId: tasksHook.publishPopupTaskId,
                             dropdownRef: tasksHook.dropdownRef,
                             submenuRef: tasksHook.submenuRef,
                             handleTaskTap: tasksHook.handleTaskTap,
-                            handleIconClick: tasksHook.handleIconClick,
+                            handleIconClick: (taskSlug: string, action: string, event?: React.MouseEvent<HTMLButtonElement>) => 
+                              tasksHook.handleIconClick(taskSlug, action, event, task.id),
                             handleDropdownItemClick: tasksHook.handleDropdownItemClick,
                             handleSubmenuItemClick: tasksHook.handleSubmenuItemClick,
                             closeDetailsPopup: tasksHook.closeDetailsPopup,
+                            closePublishPopup: tasksHook.closePublishPopup,
                             onDone: () => handleMarkTaskDone(task.slug),
                             onCreateTask: () => handleTaskAction('create', task.slug),
                             onSubTask: () => handleTaskAction('subtask', task.slug),

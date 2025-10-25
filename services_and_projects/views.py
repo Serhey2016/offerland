@@ -626,9 +626,11 @@ def user_tasks(request):
         category = request.GET.get('category', '').lower()
         
         # Get user's task contexts (this includes personal category/status)
+        # Exclude subtasks (tasks with parent_id) from main lists
         user_task_contexts = UserTaskContext.objects.filter(
             user=request.user,
-            is_visible=True
+            is_visible=True,
+            task__parent_id__isnull=True  # Only show parent tasks, hide subtasks
         ).select_related(
             'task',
             'task__card_template',
@@ -707,7 +709,9 @@ def user_tasks(request):
                 'hashtags': hashtags,
                 'card_template': task.card_template.name if task.card_template else 'task',
                 'recurrence_pattern': task.recurrence_pattern,  # Додаємо recurrence_pattern
-                'personal_note': context.personal_note  # Add personal note from context
+                'personal_note': context.personal_note,  # Add personal note from context
+                'parent_id': task.parent_id,  # Add parent task ID for subtasks
+                'subtasks_meta': task.subtasks_meta  # Add subtasks metadata for quick display
             }
             tasks_data.append(task_data)
         
@@ -749,9 +753,11 @@ def user_inbox_items(request):
         
         # Get Tasks through UserTaskContext
         from .models import UserTaskContext
+        # Exclude subtasks (tasks with parent_id) from main inbox lists
         user_task_contexts = UserTaskContext.objects.filter(
             user=request.user,
-            is_visible=True
+            is_visible=True,
+            task__parent_id__isnull=True  # Only show parent tasks, hide subtasks
         ).select_related(
             'task',
             'task__card_template',
@@ -808,7 +814,9 @@ def user_inbox_items(request):
                 'completed_at': context.completed_at.isoformat() if context.completed_at else None,  # Use context's completed_at
                 'hashtags': hashtags,
                 'card_template': task.card_template.name if task.card_template else 'task',
-                'item_type': 'task'
+                'item_type': 'task',
+                'parent_id': task.parent_id,  # Add parent task ID for subtasks
+                'subtasks_meta': task.subtasks_meta  # Add subtasks metadata for quick display
             })
         
         # Get TimeSlots
@@ -1275,6 +1283,15 @@ def update_task_status(request, task_slug):
         context.save()
         task.save()  # Save task to update is_agenda if changed
         
+        # Update parent task metadata if this is a subtask
+        if task.parent_id:
+            try:
+                from .utils import update_parent_subtasks_meta
+                parent_task = Task.objects.get(id=task.parent_id)
+                update_parent_subtasks_meta(parent_task)
+            except Task.DoesNotExist:
+                pass
+        
         return JsonResponse({
             'success': True,
             'status': new_status,
@@ -1493,6 +1510,105 @@ def update_category(request, slug):
         import traceback
         print(f"Error updating category: {e}")
         print(f"Traceback: {traceback.format_exc()}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
+@login_required
+def get_services_categories(request):
+    """
+    API endpoint to get all services categories
+    """
+    try:
+        categories = ServicesCategory.objects.all().order_by('id')
+        categories_data = [
+            {
+                'id': category.id,
+                'name': category.category_name
+            }
+            for category in categories
+        ]
+        
+        return JsonResponse({
+            'success': True,
+            'categories': categories_data
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
+@login_required
+def get_services(request):
+    """
+    API endpoint to get all services
+    Optionally filter by category_id using ?category_id=X
+    """
+    try:
+        category_id = request.GET.get('category_id')
+        
+        if category_id:
+            services = Services.objects.filter(
+                category_name_id=category_id
+            ).select_related('category_name').order_by('id')
+        else:
+            services = Services.objects.all().select_related('category_name').order_by('id')
+        
+        services_data = [
+            {
+                'id': service.id,
+                'name': service.service_name,
+                'category_id': service.category_name.id,
+                'category_name': service.category_name.category_name
+            }
+            for service in services
+        ]
+        
+        return JsonResponse({
+            'success': True,
+            'services': services_data
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
+@login_required
+def get_task_subtasks(request, task_id):
+    """Get subtasks for a specific parent task with caching"""
+    try:
+        from .models import Task, UserTaskContext
+        from .utils import get_cached_subtasks
+        
+        # Verify user has access to parent task
+        try:
+            parent_task = Task.objects.get(id=task_id)
+            UserTaskContext.objects.get(user=request.user, task=parent_task, is_visible=True)
+        except (Task.DoesNotExist, UserTaskContext.DoesNotExist):
+            return JsonResponse({
+                'success': False,
+                'error': 'Task not found or access denied'
+            }, status=404)
+        
+        # Get subtasks with caching
+        subtasks_data = get_cached_subtasks(task_id, request.user)
+        
+        return JsonResponse({
+            'success': True,
+            'subtasks': subtasks_data,
+            'count': len(subtasks_data)
+        })
+        
+    except Exception as e:
+        import traceback
+        print(f"Error in get_task_subtasks: {str(e)}")
+        print(traceback.format_exc())
         return JsonResponse({
             'success': False,
             'error': str(e)

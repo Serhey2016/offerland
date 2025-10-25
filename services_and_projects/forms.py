@@ -107,7 +107,8 @@ def create_task(request):
             is_touchpoint = bool(request.POST.get('is_touchpoint'))
             note = none_if_empty(request.POST.get('note') or request.POST.get('comment'))
             finance_id = none_if_empty(request.POST.get('finance'))
-            parent_id = none_if_empty(request.POST.get('parent') or request.POST.get('project-included'))
+            parent_id = none_if_empty(request.POST.get('parent_id') or request.POST.get('parent') or request.POST.get('project-included'))
+            logger.info(f"=== PARENT_ID DEBUG === parent_id from request: {parent_id}")
             priority = none_if_empty(request.POST.get('priority'))
             category_id = none_if_empty(request.POST.get('category'))
             service_id = none_if_empty(request.POST.get('service'))
@@ -260,6 +261,18 @@ def create_task(request):
                 logger.info(f"Created UserTaskContext for user {request.user.username} and task {task.id}")
 
             logger.info(f"Task {task.id} completed successfully")
+            
+            # Update parent task metadata if this is a subtask
+            if parent_id:
+                try:
+                    from .utils import update_parent_subtasks_meta
+                    parent_task = Task.objects.get(id=parent_id)
+                    update_parent_subtasks_meta(parent_task)
+                    logger.info(f"Updated parent task {parent_id} metadata")
+                except Task.DoesNotExist:
+                    logger.warning(f"Parent task {parent_id} not found")
+                    pass
+            
             logger.info("=== CREATE TASK COMPLETED ===")
             return JsonResponse({'success': True, 'type': 'task', 'id': task.id})
         except Exception as e:
@@ -1119,6 +1132,9 @@ def update_task(request, task_id):
         
         task = Task.objects.get(id=task_id)
         
+        # Track old parent_id for metadata update
+        old_parent_id = task.parent_id
+        
         # Проверяем права доступа
         if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
             return JsonResponse({'success': False, 'error': 'You do not have permission to edit this task'}, status=403)
@@ -1129,6 +1145,7 @@ def update_task(request, task_id):
         priority = request.POST.get('priority', '').strip()
         date_start = request.POST.get('date_start', '').strip()
         date_end = request.POST.get('date_end', '').strip()
+        parent_id_str = request.POST.get('parent_id', '').strip()
         
         logger.info(f"Updating task {task_id}: title={title}, priority={priority}, date_start={date_start}, date_end={date_end}")
         
@@ -1171,8 +1188,37 @@ def update_task(request, task_id):
         else:
             task.end_datetime = None
         
+        # Update parent_id if provided
+        if parent_id_str:
+            try:
+                new_parent_id = int(parent_id_str) if parent_id_str.lower() != 'none' else None
+                task.parent_id = new_parent_id
+            except (ValueError, AttributeError):
+                task.parent_id = None
+        
         task.save()
         logger.info(f"Task {task_id} updated successfully")
+        
+        # Update metadata for affected parent tasks
+        from .utils import update_parent_subtasks_meta
+        
+        # Update old parent if it changed
+        if old_parent_id and old_parent_id != task.parent_id:
+            try:
+                old_parent = Task.objects.get(id=old_parent_id)
+                update_parent_subtasks_meta(old_parent)
+                logger.info(f"Updated old parent task {old_parent_id} metadata")
+            except Task.DoesNotExist:
+                pass
+        
+        # Update new parent
+        if task.parent_id:
+            try:
+                parent_task = Task.objects.get(id=task.parent_id)
+                update_parent_subtasks_meta(parent_task)
+                logger.info(f"Updated parent task {task.parent_id} metadata")
+            except Task.DoesNotExist:
+                pass
         
         return JsonResponse({
             'success': True,
