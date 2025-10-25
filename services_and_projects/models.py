@@ -187,22 +187,31 @@ class Task(models.Model):
     photo_link = models.CharField(max_length=2000, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    completed_at = models.DateTimeField(null=True, blank=True, verbose_name='Completed At', help_text='Date and time when task was marked as done')
     start_datetime = models.DateTimeField(null=True, blank=True, verbose_name='Start Date & Time')
     end_datetime = models.DateTimeField(null=True, blank=True, verbose_name='End Date & Time')
     documents = models.CharField(max_length=2000, blank=True, null=True)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, null=True, blank=True, verbose_name='Priority')
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Category', to_field='name', db_column='category')
     task_mode = models.CharField(max_length=15, choices=TASK_MODE_CHOICES, default='draft', verbose_name='Task mode')
     is_private = models.BooleanField(default=False)
     disclose_name = models.BooleanField(default=False)
-    hidden = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
     is_touchpoint = models.BooleanField(default=False)
     is_agenda = models.BooleanField(default=False)
     note = models.TextField(max_length=10000, blank=True, null=True)
     finance = models.ForeignKey('Finance', on_delete=models.SET_NULL, null=True, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subtasks')
+    
+    # Creator fields for GDPR compliance
+    creator = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='created_tasks',
+        verbose_name='Task Creator'
+    )
+    creator_deleted = models.BooleanField(default=False, verbose_name='Creator Account Deleted')
+    creator_display_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='Creator Display Name')
     
     # Recurrence pattern для повторюваних подій
     recurrence_pattern = models.JSONField(
@@ -215,10 +224,7 @@ class Task(models.Model):
     
     # Связи многие ко многим через промежуточные таблицы
     hashtags = models.ManyToManyField('joblist.AllTags', through='TaskHashtagRelations', blank=True)
-    performers = models.ManyToManyField(User, through='PerformersRelations', blank=True)
-    comments = models.ManyToManyField('Comment', through='CommentTaskRelations', blank=True)
     photos = models.ManyToManyField('PhotoRelations', blank=True, related_name='tasks')
-    services = models.ManyToManyField('Services', through='ServicesRelations', blank=True)
 
     def __str__(self):
         return self.title
@@ -227,15 +233,6 @@ class Task(models.Model):
         if not self.slug:
             # Short slug: "t-{uuid[:8]}" (11 chars total)
             self.slug = f"t-{self.uuid.hex[:8]}"
-        
-        # Автоматично встановлюємо completed_at при переміщенні в done
-        if self.category and self.category.name == 'done' and not self.completed_at:
-            from django.utils import timezone
-            self.completed_at = timezone.now()
-        
-        # Очищаємо completed_at якщо таска перейшла з done в іншу категорію
-        if self.category and self.category.name != 'done' and self.completed_at:
-            self.completed_at = None
         
         super().save(*args, **kwargs)
 
@@ -377,6 +374,150 @@ class TaskOwnerRelations(models.Model):
         unique_together = ('task', 'user')
         verbose_name = "Task owner relation"
         verbose_name_plural = "Task owner relations"
+
+
+class UserTaskContext(models.Model):
+    """Personal context for each user's view of a task"""
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task_contexts')
+    task = models.ForeignKey('Task', on_delete=models.CASCADE, related_name='user_contexts')
+    
+    category = models.ForeignKey(
+        'Category', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        verbose_name='Personal Category',
+        to_field='name', 
+        db_column='category'
+    )
+    completed_at = models.DateTimeField(null=True, blank=True, verbose_name='Completed At')
+    personal_note = models.TextField(max_length=10000, blank=True, null=True, verbose_name='Personal Notes')
+    
+    delegated_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='delegated_tasks',
+        verbose_name='Delegated By'
+    )
+    delegated_at = models.DateTimeField(auto_now_add=True, verbose_name='Delegated At')
+    
+    ROLE_CHOICES = [
+        ('owner', 'Owner'),
+        ('assignee', 'Assignee'),
+        ('collaborator', 'Collaborator'),
+    ]
+    role = models.CharField(max_length=15, choices=ROLE_CHOICES, default='assignee', verbose_name='Role')
+    is_visible = models.BooleanField(default=True, verbose_name='Visible')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.task.title} ({self.get_role_display()})"
+    
+    class Meta:
+        db_table = 'user_task_context'
+        unique_together = ('user', 'task')
+        verbose_name = "User Task Context"
+        verbose_name_plural = "User Task Contexts"
+        indexes = [
+            models.Index(fields=['user', 'category']),
+            models.Index(fields=['user', 'is_visible']),
+        ]
+
+
+class TaskPublication(models.Model):
+    """Public marketplace listing for tasks"""
+    PUBLICATION_TYPE_CHOICES = [
+        ('business', 'Business Services'),
+        ('personal', 'Personal Support'),
+    ]
+    
+    DELIVERY_TYPE_CHOICES = [
+        ('online', 'Online (Remote)'),
+        ('offline', 'Offline (Visiting)'),
+        ('hybrid', 'Hybrid'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('paused', 'Paused'),
+        ('expired', 'Expired'),
+    ]
+    
+    id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(default=generate_uuid, unique=True, editable=False)
+    slug = models.SlugField(max_length=255, blank=True, null=True, unique=True)
+    
+    task = models.ForeignKey('Task', on_delete=models.CASCADE, related_name='publications')
+    publisher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task_publications', verbose_name='Publisher')
+    
+    publication_type = models.CharField(max_length=20, choices=PUBLICATION_TYPE_CHOICES, verbose_name='Publication Type')
+    service = models.ForeignKey('Services', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Service')
+    service_category = models.ForeignKey('ServicesCategory', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Service Category')
+    
+    hashtags = models.ManyToManyField('joblist.AllTags', through='TaskPublicationHashtagRelations', blank=True)
+    
+    delivery_type = models.CharField(max_length=20, choices=DELIVERY_TYPE_CHOICES, verbose_name='Delivery Type')
+    payment_methods = models.JSONField(default=list, verbose_name='Payment Methods')
+    payment_types = models.JSONField(default=list, verbose_name='Payment Types')
+    
+    public_title = models.CharField(max_length=120, verbose_name='Public Title')
+    public_description = models.TextField(max_length=5000, blank=True, null=True, verbose_name='Public Description')
+    location = models.CharField(max_length=200, blank=True, null=True, verbose_name='Location')
+    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft', verbose_name='Status')
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Created At')
+    published_at = models.DateTimeField(null=True, blank=True, verbose_name='Published At')
+    expires_at = models.DateTimeField(null=True, blank=True, verbose_name='Expires At')
+    
+    views_count = models.IntegerField(default=0, verbose_name='Views Count')
+    
+    def __str__(self):
+        return f"{self.public_title} ({self.get_publication_type_display()})"
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            from django.utils.text import slugify
+            self.slug = slugify(f"pub-{self.uuid.hex[:8]}")
+        
+        # Auto-set published_at when status changes to active
+        if self.status == 'active' and not self.published_at:
+            from django.utils import timezone
+            self.published_at = timezone.now()
+        
+        super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        pub_type = 'business' if self.publication_type == 'business' else 'personal'
+        return f"/marketplace/{pub_type}/{self.slug}/"
+    
+    class Meta:
+        db_table = 'task_publications'
+        verbose_name = "Task Publication"
+        verbose_name_plural = "Task Publications"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['publisher', 'status']),
+            models.Index(fields=['publication_type', 'status']),
+        ]
+
+
+class TaskPublicationHashtagRelations(models.Model):
+    id = models.AutoField(primary_key=True)
+    publication = models.ForeignKey('TaskPublication', on_delete=models.CASCADE)
+    hashtag = models.ForeignKey('joblist.AllTags', on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = 'task_publication_hashtag_relations'
+        unique_together = ('publication', 'hashtag')
+        verbose_name = "Task Publication Hashtag Relation"
+        verbose_name_plural = "Task Publication Hashtag Relations"
 
 
 class TimeSlot(models.Model):

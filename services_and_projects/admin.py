@@ -3,10 +3,10 @@ from django.utils.safestring import mark_safe
 from .models import (
     Comment, TaskStatus, Category, CardTemplate, ServicesCategory, PhotoRelations, Services, Finance, Task,
     TaskHashtagRelations, AdvertisingHashtagRelations, TimeSlotHashtagRelations, 
-    PerformersRelations, CommentTaskRelations, ServicesRelations, TaskOwnerRelations,
+    TaskOwnerRelations,
     TimeSlot, Advertising, TaskClientRelations, TimeSlotPerformersRelations, CommentTimeSlotRelations,
     CommentAdvertisingRelations, AdvertisingOwnerRelations, JobSearch, Activities, JobSearchActivitiesRelations,
-    ActivitiesTaskRelations
+    ActivitiesTaskRelations, UserTaskContext, TaskPublication, TaskPublicationHashtagRelations
 )
 
 class TaskHashtagRelationsInline(admin.TabularInline):
@@ -21,36 +21,32 @@ class TimeSlotHashtagRelationsInline(admin.TabularInline):
     model = TimeSlotHashtagRelations
     extra = 1
 
-class PerformersRelationsInline(admin.TabularInline):
-    model = PerformersRelations
-    extra = 1
-
-class ServicesRelationsInline(admin.TabularInline):
-    model = ServicesRelations
-    extra = 1
-
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'card_template', 'task_mode', 'category', 'priority', 'created_at', 'is_published', 'is_touchpoint', 'is_agenda', 'is_recurring_display')
-    list_filter = ('task_mode', 'category', 'priority', 'card_template', 'is_published', 'is_touchpoint', 'is_agenda', 'created_at')
-    search_fields = ('title', 'description')
-    readonly_fields = ('created_at', 'updated_at', 'completed_at', 'recurrence_info_display')
+    list_display = ('id', 'title', 'card_template', 'task_mode', 'priority', 'creator', 'creator_deleted', 'created_at', 'is_published', 'is_touchpoint', 'is_agenda', 'is_recurring_display')
+    list_filter = ('task_mode', 'priority', 'card_template', 'is_published', 'is_touchpoint', 'is_agenda', 'creator_deleted', 'created_at')
+    search_fields = ('title', 'description', 'creator__username')
+    readonly_fields = ('created_at', 'updated_at', 'recurrence_info_display')
     date_hierarchy = 'created_at'
-    inlines = [TaskHashtagRelationsInline, PerformersRelationsInline, ServicesRelationsInline]
+    inlines = [TaskHashtagRelationsInline]
     
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'description', 'card_template', 'task_mode', 'category', 'priority')
+            'fields': ('title', 'description', 'card_template', 'task_mode', 'priority')
+        }),
+        ('Создатель (Creator)', {
+            'fields': ('creator', 'creator_deleted', 'creator_display_name'),
+            'classes': ('collapse',)
         }),
         ('Дополнительная информация', {
             'fields': ('photo_link', 'documents', 'note', 'finance'),
             'classes': ('collapse',)
         }),
         ('Настройки', {
-            'fields': ('is_private', 'disclose_name', 'hidden', 'is_published', 'is_touchpoint', 'is_agenda'),
+            'fields': ('is_private', 'disclose_name', 'is_published', 'is_touchpoint', 'is_agenda'),
             'classes': ('collapse',)
         }),
         ('Даты и время', {
-            'fields': ('start_datetime', 'end_datetime', 'created_at', 'updated_at', 'completed_at'),
+            'fields': ('start_datetime', 'end_datetime', 'created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
         ('Повторення (Recurrence)', {
@@ -177,9 +173,6 @@ admin.site.register(Finance)
 admin.site.register(Task, TaskAdmin)
 admin.site.register(TaskHashtagRelations)
 admin.site.register(AdvertisingHashtagRelations)
-admin.site.register(PerformersRelations)
-admin.site.register(CommentTaskRelations)
-admin.site.register(ServicesRelations)
 admin.site.register(TaskOwnerRelations)
 admin.site.register(TimeSlot, TimeSlotAdmin)
 admin.site.register(Advertising, AdvertisingAdmin)
@@ -255,3 +248,68 @@ class ActivitiesTaskRelationsAdmin(admin.ModelAdmin):
 # Регистрируем новые модели
 admin.site.register(Activities, ActivitiesAdmin)
 admin.site.register(JobSearchActivitiesRelations, JobSearchActivitiesRelationsAdmin)
+
+
+@admin.register(UserTaskContext)
+class UserTaskContextAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'task', 'category', 'role', 'is_visible', 'delegated_by', 'completed_at', 'created_at')
+    list_filter = ('category', 'role', 'is_visible', 'delegated_at', 'created_at')
+    search_fields = ('user__username', 'task__title', 'delegated_by__username')
+    readonly_fields = ('created_at', 'updated_at', 'delegated_at')
+    date_hierarchy = 'created_at'
+    
+    fieldsets = (
+        ('Task Context', {
+            'fields': ('user', 'task', 'category', 'role', 'is_visible')
+        }),
+        ('Delegation Info', {
+            'fields': ('delegated_by', 'delegated_at'),
+            'classes': ('collapse',)
+        }),
+        ('Personal Info', {
+            'fields': ('personal_note', 'completed_at'),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(TaskPublication)
+class TaskPublicationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'public_title', 'publication_type', 'status', 'publisher', 'delivery_type', 'published_at', 'views_count')
+    list_filter = ('publication_type', 'status', 'delivery_type', 'created_at', 'published_at')
+    search_fields = ('public_title', 'public_description', 'publisher__username', 'location')
+    readonly_fields = ('created_at', 'published_at', 'views_count', 'uuid', 'slug')
+    date_hierarchy = 'created_at'
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('public_title', 'public_description', 'task', 'publisher', 'publication_type', 'status')
+        }),
+        ('Service Information', {
+            'fields': ('service', 'service_category', 'delivery_type', 'location'),
+            'classes': ('collapse',)
+        }),
+        ('Payment Options', {
+            'fields': ('payment_methods', 'payment_types'),
+            'classes': ('collapse',)
+        }),
+        ('Dates & Stats', {
+            'fields': ('created_at', 'published_at', 'expires_at', 'views_count'),
+            'classes': ('collapse',)
+        }),
+        ('Technical', {
+            'fields': ('uuid', 'slug'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(TaskPublicationHashtagRelations)
+class TaskPublicationHashtagRelationsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'publication', 'hashtag')
+    list_filter = ('hashtag',)
+    search_fields = ('publication__public_title', 'hashtag__tag')

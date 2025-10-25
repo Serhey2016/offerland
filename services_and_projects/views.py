@@ -54,7 +54,6 @@ def testpage(request):
         owner_rel = AdvertisingOwnerRelations.objects.select_related('user').filter(advertising=advertising).first()
         owner = owner_rel.user if owner_rel else None
         task = Task.objects.filter(
-            services=advertising.services,
             card_template=advertising.card_template
         ).order_by('-created_at').first()
         
@@ -66,7 +65,7 @@ def testpage(request):
     
     # Получаем все задачи для отображения в потоке
     tasks_for_feed = Task.objects.select_related('finance').prefetch_related(
-        'photos', 'hashtags', 'performers', 'services'
+        'photos', 'hashtags'
     ).order_by('-created_at')
     
     # Apply status filter for tasks
@@ -316,12 +315,10 @@ def save_task_notes(request, task_slug):
             # Regular Task
             task = Task.objects.get(slug=task_slug, taskownerrelations__user=request.user)
             
-            # Проверяем, что пользователь имеет доступ к задаче
-            # (владелец или исполнитель)
+            # Проверяем, что пользователь имеет доступ к задаче (владелец)
             is_owner = TaskOwnerRelations.objects.filter(task=task, user=request.user).exists()
-            is_performer = task.performers.filter(id=request.user.id).exists()
             
-            if not (is_owner or is_performer):
+            if not is_owner:
                 return JsonResponse({
                     'success': False,
                     'error': 'You do not have permission to edit this task'
@@ -620,18 +617,24 @@ def user_tasks(request):
     """
     API endpoint to get tasks for authenticated user
     Filters tasks by status field based on category parameter
+    Now uses UserTaskContext for per-user status tracking
     """
     try:
+        from .models import UserTaskContext
+        
         # Get category/status filter from query params
         category = request.GET.get('category', '').lower()
         
-        # Get tasks owned by the user through TaskOwnerRelations
-        user_tasks = Task.objects.filter(
-            taskownerrelations__user=request.user
+        # Get user's task contexts (this includes personal category/status)
+        user_task_contexts = UserTaskContext.objects.filter(
+            user=request.user,
+            is_visible=True
         ).select_related(
+            'task',
+            'task__card_template',
             'category'
         ).prefetch_related(
-            'hashtags__hashtag'
+            'task__hashtags'
         )
         
         # Filter by category if category is provided and matches a valid position
@@ -649,18 +652,22 @@ def user_tasks(request):
         }
         
         if category in position_mapping:
-            # Special handling for agenda - show tasks with category='agenda' OR is_agenda=True
+            # Special handling for agenda - show tasks with category='agenda' OR task.is_agenda=True
             if category == 'agenda':
                 from django.db.models import Q
-                user_tasks = user_tasks.filter(Q(category__name='agenda') | Q(is_agenda=True))
+                user_task_contexts = user_task_contexts.filter(
+                    Q(category__name='agenda') | Q(task__is_agenda=True)
+                )
             else:
-                user_tasks = user_tasks.filter(category__name=position_mapping[category])
+                user_task_contexts = user_task_contexts.filter(category__name=position_mapping[category])
         
-        user_tasks = user_tasks.order_by('-created_at')
+        user_task_contexts = user_task_contexts.order_by('-task__created_at')
         
         # Convert to list with hashtags
         tasks_data = []
-        for task in user_tasks:
+        for context in user_task_contexts:
+            task = context.task
+            
             # Get hashtags for this task
             hashtag_relations = TaskHashtagRelations.objects.filter(task=task).select_related('hashtag')
             hashtags = [
@@ -691,21 +698,25 @@ def user_tasks(request):
                 'start_datetime': task.start_datetime.isoformat() if task.start_datetime else None,
                 'end_datetime': task.end_datetime.isoformat() if task.end_datetime else None,
                 'priority': task.priority,
-                'status': task.category.name if task.category else None,
+                'status': context.category.name if context.category else None,  # Use context's category
                 'task_mode': task.task_mode,
                 'note': task.note,
                 'created_at': task.created_at.isoformat(),
                 'updated_at': task.updated_at.isoformat(),
-                'completed_at': task.completed_at.isoformat() if task.completed_at else None,
+                'completed_at': context.completed_at.isoformat() if context.completed_at else None,  # Use context's completed_at
                 'hashtags': hashtags,
                 'card_template': task.card_template.name if task.card_template else 'task',
-                'recurrence_pattern': task.recurrence_pattern  # Додаємо recurrence_pattern
+                'recurrence_pattern': task.recurrence_pattern,  # Додаємо recurrence_pattern
+                'personal_note': context.personal_note  # Add personal note from context
             }
             tasks_data.append(task_data)
         
         return JsonResponse(tasks_data, safe=False)
         
     except Exception as e:
+        import traceback
+        print(f"Error in user_tasks: {str(e)}")
+        print(traceback.format_exc())
         return JsonResponse({
             'error': f'Error fetching user tasks: {str(e)}'
         }, status=500)
@@ -736,26 +747,33 @@ def user_inbox_items(request):
         
         all_items = []
         
-        # Get Tasks
-        user_tasks = Task.objects.filter(
-            taskownerrelations__user=request.user
+        # Get Tasks through UserTaskContext
+        from .models import UserTaskContext
+        user_task_contexts = UserTaskContext.objects.filter(
+            user=request.user,
+            is_visible=True
         ).select_related(
-            'category', 'card_template'
+            'task',
+            'task__card_template',
+            'category'
         ).prefetch_related(
-            'hashtags__hashtag'
+            'task__hashtags'
         )
         
         if category in position_mapping:
             if category == 'agenda':
                 from django.db.models import Q
-                user_tasks = user_tasks.filter(Q(category__name='agenda') | Q(is_agenda=True))
+                user_task_contexts = user_task_contexts.filter(
+                    Q(category__name='agenda') | Q(task__is_agenda=True)
+                )
             else:
-                user_tasks = user_tasks.filter(category__name=position_mapping[category])
+                user_task_contexts = user_task_contexts.filter(category__name=position_mapping[category])
         
-        user_tasks = user_tasks.order_by('-created_at')
+        user_task_contexts = user_task_contexts.order_by('-task__created_at')
         
         # Add tasks to all_items
-        for task in user_tasks:
+        for context in user_task_contexts:
+            task = context.task
             hashtag_relations = TaskHashtagRelations.objects.filter(task=task).select_related('hashtag')
             hashtags = [
                 {
@@ -782,11 +800,12 @@ def user_inbox_items(request):
                 'time_start': task.start_datetime.isoformat() if task.start_datetime else None,
                 'time_end': task.end_datetime.isoformat() if task.end_datetime else None,
                 'priority': task.priority,
-                'status': task.category.name if task.category else None,
+                'status': context.category.name if context.category else None,  # Use context's category
                 'task_mode': task.task_mode,
                 'note': task.note,
                 'created_at': task.created_at.isoformat(),
                 'updated_at': task.updated_at.isoformat(),
+                'completed_at': context.completed_at.isoformat() if context.completed_at else None,  # Use context's completed_at
                 'hashtags': hashtags,
                 'card_template': task.card_template.name if task.card_template else 'task',
                 'item_type': 'task'
@@ -982,12 +1001,9 @@ def get_edit_data(request, form_type, item_slug):
             
             print(f"DEBUG: Access granted, building data for task {item_slug}")
             
-            # Get the first service and its category if it exists
-            print(f"DEBUG: Task services count: {task.services.count()}")
-            first_service = task.services.first()
-            print(f"DEBUG: First service: {first_service}")
-            category_id = first_service.category_name.id if first_service else None
-            service_id = first_service.id if first_service else None
+            # Services relation was removed, set to None
+            category_id = None
+            service_id = None
             print(f"DEBUG: Category ID: {category_id}, Service ID: {service_id}")
             
             data = {
@@ -998,7 +1014,6 @@ def get_edit_data(request, form_type, item_slug):
                 'status': task.category.name if task.category else None,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
-                'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
                 'project_included': None,  # Для задач это поле не используется
                 'photos': [photo.photo.url if photo.photo else None for photo in task.photos.all() if photo.photo]
             }
@@ -1008,17 +1023,16 @@ def get_edit_data(request, form_type, item_slug):
         elif form_type == 'tender':
             # Получаем данные тендера (используем модель Task с типом 'tender')
             task = Task.objects.prefetch_related(
-                'hashtags', 'performers', 'photos', 'services'
+                'hashtags', 'photos'
             ).get(slug=item_slug, card_template__name='tender')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
                 return JsonResponse({'success': False, 'error': 'Access denied'})
             
-            # Get the first service and its category if it exists
-            first_service = task.services.first()
-            category_id = first_service.category_name.id if first_service else None
-            service_id = first_service.id if first_service else None
+            # Services relation was removed
+            category_id = None
+            service_id = None
             
             data = {
                 'title': task.title,
@@ -1028,7 +1042,6 @@ def get_edit_data(request, form_type, item_slug):
                 'status': task.category.name if task.category else None,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
-                'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
                 'project_included': None,
                 'photos': [task.photo_link] if task.photo_link else []
             }
@@ -1036,17 +1049,16 @@ def get_edit_data(request, form_type, item_slug):
         elif form_type == 'project':
             # Получаем данные проекта (используем модель Task с типом 'project')
             task = Task.objects.prefetch_related(
-                'hashtags', 'performers', 'photos', 'services'
+                'hashtags', 'photos'
             ).get(slug=item_slug, card_template__name='project')
             
             # Проверяем права доступа
             if not TaskOwnerRelations.objects.filter(task=task, user=request.user).exists():
                 return JsonResponse({'success': False, 'error': 'Access denied'})
             
-            # Get the first service and its category if it exists
-            first_service = task.services.first()
-            category_id = first_service.category_name.id if first_service else None
-            service_id = first_service.id if first_service else None
+            # Services relation was removed
+            category_id = None
+            service_id = None
             
             data = {
                 'title': task.title,
@@ -1056,7 +1068,6 @@ def get_edit_data(request, form_type, item_slug):
                 'status': task.category.name if task.category else None,
                 'documents': task.documents,
                 'hashtags': [{'tag': tag.tag} for tag in task.hashtags.all()],
-                'performers': [{'id': performer.id, 'username': performer.username, 'get_full_name': performer.get_full_name()} for performer in task.performers.all()],
                 'project_included': None,
                 'photos': [photo.photo.url if photo.photo else None for photo in task.photos.all() if photo.photo]
             }
@@ -1213,14 +1224,17 @@ def remove_advertising_photo(request, advertising_id, photo_id):
 @require_http_methods(["PATCH"])
 @csrf_exempt
 def update_task_status(request, task_slug):
-    """Update task status via PATCH request"""
+    """Update task status via PATCH request - now uses UserTaskContext"""
     try:
         import json
-        task = Task.objects.get(slug=task_slug, taskownerrelations__user=request.user)
+        from .models import UserTaskContext
         
-        # Check if user has permission to update this task
-        owner_rel = TaskOwnerRelations.objects.filter(task=task, user=request.user).first()
-        if not owner_rel:
+        task = Task.objects.get(slug=task_slug)
+        
+        # Get user's context for this task
+        try:
+            context = UserTaskContext.objects.get(user=request.user, task=task)
+        except UserTaskContext.DoesNotExist:
             return JsonResponse({
                 'success': False,
                 'error': 'You do not have permission to update this task'
@@ -1238,8 +1252,8 @@ def update_task_status(request, task_slug):
                 'error': f'Invalid status. Must be one of: {", ".join(valid_statuses)}'
             }, status=400)
         
-        # Update task category
-        task.category_id = new_status
+        # Update UserTaskContext category
+        context.category_id = new_status
         
         # Special handling for agenda category
         if new_status == 'agenda':
@@ -1251,11 +1265,15 @@ def update_task_status(request, task_slug):
             task.is_agenda = False
         
         # Record completion time when task is marked as done
-        if new_status == 'done' and not task.end_datetime:
+        if new_status == 'done' and not context.completed_at:
             from django.utils import timezone
-            task.end_datetime = timezone.now()
+            context.completed_at = timezone.now()
+        elif new_status != 'done' and context.completed_at:
+            # Clear completed_at if moving away from done
+            context.completed_at = None
         
-        task.save()
+        context.save()
+        task.save()  # Save task to update is_agenda if changed
         
         return JsonResponse({
             'success': True,
@@ -1393,18 +1411,16 @@ def update_category(request, slug):
         element = None
         element_type = None
         
-        # Try to find Task
+        # Try to find Task and its UserTaskContext
+        context = None
         try:
-            element = Task.objects.get(slug=slug, taskownerrelations__user=request.user)
+            from .models import UserTaskContext
+            task = Task.objects.get(slug=slug)
+            # Get user's context for this task
+            context = UserTaskContext.objects.get(user=request.user, task=task)
+            element = task
             element_type = 'task'
-            # Check permission
-            owner_rel = TaskOwnerRelations.objects.filter(task=element, user=request.user).first()
-            if not owner_rel:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'You do not have permission to update this task'
-                }, status=403)
-        except Task.DoesNotExist:
+        except (Task.DoesNotExist, UserTaskContext.DoesNotExist):
             pass
         
         # Try to find TimeSlot if not found as Task
@@ -1433,26 +1449,33 @@ def update_category(request, slug):
                     'error': 'Element not found'
                 }, status=404)
         
-        # Update category
-        element.category_id = new_position
-        
-        # Special handling for agenda category
-        if new_position == 'agenda' and element_type == 'task':
-            element.is_agenda = True
-        elif element_type == 'task' and hasattr(element, 'is_agenda'):
-            # If moving away from agenda, set is_agenda to False
-            # EXCEPT for 'done' - it stays in agenda but changes category
-            # Archive and all others remove task from agenda
-            if element.is_agenda and new_position not in ['agenda', 'done']:
+        # Update category based on element type
+        if element_type == 'task' and context:
+            # Update UserTaskContext category for task
+            context.category_id = new_position
+            
+            # Special handling for agenda category
+            if new_position == 'agenda':
+                element.is_agenda = True
+            elif element.is_agenda and new_position not in ['agenda', 'done']:
+                # If moving away from agenda, set is_agenda to False
+                # EXCEPT for 'done' - it stays in agenda but changes category
                 element.is_agenda = False
-        
-        # Record completion time when task is marked as done
-        if new_position == 'done' and element_type == 'task' and hasattr(element, 'end_datetime'):
-            if not element.end_datetime:
+            
+            # Record completion time when task is marked as done
+            if new_position == 'done' and not context.completed_at:
                 from django.utils import timezone
-                element.end_datetime = timezone.now()
-        
-        element.save()
+                context.completed_at = timezone.now()
+            elif new_position != 'done' and context.completed_at:
+                # Clear completed_at if moving away from done
+                context.completed_at = None
+            
+            context.save()
+            element.save()  # Save task to update is_agenda if changed
+        else:
+            # For TimeSlot and JobSearch, update category directly
+            element.category_id = new_position
+            element.save()
         
         return JsonResponse({
             'success': True,

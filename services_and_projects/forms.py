@@ -103,7 +103,6 @@ def create_task(request):
                 category = 'inbox'
             is_private = bool(request.POST.get('private'))
             disclose_name = bool(request.POST.get('disclose_name'))
-            hidden = bool(request.POST.get('hidden'))
             is_published = False  # или по логике вашей кнопки
             is_touchpoint = bool(request.POST.get('is_touchpoint'))
             note = none_if_empty(request.POST.get('note') or request.POST.get('comment'))
@@ -145,15 +144,14 @@ def create_task(request):
                 end_datetime=end_datetime,
                 documents=documents,
                 priority=priority,
-                category_id=category,
                 is_private=is_private,
                 disclose_name=disclose_name,
-                hidden=hidden,
                 is_published=is_published,
                 is_touchpoint=is_touchpoint,
                 note=note,
                 finance_id=finance_id,
-                parent_id=parent_id
+                parent_id=parent_id,
+                creator=request.user if request.user.is_authenticated else None
             )
 
             # ЭТАП 2: Добавляем связанные данные через промежуточные таблицы
@@ -248,8 +246,18 @@ def create_task(request):
 
             # Добавляем owner relation
             if request.user.is_authenticated:
-                from .models import TaskOwnerRelations
+                from .models import TaskOwnerRelations, UserTaskContext
                 TaskOwnerRelations.objects.get_or_create(task=task, user=request.user)
+                
+                # Create UserTaskContext for the task creator
+                UserTaskContext.objects.create(
+                    user=request.user,
+                    task=task,
+                    category_id=category if category else 'inbox',
+                    role='owner',
+                    is_visible=True
+                )
+                logger.info(f"Created UserTaskContext for user {request.user.username} and task {task.id}")
 
             logger.info(f"Task {task.id} completed successfully")
             logger.info("=== CREATE TASK COMPLETED ===")
@@ -823,14 +831,26 @@ def create_activity_task(request, activity_id):
                 card_template_id=type_of_task,
                 title=title,
                 description=description,
-                category_id=default_category,
                 is_private=False,
                 disclose_name=False,
                 hidden=False,
                 is_published=False,
-                is_touchpoint=False
+                is_touchpoint=False,
+                creator=request.user if request.user.is_authenticated else None
             )
             print(f"Task created successfully with ID: {task.id}")
+            
+            # Create UserTaskContext for the task creator
+            if request.user.is_authenticated:
+                from .models import UserTaskContext
+                UserTaskContext.objects.create(
+                    user=request.user,
+                    task=task,
+                    category_id=default_category,
+                    role='owner',
+                    is_visible=True
+                )
+                print(f"Created UserTaskContext for user {request.user.username} and task {task.id}")
             
             # Связываем таску с активностью
             print(f"Creating ActivitiesTaskRelations for activity {activity.id} and task {task.id}")

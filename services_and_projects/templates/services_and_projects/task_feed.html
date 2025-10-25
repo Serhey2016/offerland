@@ -202,13 +202,6 @@
                         Hidden
                     {% endif %}
                 </div>
-                <div class="social_feed_details_grid_stakeholders"><b>Stakeholders:</b> 
-                    {% for performer in task.performers.all %}
-                        {{ performer.get_full_name|default:performer.username }}{% if not forloop.last %}, {% endif %}
-                    {% empty %}
-                        Need a performer
-                    {% endfor %}
-                </div>
                 <div class="social_feed_details_grid_status"><b>Status:</b> 
                     {% if task.status %}
                         {{ task.status|title }}
