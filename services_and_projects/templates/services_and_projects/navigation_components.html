@@ -37,6 +37,17 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
         }, { passive: false });
     }
+
+    // Handle team button click (sub1)
+    const teamButton = document.querySelector('.fixed_circle.sub.sub1');
+    if (teamButton) {
+        teamButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Dispatch custom event for React to handle
+            const event = new CustomEvent('showTeamDialog');
+            window.dispatchEvent(event);
+        });
+    }
 });
 </script>
 
@@ -50,10 +61,15 @@ document.addEventListener('DOMContentLoaded', function() {
         </svg>
     </button>
     <button class="fixed_circle sub sub1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="65.49" height="62.215" viewBox="0 0 65.49 62.215">
-            <path id="star_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24"
-                d="M102.43-831.456l10.315-6.222,10.315,6.3-2.7-11.788,9.087-7.859-11.952-1.064-4.748-11.133L108-852.167,96.045-851.1l9.087,7.941Zm-9.905,13.671,5.321-23L80-856.26l23.576-2.047L112.745-880l9.169,21.694,23.576,2.047-17.846,15.472,5.321,23-20.22-12.2ZM112.745-846.436Z"
-                transform="translate(-80 880)" fill="#ffffff" />
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 504.114 503.292">
+            <g id="team" transform="translate(0 -0.1)" fill="#ffffff">
+                <circle id="Ellipse_391" data-name="Ellipse 391" cx="49.713" cy="49.713" r="49.713" transform="translate(30.403 0.1)"/>
+                <path id="Path_5282" data-name="Path 5282" d="M24.651,184.509h4.93v98.6a24.721,24.721,0,0,0,24.651,24.651H106a24.721,24.721,0,0,0,24.651-24.651v-5.748a62.315,62.315,0,0,1-7.4-28.76V119.6a61.484,61.484,0,0,1,36.977-56.287v-9.86A24.724,24.724,0,0,0,135.582,28.8H24.651A24.724,24.724,0,0,0,0,53.451V159.862A24.459,24.459,0,0,0,24.651,184.509Z" transform="translate(0 89.215)"/>
+                <circle id="Ellipse_392" data-name="Ellipse 392" cx="49.713" cy="49.713" r="49.713" transform="translate(374.699 0.1)"/>
+                <path id="Path_5283" data-name="Path 5283" d="M83.7,53.351v9.861A61.478,61.478,0,0,1,120.676,119.5V248.1a57.706,57.706,0,0,1-7.391,28.76v5.752a24.721,24.721,0,0,0,24.651,24.651H189.7a24.724,24.724,0,0,0,24.651-24.651V184h4.926a24.721,24.721,0,0,0,24.651-24.651v-106A24.721,24.721,0,0,0,219.281,28.7H108.35A24.724,24.724,0,0,0,83.7,53.351Z" transform="translate(260.182 88.904)"/>
+                <path id="Path_5284" data-name="Path 5284" d="M39.1,69.547h0V198.555a24.724,24.724,0,0,0,24.651,24.651H73.2V339.478a24.724,24.724,0,0,0,24.651,24.651H164a24.724,24.724,0,0,0,24.651-24.651V222.8h9.45a24.721,24.721,0,0,0,24.651-24.651V69.551h0A24.724,24.724,0,0,0,198.1,44.9H63.751A24.459,24.459,0,0,0,39.1,69.547Z" transform="translate(121.544 139.263)"/>
+                <circle id="Ellipse_393" data-name="Ellipse 393" cx="57.109" cy="57.109" r="57.109" transform="translate(195.156 49.402)"/>
+            </g>
         </svg>
     </button>
     <button class="fixed_circle sub sub2">

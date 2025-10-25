@@ -9,6 +9,8 @@ import TouchpointView from './views/TouchpointView'
 import GenericView from './views/GenericView'
 import ContactsView from './views/subcategories/ContactsView'
 import EmptyStateView from './views/EmptyStateView'
+import { Dialog } from 'primereact/dialog'
+import { Button } from 'primereact/button'
 import {
   Category,
   Subcategory,
@@ -36,6 +38,7 @@ const TaskTracker = () => {
   const [selectedNavigationItem, setSelectedNavigationItem] = useState<string | null>(null)
   const [isUpdating, setIsUpdating] = useState(false)
   const [renderKey, setRenderKey] = useState(0)
+  const [showTeamDialog, setShowTeamDialog] = useState(false)
 
 
   // Helper function to update subcategory display in center
@@ -341,6 +344,19 @@ const TaskTracker = () => {
     }
   }, [])
 
+  // Listen for team dialog event from navigation button
+  useEffect(() => {
+    const handleShowTeamDialog = () => {
+      setShowTeamDialog(true)
+    }
+
+    window.addEventListener('showTeamDialog', handleShowTeamDialog)
+
+    return () => {
+      window.removeEventListener('showTeamDialog', handleShowTeamDialog)
+    }
+  }, [])
+
   // Track state changes for menu updates
   useEffect(() => {
     if (selectedCategory) {
@@ -487,7 +503,26 @@ const TaskTracker = () => {
     React.createElement(NavigationMenu, {
       onCategoryChange: handleCategoryChange,
       initialCategory: selectedCategory
-    })
+    }),
+    React.createElement(Dialog, {
+      header: 'Team Component',
+      visible: showTeamDialog,
+      style: { width: '400px' },
+      onHide: () => setShowTeamDialog(false),
+      modal: true,
+      dismissableMask: false
+    },
+      React.createElement('div', { style: { textAlign: 'center', padding: '20px' } },
+        React.createElement('p', { style: { marginBottom: '20px', fontSize: '16px' } },
+          'Component is currently under development'
+        ),
+        React.createElement(Button, {
+          label: 'OK',
+          onClick: () => setShowTeamDialog(false),
+          style: { minWidth: '100px' }
+        })
+      )
+    )
   )
 }
 
