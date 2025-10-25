@@ -15,6 +15,8 @@ import { useToasts } from '../../hooks/useToasts'
 import { useTasks } from '../../hooks/useTasks'
 import { useInputContainer } from '../../hooks/useInputContainer'
 import { convertTasksToCalendarEvents, CalendarEvent as CalendarEventType } from '../../utils/calendarHelpers'
+import QuickCreateTaskDialog, { QuickCreateTaskData } from '../ui/QuickCreateTaskDialog'
+import TaskTypeSelectionDialog from '../ui/TaskTypeSelectionDialog'
 // CSS styles moved to task_tracker.css
 
 interface CalendarEvent {
@@ -58,6 +60,13 @@ const AgendaView = () => {
   const [showJobSearchDialog, setShowJobSearchDialog] = useState(false)
   const [jobSearchEditMode, setJobSearchEditMode] = useState<'create' | 'edit'>('create')
   const [selectedJobSearch, setSelectedJobSearch] = useState<DjangoTask | null>(null)
+  
+  // Task type selection dialog state (first step)
+  const [showTaskTypeDialog, setShowTaskTypeDialog] = useState(false)
+  const [quickCreateTimeRange, setQuickCreateTimeRange] = useState<{ start: Date; end: Date } | null>(null)
+  
+  // Quick create dialog state (second step)
+  const [showQuickCreateDialog, setShowQuickCreateDialog] = useState(false)
   
   // Use toasts hook
   const { toast, showError, showSuccess } = useToasts()
@@ -325,7 +334,98 @@ const AgendaView = () => {
   }
 
   const handleSelectSlot = (slotInfo: any) => {
-    // You can add new event creation here
+    // slotInfo contains: { start: Date, end: Date, slots: Date[], action: 'select' | 'click' | 'doubleClick' }
+    
+    // Only show dialog for drag selection (not just clicks)
+    if (slotInfo.action === 'select') {
+      setQuickCreateTimeRange({
+        start: slotInfo.start,
+        end: slotInfo.end
+      })
+      // Show task type selection dialog first
+      setShowTaskTypeDialog(true)
+    }
+  }
+
+  // Handle task type selection
+  const handleSelectCreateTask = () => {
+    // Close task type dialog and open quick create dialog
+    setShowTaskTypeDialog(false)
+    setShowQuickCreateDialog(true)
+  }
+
+  const handleSelectRecurrentTask = () => {
+    // TODO: Implement recurrent task logic in the future
+    // For now, just close the dialog
+    setShowTaskTypeDialog(false)
+    setQuickCreateTimeRange(null)
+  }
+
+  // Handle quick create task
+  const handleQuickCreateTask = async (data: QuickCreateTaskData) => {
+    try {
+      if (!quickCreateTimeRange) return
+      
+      // Format date for API (YYYY-MM-DD)
+      const formatDateForInput = (date: Date): string => {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+      }
+
+      // Step 1: Create task in Inbox
+      const result = await taskApi.createInboxTask({
+        title: data.title,
+        description: data.description || '',
+        date_start: formatDateForInput(quickCreateTimeRange.start),
+        date_end: formatDateForInput(quickCreateTimeRange.end),
+        priority: null,
+        parent_id: null
+      })
+      
+      // Check if we got a valid result with slug
+      if (!result || !result.slug) {
+        throw new Error('Failed to create task: No slug returned from server')
+      }
+      
+      const taskSlug = result.slug
+      
+      // Step 2: Move to Agenda (sets is_agenda=true)
+      await taskApi.updateCategory(taskSlug, 'agenda')
+      
+      // Step 3: Set exact datetime
+      const startDatetime = quickCreateTimeRange.start.toISOString()
+      const endDatetime = quickCreateTimeRange.end.toISOString()
+      await taskApi.updateTaskDatetime(taskSlug, {
+        start_datetime: startDatetime,
+        end_datetime: endDatetime
+      })
+      
+      showSuccess('Task created successfully!', 'Task Created', 4000)
+      await loadAgendaTasks()
+      setShowQuickCreateDialog(false)
+      setQuickCreateTimeRange(null)
+    } catch (error: any) {
+      let errorMessage = 'Error creating task. Please try again.'
+      
+      if (error.response?.data) {
+        if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data
+        } else if (error.response.data.error) {
+          errorMessage = error.response.data.error
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message
+        } else if (error.response.data.detail) {
+          errorMessage = error.response.data.detail
+        }
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      
+      showError(errorMessage)
+      throw error
+    }
   }
 
   const handleNavigate = (date: Date, view: string) => {
@@ -390,6 +490,31 @@ const AgendaView = () => {
           setJobSearchEditMode('create')
         }}
         onSave={handleSaveJobSearch}
+      />
+
+      {/* Task Type Selection Dialog (Step 1) */}
+      <TaskTypeSelectionDialog
+        visible={showTaskTypeDialog}
+        onHide={() => {
+          setShowTaskTypeDialog(false)
+          setQuickCreateTimeRange(null)
+        }}
+        onSelectCreateTask={handleSelectCreateTask}
+        onSelectRecurrentTask={handleSelectRecurrentTask}
+        startTime={quickCreateTimeRange?.start}
+        endTime={quickCreateTimeRange?.end}
+      />
+
+      {/* Quick Create Task Dialog (Step 2) */}
+      <QuickCreateTaskDialog
+        visible={showQuickCreateDialog}
+        onHide={() => {
+          setShowQuickCreateDialog(false)
+          setQuickCreateTimeRange(null)
+        }}
+        onCreate={handleQuickCreateTask}
+        startTime={quickCreateTimeRange?.start}
+        endTime={quickCreateTimeRange?.end}
       />
 
       {/* Task Creation Block */}

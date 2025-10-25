@@ -274,7 +274,7 @@ def create_task(request):
                     pass
             
             logger.info("=== CREATE TASK COMPLETED ===")
-            return JsonResponse({'success': True, 'type': 'task', 'id': task.id})
+            return JsonResponse({'success': True, 'type': 'task', 'id': task.id, 'slug': task.slug})
         except Exception as e:
             import traceback
             print('Error in create_task:', e)
