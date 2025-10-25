@@ -327,7 +327,7 @@
    ============================================================================ */
    .task_tracker_task_container {
     display: block;
-    background: #9EAEBE;
+    background: #E8E8E8;
     border: 0px solid #282D3B;
     border-radius: 10px;
     padding: 8px 20px 8px 35px; /* Added left padding to avoid overlap with line */
