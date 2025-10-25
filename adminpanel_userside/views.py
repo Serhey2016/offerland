@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth.models import Group
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -18,6 +19,9 @@ from .models import VacanciesFromBoards, WorklistStatuses
 # Імпорт для статей і категорій з додатку blog, а також тегів з joblist
 from blog.models import AllArticles, BlogCategory
 from joblist.models import AllTags
+
+# Імпорт для модерації тасок
+from services_and_projects.models import Task
 
 
 @login_required(login_url='adminpanel_userside:login')
@@ -168,3 +172,88 @@ def create_article(request):
         'form': form,
     }
     return render(request, 'adminpanel_userside/create_article.html', context)
+
+
+# Moderation Views
+@login_required(login_url='adminpanel_userside:login')
+def moderation_list_view(request):
+    """
+    List view of all tasks in moderation status
+    Only accessible by users in the 'Moderators' group
+    """
+    # Check if user is in Moderators group
+    if not request.user.groups.filter(name='Moderators').exists() and not request.user.is_superuser:
+        messages.error(request, 'Access denied. You must be a moderator to access this page.')
+        return redirect('adminpanel_userside:control_panel_main_f')
+    
+    # Query tasks in moderation mode
+    tasks = Task.objects.filter(task_mode='moderation').order_by('-created_at')
+    
+    # Create demo tasks if none exist (for mockup purposes)
+    if not tasks.exists():
+        demo_tasks = [
+            {
+                'title': 'Need a professional website designer',
+                'description': 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage.',
+                'category': 'Business Support'
+            },
+            {
+                'title': 'Looking for a Python developer',
+                'description': 'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form.',
+                'category': 'Business Support'
+            },
+            {
+                'title': 'Help with house cleaning',
+                'description': 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable.',
+                'category': 'Personal Support'
+            },
+            {
+                'title': 'Personal fitness trainer needed',
+                'description': 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters.',
+                'category': 'Personal Support'
+            },
+            {
+                'title': 'Social media marketing expert',
+                'description': 'All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures.',
+                'category': 'Business Support'
+            },
+        ]
+        
+        for demo in demo_tasks:
+            Task.objects.create(
+                title=demo['title'],
+                description=demo['description'],
+                task_mode='moderation',
+                creator=request.user,
+                note=f"Category: {demo['category']}"
+            )
+        
+        # Re-query after creating demo tasks
+        tasks = Task.objects.filter(task_mode='moderation').order_by('-created_at')
+    
+    context = {
+        'title': 'Task Moderation',
+        'tasks': tasks,
+    }
+    return render(request, 'adminpanel_userside/moderation_list.html', context)
+
+
+@login_required(login_url='adminpanel_userside:login')
+def moderation_detail_view(request, task_id):
+    """
+    Detail view for a specific task in moderation
+    Allows moderators to approve or decline the task
+    """
+    # Check if user is in Moderators group
+    if not request.user.groups.filter(name='Moderators').exists() and not request.user.is_superuser:
+        messages.error(request, 'Access denied. You must be a moderator to access this page.')
+        return redirect('adminpanel_userside:control_panel_main_f')
+    
+    # Get the task or return 404
+    task = get_object_or_404(Task, id=task_id)
+    
+    context = {
+        'title': 'Task Moderation - Detail',
+        'task': task,
+    }
+    return render(request, 'adminpanel_userside/moderation_detail.html', context)

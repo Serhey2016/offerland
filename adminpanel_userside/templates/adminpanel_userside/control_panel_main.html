@@ -137,8 +137,11 @@
 
     <div class="popover_button" style="position: fixed; bottom: 40px; right: 30px; z-index: 9999;">
       <div class="toolbar-icons hidden" id="set-03-options">
-      <a href="{% url 'adminpanel_userside:articles_page' %}">
+      <a href="{% url 'adminpanel_userside:articles_page' %}" title="Articles">
           <i class="icon md-assignment" aria-hidden="true"></i>
+      </a>
+      <a href="{% url 'adminpanel_userside:moderation_list' %}" title="Task Moderation">
+          <i class="icon md-check-circle" aria-hidden="true"></i>
       </a>
         <a href="javascript:void(0)"><i class="icon md-assignment-account" aria-hidden="true"></i></a>
       </div>

@@ -1,0 +1,165 @@
+{% extends 'adminpanel_userside/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="icon md-check-circle" aria-hidden="true"></i> Task Moderation
+        </h3>
+    </div>
+    <div class="panel-body">
+        {% if tasks %}
+        
+        <!-- Showing count -->
+        <div class="text-center" style="margin-bottom: 30px;">
+            <p class="text-muted">Showing {{ tasks|length }} task{{ tasks|length|pluralize }} waiting for moderation</p>
+        </div>
+        
+        <!-- Tasks List with full details -->
+        {% for task in tasks %}
+        <div class="panel panel-bordered" style="margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div class="panel-body" style="padding: 30px;">
+                
+                <!-- Task Header -->
+                <div class="row" style="margin-bottom: 20px;">
+                    <div class="col-md-8">
+                        <h3 style="margin-top: 0; font-weight: bold; color: #333;">
+                            {{ task.title }}
+                        </h3>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <div style="margin-top: 5px;">
+                            {% if 'Business' in task.note %}
+                                <span class="badge badge-primary" style="font-size: 13px; padding: 6px 12px;">
+                                    <i class="icon md-case" aria-hidden="true"></i> Business Support
+                                </span>
+                            {% elif 'Personal' in task.note %}
+                                <span class="badge badge-info" style="font-size: 13px; padding: 6px 12px;">
+                                    <i class="icon md-account" aria-hidden="true"></i> Personal Support
+                                </span>
+                            {% else %}
+                                <span class="badge badge-default" style="font-size: 13px; padding: 6px 12px;">General</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Task Description -->
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <div style="padding: 15px; background: #f9f9f9; border-radius: 4px; line-height: 1.6; color: #555; max-height: 300px; overflow-y: auto;">
+                        {% if task.description %}
+                            {{ task.description|linebreaks }}
+                        {% else %}
+                            <em style="color: #999;">No description provided</em>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Decline Reason Input -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="decline-reason-{{ task.id }}" style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">
+                        Decline reason
+                    </label>
+                    <textarea 
+                        id="decline-reason-{{ task.id }}" 
+                        class="form-control decline-reason-input" 
+                        rows="3" 
+                        placeholder="Enter decline reason here..."
+                        style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; resize: vertical;"
+                    ></textarea>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="row">
+                    <div class="col-sm-6">
+                        <button 
+                            type="button" 
+                            class="btn btn-success btn-block btn-lg approve-btn"
+                            data-task-id="{{ task.id }}"
+                            style="font-weight: bold; padding: 12px; font-size: 16px;"
+                        >
+                            <i class="icon md-check" aria-hidden="true"></i> Approve
+                        </button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button 
+                            type="button" 
+                            class="btn btn-danger btn-block btn-lg decline-btn"
+                            data-task-id="{{ task.id }}"
+                            style="font-weight: bold; padding: 12px; font-size: 16px;"
+                        >
+                            <i class="icon md-close" aria-hidden="true"></i> Decline
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Task Meta Info -->
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <small class="text-muted">
+                                <strong>Task ID:</strong> #{{ task.id }}
+                            </small>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <small class="text-muted">
+                                <strong>Created:</strong> {{ task.created_at|date:"Y-m-d H:i" }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        {% endfor %}
+        
+        {% else %}
+        <div class="text-center" style="padding: 50px 20px;">
+            <i class="icon md-alert-circle-o" style="font-size: 64px; color: #ccc;"></i>
+            <h4 style="margin-top: 20px; color: #999;">No tasks in moderation</h4>
+            <p style="color: #aaa;">There are currently no tasks waiting for moderation.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs_styles %}
+<script>
+    // Placeholder for future functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Handle Approve buttons
+        document.querySelectorAll('.approve-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const taskId = this.getAttribute('data-task-id');
+                console.log('Approve button clicked for task #' + taskId);
+                // Future implementation: AJAX call to approve task
+                alert('Approve functionality will be implemented here for task #' + taskId);
+            });
+        });
+        
+        // Handle Decline buttons
+        document.querySelectorAll('.decline-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const taskId = this.getAttribute('data-task-id');
+                const reasonTextarea = document.getElementById('decline-reason-' + taskId);
+                const reason = reasonTextarea.value.trim();
+                
+                if (!reason) {
+                    alert('Please provide a decline reason');
+                    reasonTextarea.focus();
+                    return;
+                }
+                
+                console.log('Decline button clicked for task #' + taskId);
+                console.log('Decline reason:', reason);
+                // Future implementation: AJAX call to decline task with reason
+                alert('Decline functionality will be implemented here for task #' + taskId + '\nReason: ' + reason);
+            });
+        });
+    });
+</script>
+{% endblock %}
+

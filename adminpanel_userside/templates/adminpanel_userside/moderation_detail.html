@@ -1,0 +1,160 @@
+{% extends 'adminpanel_userside/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-body">
+        <!-- Back button -->
+        <div class="row" style="margin-bottom: 20px;">
+            <div class="col-md-12">
+                <a href="{% url 'adminpanel_userside:moderation_list' %}" class="btn btn-default">
+                    <i class="icon md-arrow-left" aria-hidden="true"></i> Back to List
+                </a>
+            </div>
+        </div>
+        
+        <!-- Moderation Card -->
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="panel panel-bordered" style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    
+                    <!-- Task Title -->
+                    <div class="form-group">
+                        <h2 style="font-weight: bold; color: #333; margin-bottom: 20px;">
+                            {{ task.title }}
+                        </h2>
+                    </div>
+                    
+                    <!-- Task Description -->
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <div style="padding: 15px; background: #f9f9f9; border-radius: 4px; line-height: 1.6; color: #555; max-height: 400px; overflow-y: auto;">
+                            {% if task.description %}
+                                {{ task.description|linebreaks }}
+                            {% else %}
+                                <em style="color: #999;">No description provided</em>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    {% if task.note %}
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">
+                            Category:
+                        </label>
+                        <div style="padding: 10px; background: #e8f4f8; border-radius: 4px; color: #0c5460;">
+                            {% if 'Business' in task.note %}
+                                <i class="icon md-case" aria-hidden="true"></i> Business Support
+                            {% elif 'Personal' in task.note %}
+                                <i class="icon md-account" aria-hidden="true"></i> Personal Support
+                            {% else %}
+                                {{ task.note }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Decline Reason Input -->
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="decline-reason" style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">
+                            Decline reason
+                        </label>
+                        <textarea 
+                            id="decline-reason" 
+                            class="form-control" 
+                            rows="4" 
+                            placeholder="Enter decline reason here..."
+                            style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; resize: vertical;"
+                        ></textarea>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="form-group" style="margin-top: 25px;">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button 
+                                    type="button" 
+                                    class="btn btn-success btn-block btn-lg"
+                                    id="approve-btn"
+                                    style="font-weight: bold; padding: 12px; font-size: 16px;"
+                                >
+                                    <i class="icon md-check" aria-hidden="true"></i> Approve
+                                </button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button 
+                                    type="button" 
+                                    class="btn btn-danger btn-block btn-lg"
+                                    id="decline-btn"
+                                    style="font-weight: bold; padding: 12px; font-size: 16px;"
+                                >
+                                    <i class="icon md-close" aria-hidden="true"></i> Decline
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Task Meta Info -->
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <small class="text-muted">
+                                    <strong>Task ID:</strong> #{{ task.id }}
+                                </small>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <small class="text-muted">
+                                    <strong>Created:</strong> {{ task.created_at|date:"Y-m-d H:i" }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs_styles %}
+<script>
+    // Placeholder for future functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const approveBtn = document.getElementById('approve-btn');
+        const declineBtn = document.getElementById('decline-btn');
+        const declineReasonTextarea = document.getElementById('decline-reason');
+        
+        approveBtn.addEventListener('click', function() {
+            console.log('Approve button clicked for task #{{ task.id }}');
+            // Future implementation: AJAX call to approve task
+            // Example:
+            // - Update task_mode to 'published' or 'active'
+            // - Send notification to task creator
+            // - Redirect back to moderation list
+            alert('Approve functionality will be implemented here');
+        });
+        
+        declineBtn.addEventListener('click', function() {
+            const reason = declineReasonTextarea.value.trim();
+            
+            if (!reason) {
+                alert('Please provide a decline reason');
+                declineReasonTextarea.focus();
+                return;
+            }
+            
+            console.log('Decline button clicked for task #{{ task.id }}');
+            console.log('Decline reason:', reason);
+            // Future implementation: AJAX call to decline task with reason
+            // Example:
+            // - Update task_mode to 'rejected'
+            // - Save decline reason to database
+            // - Send notification to task creator with reason
+            // - Redirect back to moderation list
+            alert('Decline functionality will be implemented here\nReason: ' + reason);
+        });
+    });
+</script>
+{% endblock %}
+

@@ -3,7 +3,8 @@
 from django.urls import path
 from .views import (
     control_panel_main_f, vacancies_from_boards, update_vacancy,
-    login_view, register, articles_page, edit_article, create_article
+    login_view, register, articles_page, edit_article, create_article,
+    moderation_list_view, moderation_detail_view
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -22,6 +23,10 @@ urlpatterns = [
     
     path('edit_article/<int:article_id>/', edit_article, name='edit_article'),
     path('create_article/', create_article, name='create_article'),
+    
+    # Moderation URLs
+    path('moderation/', moderation_list_view, name='moderation_list'),
+    path('moderation/<int:task_id>/', moderation_detail_view, name='moderation_detail'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
