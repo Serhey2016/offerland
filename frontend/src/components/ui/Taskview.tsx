@@ -406,8 +406,14 @@ const Taskview: React.FC<TaskviewProps> = ({
                     // Check if subtask is completed
                     const isCompleted = subtask.status === 'done' || subtask.completed_at
                     
+                    // Get priority class for subtask
+                    const getPriorityClass = () => {
+                      if (!subtask.priority) return 'priority-none'
+                      return `priority-${subtask.priority}`
+                    }
+                    
                     return (
-                      <div key={subtask.id} className="task_details_subtask_item">
+                      <div key={subtask.id} className={`task_details_subtask_item ${getPriorityClass()}`}>
                         <div className="task_details_subtask_status_bar"></div>
                         <div className="task_details_subtask_check_icon">
                           {isCompleted && <i className="pi pi-check"></i>}

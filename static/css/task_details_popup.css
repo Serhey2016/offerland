@@ -210,6 +210,28 @@
     border-radius: 6px 0 0 6px;
 }
 
+/* Priority-based color classes for subtask status bar */
+.task_details_subtask_item.priority-iu .task_details_subtask_status_bar {
+    background-color: #EF9A9A; /* Important & Urgent - Red */
+}
+
+.task_details_subtask_item.priority-inu .task_details_subtask_status_bar {
+    background-color: #90CAF9; /* Important & Not Urgent - Blue */
+}
+
+.task_details_subtask_item.priority-niu .task_details_subtask_status_bar {
+    background-color: #FFCC80; /* Not Important & Urgent - Orange */
+}
+
+.task_details_subtask_item.priority-ninu .task_details_subtask_status_bar {
+    background-color: #E0E0E0; /* Not Important & Not Urgent - Gray */
+}
+
+.task_details_subtask_item.priority-none .task_details_subtask_status_bar {
+    background-color: #FFFFFF; /* No priority set - White */
+    border: 1px solid #E0E0E0; /* Add border for white bar visibility */
+}
+
 /* Subtask Check Icon */
 .task_details_subtask_check_icon {
     width: 24px;
