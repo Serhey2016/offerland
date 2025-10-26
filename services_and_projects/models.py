@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from joblist.models import AllTags, Companies
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 import uuid
 
@@ -857,5 +857,21 @@ class ActivitiesTaskRelations(models.Model):
 def delete_photo_file(sender, instance, **kwargs):
     if instance.photo:
         instance.photo.delete(save=False)
+
+
+@receiver(post_save, sender=Task)
+def invalidate_parent_subtasks_cache_on_save(sender, instance, **kwargs):
+    """Invalidate subtasks cache when a subtask is created or updated"""
+    if instance.parent_id:
+        from .utils import invalidate_subtasks_cache
+        invalidate_subtasks_cache(instance.parent_id)
+
+
+@receiver(post_delete, sender=Task)
+def invalidate_parent_subtasks_cache_on_delete(sender, instance, **kwargs):
+    """Invalidate subtasks cache when a subtask is deleted"""
+    if instance.parent_id:
+        from .utils import invalidate_subtasks_cache
+        invalidate_subtasks_cache(instance.parent_id)
 
 
