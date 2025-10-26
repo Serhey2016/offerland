@@ -403,9 +403,6 @@ const Taskview: React.FC<TaskviewProps> = ({
                       year: 'numeric'
                     }).replace(/\//g, '.') : ''
                     
-                    // Check if subtask is completed
-                    const isCompleted = subtask.status === 'done' || subtask.completed_at
-                    
                     // Get priority class for subtask
                     const getPriorityClass = () => {
                       if (!subtask.priority) return 'priority-none'
@@ -415,9 +412,6 @@ const Taskview: React.FC<TaskviewProps> = ({
                     return (
                       <div key={subtask.id} className={`task_details_subtask_item ${getPriorityClass()}`}>
                         <div className="task_details_subtask_status_bar"></div>
-                        <div className="task_details_subtask_check_icon">
-                          {isCompleted && <i className="pi pi-check"></i>}
-                        </div>
                         <div className="task_details_subtask_content">
                           <span className="task_details_subtask_title">{subtask.title}</span>
                           {formattedDate && (

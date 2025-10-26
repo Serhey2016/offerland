@@ -284,9 +284,6 @@ const Projectview: React.FC<ProjectviewProps> = ({
               <div className="task_details_subtasks_container">
                 <div className="task_details_subtask_item">
                   <div className="task_details_subtask_status_bar"></div>
-                  <div className="task_details_subtask_check_icon">
-                    <i className="pi pi-check"></i>
-                  </div>
                   <div className="task_details_subtask_content">
                     <span className="task_details_subtask_title">Send resume</span>
                     <span className="task_details_subtask_date">03.23.2025</span>
@@ -298,9 +295,6 @@ const Projectview: React.FC<ProjectviewProps> = ({
                 
                 <div className="task_details_subtask_item">
                   <div className="task_details_subtask_status_bar"></div>
-                  <div className="task_details_subtask_check_icon">
-                    <i className="pi pi-check"></i>
-                  </div>
                   <div className="task_details_subtask_content">
                     <span className="task_details_subtask_title">Called to Vanessa ...</span>
                     <span className="task_details_subtask_date">03.23.2025</span>
